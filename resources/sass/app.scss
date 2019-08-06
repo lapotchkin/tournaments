@@ -1,8 +1,16 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
-
+//@import url('https://fonts.googleapis.com/css?family=Nunito');
 // Variables
 @import 'variables';
-
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+@import '~bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css';
+//DataTables
+@import '~datatables.net-bs4/css/dataTables.bootstrap4.css';
+//Chosen
+@import '~chosen-js/chosen.css';
+//Fontawesome 5
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/brands';

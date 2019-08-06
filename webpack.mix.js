@@ -1,5 +1,9 @@
 const mix = require('laravel-mix');
 
+mix.babelConfig({
+    plugins: ['@babel/plugin-syntax-dynamic-import'],
+});
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -11,5 +15,11 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+mix.js('resources/js/amcharts.js', 'public/js');
+// mix.js('resources/js/app.js', 'public/js');
+mix.js('resources/js/bootstrap.js', 'public/js');
+// mix.js('resources/js/common.js', 'public/js');
+
+mix.sass('resources/sass/app.scss', 'public/css');
+
+if (mix.inProduction()) mix.version();

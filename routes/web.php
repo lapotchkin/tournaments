@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', 'Site\HomeController@index')->name('home');
+Route::get('/group', 'Site\GroupController@index');
+Route::get('/personal', 'Site\PersonalController@index');
