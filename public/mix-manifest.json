@@ -1,9 +1,10 @@
 {
-    "/js/amcharts.js": "/js/amcharts.js?id=c9a510f43bb9cd38fe1d",
+    "/js/amcharts.js": "/js/amcharts.js?id=0d578dd94dfc361072e7",
     "/css/app.css": "/css/app.css?id=47051113c5daa2a6fe2d",
-    "/js/bootstrap.js": "/js/bootstrap.js?id=4994e80681e283bc7ecf",
-    "/vendors~canvg.js": "/vendors~canvg.js?id=5a80a841bedc2461c45d",
-    "/vendors~pdfmake.js": "/vendors~pdfmake.js?id=fe9f9e3f429e6c64b8fc",
-    "/vendors~xlsx.js": "/vendors~xlsx.js?id=b085dde3c5d5387bb45e",
-    "/xlsx.js": "/xlsx.js?id=280adb5197eace712b38"
+    "/js/app.js": "/js/app.js?id=c45d4ab7f7cfbcfc114b",
+    "/js/bootstrap.js": "/js/bootstrap.js?id=c6600c81bea8619dfd5d",
+    "/vendors~canvg.js": "/vendors~canvg.js?id=ad976b34c6995288a308",
+    "/vendors~pdfmake.js": "/vendors~pdfmake.js?id=d3e6766c27fc35bf945d",
+    "/vendors~xlsx.js": "/vendors~xlsx.js?id=d575b3a3da6c39afd1bb",
+    "/xlsx.js": "/xlsx.js?id=2fb450643909827a3936"
 }

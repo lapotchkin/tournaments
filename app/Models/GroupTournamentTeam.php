@@ -15,13 +15,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string          $createdAt
  * @property string          $deletedAt
  * @property Team            $team
- * @property GroupTournament $groupTournament
+ * @property GroupTournament $tournament
  */
 class GroupTournamentTeam extends Model
 {
     use SoftDeletes;
 
     const CREATED_AT = 'createdAt';
+    const UPDATED_AT = null;
     const DELETED_AT = 'deletedAt';
 
     /**
@@ -47,7 +48,7 @@ class GroupTournamentTeam extends Model
     /**
      * @return BelongsTo
      */
-    public function groupTournament()
+    public function tournament()
     {
         return $this->belongsTo('App\Models\GroupTournament', 'tournament_id');
     }

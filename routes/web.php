@@ -14,5 +14,81 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'Site\HomeController@index')->name('home');
+
+/*
+|--------------------------------------------------------------------------
+| Social auth
+|--------------------------------------------------------------------------
+*/
+Route::get('/social/{provider}', 'Auth\SocialController@redirect')
+    ->name('social.redirect')
+    ->where('provider', '[a-z]+');
+Route::get('/social/{provider}/callback', 'Auth\SocialController@callback')
+    ->where('provider', '[a-z]+');
+Route::get('/logout', 'Auth\SocialController@logout')->name('logout');
+
+/*
+ * Group
+ */
 Route::get('/group', 'Site\GroupController@index');
+Route::get('/group/new', 'Site\GroupController@new');
+Route::get('/group/{tournamentId}', 'Site\GroupController@teams')
+    ->where(['tournamentId' => '[0-9]+']);
+Route::get('/group/{tournamentId}/edit', 'Site\GroupController@edit')
+    ->where(['tournamentId' => '[0-9]+']);
+Route::get('/group/{tournamentId}/team/{teamId}', 'Site\GroupController@team')
+    ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+']);
+
+Route::get('/group/{tournamentId}/regular', 'Site\GroupRegularController@index')
+    ->where(['tournamentId' => '[0-9]+']);
+Route::get('/group/{tournamentId}/regular/games', 'Site\GroupRegularController@games')
+    ->where(['tournamentId' => '[0-9]+']);
+Route::get('/group/{tournamentId}/regular/games/{gameId}', 'Site\GroupRegularController@game')
+    ->where(['tournamentId' => '[0-9]+']);
+Route::get('/group/{tournamentId}/regular/schedule', 'Site\GroupRegularController@schedule')
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+
+Route::get('/group/{tournamentId}/playoff', 'Site\GroupPlayoffController@index')
+    ->where(['tournamentId' => '[0-9]+']);
+Route::get('/group/{tournamentId}/playoff/games', 'Site\GroupPlayoffController@games')
+    ->where(['tournamentId' => '[0-9]+']);
+Route::get('/group/{tournamentId}/playoff/games/{gameId}', 'Site\GroupPlayoffController@game')
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+
+Route::get('/group/{tournamentId}/copypaste', 'Site\GroupController@copypaste')
+    ->where(['tournamentId' => '[0-9]+']);
+
+/*
+ * Personal
+ */
 Route::get('/personal', 'Site\PersonalController@index');
+
+/*
+ * Team
+ */
+Route::get('/team', 'Site\TeamController@index');
+Route::get('/team/{teamId}', 'Site\TeamController@team')
+    ->where(['teamId' => '[0-9]+']);
+
+/*
+ * Player
+ */
+Route::get('/player', 'Site\PlayerController@index');
+Route::get('/player/{playerId}', 'Site\PlayerController@player')
+    ->where(['playerId' => '[0-9]+']);
+
+/***********************************
+ ************** AJAX ***************
+ ***********************************/
+Route::put('/ajax/group', 'Ajax\GroupController@create');
+Route::post('/ajax/group/{tournamentId}', 'Ajax\GroupController@edit')
+    ->where(['tournamentId' => '[0-9]+']);
+Route::delete('/ajax/group/{tournamentId}', 'Ajax\GroupController@delete')
+    ->where(['tournamentId' => '[0-9]+']);
+
+Route::put('/ajax/group/{tournamentId}/team', 'Ajax\GroupController@addTeam')
+    ->where(['tournamentId' => '[0-9]+']);
+Route::post('/ajax/group/{tournamentId}/team/{teamId}', 'Ajax\GroupController@editTeam')
+    ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+']);
+Route::delete('/ajax/group/{tournamentId}/team/{teamId}', 'Ajax\GroupController@deleteTeam')
+    ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+']);

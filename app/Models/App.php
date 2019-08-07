@@ -54,7 +54,8 @@ class App extends Model
      */
     public function groupTournaments()
     {
-        return $this->hasMany('App\Models\GroupTournament');
+        return $this->hasMany('App\Models\GroupTournament')
+            ->orderByDesc('createdAt');
     }
 
     /**
@@ -62,6 +63,7 @@ class App extends Model
      */
     public function personalTournaments()
     {
-        return $this->hasMany('App\Models\PersonalTournament');
+        return $this->hasMany('App\Models\PersonalTournament')
+            ->orderByDesc('createdAt');
     }
 }

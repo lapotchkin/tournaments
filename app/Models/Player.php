@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * Class Player
@@ -15,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string                      $name
  * @property string                      $vk
  * @property string                      $city
+ * @property int                         $role
  * @property float                       $lat
  * @property float                       $lon
  * @property string                      $createdAt
@@ -28,9 +31,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property PersonalTournamentPlayer[]  $personalTournamentPlayers
  * @property TeamPlayer[]                $teamPlayers
  */
-class Player extends Model
+class Player extends Authenticatable
 {
     use SoftDeletes;
+    use Notifiable;
 
     const CREATED_AT = 'createdAt';
     const DELETED_AT = 'deletedAt';
@@ -115,5 +119,13 @@ class Player extends Model
     public function teamPlayers()
     {
         return $this->hasMany('App\Models\TeamPlayer');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->role === 1;
     }
 }

@@ -3,20 +3,33 @@
 @section('title', 'Командные турниры — ')
 
 @section('content')
-    <h2><i class="fas fa-users"></i> Командные турниры</h2>
-    @foreach($platforms as $platform)
-        @if(count($platform->groupTournaments))
-            <h3><i class="fab fa-{{ $platform->icon }}"></i> {{ $platform->name }}</h3>
+    {{ Breadcrumbs::render('group') }}
+    <h2>
+        Командные турниры
+        @auth
+            @if(Auth::user()->isAdmin())
+                <a class="btn btn-primary" href="{{ action('Site\GroupController@new') }}">
+                    <i class="fas fa-plus"></i> <i class="fas fa-users"></i>
+                </a>
+            @endif
+        @endauth
+    </h2>
+    @foreach($apps as $app)
+        @if(count($app->groupTournaments))
+            <h3>{{ $app->title }}</h3>
 
             <ul class="fa-ul">
-                @foreach($platform->groupTournaments as $tournament)
+                @foreach($app->groupTournaments as $tournament)
                     <li>
-                        <span class="fa-li"><i class="fas fa-gamepad"></i></span>
-                        {{ $tournament->title }}
+                        <span class="fa-li"><i
+                                    class="fab fa-{{ $tournament->platform->icon }} {{ $tournament->platform->icon === 'xbox' ? 'text-success' : '' }}"></i></span>
+                        <a href="{{ action('Site\GroupController@teams', ['tournamentId' => $tournament->id]) }}">
+                            {{ $tournament->title }}
+                        </a>
                         <span class="badge badge-pill badge-secondary">
                             {{ $tournament->min_players }} на {{ $tournament->min_players }}
                         </span>
-                        Создан: {{ $tournament->createdAt }}
+                        Создан: {{ (new \DateTime($tournament->createdAt))->format('d.m.Y') }}
                     </li>
                 @endforeach
             </ul>

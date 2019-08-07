@@ -16,7 +16,7 @@ mix.babelConfig({
  */
 
 mix.js('resources/js/amcharts.js', 'public/js');
-// mix.js('resources/js/app.js', 'public/js');
+mix.js('resources/js/app.js', 'public/js');
 mix.js('resources/js/bootstrap.js', 'public/js');
 // mix.js('resources/js/common.js', 'public/js');
 

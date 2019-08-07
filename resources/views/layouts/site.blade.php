@@ -8,43 +8,61 @@
     @section('script')
         <script src="{!! mix('/js/bootstrap.js') !!}"></script>
         {{--        <script src="{!! mix('/js/common.js') !!}"></script>--}}
-        {{--        <script src="{!! mix('/js/app.js') !!}"></script>--}}
+        <script src="{!! mix('/js/app.js') !!}"></script>
     @show
 
     <link href="{{ url('/css/app.css') }}" rel="stylesheet" type="text/css">
 </head>
+{{--<body style="background-image: url({{ asset('images/pic/thumb10.jpg') }})">--}}
 <body>
 
-<div class="container">
-    @section('header')
-        <div class="row mt-3 mb-3">
-            <h1 class="mt-1 mb-0">Киберспортивная лига</h1>
+@section('header')
+@show
 
-            {{--                <div class="row">--}}
-            {{--                    <div class="col-4 text-muted">Верните поиск по алфавиту!</div>--}}
-            {{--                    <div class="col-8 text-right">--}}
-            {{--                        @auth--}}
-            {{--                            <span class="fas fa-sign-out-alt"></span> <a href="{{ route('logout') }}">Выйти</a>--}}
-            {{--                        @endauth--}}
-
-            {{--                        @guest--}}
-            {{--                            <span class="fa-stack fa-xs">--}}
-            {{--                                <i class="fas fa-square fa-stack-2x text-primary"></i>--}}
-            {{--                                <i class="fab fa-vk fa-stack-1x fa-inverse"></i>--}}
-            {{--                            </span>--}}
-            {{--                            <a href="{{ route('social.redirect', ['provider' => 'vkontakte']) }}">войти на сайт</a>--}}
-            {{--                        @endguest--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
+@section('menu')
+    <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark mb-3">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">Киберспортивная лига</span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('home') }}">Турниры</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ action('Site\TeamController@index') }}">Команды</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ action('Site\PlayerController@index') }}">Игроки</a>
+                    </li>
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('logout') }}">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Выйти
+                            </a>
+                        </li>
+                    @endauth
+                    @guest
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('social.redirect', ['provider' => 'vkontakte']) }}">
+                                <i class="fab fa-vk fa-inverse"></i> Войти
+                            </a>
+                        </li>
+                    @endguest
+                </ul>
+            </div>
         </div>
-    @show
+    </nav>
+@show
 
-    @section('menu')
-    @show
+@section('submenu')
+@show
 
-    @section('submenu')
-    @show
-
+<div class="container">
     @yield('content')
 
 </div>

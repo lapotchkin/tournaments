@@ -1,32 +1,63 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
+window.TRNMNT_sendData = function (params) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-require('./bootstrap');
+    $(params.selector).submit(function (e) {
+        e.preventDefault();
+        var form = $(this);
+        var formData = form.serializeArray();
+        var request = {};
+        for (var i = 0; i < formData.length; i += 1) {
+            if (formData[i].value) {
+                request[formData[i].name] = formData[i].value;
+            }
+            var field = form.find('[name=' + formData[i].name + ']');
+            field.removeClass('is-invalid');
+            field.closest('.form-group').find('.invalid-feedback').empty();
+        }
 
-window.Vue = require('vue');
+        $.ajax({
+            type: params.method,
+            url: params.url,
+            data: request,
+            dataType: 'json',
+            success: params.success,
+            error: function (response) {
+                for (var key in response.responseJSON.errors) {
+                    var errors = response.responseJSON.errors[key];
+                    var field = form.find('[name=' + key + ']');
+                    field.addClass('is-invalid');
+                    var message = '';
+                    for (var i = 0; i < errors.length; i += 1) {
+                        message += errors[i] + '<br>';
+                    }
+                    field.closest('.form-group').find('.invalid-feedback').html(message);
+                }
+            }
+        });
+    });
+};
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+window.TRNMNT_deleteData = function (params) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-// const files = require.context('./', true, /\.vue$/i);
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
+    $(params.selector).click(function (e) {
+        e.preventDefault();
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-const app = new Vue({
-    el: '#app',
-});
+        if (confirm('Точно удалить?')) {
+            $.ajax({
+                type: 'delete',
+                url: params.url,
+                dataType: 'json',
+                success: params.success,
+            });
+        }
+    });
+};

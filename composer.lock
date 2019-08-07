@@ -4,8 +4,128 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3747b755919c5600a45963c4d268eeda",
+    "content-hash": "0165779f72a9aff2cb783e8c3e8d1dd9",
     "packages": [
+        {
+            "name": "arrilot/laravel-widgets",
+            "version": "3.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/arrilot/laravel-widgets.git",
+                "reference": "24297e9a7b1988808b782567892170cd421e6715"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/arrilot/laravel-widgets/zipball/24297e9a7b1988808b782567892170cd421e6715",
+                "reference": "24297e9a7b1988808b782567892170cd421e6715",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/cache": ">=5.5",
+                "illuminate/console": ">=5.5",
+                "illuminate/container": ">=5.5",
+                "illuminate/contracts": ">=5.5",
+                "illuminate/support": ">=5.5",
+                "illuminate/view": ">=5.5",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Arrilot\\Widgets\\ServiceProvider"
+                    ],
+                    "aliases": {
+                        "Widget": "Arrilot\\Widgets\\Facade",
+                        "AsyncWidget": "Arrilot\\Widgets\\AsyncFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Arrilot\\Widgets\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nekrasov Ilya",
+                    "email": "nekrasov.ilya90@gmail.com"
+                }
+            ],
+            "description": "A powerful alternative to view composers. Asynchronous widgets, reloadable widgets, console generator, caching - everything you can think of.",
+            "homepage": "https://github.com/arrilot/laravel-widgets",
+            "keywords": [
+                "ajax",
+                "laravel",
+                "widgets"
+            ],
+            "time": "2019-03-25T14:20:55+00:00"
+        },
+        {
+            "name": "davejamesmiller/laravel-breadcrumbs",
+            "version": "5.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/davejamesmiller/laravel-breadcrumbs.git",
+                "reference": "6465e8710341578092fdd8aea24319d4f53ab27c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/davejamesmiller/laravel-breadcrumbs/zipball/6465e8710341578092fdd8aea24319d4f53ab27c",
+                "reference": "6465e8710341578092fdd8aea24319d4f53ab27c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.6.*|5.7.*|5.8.*",
+                "illuminate/view": "5.6.*|5.7.*|5.8.*",
+                "php": ">=7.1.3"
+            },
+            "require-dev": {
+                "laravel/framework": "5.6.*|5.7.*|5.8.*",
+                "orchestra/testbench": "3.6.*|3.7.*|3.8.*",
+                "php-coveralls/php-coveralls": "^1.0",
+                "phpunit/phpunit": "7.*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "DaveJamesMiller\\Breadcrumbs\\BreadcrumbsServiceProvider"
+                    ],
+                    "aliases": {
+                        "Breadcrumbs": "DaveJamesMiller\\Breadcrumbs\\Facades\\Breadcrumbs"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DaveJamesMiller\\Breadcrumbs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dave James Miller",
+                    "email": "dave@davejamesmiller.com"
+                }
+            ],
+            "description": "A simple Laravel-style way to create breadcrumbs.",
+            "homepage": "https://github.com/davejamesmiller/laravel-breadcrumbs",
+            "keywords": [
+                "laravel"
+            ],
+            "time": "2019-02-27T13:09:37+00:00"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",
@@ -381,6 +501,193 @@
             "time": "2019-07-29T16:49:45+00:00"
         },
         {
+            "name": "guzzlehttp/guzzle",
+            "version": "6.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/guzzle.git",
+                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/407b0cb880ace85c9b63c5f9551db498cb2d50ba",
+                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/promises": "^1.0",
+                "guzzlehttp/psr7": "^1.4",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
+                "psr/log": "^1.0"
+            },
+            "suggest": {
+                "psr/log": "Required for using the Log middleware"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "6.3-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/functions_include.php"
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Guzzle is a PHP HTTP client library",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "client",
+                "curl",
+                "framework",
+                "http",
+                "http client",
+                "rest",
+                "web service"
+            ],
+            "time": "2018-04-22T15:46:56+00:00"
+        },
+        {
+            "name": "guzzlehttp/promises",
+            "version": "v1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/promises.git",
+                "reference": "a59da6cf61d80060647ff4d3eb2c03a2bc694646"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/a59da6cf61d80060647ff4d3eb2c03a2bc694646",
+                "reference": "a59da6cf61d80060647ff4d3eb2c03a2bc694646",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Promise\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Guzzle promises library",
+            "keywords": [
+                "promise"
+            ],
+            "time": "2016-12-20T10:07:11+00:00"
+        },
+        {
+            "name": "guzzlehttp/psr7",
+            "version": "1.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/psr7.git",
+                "reference": "239400de7a173fe9901b9ac7c06497751f00727a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/239400de7a173fe9901b9ac7c06497751f00727a",
+                "reference": "239400de7a173fe9901b9ac7c06497751f00727a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "psr/http-message": "~1.0",
+                "ralouphie/getallheaders": "^2.0.5 || ^3.0.0"
+            },
+            "provide": {
+                "psr/http-message-implementation": "1.0"
+            },
+            "require-dev": {
+                "ext-zlib": "*",
+                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
+            },
+            "suggest": {
+                "zendframework/zend-httphandlerrunner": "Emit PSR-7 responses"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Psr7\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "homepage": "https://github.com/Tobion"
+                }
+            ],
+            "description": "PSR-7 message implementation that also provides common utility methods",
+            "keywords": [
+                "http",
+                "message",
+                "psr-7",
+                "request",
+                "response",
+                "stream",
+                "uri",
+                "url"
+            ],
+            "time": "2019-07-01T23:21:34+00:00"
+        },
+        {
             "name": "jakub-onderka/php-console-color",
             "version": "v0.2",
             "source": {
@@ -470,16 +777,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.8.30",
+            "version": "v5.8.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "7ccf0cf63931a8d8391aed90e6fc011381ea6838"
+                "reference": "24cc1786bd55876fa52380306354772355345efd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/7ccf0cf63931a8d8391aed90e6fc011381ea6838",
-                "reference": "7ccf0cf63931a8d8391aed90e6fc011381ea6838",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/24cc1786bd55876fa52380306354772355345efd",
+                "reference": "24cc1786bd55876fa52380306354772355345efd",
                 "shasum": ""
             },
             "require": {
@@ -613,7 +920,133 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2019-07-30T14:08:47+00:00"
+            "time": "2019-08-06T15:09:02+00:00"
+        },
+        {
+            "name": "laravel/socialite",
+            "version": "v4.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/socialite.git",
+                "reference": "ab5974b13b775e14d11f220064a110d60743eee0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/socialite/zipball/ab5974b13b775e14d11f220064a110d60743eee0",
+                "reference": "ab5974b13b775e14d11f220064a110d60743eee0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "~6.0",
+                "illuminate/http": "~5.7.0|~5.8.0|^6.0",
+                "illuminate/support": "~5.7.0|~5.8.0|^6.0",
+                "league/oauth1-client": "~1.0",
+                "php": "^7.1.3"
+            },
+            "require-dev": {
+                "illuminate/contracts": "~5.7.0|~5.8.0|^6.0",
+                "mockery/mockery": "~1.0",
+                "phpunit/phpunit": "~7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Socialite\\SocialiteServiceProvider"
+                    ],
+                    "aliases": {
+                        "Socialite": "Laravel\\Socialite\\Facades\\Socialite"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Socialite\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Laravel wrapper around OAuth 1 & OAuth 2 libraries.",
+            "homepage": "https://laravel.com",
+            "keywords": [
+                "laravel",
+                "oauth"
+            ],
+            "time": "2019-07-30T16:07:14+00:00"
+        },
+        {
+            "name": "laravel/telescope",
+            "version": "v2.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/telescope.git",
+                "reference": "61b415ea2401fe659ee35fa809908628aa08bf07"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/61b415ea2401fe659ee35fa809908628aa08bf07",
+                "reference": "61b415ea2401fe659ee35fa809908628aa08bf07",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "laravel/framework": "~5.8.0|~5.9.0",
+                "moontoast/math": "^1.1",
+                "php": "^7.1.3",
+                "symfony/var-dumper": "^4.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Telescope\\TelescopeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Telescope\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Mohamed Said",
+                    "email": "mohamed@laravel.com"
+                }
+            ],
+            "description": "An elegant debug assistant for the Laravel framework.",
+            "keywords": [
+                "debugging",
+                "laravel",
+                "monitoring"
+            ],
+            "time": "2019-07-12T06:52:24+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -763,6 +1196,69 @@
             "time": "2019-06-18T20:09:29+00:00"
         },
         {
+            "name": "league/oauth1-client",
+            "version": "1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/oauth1-client.git",
+                "reference": "fca5f160650cb74d23fc11aa570dd61f86dcf647"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/oauth1-client/zipball/fca5f160650cb74d23fc11aa570dd61f86dcf647",
+                "reference": "fca5f160650cb74d23fc11aa570dd61f86dcf647",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9",
+                "phpunit/phpunit": "^4.0",
+                "squizlabs/php_codesniffer": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\OAuth1\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Corlett",
+                    "role": "Developer",
+                    "email": "bencorlett@me.com",
+                    "homepage": "http://www.webcomm.com.au"
+                }
+            ],
+            "description": "OAuth 1.0 Client Library",
+            "keywords": [
+                "Authentication",
+                "SSO",
+                "authorization",
+                "bitbucket",
+                "identity",
+                "idp",
+                "oauth",
+                "oauth1",
+                "single sign on",
+                "trello",
+                "tumblr",
+                "twitter"
+            ],
+            "time": "2016-08-17T00:36:58+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.24.0",
             "source": {
@@ -841,17 +1337,66 @@
             "time": "2018-11-05T09:00:11+00:00"
         },
         {
-            "name": "nesbot/carbon",
-            "version": "2.22.0",
+            "name": "moontoast/math",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "1a0e48b5f656065ba3c265b058b25d36c2162a5e"
+                "url": "https://github.com/ramsey/moontoast-math.git",
+                "reference": "c2792a25df5cad4ff3d760dd37078fc5b6fccc79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/1a0e48b5f656065ba3c265b058b25d36c2162a5e",
-                "reference": "1a0e48b5f656065ba3c265b058b25d36c2162a5e",
+                "url": "https://api.github.com/repos/ramsey/moontoast-math/zipball/c2792a25df5cad4ff3d760dd37078fc5b6fccc79",
+                "reference": "c2792a25df5cad4ff3d760dd37078fc5b6fccc79",
+                "shasum": ""
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "^0.9.0",
+                "phpunit/phpunit": "^4.7|>=5.0 <5.4",
+                "satooshi/php-coveralls": "^0.6.1",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Moontoast\\Math\\": "src/Moontoast/Math/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Ramsey",
+                    "email": "ben@benramsey.com",
+                    "homepage": "https://benramsey.com"
+                }
+            ],
+            "description": "A mathematics library, providing functionality for large numbers",
+            "homepage": "https://github.com/ramsey/moontoast-math",
+            "keywords": [
+                "bcmath",
+                "math"
+            ],
+            "time": "2017-02-16T16:54:46+00:00"
+        },
+        {
+            "name": "nesbot/carbon",
+            "version": "2.22.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/briannesbitt/Carbon.git",
+                "reference": "ec355b933f9b635fbc418c3b351e3886686f5a21"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/ec355b933f9b635fbc418c3b351e3886686f5a21",
+                "reference": "ec355b933f9b635fbc418c3b351e3886686f5a21",
                 "shasum": ""
             },
             "require": {
@@ -862,7 +1407,7 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.14 || ^3.0",
                 "kylekatarnls/multi-tester": "^1.1",
-                "phpmd/phpmd": "dev-php-7.1-compatibility",
+                "phpmd/phpmd": "^2.6",
                 "phpstan/phpstan": "^0.11",
                 "phpunit/phpunit": "^7.5 || ^8.0",
                 "squizlabs/php_codesniffer": "^3.4"
@@ -905,7 +1450,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2019-07-28T09:02:12+00:00"
+            "time": "2019-08-07T08:59:53+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -1164,6 +1709,56 @@
             "time": "2017-02-14T16:28:37+00:00"
         },
         {
+            "name": "psr/http-message",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message.git",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2016-08-06T14:39:51+00:00"
+        },
+        {
             "name": "psr/log",
             "version": "1.1.0",
             "source": {
@@ -1333,6 +1928,46 @@
             "time": "2018-10-13T15:16:03+00:00"
         },
         {
+            "name": "ralouphie/getallheaders",
+            "version": "3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ralouphie/getallheaders.git",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^5 || ^6.5"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/getallheaders.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph Khattar",
+                    "email": "ralph.khattar@gmail.com"
+                }
+            ],
+            "description": "A polyfill for getallheaders.",
+            "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
             "name": "ramsey/uuid",
             "version": "3.8.0",
             "source": {
@@ -1413,6 +2048,96 @@
                 "uuid"
             ],
             "time": "2018-07-19T23:38:55+00:00"
+        },
+        {
+            "name": "socialiteproviders/manager",
+            "version": "v3.3.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Manager.git",
+                "reference": "4c509ae86e133125f4db084446aecbb9eb331858"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/4c509ae86e133125f4db084446aecbb9eb331858",
+                "reference": "4c509ae86e133125f4db084446aecbb9eb331858",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.4|~5.7.0|~5.8.0",
+                "laravel/socialite": "~3.0|~4.0",
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.4",
+                "phpunit/phpunit": "^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SocialiteProviders\\Manager\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Manager\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andy Wendt",
+                    "email": "andy@awendt.com"
+                },
+                {
+                    "name": "Anton Komarev",
+                    "email": "a.komarev@cybercog.su"
+                }
+            ],
+            "description": "Easily add new or override built-in providers in Laravel Socialite.",
+            "time": "2019-07-02T10:24:56+00:00"
+        },
+        {
+            "name": "socialiteproviders/vkontakte",
+            "version": "v4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/VKontakte.git",
+                "reference": "cc738ae8b1e72fae0f0b24d3eed26baf8e76a3ef"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/VKontakte/zipball/cc738ae8b1e72fae0f0b24d3eed26baf8e76a3ef",
+                "reference": "cc738ae8b1e72fae0f0b24d3eed26baf8e76a3ef",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "socialiteproviders/manager": "~2.0 || ~3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\VKontakte\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Faust",
+                    "email": "hello@brianfaust.de"
+                }
+            ],
+            "description": "VKontakte OAuth2 Provider for Laravel Socialite",
+            "time": "2018-05-29T17:05:01+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2888,68 +3613,6 @@
     ],
     "packages-dev": [
         {
-            "name": "arrilot/laravel-widgets",
-            "version": "3.13.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/arrilot/laravel-widgets.git",
-                "reference": "24297e9a7b1988808b782567892170cd421e6715"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/arrilot/laravel-widgets/zipball/24297e9a7b1988808b782567892170cd421e6715",
-                "reference": "24297e9a7b1988808b782567892170cd421e6715",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/cache": ">=5.5",
-                "illuminate/console": ">=5.5",
-                "illuminate/container": ">=5.5",
-                "illuminate/contracts": ">=5.5",
-                "illuminate/support": ">=5.5",
-                "illuminate/view": ">=5.5",
-                "php": ">=7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~6.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Arrilot\\Widgets\\ServiceProvider"
-                    ],
-                    "aliases": {
-                        "Widget": "Arrilot\\Widgets\\Facade",
-                        "AsyncWidget": "Arrilot\\Widgets\\AsyncFacade"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Arrilot\\Widgets\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nekrasov Ilya",
-                    "email": "nekrasov.ilya90@gmail.com"
-                }
-            ],
-            "description": "A powerful alternative to view composers. Asynchronous widgets, reloadable widgets, console generator, caching - everything you can think of.",
-            "homepage": "https://github.com/arrilot/laravel-widgets",
-            "keywords": [
-                "ajax",
-                "laravel",
-                "widgets"
-            ],
-            "time": "2019-03-25T14:20:55+00:00"
-        },
-        {
             "name": "beyondcode/laravel-dump-server",
             "version": "1.2.2",
             "source": {
@@ -3115,64 +3778,6 @@
                 "performance"
             ],
             "time": "2019-05-27T17:52:04+00:00"
-        },
-        {
-            "name": "davejamesmiller/laravel-breadcrumbs",
-            "version": "5.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/davejamesmiller/laravel-breadcrumbs.git",
-                "reference": "6465e8710341578092fdd8aea24319d4f53ab27c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/davejamesmiller/laravel-breadcrumbs/zipball/6465e8710341578092fdd8aea24319d4f53ab27c",
-                "reference": "6465e8710341578092fdd8aea24319d4f53ab27c",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "5.6.*|5.7.*|5.8.*",
-                "illuminate/view": "5.6.*|5.7.*|5.8.*",
-                "php": ">=7.1.3"
-            },
-            "require-dev": {
-                "laravel/framework": "5.6.*|5.7.*|5.8.*",
-                "orchestra/testbench": "3.6.*|3.7.*|3.8.*",
-                "php-coveralls/php-coveralls": "^1.0",
-                "phpunit/phpunit": "7.*"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "DaveJamesMiller\\Breadcrumbs\\BreadcrumbsServiceProvider"
-                    ],
-                    "aliases": {
-                        "Breadcrumbs": "DaveJamesMiller\\Breadcrumbs\\Facades\\Breadcrumbs"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "DaveJamesMiller\\Breadcrumbs\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Dave James Miller",
-                    "email": "dave@davejamesmiller.com"
-                }
-            ],
-            "description": "A simple Laravel-style way to create breadcrumbs.",
-            "homepage": "https://github.com/davejamesmiller/laravel-breadcrumbs",
-            "keywords": [
-                "laravel"
-            ],
-            "time": "2019-02-27T13:09:37+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -3531,16 +4136,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.4.1",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "6fb502c23885701a991b0bba974b1a8eb6673577"
+                "reference": "cde50e6720a39fdacb240159d3eea6865d51fd96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/6fb502c23885701a991b0bba974b1a8eb6673577",
-                "reference": "6fb502c23885701a991b0bba974b1a8eb6673577",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/cde50e6720a39fdacb240159d3eea6865d51fd96",
+                "reference": "cde50e6720a39fdacb240159d3eea6865d51fd96",
                 "shasum": ""
             },
             "require": {
@@ -3588,7 +4193,7 @@
                 "throwable",
                 "whoops"
             ],
-            "time": "2019-07-04T09:00:00+00:00"
+            "time": "2019-08-07T09:00:00+00:00"
         },
         {
             "name": "friendsofphp/php-cs-fixer",
