@@ -23,8 +23,8 @@ use Illuminate\Notifications\Notifiable;
  * @property string                      $createdAt
  * @property string                      $deletedAt
  * @property Platform                    $platform
- * @property GroupGamePlayoffPlayer[]    $groupGamePlayoffPlayers
- * @property GroupGameRegularPlayer[]    $groupGameRegularPlayers
+ * @property GroupGamePlayoffPlayer[]    $gamePlayoffPlayers
+ * @property GroupGameRegularPlayer[]    $gameRegularPlayers
  * @property PersonalGamePlayoff[]       $personalGamePlayoffs
  * @property PersonalGameRegular[]       $personalGameRegulars
  * @property PersonalTournamentPlayoff[] $personalTournamentPlayoffs
@@ -62,7 +62,7 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function groupGamePlayoffPlayers()
+    public function gamePlayoffPlayers()
     {
         return $this->hasMany('App\Models\GroupGamePlayoffPlayer');
     }
@@ -70,7 +70,7 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function groupGameRegularPlayers()
+    public function gameRegularPlayers()
     {
         return $this->hasMany('App\Models\GroupGameRegularPlayer');
     }

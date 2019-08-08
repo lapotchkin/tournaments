@@ -6,6 +6,7 @@ use App\Models\App;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentTeam;
 use App\Models\Platform;
+use App\Models\Team;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -78,10 +79,12 @@ class GroupController extends Controller
     {
         /** @var GroupTournament $tournament */
         $tournament = GroupTournament::find($tournamentId);
-        $groupTournamentTeams = $tournament->groupTournamentTeams;
+        $tournamentTeams = $tournament->tournamentTeams;
         $divisions = [];
-        foreach ($groupTournamentTeams as $groupTournamentTeam) {
-            $divisions[$groupTournamentTeam->division][] = $groupTournamentTeam->team;
+        $teamIds = [];
+        foreach ($tournamentTeams as $tournamentTeam) {
+            $teamIds[] = $tournamentTeam->team_id;
+            $divisions[$tournamentTeam->division][] = $tournamentTeam->team;
         }
         foreach ($divisions as &$division) {
             usort($division, function ($a, $b) {
@@ -90,9 +93,14 @@ class GroupController extends Controller
         }
         unset($division);
 
+        $nonTournamentTeams = Team::whereNotIn('id', $teamIds)
+            ->where('platform_id', $tournament->platform_id)
+            ->get();
+
         return view('site.group.teams', [
-            'tournament' => $tournament,
-            'divisions'  => $divisions,
+            'tournament'         => $tournament,
+            'divisions'          => $divisions,
+            'nonTournamentTeams' => $nonTournamentTeams,
         ]);
     }
 
@@ -108,14 +116,18 @@ class GroupController extends Controller
             abort(403);
         }
 
-        /** @var GroupTournamentTeam $groupTournamentTeam */
-        $groupTournamentTeam = GroupTournamentTeam::where('tournament_id', $tournamentId)
+        /** @var GroupTournamentTeam $tournamentTeam */
+        $tournamentTeam = GroupTournamentTeam::where('tournament_id', $tournamentId)
             ->where('team_id', $teamId)
             ->first();
 
+        if (is_null($tournamentTeam)) {
+            abort(404);
+        }
+
         return view('site.group.team', [
-            'title'               => $groupTournamentTeam->team->name,
-            'groupTournamentTeam' => $groupTournamentTeam,
+            'title'          => $tournamentTeam->team->name,
+            'tournamentTeam' => $tournamentTeam,
         ]);
     }
 }

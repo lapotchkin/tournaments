@@ -84,7 +84,10 @@
             </form>
         </div>
     </div>
+@endsection
 
+@section('script')
+    @parent
     <script type="text/javascript">
         $(document).ready(function () {
             TRNMNT_sendData({

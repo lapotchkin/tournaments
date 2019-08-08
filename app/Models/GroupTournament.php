@@ -20,9 +20,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string                   $deletedAt
  * @property App                      $app
  * @property Platform                 $platform
- * @property GroupGameRegular[]       $groupGameRegulars
- * @property GroupTournamentPlayoff[] $groupTournamentPlayoffs
- * @property GroupTournamentTeam[]    $groupTournamentTeams
+ * @property GroupGameRegular[]       $gameRegulars
+ * @property GroupTournamentPlayoff[] $tournamentPlayoffs
+ * @property GroupTournamentTeam[]    $tournamentTeams
  */
 class GroupTournament extends Model
 {
@@ -63,7 +63,7 @@ class GroupTournament extends Model
     /**
      * @return HasMany
      */
-    public function groupGameRegulars()
+    public function gameRegulars()
     {
         return $this->hasMany('App\Models\GroupGameRegular', 'tournament_id');
     }
@@ -71,7 +71,7 @@ class GroupTournament extends Model
     /**
      * @return HasMany
      */
-    public function groupTournamentPlayoffs()
+    public function tournamentPlayoffs()
     {
         return $this->hasMany('App\Models\GroupTournamentPlayoff', 'tournament_id');
     }
@@ -79,7 +79,7 @@ class GroupTournament extends Model
     /**
      * @return HasMany
      */
-    public function groupTournamentTeams()
+    public function tournamentTeams()
     {
         return $this->hasMany('App\Models\GroupTournamentTeam', 'tournament_id');
     }

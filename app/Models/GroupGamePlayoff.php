@@ -43,7 +43,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property GroupTournamentPlayoff   $groupTournamentPlayoff
  * @property Team                     $homeTeam
  * @property Team                     $awayTeam
- * @property GroupGamePlayoffPlayer[] $groupGamePlayoffPlayers
+ * @property GroupGamePlayoffPlayer[] $gamePlayoffPlayers
  */
 class GroupGamePlayoff extends Model
 {
@@ -121,7 +121,7 @@ class GroupGamePlayoff extends Model
     /**
      * @return HasMany
      */
-    public function groupGamePlayoffPlayers()
+    public function gamePlayoffPlayers()
     {
         return $this->hasMany('App\Models\GroupGamePlayoffPlayer', 'game_id');
     }

@@ -16,12 +16,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string                   $createdAt
  * @property string                   $deletedAt
  * @property Platform                 $platform
- * @property GroupGamePlayoff[]       $groupGamePlayoffs
- * @property GroupGamePlayoffPlayer[] $groupGamePlayoffPlayers
- * @property GroupGameRegular[]       $groupGameRegulars
- * @property GroupGameRegularPlayer[] $groupGameRegularPlayers
- * @property GroupTournamentPlayoff[] $groupTournamentPlayoffs
- * @property GroupTournamentTeam[]    $groupTournamentTeams
+ * @property GroupGamePlayoff[]       $gamePlayoffs
+ * @property GroupGamePlayoffPlayer[] $gamePlayoffPlayers
+ * @property GroupGameRegular[]       $gameRegulars
+ * @property GroupGameRegularPlayer[] $gameRegularPlayers
+ * @property GroupTournamentPlayoff[] $tournamentPlayoffs
+ * @property GroupTournamentTeam[]    $tournamentTeams
  * @property TeamPlayer[]             $teamPlayers
  */
 class Team extends Model
@@ -54,7 +54,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function groupGamePlayoffs()
+    public function gamePlayoffs()
     {
         return $this->hasMany('App\Models\GroupGamePlayoff', 'home_team_id')
             ->where('home_team_id', '=', 'id')
@@ -64,7 +64,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function groupGamePlayoffPlayers()
+    public function gamePlayoffPlayers()
     {
         return $this->hasMany('App\Models\GroupGamePlayoffPlayer');
     }
@@ -72,7 +72,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function groupGameRegulars()
+    public function gameRegulars()
     {
         return $this->hasMany('App\Models\GroupGameRegular', 'home_team_id')
             ->where('home_team_id', '=', 'id')
@@ -82,7 +82,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function groupGameRegularPlayers()
+    public function gameRegularPlayers()
     {
         return $this->hasMany('App\Models\GroupGameRegularPlayer');
     }
@@ -90,7 +90,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function groupTournamentPlayoffs()
+    public function tournamentPlayoffs()
     {
         return $this->hasMany('App\Models\GroupTournamentPlayoff', 'team_one_id')
             ->where('team_one_id', '=', 'id')
@@ -100,7 +100,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function groupTournamentTeams()
+    public function tournamentTeams()
     {
         return $this->hasMany('App\Models\GroupTournamentTeam');
     }

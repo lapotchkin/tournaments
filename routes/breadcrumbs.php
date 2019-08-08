@@ -26,15 +26,15 @@ Breadcrumbs::for('group.tournament.edit', function ($trail, $tournament) {
     );
 });
 //Group > Tournament > Team
-Breadcrumbs::for('group.tournament.team', function ($trail, $groupTournamentTeam, $title) {
-    $trail->parent('group.tournament', $groupTournamentTeam->tournament);
+Breadcrumbs::for('group.tournament.team', function ($trail, $tournamentTeam, $title) {
+    $trail->parent('group.tournament', $tournamentTeam->tournament);
     $trail->push(
         $title,
         action(
             'Site\GroupController@team',
             [
-                'tournamentId' => $groupTournamentTeam->tournament->id,
-                'teamId'       => $groupTournamentTeam->team_id,
+                'tournamentId' => $tournamentTeam->tournament->id,
+                'teamId'       => $tournamentTeam->team_id,
             ]
         )
     );

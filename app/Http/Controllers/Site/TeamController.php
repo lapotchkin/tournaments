@@ -15,4 +15,9 @@ class TeamController extends Controller
     {
 
     }
+
+    public function team()
+    {
+
+    }
 }

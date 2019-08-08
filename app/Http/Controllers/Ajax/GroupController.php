@@ -74,22 +74,34 @@ class GroupController extends Controller
 
     /**
      * @param Request $request
+     * @param int     $tournamentId
      * @return ResponseFactory|Response
      */
-    public function addTeam(Request $request)
+    public function addTeam(Request $request, int $tournamentId)
     {
         $validatedData = $request->validate([
-            'tournament_id' => 'required|int|exists:groupTournament,id',
-            'team_id'       => 'required|int|exists:team,id',
-            'division'      => 'required|int|min:1|max:26',
+            'team_id'  => 'required|int|exists:team,id',
+            'division' => 'required|int|min:1|max:26',
         ]);
 
-        $groupTournamentTeam = new GroupTournamentTeam;
-        $groupTournamentTeam->tournament_id = $validatedData['tournament_id'];
-        $groupTournamentTeam->team_id = $validatedData['team_id'];
-        $groupTournamentTeam->division = $validatedData['division'];
+        $tournamentTeam = GroupTournamentTeam::withTrashed()
+            ->where('tournament_id', $tournamentId)
+            ->where('team_id', $validatedData['team_id'])
+            ->first();
 
-        $groupTournamentTeam->save();
+        if (is_null($tournamentTeam)) {
+            $tournamentTeam = new GroupTournamentTeam;
+            $tournamentTeam->tournament_id = $tournamentId;
+            $tournamentTeam->team_id = $validatedData['team_id'];
+        } else {
+            GroupTournamentTeam::withTrashed()
+                ->where('tournament_id', $tournamentId)
+                ->where('team_id', $validatedData['team_id'])
+                ->restore();
+        }
+        $tournamentTeam->division = $validatedData['division'];
+
+        $tournamentTeam->save();
 
         return $this->renderAjax();
     }
