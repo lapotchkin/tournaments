@@ -27,7 +27,7 @@
                                     @auth
                                         @if(Auth::user()->isAdmin())
                                             <a class="btn btn-primary btn-sm"
-                                               href="{{ action('Site\GroupController@team', ['tournamentId' => $tournament->id, 'teamId' => $team->id]) }}">
+                                               href="{{ route('group.tournament.team', ['tournamentId' => $tournament->id, 'teamId' => $team->id]) }}">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         @endif
@@ -99,7 +99,7 @@
                             var $row = $('<tr/>');
                             $row.append('<td>' + ($tbody.find('tr').length + 1) + '</td>');
                             $row.append('<td><a href="{{ action('Site\TeamController@index') }}/' + teamId + '">' + $option.text() + '</a></td>');
-                            $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ action('Site\GroupController@teams', ['tournamentId' => $tournament->id]) }}/team/' + teamId + '"><i class="fas fa-edit"></i></a></td>');
+                            $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ route('group.tournament', ['tournamentId' => $tournament->id]) }}/team/' + teamId + '"><i class="fas fa-edit"></i></a></td>');
                             $tbody.append($row);
                             $option.remove();
                             $team.val('');

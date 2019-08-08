@@ -43,7 +43,7 @@
                 method: 'post',
                 url: '{{ action('Ajax\GroupController@editTeam', ['tournamentId' => $tournamentTeam->tournament_id, 'teamId' => $tournamentTeam->team_id])}}',
                 success: function (response) {
-                    window.location.href = '{{ action('Site\GroupController@teams', ['tournamentId' => $tournamentTeam->tournament_id]) }}';
+                    window.location.href = '{{ route('group.tournament', ['tournamentId' => $tournamentTeam->tournament_id]) }}';
                 }
             });
 
@@ -51,7 +51,7 @@
                 selector: '#team-delete-button',
                 url: '{{ action('Ajax\GroupController@deleteTeam', ['tournamentId' => $tournamentTeam->tournament_id, 'teamId' => $tournamentTeam->team_id])}}',
                 success: function () {
-                    window.location.href = '{{ action('Site\GroupController@teams', ['tournamentId' => $tournamentTeam->tournament_id]) }}';
+                    window.location.href = '{{ route('group.tournament', ['tournamentId' => $tournamentTeam->tournament_id]) }}';
                 }
             });
         });

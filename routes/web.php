@@ -30,33 +30,46 @@ Route::get('/logout', 'Auth\SocialController@logout')->name('logout');
 /*
  * Group
  */
-Route::get('/group', 'Site\GroupController@index');
-Route::get('/group/new', 'Site\GroupController@new');
+Route::get('/group', 'Site\GroupController@index')
+    ->name('group');
+Route::get('/group/new', 'Site\GroupController@new')
+    ->name('group.new');
 Route::get('/group/{tournamentId}', 'Site\GroupController@teams')
-    ->where(['tournamentId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('group.tournament');
 Route::get('/group/{tournamentId}/edit', 'Site\GroupController@edit')
-    ->where(['tournamentId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('group.tournament.edit');
 Route::get('/group/{tournamentId}/team/{teamId}', 'Site\GroupController@team')
-    ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+'])
+    ->name('group.tournament.team');
 
 Route::get('/group/{tournamentId}/regular', 'Site\GroupRegularController@index')
-    ->where(['tournamentId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('group.tournament.regular');
 Route::get('/group/{tournamentId}/regular/games', 'Site\GroupRegularController@games')
-    ->where(['tournamentId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('group.tournament.regular.games');
 Route::get('/group/{tournamentId}/regular/games/{gameId}', 'Site\GroupRegularController@game')
-    ->where(['tournamentId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('group.tournament.regular.game');
 Route::get('/group/{tournamentId}/regular/schedule', 'Site\GroupRegularController@schedule')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+'])
+    ->name('group.tournament.regular.schedule');
 
 Route::get('/group/{tournamentId}/playoff', 'Site\GroupPlayoffController@index')
-    ->where(['tournamentId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('group.tournament.playoff');
 Route::get('/group/{tournamentId}/playoff/games', 'Site\GroupPlayoffController@games')
-    ->where(['tournamentId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('group.tournament.playoff.games');
 Route::get('/group/{tournamentId}/playoff/games/{gameId}', 'Site\GroupPlayoffController@game')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+'])
+    ->name('group.tournament.playoff.game');
 
-Route::get('/group/{tournamentId}/copypaste', 'Site\GroupController@copypaste')
-    ->where(['tournamentId' => '[0-9]+']);
+Route::get('/group/{tournamentId}/copypaste', 'Site\GroupController@teams')
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('group.tournament.copypaste');
 
 /*
  * Personal

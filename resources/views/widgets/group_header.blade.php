@@ -6,7 +6,7 @@
     </span>
     @auth
         @if(Auth::user()->isAdmin())
-            <a class="btn btn-primary" href="{{ action('Site\GroupController@edit', ['tournamentId' => $tournament->id]) }}">
+            <a class="btn btn-primary" href="{{ route('group.tournament.edit', ['tournamentId' => $tournament->id]) }}">
                 <i class="fas fa-edit"></i>
             </a>
         @endif

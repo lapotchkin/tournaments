@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property GroupGameRegular[]       $gameRegulars
  * @property GroupTournamentPlayoff[] $tournamentPlayoffs
  * @property GroupTournamentTeam[]    $tournamentTeams
+ * @property Team[]                   $teams
  */
 class GroupTournament extends Model
 {
@@ -82,5 +84,21 @@ class GroupTournament extends Model
     public function tournamentTeams()
     {
         return $this->hasMany('App\Models\GroupTournamentTeam', 'tournament_id');
+    }
+
+    /**
+     * @return HasManyThrough
+     */
+    public function teams()
+    {
+        return $this->hasManyThrough(
+            'App\Models\Team',
+            'App\Models\GroupTournamentTeam',
+            'tournament_id',
+            'id',
+            'id',
+            'team_id'
+        )
+            ->orderBy('team.name');
     }
 }

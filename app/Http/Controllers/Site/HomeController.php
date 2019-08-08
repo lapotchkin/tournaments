@@ -21,9 +21,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $platforms = Platform::all();
-        return view('site.home.index', [
-            'platforms' => $platforms,
-        ]);
+        return view('site.home.index');
     }
 }

@@ -95,7 +95,7 @@
                 method: '{{ is_null($tournament) ? 'put' : 'post' }}',
                 url: '{{ is_null($tournament) ? action('Ajax\GroupController@create') : action('Ajax\GroupController@edit', ['tournamentId' => $tournament->id])}}',
                 success: function (response) {
-                    window.location.href = '{{ action('Site\GroupController@index') }}/' + response.data.id;
+                    window.location.href = '{{ route('group') }}/' + response.data.id;
                 }
             });
 
@@ -104,7 +104,7 @@
                 selector: '#tournament-delete-button',
                 url: '{{ action('Ajax\GroupController@delete', ['tournamentId' => $tournament->id])}}',
                 success: function () {
-                    window.location.href = '{{ action('Site\GroupController@index') }}';
+                    window.location.href = '{{ route('group') }}';
                 }
             });
             @endif

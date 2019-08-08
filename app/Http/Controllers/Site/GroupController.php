@@ -24,7 +24,7 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $apps = App::all();
+        $apps = App::with(['groupTournaments.platform'])->get();
 
         return view('site.group.index', [
             'apps' => $apps,
@@ -78,11 +78,11 @@ class GroupController extends Controller
     public function teams(Request $request, int $tournamentId)
     {
         /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::find($tournamentId);
-        $tournamentTeams = $tournament->tournamentTeams;
+        $tournament = GroupTournament::with(['tournamentTeams', 'tournamentTeams.team'])
+            ->find($tournamentId);
         $divisions = [];
         $teamIds = [];
-        foreach ($tournamentTeams as $tournamentTeam) {
+        foreach ($tournament->tournamentTeams as $tournamentTeam) {
             $teamIds[] = $tournamentTeam->team_id;
             $divisions[$tournamentTeam->division][] = $tournamentTeam->team;
         }
@@ -93,6 +93,13 @@ class GroupController extends Controller
         }
         unset($division);
         ksort($divisions);
+
+        if (strstr($request->path(), 'copypaste')) {
+            return view('site.group.copypaste', [
+                'tournament' => $tournament,
+                'divisions'  => $divisions,
+            ]);
+        }
 
         $nonTournamentTeams = Team::whereNotIn('id', $teamIds)
             ->where('platform_id', $tournament->platform_id)

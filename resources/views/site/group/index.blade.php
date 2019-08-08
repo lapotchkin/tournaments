@@ -8,7 +8,7 @@
         Командные турниры
         @auth
             @if(Auth::user()->isAdmin())
-                <a class="btn btn-primary" href="{{ action('Site\GroupController@new') }}">
+                <a class="btn btn-primary" href="{{ route('group.new') }}">
                     <i class="fas fa-plus"></i> <i class="fas fa-users"></i>
                 </a>
             @endif
@@ -23,7 +23,7 @@
                     <li>
                         <span class="fa-li"><i
                                     class="fab fa-{{ $tournament->platform->icon }} {{ $tournament->platform->icon === 'xbox' ? 'text-success' : '' }}"></i></span>
-                        <a href="{{ action('Site\GroupController@teams', ['tournamentId' => $tournament->id]) }}">
+                        <a href="{{ route('group.tournament', ['tournamentId' => $tournament->id]) }}">
                             {{ $tournament->title }}
                         </a>
                         <span class="badge badge-pill badge-secondary">
