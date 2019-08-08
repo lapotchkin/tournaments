@@ -11,7 +11,7 @@
         <script src="{!! mix('/js/app.js') !!}"></script>
     @show
 
-    <link href="{{ url('/css/app.css') }}" rel="stylesheet" type="text/css">
+    <link href="{!! mix('/css/app.css') !!}" rel="stylesheet" type="text/css">
 </head>
 {{--<body style="background-image: url({{ asset('images/pic/thumb10.jpg') }})">--}}
 <body>

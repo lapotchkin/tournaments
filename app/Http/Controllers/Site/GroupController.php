@@ -61,6 +61,9 @@ class GroupController extends Controller
 
         /** @var GroupTournament $tournament */
         $tournament = GroupTournament::find($tournamentId);
+        if (is_null($tournament)) {
+            abort(404);
+        }
 
         return view('site.group.tournament_editor', [
             'title'      => $tournament->title . ': Редактировать турнир',
@@ -80,6 +83,10 @@ class GroupController extends Controller
         /** @var GroupTournament $tournament */
         $tournament = GroupTournament::with(['tournamentTeams', 'tournamentTeams.team'])
             ->find($tournamentId);
+        if (is_null($tournament)) {
+            abort(404);
+        }
+
         $divisions = [];
         $teamIds = [];
         foreach ($tournament->tournamentTeams as $tournamentTeam) {
