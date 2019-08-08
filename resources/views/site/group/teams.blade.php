@@ -89,16 +89,31 @@
                         method: 'put',
                         url: '{{ action('Ajax\GroupController@addTeam', ['tournamentId' => $tournament->id])}}',
                         success: function (response) {
-                            var division = $('#division').val();
-                            var teamId = $('#team_id').val();
+                            var $division = $('#division');
+                            var division = $division.val();
+                            createDivisionBlock(division);
+                            var $team = $('#team_id');
+                            var teamId = $team.val();
+                            var $option = $('#team_id option[value=' + teamId + ']');
                             var $tbody = $('#division-' + division).find('tbody');
                             var $row = $('<tr/>');
                             $row.append('<td>' + ($tbody.find('tr').length + 1) + '</td>');
-                            $row.append('<td><a href="{{ action('Site\TeamController@index') }}/' + teamId + '">' + $('#team_id option[value=' + teamId + ']').text() + '</a></td>');
+                            $row.append('<td><a href="{{ action('Site\TeamController@index') }}/' + teamId + '">' + $option.text() + '</a></td>');
                             $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ action('Site\GroupController@teams', ['tournamentId' => $tournament->id]) }}/team/' + teamId + '"><i class="fas fa-edit"></i></a></td>');
                             $tbody.append($row);
+                            $option.remove();
+                            $team.val('');
+                            $division.val('');
                         }
                     });
+
+                    function createDivisionBlock(division) {
+                        if ($('#division-' + division).length) return;
+
+                        var letters = 'ABCD';
+                        $('.card-deck').append(
+                            '<div class="card mb-3" id="division-' + division + '"><h4 class="card-header">Группа ' + letters.charAt(division - 1) + '</h4><div class="card-body"><table class="table table-striped table-sm" id="team-table"><tbody></tbody></table></div></div>');
+                    }
                 });
             </script>
         @endif

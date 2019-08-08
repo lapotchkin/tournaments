@@ -93,15 +93,18 @@ class GroupController extends Controller
             $tournamentTeam = new GroupTournamentTeam;
             $tournamentTeam->tournament_id = $tournamentId;
             $tournamentTeam->team_id = $validatedData['team_id'];
+            $tournamentTeam->division = $validatedData['division'];
+            $tournamentTeam->save();
         } else {
             GroupTournamentTeam::withTrashed()
                 ->where('tournament_id', $tournamentId)
                 ->where('team_id', $validatedData['team_id'])
-                ->restore();
+                ->update([
+                    'division'  => $validatedData['division'],
+                    'deletedAt' => null,
+                ]);
         }
-        $tournamentTeam->division = $validatedData['division'];
 
-        $tournamentTeam->save();
 
         return $this->renderAjax();
     }

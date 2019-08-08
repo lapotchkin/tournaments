@@ -92,6 +92,7 @@ class GroupController extends Controller
             });
         }
         unset($division);
+        ksort($divisions);
 
         $nonTournamentTeams = Team::whereNotIn('id', $teamIds)
             ->where('platform_id', $tournament->platform_id)
