@@ -50,6 +50,39 @@ class GroupRegularController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param int     $tournamentId
+     * @return Factory|View
+     */
+    public function schedule(Request $request, int $tournamentId)
+    {
+        /** @var GroupTournament $tournament */
+        $tournament = GroupTournament::with(['regularGames.homeTeam.team', 'regularGames.awayTeam.team'])
+            ->find($tournamentId);
+        if (is_null($tournament)) {
+            abort(404);
+        }
+
+        $rounds = [];
+        foreach ($tournament->regularGames as $index => $regularGame) {
+            if (
+                $index > 0
+                && (
+                    $tournament->regularGames[$index - 1]->home_team_id === $tournament->regularGames[$index]->away_team_id
+                    && $tournament->regularGames[$index - 1]->away_team_id === $tournament->regularGames[$index]->home_team_id
+                )
+            ) {
+                $rounds[$regularGame->round][$regularGame->homeTeam->division][] = $regularGame;
+            }
+        }
+
+        return view('site.group.regular.schedule', [
+            'tournament' => $tournament,
+            'rounds'     => $rounds,
+        ]);
+    }
+
+    /**
      * @param array $data
      * @return array
      * @throws Exception

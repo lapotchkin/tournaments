@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string                   $deletedAt
  * @property App                      $app
  * @property Platform                 $platform
- * @property GroupGameRegular[]       $gameRegulars
+ * @property GroupGameRegular[]       $regularGames
  * @property GroupTournamentPlayoff[] $tournamentPlayoffs
  * @property GroupTournamentTeam[]    $tournamentTeams
  * @property Team[]                   $teams
@@ -65,7 +65,7 @@ class GroupTournament extends Model
     /**
      * @return HasMany
      */
-    public function gameRegulars()
+    public function regularGames()
     {
         return $this->hasMany('App\Models\GroupGameRegular', 'tournament_id');
     }

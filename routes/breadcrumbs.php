@@ -36,11 +36,35 @@ Breadcrumbs::for('group.tournament.team', function ($trail, $tournamentTeam, $ti
         )
     );
 });
-//Group > Tournament > Editor
+//Group > Tournament > VK
 Breadcrumbs::for('group.tournament.copypaste', function ($trail, $tournament) {
     $trail->parent('group.tournament', $tournament);
     $trail->push(
         'Данные для ВК',
         route('group.tournament.copypaste', ['tournamentId' => $tournament->id])
+    );
+});
+//Group > Tournament > Regular
+Breadcrumbs::for('group.tournament.regular', function ($trail, $tournament) {
+    $trail->parent('group.tournament', $tournament);
+    $trail->push(
+        'Чемпионат',
+        route('group.tournament.regular', ['tournamentId' => $tournament->id])
+    );
+});
+//Group > Tournament > Regular > Games
+Breadcrumbs::for('group.tournament.regular.games', function ($trail, $tournament) {
+    $trail->parent('group.tournament.regular', $tournament);
+    $trail->push(
+        'Расписание',
+        route('group.tournament.regular.games', ['tournamentId' => $tournament->id])
+    );
+});
+//Group > Tournament > Regular > VK
+Breadcrumbs::for('group.tournament.regular.schedule', function ($trail, $tournament) {
+    $trail->parent('group.tournament.regular', $tournament);
+    $trail->push(
+        'Расписание ВК',
+        route('group.tournament.regular.schedule', ['tournamentId' => $tournament->id])
     );
 });

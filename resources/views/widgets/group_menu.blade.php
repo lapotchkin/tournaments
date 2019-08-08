@@ -9,7 +9,7 @@
         @endif
     </li>
     <li class="nav-item">
-        @if (Route::currentRouteName() === 'group.tournament.regular')
+        @if (strstr(Route::currentRouteName(), 'regular'))
             <a class="nav-link active" href="#">Чемпионат</a>
         @else
             <a class="nav-link"
@@ -19,7 +19,7 @@
         @endif
     </li>
     <li class="nav-item">
-        @if (Route::currentRouteName() === 'group.tournament.playoff')
+        @if (strstr(Route::currentRouteName(), 'playoff'))
             <a class="nav-link active" href="#">Плэйофф</a>
         @else
             <a class="nav-link"

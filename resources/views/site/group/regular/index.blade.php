@@ -1,9 +1,9 @@
 @extends('layouts.site')
 
-@section('title', $tournament->title . ' — ')
+@section('title', $tournament->title . ': Чемпионат — ')
 
 @section('content')
-    {{ Breadcrumbs::render('group.tournament', $tournament) }}
+    {{ Breadcrumbs::render('group.tournament.regular', $tournament) }}
     @widget('groupHeader', ['tournament' => $tournament])
     @widget('groupMenu', ['tournament' => $tournament])
     @widget('groupRegularMenu', ['tournament' => $tournament])
