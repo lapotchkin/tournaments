@@ -9,9 +9,9 @@
     @widget('groupRegularMenu', ['tournament' => $tournament])
 
     @foreach($rounds as $round => $groups)
-        <h3>Тур {{ $round }}</h3>
+        <h3 class="{{ !$loop->first ? 'mt-3' : '' }}">Тур {{ $round }}</h3>
         @foreach($groups as $group => $games)
-            <h4>Группа {{ TextUtils::divisionLetter($group) }}</h4>
+            <h4 class="{{ !$loop->first ? 'mt-2' : '' }}">Группа {{ TextUtils::divisionLetter($group) }}</h4>
             @foreach($games as $game)
                 <div>
                     {{ $loop->iteration }}.

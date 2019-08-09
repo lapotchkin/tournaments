@@ -11,11 +11,13 @@ use Illuminate\Support\Facades\DB;
 class GroupTournamentLeaders
 {
     /**
-     * @param $id
+     * @param int         $tournamentId
+     * @param string|null $date
      * @return array
      */
-    public static function readLeaders($id)
+    public static function readLeaders(int $tournamentId, string $date = null)
     {
+        $dateString = is_null($date) ? '' : "and gGRp.createdAt < '{$date}'";
         $leaders = DB::select("
             select leaders.*,
                    (
@@ -31,7 +33,6 @@ class GroupTournamentLeaders
                 (
                     select p.id,
                            concat(p.name, ' (', p.tag, ')') player,
-                           #        t.name 'Команда'
                            count(gGRp.id) games,
                            sum(gGRp.goals) goals,
                            sum(gGRp.assists) assists,
@@ -45,11 +46,12 @@ class GroupTournamentLeaders
                                        and gGRp.isGoalie = 0
                             inner join player p on gGRp.player_id = p.id and p.deletedAt is null
                     where gT.id = ?
+                        {$dateString}
                         and gT.deletedAt is null
                     group by gGRp.player_id
                 ) leaders
             group by leaders.id, leaders.player
-        ", [$id, $id]);
+        ", [$tournamentId, $tournamentId]);
 
         return $leaders;
     }

@@ -37,11 +37,11 @@
     </table>
 
     <h3 class="mt-3">Статистика команд</h3>
-    <table id="teamsExtended" class="teams table table-striped">
+    <table id="teamsExtended" class="teams table table-striped table-sm">
         <thead></thead>
         <tbody></tbody>
     </table>
-    <table class="table table-condensed">
+    <table class="table table-sm">
         <tr>
             <td>ЗШ/И — Заброшено щайб за игру</td>
             <td>ПК — Нейтрализация меньшинства</td>
@@ -63,19 +63,19 @@
     </table>
 
     <h3 class="mt-3">Лучшие по очкам</h3>
-    <table id="topPoints" class="leaders table table-striped">
+    <table id="topPoints" class="leaders table table-striped table-sm">
         <thead></thead>
         <tbody></tbody>
     </table>
 
     <h3 class="mt-3">Лучшие по голам</h3>
-    <table id="topGoals" class="leaders table table-striped">
+    <table id="topGoals" class="leaders table table-striped table-sm">
         <thead></thead>
         <tbody></tbody>
     </table>
 
     <h3 class="mt-3">Лучшие по передачам</h3>
-    <table id="topAssists" class="leaders table table-striped">
+    <table id="topAssists" class="leaders table table-striped table-sm">
         <thead></thead>
         <tbody></tbody>
     </table>
@@ -84,7 +84,7 @@
         Вратари<br>
         <small class="text-muted">В таблице только вратари, сыгравшие не менее 25% от общего числа игр команды</small>
     </h3>
-    <table id="goalies" class="leaders table table-striped">
+    <table id="goalies" class="leaders table table-striped table-sm">
         <thead></thead>
         <tbody></tbody>
     </table>
@@ -98,6 +98,7 @@
                 data: {!! json_encode($position) !!},
                 columns: [
                     {data: 'place', title: ''},
+                    {data: 'prevPlace', title: ''},
                     {data: 'team', title: 'Команда'},
                     {data: 'games', title: 'И'},
                     {data: 'points', title: 'О'},
@@ -118,9 +119,10 @@
             });
 
             $('#teamsExtended').DataTable({
-                data:  {!! json_encode($position) !!},
+                data: {!! json_encode($position) !!},
                 columns: [
                     {'data': 'place', 'title': ''},
+                    {'data': 'prevPlace', 'title': ''},
                     {'data': 'team', 'title': 'Команда'},
                     {'data': 'games', 'title': 'И'},
                     {'data': 'goals_per_game', 'title': 'ЗШ/И'},
@@ -145,10 +147,11 @@
                 'pageLength': -1
             });
 
-            var topPoints = $('#topPoints').DataTable({
-                data: {!! json_encode($leaders) !!},
+            $('#topPoints').DataTable({
+                data: {!! json_encode($leaders->points) !!},
                 columns: [
-                    {data: 'points', 'title': ''},
+                    {data: 'place', 'title': ''},
+                    {data: 'prevPlace', 'title': ''},
                     {data: 'player', title: 'Игрок'},
                     {data: 'team', title: 'Команда'},
                     {data: 'games', title: 'Игры'},
@@ -156,19 +159,15 @@
                     {data: 'assists', title: 'Передачи'},
                     {data: 'points', title: 'Очки'}
                 ],
-                'order': [[6, 'desc'], [4, 'desc'], [3, 'asc']],
+                'ordering': false,
+                'pageLength': 20,
             });
 
-            topPoints.on('order.dt search.dt', function () {
-                topPoints.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1;
-                });
-            }).draw();
-
-            var topGoals = $('#topGoals').DataTable({
-                data: {!! json_encode($leaders) !!},
+            $('#topGoals').DataTable({
+                data: {!! json_encode($leaders->goals) !!},
                 columns: [
-                    {data: 'points', 'title': ''},
+                    {data: 'place', 'title': ''},
+                    {data: 'prevPlace', 'title': ''},
                     {data: 'player', title: 'Игрок'},
                     {data: 'team', title: 'Команда'},
                     {data: 'games', title: 'Игры'},
@@ -176,19 +175,15 @@
                     {data: 'assists', title: 'Передачи'},
                     {data: 'points', title: 'Очки'}
                 ],
-                'order': [[4, 'desc'], [6, 'desc'], [3, 'asc']],
+                'ordering': false,
+                'pageLength': 20,
             });
 
-            topGoals.on('order.dt search.dt', function () {
-                topGoals.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1;
-                });
-            }).draw();
-
-            var topAssists = $('#topAssists').DataTable({
-                data: {!! json_encode($leaders) !!},
+            $('#topAssists').DataTable({
+                data: {!! json_encode($leaders->assists) !!},
                 columns: [
-                    {data: 'points', 'title': ''},
+                    {data: 'place', 'title': ''},
+                    {data: 'prevPlace', 'title': ''},
                     {data: 'player', title: 'Игрок'},
                     {data: 'team', title: 'Команда'},
                     {data: 'games', title: 'Игры'},
@@ -196,19 +191,15 @@
                     {data: 'assists', title: 'Передачи'},
                     {data: 'points', title: 'Очки'}
                 ],
-                'order': [[5, 'desc'], [6, 'desc'], [3, 'asc']],
+                'ordering': false,
+                'pageLength': 20,
             });
 
-            topAssists.on('order.dt search.dt', function () {
-                topAssists.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1;
-                });
-            }).draw();
-
-            var goalies = $('#goalies').DataTable({
+           $('#goalies').DataTable({
                 data: {!! json_encode($goalies) !!},
                 columns: [
-                    {'data': 'shootouts', 'title': ''},
+                    {'data': 'place', 'title': ''},
+                    {'data': 'prevPlace', 'title': ''},
                     {'data': 'goalie', 'title': 'Вратарь'},
                     {'data': 'team', 'title': 'Команда'},
                     {'data': 'games', 'title': 'Игры'},
@@ -221,18 +212,12 @@
                     {'data': 'goal_against_per_game', 'title': 'Гол/Игра'},
                     {'data': 'shootouts', 'title': 'Сухие'},
                 ],
+                'ordering': false,
                 'paging': false,
                 'searching': false,
                 'info': false,
-                'order': [[9, 'desc']],
                 'pageLength': -1,
             });
-
-            goalies.on('order.dt search.dt', function () {
-                goalies.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1;
-                });
-            }).draw();
         });
     </script>
 
@@ -240,22 +225,35 @@
         .teams.dataTable tbody tr:nth-child(4) td {
             border-bottom: 3px red solid !important;
         }
-
-        .dataTable tbody td {
-            text-align: right;
+        .dataTable thead th{
+            text-align: center;
+        }
+        .dataTable thead th:nth-child(1),
+        .dataTable thead th:nth-child(2),
+        .dataTable thead th:nth-child(3),
+        .leaders.dataTable thead th:nth-child(4){
+            text-align: left;
         }
 
-        .teams.dataTable tbody td:nth-child(2),
+        .dataTable tbody td {
+            text-align: center;
+        }
+
+        .teams.dataTable tbody td:nth-child(3),
         .leaders.dataTable tbody td:nth-child(2),
-        .leaders.dataTable tbody td:nth-child(3) {
+        .leaders.dataTable tbody td:nth-child(3),
+        .leaders.dataTable tbody td:nth-child(4) {
             text-align: left !important;
+        }
+        .teams.dataTable tbody td:nth-child(3),
+        .leaders.dataTable tbody td:nth-child(3) {
             font-weight: bold;
         }
 
-        #topPoints.dataTable tbody td:nth-child(7),
-        #topGoals.dataTable tbody td:nth-child(5),
-        #topAssists.dataTable tbody td:nth-child(6),
-        #goalies.dataTable tbody td:nth-child(10) {
+        #topPoints.dataTable tbody td:nth-child(8),
+        #topGoals.dataTable tbody td:nth-child(6),
+        #topAssists.dataTable tbody td:nth-child(7),
+        #goalies.dataTable tbody td:nth-child(11) {
             background-color: #cce5ff !important;
             /*color: white !important;*/
         }

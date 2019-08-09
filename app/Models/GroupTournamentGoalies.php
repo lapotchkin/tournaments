@@ -11,13 +11,16 @@ use Illuminate\Support\Facades\DB;
 class GroupTournamentGoalies
 {
     /**
-     * @param $tournament
+     * @param int         $tournamentId
+     * @param string|null $date
      * @return array
      */
-    public static function readGoalies($tournament)
+    public static function readGoalies(int $tournamentId, string $date = null)
     {
+        $dateString = is_null($date) ? '' : "and gGRp.createdAt < '{$date}'";
         $position = DB::select("
             select
+                p.id,
                 concat(p.name, ' (', p.tag, ')') goalie,
                 t.name team,
                 t.id team_id,
@@ -34,12 +37,13 @@ class GroupTournamentGoalies
                     inner join player p on gGRp.player_id = p.id and p.deletedAt is null
                     inner join team t on gGRp.team_id = t.id and t.deletedAt is null
             where gGRp.isGoalie = 1
+                {$dateString}
                 and gGRp.deletedAt is null
             
-            group by p.name, p.tag, t.name, t.id
+            group by p.id, p.name, p.tag, t.name, t.id
             
             order by team, goalie
-        ", [$tournament]);
+        ", [$tournamentId]);
 
         return $position;
     }

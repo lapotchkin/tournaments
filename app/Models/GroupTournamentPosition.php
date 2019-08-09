@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Query\Builder as BuilderAlias;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -11,12 +12,30 @@ use Illuminate\Support\Facades\DB;
 class GroupTournamentPosition
 {
     /**
-     * @param $id
+     * @param int $tournamentId
+     * @return BuilderAlias|mixed
+     */
+    public static function readLastUpdateDate(int $tournamentId)
+    {
+        return DB::table('groupGameRegular')
+            ->select([
+                DB::raw("DATE_FORMAT(updatedAt, '%Y-%m-%d 00:00:00') as date"),
+            ])
+            ->where('tournament_id', '=', $tournamentId)
+            ->whereNull('deletedAt')
+            ->orderByDesc('updatedAt')
+            ->first();
+    }
+
+    /**
+     * @param int         $tournamentId
+     * @param string|null $date
      * @return mixed
      */
-    public static function readPosition($id)
+    public static function readPosition(int $tournamentId, string $date = null)
     {
-        $position = DB::select('
+        $dateString = is_null($date) ? '' : "and updatedAt < '{$date}'";
+        $position = DB::select("
             select t.name as team,
                 t.id as id,
                 (
@@ -62,6 +81,7 @@ class GroupTournamentPosition
                         if(home_score > away_score, home_team_id, away_team_id) winner_team_id
                     from groupGameRegular
                     where tournament_id = ?
+                        {$dateString}
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 0)
                         and deletedAt is null
@@ -74,6 +94,7 @@ class GroupTournamentPosition
                         if(home_score > away_score, home_team_id, away_team_id) winner_team_id
                     from groupGameRegular
                     where tournament_id = ?
+                        {$dateString}
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 1 and isShootout = 0)
                         and deletedAt is null
@@ -86,6 +107,7 @@ class GroupTournamentPosition
                         if(home_score > away_score, home_team_id, away_team_id) winner_team_id
                     from groupGameRegular
                     where tournament_id = ?
+                        {$dateString}
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 1)
                         and deletedAt is null
@@ -98,6 +120,7 @@ class GroupTournamentPosition
                         if(home_score < away_score, home_team_id, away_team_id) loser_team_id
                     from groupGameRegular
                     where tournament_id = ?
+                        {$dateString}
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 1 and isShootout = 0)
                         and deletedAt is null
@@ -110,6 +133,7 @@ class GroupTournamentPosition
                         if(home_score < away_score, home_team_id, away_team_id) loser_team_id
                     from groupGameRegular
                     where tournament_id = ?
+                        {$dateString}
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 1)
                         and deletedAt is null
@@ -122,6 +146,7 @@ class GroupTournamentPosition
                         if(home_score < away_score, home_team_id, away_team_id) loser_team_id
                     from groupGameRegular
                     where tournament_id = ?
+                        {$dateString}
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 0)
                         and deletedAt is null
@@ -148,6 +173,7 @@ class GroupTournamentPosition
                         avg(home_pass_percent) pass_percent
                     from groupGameRegular
                     where tournament_id = ?
+                        {$dateString}
                         and (home_score is not null and away_score is not null)
                         and deletedAt is null
                     group by home_team_id
@@ -173,6 +199,7 @@ class GroupTournamentPosition
                         avg(away_pass_percent) pass_percent
                     from groupGameRegular
                     where tournament_id = ?
+                        {$dateString}
                         and (home_score is not null and away_score is not null)
                         and deletedAt is null
                     group by away_team_id
@@ -187,7 +214,17 @@ class GroupTournamentPosition
                 (home_stats.goals_for + away_stats.goals_for - home_stats.goals_against - away_stats.goals_against) desc,
                 (home_stats.goals_for + away_stats.goals_for) desc,
                 l.lose
-        ', [$id, $id, $id, $id, $id, $id, $id, $id, $id]);
+        ", [
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+        ]);
 
         return $position;
     }
