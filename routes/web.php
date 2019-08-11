@@ -51,7 +51,7 @@ Route::get('/group/{tournamentId}/regular/games', 'Site\GroupRegularController@g
     ->where(['tournamentId' => '[0-9]+'])
     ->name('group.tournament.regular.games');
 Route::get('/group/{tournamentId}/regular/games/{gameId}', 'Site\GroupRegularController@game')
-    ->where(['tournamentId' => '[0-9]+'])
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+'])
     ->name('group.tournament.regular.game');
 Route::get('/group/{tournamentId}/regular/schedule', 'Site\GroupRegularController@schedule')
     ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+'])

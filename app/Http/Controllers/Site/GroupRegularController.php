@@ -79,9 +79,20 @@ class GroupRegularController extends Controller
             abort(404);
         }
 
+        $rounds = [];
+        foreach ($tournament->regularGames as $regularGame) {
+            $rounds[$regularGame->round][$regularGame->homeTeam->division][] = $regularGame;
+        }
+
         return view('site.group.regular.games', [
             'tournament' => $tournament,
+            'rounds'     => $rounds,
         ]);
+    }
+
+    public function game(Request $request, int $tournamentId, int $gameId)
+    {
+        return view('site.group.regular.game');
     }
 
     /**
