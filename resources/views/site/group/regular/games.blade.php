@@ -23,7 +23,7 @@
             @foreach($divisions as $division => $games)
                 <div class="col-12">
                     @if (count($divisions) > 1)
-                        <h4>Группа {{ $division }}</h4>
+                        <h4>Группа {{ TextUtils::divisionLetter($division) }}</h4>
                     @endif
                     <table class="table table-sm">
                         <thead>
@@ -34,7 +34,7 @@
                             <th style="width: 1em;"></th>
                             <th style="width: 3em;"></th>
                             <th class="text-left">Гости</th>
-                            <th style="width: 3em;"></th>
+                            <th style="width: 8em;"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -69,7 +69,7 @@
                                 <td>
                                     <a class="btn btn-sm btn-primary"
                                        href="{{ route('group.tournament.regular.game', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}">
-                                        <i class="fas fa-gamepad"></i>
+                                        <i class="fas fa-gamepad"></i> протокол
                                     </a>
                                 </td>
                             </tr>

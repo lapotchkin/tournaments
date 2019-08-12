@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property boolean          $isGoalie
  * @property string           $createdAt
  * @property string           $deletedAt
- * @property GroupGameRegular $groupGameRegular
+ * @property GroupGameRegular $regularGame
  * @property Player           $player
  * @property Team             $team
  */
@@ -44,7 +44,7 @@ class GroupGameRegularPlayer extends Model
     /**
      * @return BelongsTo
      */
-    public function groupGameRegular()
+    public function regularGame()
     {
         return $this->belongsTo('App\Models\GroupGameRegular', 'game_id');
     }

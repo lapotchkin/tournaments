@@ -105,3 +105,6 @@ Route::post('/ajax/group/{tournamentId}/team/{teamId}', 'Ajax\GroupController@ed
     ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+']);
 Route::delete('/ajax/group/{tournamentId}/team/{teamId}', 'Ajax\GroupController@deleteTeam')
     ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+']);
+
+Route::post('/ajax/group/{tournamentId}/regular/games/{gameId}', 'Ajax\GroupController@editRegularGame')
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);

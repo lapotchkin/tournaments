@@ -60,6 +60,17 @@ Breadcrumbs::for('group.tournament.regular.games', function ($trail, $tournament
         route('group.tournament.regular.games', ['tournamentId' => $tournament->id])
     );
 });
+//Group > Tournament > Regular > Games > Game
+Breadcrumbs::for('group.tournament.regular.game', function ($trail, $game) {
+    $trail->parent('group.tournament.regular.games', $game->tournament);
+    $trail->push(
+        'Тур ' . $game->round . ': ' . $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name,
+        route(
+            'group.tournament.regular.game',
+            ['tournamentId' => $game->tournament->id, 'gameId' => $game->id]
+        )
+    );
+});
 //Group > Tournament > Regular > VK
 Breadcrumbs::for('group.tournament.regular.schedule', function ($trail, $tournament) {
     $trail->parent('group.tournament.regular', $tournament);

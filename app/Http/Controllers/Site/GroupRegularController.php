@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Models\GroupGameRegular;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentGoalies;
 use App\Models\GroupTournamentLeaders;
@@ -12,6 +13,7 @@ use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 /**
@@ -90,9 +92,38 @@ class GroupRegularController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param int     $tournamentId
+     * @param int     $gameId
+     * @return Factory|View
+     */
     public function game(Request $request, int $tournamentId, int $gameId)
     {
-        return view('site.group.regular.game');
+        /** @var GroupGameRegular $game */
+        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        foreach ($game->protocols as $protocol) {
+            if ($protocol->team_id === $game->home_team_id) {
+                $game->homeProtocols[] = $protocol;
+                if ($protocol->isGoalie) {
+                    $game->homeGoalie = $protocol;
+                }
+            } else {
+                $game->awayProtocols[] = $protocol;
+                if ($protocol->isGoalie) {
+                    $game->awayGoalie = $protocol;
+                }
+            }
+        }
+
+        return view(Auth::check() ? 'site.group.game_form' : 'site.group.game_protocol', [
+            'game' => $game,
+        ]);
     }
 
     /**

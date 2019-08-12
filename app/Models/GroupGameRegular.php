@@ -46,7 +46,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property GroupTournamentTeam      $homeTeam
  * @property GroupTournamentTeam      $awayTeam
  * @property GroupTournament          $tournament
- * @property GroupGameRegularPlayer[] $gamePlayers
+ * @property GroupGameRegularPlayer[] $protocols
  */
 class GroupGameRegular extends Model
 {
@@ -61,6 +61,23 @@ class GroupGameRegular extends Model
      * @var string
      */
     protected $table = 'groupGameRegular';
+
+    /**
+     * @var GroupGameRegularPlayer[]
+     */
+    public $homeProtocols = [];
+    /**
+     * @var GroupGameRegularPlayer[]
+     */
+    public $awayProtocols = [];
+    /**
+     * @var null|GroupGameRegularPlayer
+     */
+    public $homeGoalie = null;
+    /**
+     * @var null|GroupGameRegularPlayer
+     */
+    public $awayGoalie = null;
 
     /**
      * @var array
@@ -127,7 +144,7 @@ class GroupGameRegular extends Model
     /**
      * @return HasMany
      */
-    public function gamePlayers()
+    public function protocols()
     {
         return $this->hasMany('App\Models\GroupGameRegularPlayer', 'game_id');
     }
