@@ -342,7 +342,7 @@ class GroupRegularController extends Controller
             }
             $prev = [];
             foreach ($previousGoalies as $goalie) {
-                if ($goalie->games / $previousGames[$goalie->team_id] <= 0.25) {
+                if (!$previousGames[$goalie->team_id] || $goalie->games / $previousGames[$goalie->team_id] <= 0.25) {
                     continue;
                 }
                 $prev[] = $goalie;
