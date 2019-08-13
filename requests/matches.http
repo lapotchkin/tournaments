@@ -1,0 +1,16 @@
+### Xbox One Chelyaba Eagles
+GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/xboxone/clubs/348482/matches
+ ?filters=sum,pretty
+ &match_type=club_private
+ &matches_returned=1
+Accept: application/json
+#2773344550302
+
+### PS4 HC Virtuoso
+GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/ps4/clubs/295491/matches
+ ?filters=sum,pretty
+ &match_type=club_private
+ &matches_returned=10
+Accept: application/json
+
+###

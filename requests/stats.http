@@ -1,0 +1,9 @@
+### Xbox One Chelyaba Egles
+GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/xboxone/clubs/348482/stats
+Accept: application/json
+
+### PS4 HC Virtuoso
+GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/ps4/clubs/295491/stats
+Accept: application/json
+
+###
