@@ -1,28 +1,28 @@
 {
     "raw": {
         "3385948900016": {
-            "matchId": "3385948900016", //ID_игры
-            "timestamp": 1565642060, //Время_игры
+            "matchId": "3385948900016",
+            "timestamp": 1565642060,
             "timeAgo": "22 hours ago",
-            "clubs": { //Команды
+            "clubs": {
                 "295491": {
                     "cNhlOnlineGameType": "5",
                     "losses": "0",
-                    "memberString": "6 \/ 6", //Формат_игры
-                    "ppg": "1", //Реализовано_попыток_в_большинстве
-                    "ppo": "2", //Попыток_реализации_большинства
+                    "memberString": "6 \/ 6",
+                    "ppg": "1",
+                    "ppo": "2",
                     "result": "6",
-                    "score": "2", //Забито_голов
-                    "scoreString": "2 - 3", //Счёт_матча
-                    "teamSide": "1", //0_—_гости,_1_—_хозяева
-                    "toa": "268", //Время_в_большинстве
+                    "score": "2",
+                    "scoreString": "2 - 3",
+                    "teamSide": "1",
+                    "toa": "268",
                     "winnerByDnf": "0",
                     "winnerByGoalieDnf": "0",
-                    "goalsAgainst": 3, //Пропущено_голов
-                    "goals": 2, //Забито_голов
+                    "goalsAgainst": 3,
+                    "goals": 2,
                     "details": {
-                        "name": "HC VIRTUOSO", //Название_команды
-                        "clubId": 295491, //ID_клуба_в_EA_NHL
+                        "name": "HC VIRTUOSO",
+                        "clubId": 295491,
                         "regionId": 3,
                         "teamId": 5128,
                         "customKit": {
@@ -60,10 +60,10 @@
                     }
                 }
             },
-            "players": { //Игроки
+            "players": {
                 "532775": {
                     "l77CY6Jxj5ghZP5kC7Hk4Q!!:QzkyxjtG5EPrGlgevxKgIg!!": {
-                        "class": "2", //Класс
+                        "class": "2",
                         "glbrksavepct": "0.00",
                         "glbrksaves": "0",
                         "glbrkshots": "0",
@@ -80,9 +80,9 @@
                         "glshots": "0",
                         "player_dnf": "0",
                         "playerLevel": "199",
-                        "playername": "Hair1k", //Тэг
+                        "playername": "Hair1k",
                         "pNhlOnlineGameType": "5",
-                        "position": "4", //0_—_В,_1_-_ПЗ,
+                        "position": "4",
                         "posSorted": "5",
                         "ratingDefense": "80.00",
                         "ratingOffense": "95.00",

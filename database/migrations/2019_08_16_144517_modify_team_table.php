@@ -4,7 +4,10 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddEaIds extends Migration
+/**
+ * Class AddEaIds
+ */
+class ModifyTeamTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +16,11 @@ class AddEaIds extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('team', 'ea_id')) {
+        if (Schema::hasColumn('team', 'short_name')) {
             return;
         }
 
         Schema::table('team', function (Blueprint $table) {
-            $table->integer('ea_id')->nullable()->comment('ID команды в EA');
             $table->string('short_name', 3)->nullable()->comment('Краткое название команды');
         });
     }
@@ -31,7 +33,7 @@ class AddEaIds extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['ea_id', 'short_name']);
+            $table->dropColumn(['short_name']);
         });
     }
 }
