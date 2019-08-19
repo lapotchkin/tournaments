@@ -20,7 +20,7 @@ class CreateGroupGameRegularTable extends Migration
         Schema::create('groupGameRegular', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
-            $table->collation = 'utf8_unicode_ci';
+            $table->collation = 'utf8_general_ci';
 
             $table->integerIncrements('id');
             $table->integer('tournament_id')->comment('ID турнира');
@@ -57,6 +57,9 @@ class CreateGroupGameRegularTable extends Migration
             $table->dateTime('updatedAt')->nullable();
             $table->softDeletes('deletedAt');
 
+        });
+
+        Schema::table('club', function (Blueprint $table) {
             $table->foreign('tournament_id')->references('id')->on('groupTournament');
             $table->foreign('home_team_id')->references('id')->on('team');
             $table->foreign('away_team_id')->references('id')->on('team');
@@ -70,6 +73,11 @@ class CreateGroupGameRegularTable extends Migration
      */
     public function down()
     {
+        Schema::table('app_team', function (Blueprint $table) {
+            $table->dropForeign(['tournament_id']);
+            $table->dropForeign(['home_team_id']);
+            $table->dropForeign(['away_team_id']);
+        });
         Schema::dropIfExists('groupGameRegular');
     }
 }

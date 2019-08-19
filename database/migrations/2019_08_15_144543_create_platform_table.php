@@ -24,7 +24,7 @@ class CreatePlatformTable extends Migration
         Schema::create('platform', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
-            $table->collation = 'utf8_unicode_ci';
+            $table->collation = 'utf8_general_ci';
 
             $table->string('id', 20)->comment('ID');
             $table->string('name', 100)->comment('Название');

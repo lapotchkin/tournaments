@@ -24,7 +24,7 @@ class CreateAppTable extends Migration
         Schema::create('app', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
-            $table->collation = 'utf8_unicode_ci';
+            $table->collation = 'utf8_general_ci';
 
             $table->string('id', 20)->comment('ID');
             $table->string('title', 255)->comment('Название');

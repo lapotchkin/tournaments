@@ -20,7 +20,7 @@ class CreatePlayerTable extends Migration
         Schema::create('player', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
-            $table->collation = 'utf8_unicode_ci';
+            $table->collation = 'utf8_general_ci';
 
             $table->integerIncrements('id')->comment('ID');
             $table->string('tag', 50)->comment('Тэг');
@@ -34,8 +34,11 @@ class CreatePlayerTable extends Migration
             $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
             $table->softDeletes('deletedAt');
 
-            $table->foreign('platform_id')->references('id')->on('platform');
             $table->unique(['tag', 'platform_id']);
+        });
+
+        Schema::table('club', function (Blueprint $table) {
+            $table->foreign('platform_id')->references('id')->on('platform');
         });
     }
 
@@ -46,6 +49,9 @@ class CreatePlayerTable extends Migration
      */
     public function down()
     {
+        Schema::table('app_team', function (Blueprint $table) {
+            $table->dropForeign(['platform_id']);
+        });
         Schema::dropIfExists('player');
     }
 }

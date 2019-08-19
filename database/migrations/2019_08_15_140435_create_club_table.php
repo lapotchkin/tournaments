@@ -24,7 +24,7 @@ class CreateClubTable extends Migration
         Schema::create('club', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
-            $table->collation = 'utf8_unicode_ci';
+            $table->collation = 'utf8_general_ci';
 
             $table->string('id', 20)->comment('ID');
             $table->string('league_id', 20)->comment('ID лиги');
@@ -33,6 +33,9 @@ class CreateClubTable extends Migration
             $table->softDeletes('deletedAt');
 
             $table->primary('id');
+        });
+
+        Schema::table('club', function (Blueprint $table) {
             $table->foreign('league_id')->references('id')->on('league');
         });
 
@@ -99,6 +102,9 @@ class CreateClubTable extends Migration
      */
     public function down()
     {
+        Schema::table('club', function (Blueprint $table) {
+            $table->dropForeign(['league_id']);
+        });
         Schema::dropIfExists('club');
     }
 }

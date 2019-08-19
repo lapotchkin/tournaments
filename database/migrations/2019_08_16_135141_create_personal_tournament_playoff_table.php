@@ -20,7 +20,7 @@ class CreatePersonalTournamentPlayoffTable extends Migration
         Schema::create('personalTournamentPlayoff', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
-            $table->collation = 'utf8_unicode_ci';
+            $table->collation = 'utf8_general_ci';
 
             $table->integerIncrements('id');
             $table->integer('tournament_id')->comment('ID турнира');
@@ -31,10 +31,13 @@ class CreatePersonalTournamentPlayoffTable extends Migration
             $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
             $table->softDeletes('deletedAt');
 
+            $table->unique(['tournament_id', 'round', 'pair']);
+        });
+
+        Schema::table('club', function (Blueprint $table) {
             $table->foreign('tournament_id')->references('id')->on('personalTournament');
             $table->foreign('player_one_id')->references('id')->on('player');
             $table->foreign('player_two_id')->references('id')->on('player');
-            $table->unique(['tournament_id', 'round', 'pair']);
         });
     }
 
@@ -45,6 +48,11 @@ class CreatePersonalTournamentPlayoffTable extends Migration
      */
     public function down()
     {
+        Schema::table('app_team', function (Blueprint $table) {
+            $table->dropForeign(['tournament_id']);
+            $table->dropForeign(['player_one_id']);
+            $table->dropForeign(['player_two_id']);
+        });
         Schema::dropIfExists('personalTournamentPlayoff');
     }
 }

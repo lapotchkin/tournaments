@@ -20,7 +20,7 @@ class CreateGroupTournamentTeamTable extends Migration
         Schema::create('groupTournament_team', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
-            $table->collation = 'utf8_unicode_ci';
+            $table->collation = 'utf8_general_ci';
 
             $table->integer('tournament_id')->comment('ID турнира');
             $table->integer('team_id')->comment('ID команды');
@@ -29,6 +29,9 @@ class CreateGroupTournamentTeamTable extends Migration
             $table->softDeletes('deletedAt');
 
             $table->primary(['tournament_id', 'team_id']);
+        });
+
+        Schema::table('club', function (Blueprint $table) {
             $table->foreign('tournament_id')->references('id')->on('groupTournament');
             $table->foreign('team_id')->references('id')->on('team');
         });
@@ -41,6 +44,10 @@ class CreateGroupTournamentTeamTable extends Migration
      */
     public function down()
     {
+        Schema::table('app_team', function (Blueprint $table) {
+            $table->dropForeign(['tournament_id']);
+            $table->dropForeign(['team_id']);
+        });
         Schema::dropIfExists('groupTournament_team');
     }
 }
