@@ -1,7 +1,5 @@
 <?php
 
-use App\Utils\TextUtils;
-
 return [
 
     /*

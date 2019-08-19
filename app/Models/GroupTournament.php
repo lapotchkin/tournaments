@@ -2,29 +2,51 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Carbon;
 
 /**
- * Class GroupTournament
- * @package App\Models
- * @property int                      $id
- * @property string                   $platform_id
- * @property string                   $app_id
- * @property string                   $title
- * @property boolean                  $playoff_rounds
- * @property boolean                  $min_players
- * @property string                   $createdAt
- * @property string                   $deletedAt
- * @property App                      $app
- * @property Platform                 $platform
- * @property GroupGameRegular[]       $regularGames
- * @property GroupTournamentPlayoff[] $tournamentPlayoffs
- * @property GroupTournamentTeam[]    $tournamentTeams
- * @property Team[]                   $teams
+ * App\Models\GroupTournament
+ *
+ * @property int                                      $id             ID
+ * @property string                                   $platform_id    ID игровой платформы
+ * @property string                                   $app_id         ID игры
+ * @property string                                   $title          Название
+ * @property int|null                                 $playoff_rounds Количество раундов плейоф
+ * @property int|null                                 $min_players    Минимальное количество игроков в команде
+ * @property Carbon                                   $createdAt      Дата создания
+ * @property Carbon|null                              $deletedAt      Дата удаления
+ * @property-read App                                 $app
+ * @property-read Platform                            $platform
+ * @property-read Collection|GroupGameRegular[]       $regularGames
+ * @property-read Collection|Team[]                   $teams
+ * @property-read Collection|GroupTournamentPlayoff[] $tournamentPlayoffs
+ * @property-read Collection|GroupTournamentTeam[]    $tournamentTeams
+ * @method static bool|null forceDelete()
+ * @method static EloquentBuilder|GroupTournament newModelQuery()
+ * @method static EloquentBuilder|GroupTournament newQuery()
+ * @method static QueryBuilder|GroupTournament onlyTrashed()
+ * @method static EloquentBuilder|GroupTournament query()
+ * @method static bool|null restore()
+ * @method static EloquentBuilder|GroupTournament whereAppId($value)
+ * @method static EloquentBuilder|GroupTournament whereCreatedAt($value)
+ * @method static EloquentBuilder|GroupTournament whereDeletedAt($value)
+ * @method static EloquentBuilder|GroupTournament whereId($value)
+ * @method static EloquentBuilder|GroupTournament whereMinPlayers($value)
+ * @method static EloquentBuilder|GroupTournament wherePlatformId($value)
+ * @method static EloquentBuilder|GroupTournament wherePlayoffRounds($value)
+ * @method static EloquentBuilder|GroupTournament whereTitle($value)
+ * @method static QueryBuilder|GroupTournament withTrashed()
+ * @method static QueryBuilder|GroupTournament withoutTrashed()
+ * @mixin Eloquent
  */
 class GroupTournament extends Model
 {

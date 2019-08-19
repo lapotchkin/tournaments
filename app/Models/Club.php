@@ -2,21 +2,40 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Carbon;
 
 /**
- * Class Club
- * @package App\Models
- * @property string                     $id
- * @property string                     $league_id
- * @property string                     $title
- * @property string                     $createdAt
- * @property string                     $deletedAt
- * @property League                     $league
- * @property PersonalTournamentPlayer[] $personalTournamentPlayers
+ * App\Models\Club
+ *
+ * @property int                                        $id        ID
+ * @property string                                     $league_id ID лиги
+ * @property string                                     $title     Название
+ * @property Carbon                                     $createdAt Дата создания
+ * @property Carbon|null                                $deletedAt Дата удаления
+ * @property-read League                                $league
+ * @property-read Collection|PersonalTournamentPlayer[] $tournamentPlayers
+ * @method static bool|null forceDelete()
+ * @method static EloquentBuilder|Club newModelQuery()
+ * @method static EloquentBuilder|Club newQuery()
+ * @method static QueryBuilder|Club onlyTrashed()
+ * @method static EloquentBuilder|Club query()
+ * @method static bool|null restore()
+ * @method static EloquentBuilder|Club whereCreatedAt($value)
+ * @method static EloquentBuilder|Club whereDeletedAt($value)
+ * @method static EloquentBuilder|Club whereId($value)
+ * @method static EloquentBuilder|Club whereLeagueId($value)
+ * @method static EloquentBuilder|Club whereTitle($value)
+ * @method static QueryBuilder|Club withTrashed()
+ * @method static QueryBuilder|Club withoutTrashed()
+ * @mixin Eloquent
  */
 class Club extends Model
 {
@@ -48,7 +67,7 @@ class Club extends Model
     /**
      * @return HasMany
      */
-    public function personalTournamentPlayers()
+    public function tournamentPlayers()
     {
         return $this->hasMany('App\Models\PersonalTournamentPlayer');
     }

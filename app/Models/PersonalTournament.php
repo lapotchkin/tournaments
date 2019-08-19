@@ -2,27 +2,49 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Carbon;
 
 /**
- * Class PersonalTournament
- * @package App\Models
- * @property int                        $id
- * @property string                     $platform_id
- * @property string                     $app_id
- * @property string                     $league_id
- * @property string                     $title
- * @property boolean                    $playoff_rounds
- * @property string                     $createdAt
- * @property string                     $deletedAt
- * @property App                        $app
- * @property League                     $league
- * @property Platform                   $platform
- * @property PersonalGameRegular[]      $personalGameRegulars
- * @property PersonalTournamentPlayer[] $personalTournamentPlayers
+ * App\Models\PersonalTournament
+ *
+ * @property int                                        $id             ID
+ * @property string                                     $platform_id    ID платформы
+ * @property string                                     $app_id         ID игры
+ * @property string|null                                $league_id      ID лиги
+ * @property string                                     $title          Название
+ * @property int|null                                   $playoff_rounds Количество раундов плейоф
+ * @property Carbon                                     $createdAt      Дата создания
+ * @property Carbon|null                                $deletedAt      Дата удаления
+ * @property-read App                                   $app
+ * @property-read League|null                           $league
+ * @property-read Collection|PersonalGameRegular[]      $personalGameRegulars
+ * @property-read Collection|PersonalTournamentPlayer[] $personalTournamentPlayers
+ * @property-read Platform                              $platform
+ * @method static bool|null forceDelete()
+ * @method static EloquentBuilder|PersonalTournament newModelQuery()
+ * @method static EloquentBuilder|PersonalTournament newQuery()
+ * @method static QueryBuilder|PersonalTournament onlyTrashed()
+ * @method static EloquentBuilder|PersonalTournament query()
+ * @method static bool|null restore()
+ * @method static EloquentBuilder|PersonalTournament whereAppId($value)
+ * @method static EloquentBuilder|PersonalTournament whereCreatedAt($value)
+ * @method static EloquentBuilder|PersonalTournament whereDeletedAt($value)
+ * @method static EloquentBuilder|PersonalTournament whereId($value)
+ * @method static EloquentBuilder|PersonalTournament whereLeagueId($value)
+ * @method static EloquentBuilder|PersonalTournament wherePlatformId($value)
+ * @method static EloquentBuilder|PersonalTournament wherePlayoffRounds($value)
+ * @method static EloquentBuilder|PersonalTournament whereTitle($value)
+ * @method static QueryBuilder|PersonalTournament withTrashed()
+ * @method static QueryBuilder|PersonalTournament withoutTrashed()
+ * @mixin Eloquent
  */
 class PersonalTournament extends Model
 {

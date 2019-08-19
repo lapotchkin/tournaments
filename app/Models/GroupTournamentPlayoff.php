@@ -2,26 +2,48 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Carbon;
 
 /**
- * Class GroupTournamentPlayoff
- * @package App\Models
- * @property int                $id
- * @property int                $tournament_id
- * @property int                $team_one_id
- * @property int                $team_two_id
- * @property boolean            $round
- * @property boolean            $pair
- * @property string             $createdAt
- * @property string             $deletedAt
- * @property GroupTournament    $groupTournament
- * @property Team               $teamOne
- * @property Team               $teamTwo
- * @property GroupGamePlayoff[] $gamePlayoffs
+ * App\Models\GroupTournamentPlayoff
+ *
+ * @property int                                $id ID
+ * @property int                                $tournament_id ID турнира
+ * @property int                                $round Круг
+ * @property int                                $pair Пара
+ * @property int|null                           $team_one_id ID первой команды
+ * @property int|null                           $team_two_id ID второй команды
+ * @property Carbon                             $createdAt Дата создания
+ * @property Carbon|null                        $deletedAt Дата удаления
+ * @property-read Collection|GroupGamePlayoff[] $gamePlayoffs
+ * @property-read GroupTournament               $groupTournament
+ * @property-read Team|null                     $teamOne
+ * @property-read Team|null                     $teamTwo
+ * @method static bool|null forceDelete()
+ * @method static EloquentBuilder|GroupTournamentPlayoff newModelQuery()
+ * @method static EloquentBuilder|GroupTournamentPlayoff newQuery()
+ * @method static QueryBuilder|GroupTournamentPlayoff onlyTrashed()
+ * @method static EloquentBuilder|GroupTournamentPlayoff query()
+ * @method static bool|null restore()
+ * @method static EloquentBuilder|GroupTournamentPlayoff whereCreatedAt($value)
+ * @method static EloquentBuilder|GroupTournamentPlayoff whereDeletedAt($value)
+ * @method static EloquentBuilder|GroupTournamentPlayoff whereId($value)
+ * @method static EloquentBuilder|GroupTournamentPlayoff wherePair($value)
+ * @method static EloquentBuilder|GroupTournamentPlayoff whereRound($value)
+ * @method static EloquentBuilder|GroupTournamentPlayoff whereTeamOneId($value)
+ * @method static EloquentBuilder|GroupTournamentPlayoff whereTeamTwoId($value)
+ * @method static EloquentBuilder|GroupTournamentPlayoff whereTournamentId($value)
+ * @method static QueryBuilder|GroupTournamentPlayoff withTrashed()
+ * @method static QueryBuilder|GroupTournamentPlayoff withoutTrashed()
+ * @mixin Eloquent
  */
 class GroupTournamentPlayoff extends Model
 {

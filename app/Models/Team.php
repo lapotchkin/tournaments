@@ -2,27 +2,48 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Carbon;
 
 /**
- * Class Team
- * @package App\Models
- * @property int                      $id
- * @property string                   $platform_id
- * @property string                   $name
- * @property string                   $createdAt
- * @property string                   $deletedAt
- * @property Platform                 $platform
- * @property GroupGamePlayoff[]       $gamePlayoffs
- * @property GroupGamePlayoffPlayer[] $gamePlayoffPlayers
- * @property GroupGameRegular[]       $gameRegulars
- * @property GroupGameRegularPlayer[] $gameRegularPlayers
- * @property GroupTournamentPlayoff[] $tournamentPlayoffs
- * @property GroupTournamentTeam[]    $tournamentTeams
- * @property TeamPlayer[]             $teamPlayers
+ * App\Models\Team
+ *
+ * @property int                                      $id          ID
+ * @property string|null                              $platform_id ID платформы
+ * @property string                                   $name        Название
+ * @property Carbon                                   $createdAt   Дата создания
+ * @property Carbon|null                              $deletedAt   Дата удаления
+ * @property string|null                              $short_name  Краткое название команды
+ * @property-read Collection|GroupGamePlayoffPlayer[] $gamePlayoffPlayers
+ * @property-read Collection|GroupGamePlayoff[]       $gamePlayoffs
+ * @property-read Collection|GroupGameRegularPlayer[] $gameRegularPlayers
+ * @property-read Collection|GroupGameRegular[]       $gameRegulars
+ * @property-read Platform|null                       $platform
+ * @property-read Collection|TeamPlayer[]             $teamPlayers
+ * @property-read Collection|GroupTournamentPlayoff[] $tournamentPlayoffs
+ * @property-read Collection|GroupTournamentTeam[]    $tournamentTeams
+ * @method static bool|null forceDelete()
+ * @method static EloquentBuilder|Team newModelQuery()
+ * @method static EloquentBuilder|Team newQuery()
+ * @method static QueryBuilder|Team onlyTrashed()
+ * @method static EloquentBuilder|Team query()
+ * @method static bool|null restore()
+ * @method static EloquentBuilder|Team whereCreatedAt($value)
+ * @method static EloquentBuilder|Team whereDeletedAt($value)
+ * @method static EloquentBuilder|Team whereId($value)
+ * @method static EloquentBuilder|Team whereName($value)
+ * @method static EloquentBuilder|Team wherePlatformId($value)
+ * @method static EloquentBuilder|Team whereShortName($value)
+ * @method static QueryBuilder|Team withTrashed()
+ * @method static QueryBuilder|Team withoutTrashed()
+ * @mixin Eloquent
  */
 class Team extends Model
 {

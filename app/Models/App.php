@@ -2,19 +2,37 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Carbon;
 
 /**
- * Class App
- * @package App\Models
- * @property string               $id
- * @property string               $title
- * @property string               $createdAt
- * @property string               $deletedAt
- * @property GroupTournament[]    $groupTournaments
- * @property PersonalTournament[] $personalTournaments
+ * App\Models\App
+ *
+ * @property string                               $id        ID
+ * @property string                               $title     Игра
+ * @property Carbon                               $createdAt Дата создания
+ * @property Carbon|null                          $deletedAt Дата удаления
+ * @property-read Collection|GroupTournament[]    $groupTournaments
+ * @property-read Collection|PersonalTournament[] $personalTournaments
+ * @method static bool|null forceDelete()
+ * @method static EloquentBuilder|App newModelQuery()
+ * @method static EloquentBuilder|App newQuery()
+ * @method static QueryBuilder|App onlyTrashed()
+ * @method static EloquentBuilder|App query()
+ * @method static bool|null restore()
+ * @method static EloquentBuilder|App whereCreatedAt($value)
+ * @method static EloquentBuilder|App whereDeletedAt($value)
+ * @method static EloquentBuilder|App whereId($value)
+ * @method static EloquentBuilder|App whereTitle($value)
+ * @method static QueryBuilder|App withTrashed()
+ * @method static QueryBuilder|App withoutTrashed()
+ * @mixin Eloquent
  */
 class App extends Model
 {

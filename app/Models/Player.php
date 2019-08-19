@@ -2,34 +2,61 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 /**
- * Class Player
- * @package App\Models
- * @property int                         $id
- * @property string                      $platform_id
- * @property string                      $tag
- * @property string                      $name
- * @property string                      $vk
- * @property string                      $city
- * @property int                         $role
- * @property float                       $lat
- * @property float                       $lon
- * @property string                      $createdAt
- * @property string                      $deletedAt
- * @property Platform                    $platform
- * @property GroupGamePlayoffPlayer[]    $gamePlayoffPlayers
- * @property GroupGameRegularPlayer[]    $gameRegularPlayers
- * @property PersonalGamePlayoff[]       $personalGamePlayoffs
- * @property PersonalGameRegular[]       $personalGameRegulars
- * @property PersonalTournamentPlayoff[] $personalTournamentPlayoffs
- * @property PersonalTournamentPlayer[]  $personalTournamentPlayers
- * @property TeamPlayer[]                $teamPlayers
+ * App\Models\Player
+ *
+ * @property int                                                        $id          ID
+ * @property string                                                     $tag         Игровой тэг
+ * @property string                                                     $name        Имя
+ * @property int|null                                                   $role        Роль пользователя в системе
+ * @property string|null                                                $vk          VK
+ * @property string|null                                                $city        Город
+ * @property float|null                                                 $lat         Широта
+ * @property float|null                                                 $lon         Долгота
+ * @property string|null                                                $platform_id ID платфоррмы
+ * @property Carbon                                                     $createdAt   Дата создания
+ * @property Carbon|null                                                $deletedAt   Дата удаления
+ * @property-read Collection|GroupGamePlayoffPlayer[]                   $gamePlayoffPlayers
+ * @property-read Collection|GroupGameRegularPlayer[]                   $gameRegularPlayers
+ * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
+ * @property-read Collection|PersonalGamePlayoff[]                      $personalGamePlayoffs
+ * @property-read Collection|PersonalGameRegular[]                      $personalGameRegulars
+ * @property-read Collection|PersonalTournamentPlayer[]                 $personalTournamentPlayers
+ * @property-read Collection|PersonalTournamentPlayoff[]                $personalTournamentPlayoffs
+ * @property-read Platform|null                                         $platform
+ * @property-read Collection|TeamPlayer[]                               $teamPlayers
+ * @method static bool|null forceDelete()
+ * @method static EloquentBuilder|Player newModelQuery()
+ * @method static EloquentBuilder|Player newQuery()
+ * @method static QueryBuilder|Player onlyTrashed()
+ * @method static EloquentBuilder|Player query()
+ * @method static bool|null restore()
+ * @method static EloquentBuilder|Player whereCity($value)
+ * @method static EloquentBuilder|Player whereCreatedAt($value)
+ * @method static EloquentBuilder|Player whereDeletedAt($value)
+ * @method static EloquentBuilder|Player whereId($value)
+ * @method static EloquentBuilder|Player whereLat($value)
+ * @method static EloquentBuilder|Player whereLon($value)
+ * @method static EloquentBuilder|Player whereName($value)
+ * @method static EloquentBuilder|Player wherePlatformId($value)
+ * @method static EloquentBuilder|Player whereRole($value)
+ * @method static EloquentBuilder|Player whereTag($value)
+ * @method static EloquentBuilder|Player whereVk($value)
+ * @method static QueryBuilder|Player withTrashed()
+ * @method static QueryBuilder|Player withoutTrashed()
+ * @mixin Eloquent
  */
 class Player extends Authenticatable
 {

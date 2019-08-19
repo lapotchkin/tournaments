@@ -2,48 +2,96 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Carbon;
 
 /**
- * Class GroupGamePlayoff
- * @package App\Models
- * @property int                      $id
- * @property int                      $playoff_pair_id
- * @property int                      $home_team_id
- * @property int                      $away_team_id
- * @property boolean                  $home_score
- * @property boolean                  $away_score
- * @property boolean                  $home_shot
- * @property boolean                  $away_shot
- * @property boolean                  $home_hit
- * @property boolean                  $away_hit
- * @property string                   $home_attack_time
- * @property string                   $away_attack_time
- * @property float                    $home_pass_percent
- * @property float                    $away_pass_percent
- * @property boolean                  $home_faceoff
- * @property boolean                  $away_faceoff
- * @property string                   $home_penalty_time
- * @property string                   $away_penalty_time
- * @property boolean                  $home_penalty_total
- * @property boolean                  $away_penalty_total
- * @property boolean                  $home_penalty_success
- * @property boolean                  $away_penalty_success
- * @property string                   $home_powerplay_time
- * @property string                   $away_powerplay_time
- * @property boolean                  $home_shorthanded_goal
- * @property boolean                  $away_shorthanded_goal
- * @property boolean                  $isTechnicalDefeat
- * @property string                   $playedAt
- * @property string                   $createdAt
- * @property string                   $deletedAt
- * @property GroupTournamentPlayoff   $groupTournamentPlayoff
- * @property Team                     $homeTeam
- * @property Team                     $awayTeam
- * @property GroupGamePlayoffPlayer[] $gamePlayoffPlayers
+ * App\Models\GroupGamePlayoff
+ *
+ * @property int                                      $id                    ID
+ * @property int                                      $playoff_pair_id       Пара в плейоф
+ * @property int                                      $home_team_id          ID команды хозяеа
+ * @property int                                      $away_team_id          ID команды гостей
+ * @property int|null                                 $home_score            Забили гости
+ * @property int|null                                 $away_score            Забили хозяева
+ * @property int|null                                 $home_shot             Хозяева броски
+ * @property int|null                                 $away_shot             Гости броски
+ * @property int|null                                 $home_hit              Хозяева силовые
+ * @property int|null                                 $away_hit              Гости силовые
+ * @property string|null                              $home_attack_time      Хозяева время в атаке
+ * @property string|null                              $away_attack_time      Гости время в атаке
+ * @property float|null                               $home_pass_percent     Хозяева процент пасов
+ * @property float|null                               $away_pass_percent     Гости процент пасов
+ * @property int|null                                 $home_faceoff          Хозяева вбрасывания
+ * @property int|null                                 $away_faceoff          Гости вбрасывания
+ * @property string|null                              $home_penalty_time     Хозяева штрафные минуты
+ * @property string|null                              $away_penalty_time     Гости штрафные минуты
+ * @property int|null                                 $home_penalty_total    Хозяева всего большинство
+ * @property int|null                                 $away_penalty_total    Гости всего большинство
+ * @property int|null                                 $home_penalty_success  Хозяева реализовано большинство
+ * @property int|null                                 $away_penalty_success  Гости реализовано большинство
+ * @property string|null                              $home_powerplay_time   Хозяева время в большинстве
+ * @property string|null                              $away_powerplay_time   Гости время в большинстве
+ * @property int|null                                 $home_shorthanded_goal Хозяева голы в меньшинстве
+ * @property int|null                                 $away_shorthanded_goal Гости голы в меньшинстве
+ * @property int                                      $isTechnicalDefeat     Техническое поражение
+ * @property string|null                              $playedAt              Дата игры
+ * @property Carbon                                   $createdAt             Дата создания
+ * @property Carbon|null                              $deletedAt             Дата удаления
+ * @property string|null                              $updatedAt             Дата редактирования
+ * @property string|null                              $match_id              ID матча в EASHL
+ * @property-read Team                                $awayTeam
+ * @property-read Collection|GroupGamePlayoffPlayer[] $gamePlayoffPlayers
+ * @property-read GroupTournamentPlayoff              $groupTournamentPlayoff
+ * @property-read Team                                $homeTeam
+ * @method static bool|null forceDelete()
+ * @method static EloquentBuilder|GroupGamePlayoff newModelQuery()
+ * @method static EloquentBuilder|GroupGamePlayoff newQuery()
+ * @method static QueryBuilder|GroupGamePlayoff onlyTrashed()
+ * @method static EloquentBuilder|GroupGamePlayoff query()
+ * @method static bool|null restore()
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayAttackTime($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayFaceoff($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayHit($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayPassPercent($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayPenaltySuccess($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayPenaltyTime($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayPenaltyTotal($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayPowerplayTime($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayScore($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayShorthandedGoal($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayShot($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereAwayTeamId($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereCreatedAt($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereDeletedAt($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomeAttackTime($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomeFaceoff($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomeHit($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomePassPercent($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomePenaltySuccess($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomePenaltyTime($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomePenaltyTotal($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomePowerplayTime($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomeScore($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomeShorthandedGoal($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomeShot($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereHomeTeamId($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereId($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereIsTechnicalDefeat($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereMatchId($value)
+ * @method static EloquentBuilder|GroupGamePlayoff wherePlayedAt($value)
+ * @method static EloquentBuilder|GroupGamePlayoff wherePlayoffPairId($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereUpdatedAt($value)
+ * @method static QueryBuilder|GroupGamePlayoff withTrashed()
+ * @method static QueryBuilder|GroupGamePlayoff withoutTrashed()
+ * @mixin Eloquent
  */
 class GroupGamePlayoff extends Model
 {

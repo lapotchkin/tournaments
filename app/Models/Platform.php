@@ -2,22 +2,41 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Carbon;
 
 /**
- * Class Platform
- * @package App\Models
- * @property string               $id
- * @property string               $name
- * @property string               $icon
- * @property string               $createdAt
- * @property string               $deletedAt
- * @property GroupTournament[]    $groupTournaments
- * @property PersonalTournament[] $personalTournaments
- * @property Player[]             $players
- * @property Team[]               $teams
+ * App\Models\Platform
+ *
+ * @property string                               $id        ID
+ * @property string                               $name      Название
+ * @property string|null                          $icon      Иконка
+ * @property Carbon                               $createdAt Дата создания
+ * @property Carbon|null                          $deletedAt Дата удаления
+ * @property-read Collection|GroupTournament[]    $groupTournaments
+ * @property-read Collection|PersonalTournament[] $personalTournaments
+ * @property-read Collection|Player[]             $players
+ * @property-read Collection|Team[]               $teams
+ * @method static bool|null forceDelete()
+ * @method static EloquentBuilder|Platform newModelQuery()
+ * @method static EloquentBuilder|Platform newQuery()
+ * @method static QueryBuilder|Platform onlyTrashed()
+ * @method static EloquentBuilder|Platform query()
+ * @method static bool|null restore()
+ * @method static EloquentBuilder|Platform whereCreatedAt($value)
+ * @method static EloquentBuilder|Platform whereDeletedAt($value)
+ * @method static EloquentBuilder|Platform whereIcon($value)
+ * @method static EloquentBuilder|Platform whereId($value)
+ * @method static EloquentBuilder|Platform whereName($value)
+ * @method static QueryBuilder|Platform withTrashed()
+ * @method static QueryBuilder|Platform withoutTrashed()
+ * @mixin Eloquent
  */
 class Platform extends Model
 {
