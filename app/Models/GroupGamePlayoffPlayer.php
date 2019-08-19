@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property int                   $player_id           ID игрока
  * @property int|null              $class_id            ID класса игрока
  * @property int|null              $position_id         ID позиции игрока
+ * @property int                   $star                Звезда матча
  * @property int|null              $time_on_ice_seconds Игровое время в секундах
  * @property int|null              $goals               Голы
  * @property int|null              $power_play_goals    Голы в большинстве
