@@ -11,7 +11,6 @@ use App\Models\GroupTournamentTeam;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
-use Illuminate\Http\Request;
 
 /**
  * Class GroupController
@@ -64,6 +63,7 @@ class GroupController extends Controller
      * @param StoreRequest $request
      * @param int          $tournamentId
      * @return ResponseFactory|Response
+     * @throws Exception
      */
     public function delete(StoreRequest $request, int $tournamentId)
     {

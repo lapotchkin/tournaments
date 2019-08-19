@@ -108,3 +108,5 @@ Route::delete('/ajax/group/{tournamentId}/team/{teamId}', 'Ajax\GroupController@
 
 Route::post('/ajax/group/{tournamentId}/regular/games/{gameId}', 'Ajax\GroupController@editRegularGame')
     ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+
+Route::get('/ajax/ea/lastGames', 'Ajax\EaController@getLastGames');

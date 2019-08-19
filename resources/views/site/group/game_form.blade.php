@@ -5,6 +5,10 @@
 @section('content')
     {{ Breadcrumbs::render('group.tournament.regular.game', $game) }}
 
+    <div class="text-right" id="getGames">
+        <button class="btn btn-primary">Запросить игры для автозаполнения</button>
+    </div>
+
     <h3 class="text-center">Тур {{ $game->round }}</h3>
     <form id="game-form">
         <table class="mb-2 w-100">
@@ -211,6 +215,20 @@
                 success: function (response) {
                     console.log(response);
                 }
+            });
+
+            $('#getGames').on('click', function () {
+                $.ajax({
+                    url: '{{ action('Ajax\EaController@getLastGames') }}',
+                    data: {
+                        tournamentId: {{ $game->tournament_id }},
+                        homeTeamId: {{ $game->home_team_id }},
+                        awayTeamId: {{ $game->away_team_id }}
+                    },
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
             });
         });
     </script>
