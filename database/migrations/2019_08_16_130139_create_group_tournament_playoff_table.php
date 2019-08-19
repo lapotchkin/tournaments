@@ -1,9 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+ * Class CreateGroupTournamentPlayoffTable
+ */
 class CreateGroupTournamentPlayoffTable extends Migration
 {
     /**

@@ -51,8 +51,11 @@ class TextUtils
      * @param string $time
      * @return string|string[]|null
      */
-    public static function protocolTime(string $time)
+    public static function protocolTime(string $time = null)
     {
+        if (is_null($time)) {
+            return '';
+        }
         return preg_replace('/^00:/', '', $time, 1);
     }
 }

@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Query\Builder as BuilderAlias;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -13,7 +14,7 @@ class GroupTournamentPosition
 {
     /**
      * @param int $tournamentId
-     * @return BuilderAlias|mixed
+     * @return Model|Builder|object|null
      */
     public static function readLastUpdateDate(int $tournamentId)
     {

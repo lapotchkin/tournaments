@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Class GroupTournamentLeaders
- * @package app\models
+ * @package App\Models
  */
 class GroupTournamentLeaders
 {

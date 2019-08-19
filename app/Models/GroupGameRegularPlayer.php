@@ -52,6 +52,8 @@ use Illuminate\Support\Carbon;
  * @property-read Player           $player
  * @property-read GroupGameRegular $regularGame
  * @property-read Team             $team
+ * @property-read PlayerClass      $playerClass
+ * @property-read PlayerPosition   $playerPosition
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|GroupGameRegularPlayer newModelQuery()
  * @method static EloquentBuilder|GroupGameRegularPlayer newQuery()
@@ -139,5 +141,21 @@ class GroupGameRegularPlayer extends Model
     public function team()
     {
         return $this->belongsTo('App\Models\Team');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function playerClass()
+    {
+        return $this->belongsTo('App\Models\PlayerClass');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function playerPosition()
+    {
+        return $this->belongsTo('App\Models\PlayerPosition');
     }
 }

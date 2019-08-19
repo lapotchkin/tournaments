@@ -14,11 +14,23 @@
                 <h2>{{ $game->homeTeam->team->name }}</h2>
             </td>
             <td class="text-right" style="width:1rem;">
-                <h2><span class="badge badge-pill badge-primary">{{ $game->home_score }}</span></h2>
+                <h2>
+                    @if(!is_null($game->home_score))
+                        <span class="badge badge-pill badge-primary">{{ $game->home_score}}</span>
+                    @else
+                        —
+                    @endif
+                </h2>
             </td>
             <td class="text-center" style="width:1rem;"><h2>:</h2></td>
             <td class="text-left" style="width:1rem;">
-                <h2><span class="badge badge-pill badge-primary">{{ $game->away_score }}</span></h2>
+                <h2>
+                    @if(!is_null($game->away_score))
+                        <span class="badge badge-pill badge-primary">{{ $game->away_score}}</span>
+                    @else
+                        —
+                    @endif
+                </h2>
             </td>
             <td class="text-left" style="width:40%;">
                 <h2>{{ $game->awayTeam->team->name }}</h2>
@@ -79,24 +91,44 @@
             </tr>
             @if ($game->tournament->min_players === 6)
                 <tr>
-                    <td class="text-right">{{ TextUtils::protocolTime($game->home_penalty_time) }}</td>
+                    <td class="text-right">
+                        {{ !is_null($game->home_penalty_time) ? TextUtils::protocolTime($game->home_penalty_time) : '—'}}
+                    </td>
                     <th class="text-center">Штрафные минуты</th>
-                    <td class="text-left">{{ TextUtils::protocolTime($game->away_penalty_time) }}</td>
+                    <td class="text-left">
+                        {{ !is_null($game->away_penalty_time) ? TextUtils::protocolTime($game->away_penalty_time) : '—' }}
+                    </td>
                 </tr>
                 <tr>
-                    <td class="text-right">{{ $game->home_penalty_success }} / {{ $game->home_penalty_total }}</td>
+                    <td class="text-right">
+                        {{ !is_null($game->home_penalty_success) ? $game->home_penalty_success : '—' }}
+                        /
+                        {{ !is_null($game->home_penalty_total) ? $game->home_penalty_total : '—' }}
+                    </td>
                     <th class="text-center">Реализация большинства</th>
-                    <td class="text-left">{{ $game->away_penalty_success }} / {{ $game->away_penalty_total }}</td>
+                    <td class="text-left">
+                        {{ !is_null($game->away_penalty_success) ? $game->away_penalty_success : '—' }}
+                        /
+                        {{ !is_null($game->away_penalty_total) ? $game->away_penalty_total : '—' }}
+                    </td>
                 </tr>
                 <tr>
-                    <td class="text-right">{{ TextUtils::protocolTime($game->home_powerplay_time) }}</td>
+                    <td class="text-right">
+                        {{ !is_null($game->home_powerplay_time) ? TextUtils::protocolTime($game->home_powerplay_time) : '—' }}
+                    </td>
                     <th class="text-center">Минут в большинстве</th>
-                    <td class="text-left">{{ TextUtils::protocolTime($game->away_powerplay_time) }}</td>
+                    <td class="text-left">
+                        {{ !is_null($game->away_powerplay_time) ? TextUtils::protocolTime($game->away_powerplay_time) : '—' }}
+                    </td>
                 </tr>
                 <tr>
-                    <td class="text-right">{{ $game->home_shorthanded_goal }}</td>
+                    <td class="text-right">
+                        {{ !is_null($game->home_shorthanded_goal) ? $game->home_shorthanded_goal : '—' }}
+                    </td>
                     <th class="text-center">Голы в меньшинстве</th>
-                    <td class="text-left">{{ $game->away_shorthanded_goal }}</td>
+                    <td class="text-left">
+                        {{ !is_null($game->away_shorthanded_goal) ? $game->away_shorthanded_goal : '—' }}
+                    </td>
                 </tr>
             @endif
             </tbody>
