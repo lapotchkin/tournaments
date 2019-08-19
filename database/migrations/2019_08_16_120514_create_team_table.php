@@ -25,7 +25,7 @@ class CreateTeamTable extends Migration
             $table->integerIncrements('id');
             $table->string('platform_id', 20)->comment('ID платформы');
             $table->string('name', 255)->comment('Название');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
         });
 

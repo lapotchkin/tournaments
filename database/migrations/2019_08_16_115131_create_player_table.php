@@ -31,7 +31,7 @@ class CreatePlayerTable extends Migration
             $table->decimal('lat', 12, 9)->nullable()->comment('Широта');
             $table->decimal('lon', 12, 9)->nullable()->comment('Долгота');
             $table->string('platform_id')->comment('ID платформы');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->unique(['tag', 'platform_id']);

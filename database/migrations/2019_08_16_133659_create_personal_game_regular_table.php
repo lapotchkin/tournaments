@@ -32,7 +32,7 @@ class CreatePersonalGameRegularTable extends Migration
             $table->tinyInteger('isOvertime')->default(0)->comment('Игра завершилась в овертайме');
             $table->tinyInteger('isShootout')->default(0)->comment('Игра завершилась в серии буллитов');
             $table->tinyInteger('isTechnicalDefeat')->default(0)->comment('Игра завершилась техническим поражением');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->dateTime('playedAt')->nullable()->comment('Дата проведения игры');
             $table->dateTime('updatedAt')->nullable();
             $table->softDeletes('deletedAt');

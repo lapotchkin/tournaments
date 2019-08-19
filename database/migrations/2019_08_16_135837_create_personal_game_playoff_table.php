@@ -30,7 +30,7 @@ class CreatePersonalGamePlayoffTable extends Migration
             $table->tinyInteger('home_score')->nullable()->comment('Голы хозяина');
             $table->tinyInteger('away_score')->nullable()->comment('Голы гостя');
             $table->tinyInteger('isTechnicalDefeat')->default(0)->comment('Игра завершилась техническим поражением');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->dateTime('playedAt')->nullable()->comment('Дата проведения игры');
             $table->dateTime('updatedAt')->nullable();
             $table->softDeletes('deletedAt');

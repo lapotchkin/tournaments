@@ -178,6 +178,10 @@ return [
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // Laravel IDE helper
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        // Laravel 5 Extended Generators
+        Laracasts\Generators\GeneratorsServiceProvider::class,
     ],
 
     /*

@@ -28,7 +28,7 @@ class CreatePersonalTournamentPlayoffTable extends Migration
             $table->tinyInteger('pair')->comment('Пара');
             $table->integer('player_one_id')->nullable()->comment('ID хозяина');
             $table->integer('player_two_id')->nullable()->comment('ID гостя');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->unique(['tournament_id', 'round', 'pair']);

@@ -28,7 +28,7 @@ class CreateGroupTournamentPlayoffTable extends Migration
             $table->tinyInteger('pair')->comment('Пара');
             $table->integer('team_one_id')->nullable()->comment('ID хозяев');
             $table->integer('team_two_id')->nullable()->comment('ID гостей');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->unique(['tournament_id', 'round', 'pair']);

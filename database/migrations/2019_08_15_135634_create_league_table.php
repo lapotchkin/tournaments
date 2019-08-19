@@ -28,15 +28,15 @@ class CreateLeagueTable extends Migration
 
             $table->string('id', 20)->comment('ID');
             $table->string('title', 255)->comment('Название');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->primary('id');
         });
 
         DB::table('app')->insert([
-            ['id' => 'iihf', 'title' => 'IIHF'],
-            ['id' => 'nhl', 'title' => 'NHL'],
+            ['id' => 'iihf', 'title' => 'IIHF', 'createdAt' => date('Y-m-d H:i:s')],
+            ['id' => 'nhl', 'title' => 'NHL', 'createdAt' => date('Y-m-d H:i:s')],
         ]);
     }
 

@@ -28,7 +28,7 @@ class CreatePersonalTournamentTable extends Migration
             $table->string('league_id', 20)->comment('ID лиги');
             $table->string('title', 255)->comment('Название');
             $table->tinyInteger('playoff_rounds')->comment('Количество раундов плейофф');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
         });
 

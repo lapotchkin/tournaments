@@ -25,7 +25,7 @@ class CreateGroupTournamentTeamTable extends Migration
             $table->integer('tournament_id')->comment('ID турнира');
             $table->integer('team_id')->comment('ID команды');
             $table->tinyInteger('division')->comment('Группа');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->primary(['tournament_id', 'team_id']);

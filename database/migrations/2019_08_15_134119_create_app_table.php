@@ -28,15 +28,15 @@ class CreateAppTable extends Migration
 
             $table->string('id', 20)->comment('ID');
             $table->string('title', 255)->comment('Название');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->primary('id');
         });
 
         DB::table('app')->insert([
-            ['id' => 'eanhl19', 'title' => 'EA NHL 19'],
-            ['id' => 'eanhl20beta', 'title' => 'EA NHL 20 (β)'],
+            ['id' => 'eanhl19', 'title' => 'EA NHL 19', 'createdAt' => date('Y-m-d H:i:s')],
+            ['id' => 'eanhl20beta', 'title' => 'EA NHL 20 (β)', 'createdAt' => date('Y-m-d H:i:s')],
         ]);
     }
 

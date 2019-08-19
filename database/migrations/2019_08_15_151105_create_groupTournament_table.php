@@ -28,7 +28,7 @@ class CreateGroupTournamentTable extends Migration
             $table->string('title', 255)->comment('Название');
             $table->tinyInteger('playoff_rounds')->nullable()->comment('Количество раундов плейофф');
             $table->tinyInteger('min_players')->nullable()->comment('Минимальное количество игроков в команде');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
         });
 

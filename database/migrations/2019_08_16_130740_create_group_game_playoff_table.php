@@ -49,7 +49,7 @@ class CreateGroupGamePlayoffTable extends Migration
             $table->tinyInteger('home_shorthanded_goal')->nullable()->comment('Голы в меньшинстве хозяев');
             $table->tinyInteger('away_shorthanded_goal')->nullable()->comment('Голы в меньшинстве гостей');
             $table->tinyInteger('isTechnicalDefeat')->default(0)->comment('Игра завершилась техническим поражением');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->dateTime('playedAt')->nullable()->comment('Дата проведения игры');
             $table->dateTime('updatedAt')->nullable();
             $table->softDeletes('deletedAt');

@@ -29,15 +29,25 @@ class CreatePlatformTable extends Migration
             $table->string('id', 20)->comment('ID');
             $table->string('name', 100)->comment('Название');
             $table->string('icon', 20)->comment('Класс иконки FA для платформы');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->primary('id');
         });
 
         DB::table('platform')->insert([
-            ['id' => 'playstation4', 'title' => 'PlayStation 4', 'icon' => 'playstation'],
-            ['id' => 'xboxone', 'title' => 'Xbox One', 'icon' => 'xbox'],
+            [
+                'id'        => 'playstation4',
+                'title'     => 'PlayStation 4',
+                'icon'      => 'playstation',
+                'createdAt' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id'        => 'xboxone',
+                'title'     => 'Xbox One',
+                'icon'      => 'xbox',
+                'createdAt' => date('Y-m-d H:i:s'),
+            ],
         ]);
     }
 

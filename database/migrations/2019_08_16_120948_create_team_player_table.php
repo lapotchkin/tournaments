@@ -25,7 +25,7 @@ class CreateTeamPlayerTable extends Migration
             $table->integer('team_id')->comment('ID команды');
             $table->integer('player_id')->comment('ID игрока');
             $table->tinyInteger('isCaptain')->default(0)->comment('Капитан');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->primary(['team_id', 'player_id']);

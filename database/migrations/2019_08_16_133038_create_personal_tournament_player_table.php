@@ -26,7 +26,7 @@ class CreatePersonalTournamentPlayerTable extends Migration
             $table->integer('player_id')->comment('ID игрока');
             $table->string('club_id')->comment('ID клуба');
             $table->tinyInteger('division')->comment('Группа');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->primary(['tournament_id', 'player_id']);

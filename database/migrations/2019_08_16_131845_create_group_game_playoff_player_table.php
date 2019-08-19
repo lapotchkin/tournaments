@@ -29,7 +29,7 @@ class CreateGroupGamePlayoffPlayerTable extends Migration
             $table->tinyInteger('goals')->nullable()->comment('Голы');
             $table->tinyInteger('assists')->nullable()->comment('передачи');
             $table->tinyInteger('isGoalie')->default(0)->comment('Вратарь');
-            $table->dateTime('createdAt')->default('CURRENT_TIMESTAMP');
+            $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
 
             $table->unique(['game_id', 'team_id', 'player_id']);
