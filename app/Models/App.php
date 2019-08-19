@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null                          $deletedAt Дата удаления
  * @property-read Collection|GroupTournament[]    $groupTournaments
  * @property-read Collection|PersonalTournament[] $personalTournaments
+ * @property-read Collection|AppTeam[]            $appTeams
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|App newModelQuery()
  * @method static EloquentBuilder|App newQuery()
@@ -83,5 +84,13 @@ class App extends Model
     {
         return $this->hasMany('App\Models\PersonalTournament')
             ->orderByDesc('createdAt');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function appTeams()
+    {
+        return $this->hasMany('App\Models\AppTeam');
     }
 }

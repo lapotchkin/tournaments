@@ -176,6 +176,8 @@ return [
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // Eloquent Model Generator
+        Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class,
         // Laravel IDE helper
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         // Laravel 5 Extended Generators

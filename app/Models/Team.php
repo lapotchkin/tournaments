@@ -29,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection|TeamPlayer[]             $teamPlayers
  * @property-read Collection|GroupTournamentPlayoff[] $tournamentPlayoffs
  * @property-read Collection|GroupTournamentTeam[]    $tournamentTeams
+ * @property-read Collection|AppTeam[]                $appTeams
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|Team newModelQuery()
  * @method static EloquentBuilder|Team newQuery()
@@ -132,5 +133,13 @@ class Team extends Model
     public function teamPlayers()
     {
         return $this->hasMany('App\Models\TeamPlayer');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function appTeams()
+    {
+        return $this->hasMany('App\Models\AppTeam');
     }
 }
