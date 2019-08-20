@@ -142,4 +142,17 @@ class Team extends Model
     {
         return $this->hasMany('App\Models\AppTeam');
     }
+
+    /**
+     * @param string $appId
+     * @return int
+     */
+    public function getClubId(string $appId)
+    {
+        return $this->appTeams
+            ->where('app_id', '=', $appId)
+            ->where('team_id', '=', $this->id)
+            ->first()
+            ->app_team_id;
+    }
 }
