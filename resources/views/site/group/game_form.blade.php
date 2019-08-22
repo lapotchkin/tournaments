@@ -5,10 +5,6 @@
 @section('content')
     {{ Breadcrumbs::render('group.tournament.regular.game', $game) }}
 
-    <div class="text-right" id="getGames">
-        <button class="btn btn-primary">Запросить игры для автозаполнения</button>
-    </div>
-
     <h3 class="text-center">Тур {{ $game->round }}</h3>
     <form id="game-form">
         <table class="mb-2 w-100">
@@ -194,6 +190,10 @@
             <input type="submit" class="btn btn-primary" value="Сохранить">
         </div>
     </form>
+    <div class="mt-3">
+        <button class="btn btn-primary" id="getGames">Запросить игры для автозаполнения</button>
+    </div>
+    <div id="eaGames"></div>
 @endsection
 
 @section('script')
@@ -211,20 +211,46 @@
                 }
             });
 
+            const $eaGames = $('#eaGames');
+
             $('#getGames').on('click', function () {
                 TRNMNT_helpers.disableButtons();
+                $eaGames.empty();
                 $.ajax({
-                    url: '{{ action('Ajax\EaController@getLastGames') }}',
-                    data: {
-                        tournamentId: {{ $game->tournament_id }},
-                        homeTeamId: {{ $game->home_team_id }},
-                        awayTeamId: {{ $game->away_team_id }}
-                    },
+                    url: '{{ action('Ajax\EaController@getLastGames', ['gameId' => $game->id]) }}',
                     success: function (response) {
                         TRNMNT_helpers.enableButtons();
                         console.log(response);
+
+                        const $table = $('<table class="table table-sm"/>');
+                        $eaGames.append($table);
+
+                        const $tbody = $('<tbody/>');
+                        $table.append($tbody);
+
+                        for (let gameId in response.data) {
+                            const game = response.data[gameId].game;
+                            const date = new Date(game.date * 1000);
+                            $tbody.append(`
+                                <tr>
+                                    <td>${date.getShortDate()}</td>
+                                    <td class="text-right">${game.home_team}</td>
+                                    <td class="text-right">
+                                        <span class="badge badge-primary badge-pill">${game.home_score}</span>
+                                    </td>
+                                    <td class="text-center">:</td>
+                                    <td>
+                                        <span class="badge badge-primary badge-pill">${game.away_score}</span>
+                                    </td>
+                                    <td>${game.away_team}</td>
+                                    <td class="text-right">
+                                        <button class="btn btn-primary btn-sm">Заполнить</button>
+                                    </td>
+                                </tr>
+                            `);
+                        }
                     },
-                    error: function(error) {
+                    error: function (error) {
                         TRNMNT_helpers.enableButtons();
                     }
                 });
