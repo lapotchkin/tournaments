@@ -70,6 +70,13 @@ class EaController extends Controller
         );
     }
 
+    /**
+     * @param array           $response
+     * @param GroupTournament $tournament
+     * @param Team            $homeTeam
+     * @param Team            $awayTeam
+     * @return array
+     */
     protected function parseMatches(array $response, GroupTournament $tournament, Team $homeTeam, Team $awayTeam)
     {
         $matches = [];

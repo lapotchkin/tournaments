@@ -200,13 +200,7 @@
     @parent
     <script>
         $(document).ready(function () {
-            $('#playedAt').datepicker({
-                format: "yyyy-mm-dd",
-                weekStart: 1,
-                todayHighlight: true,
-                autoclose: true,
-                language: "ru"
-            });
+            $('#playedAt').datepicker(TRNMNT_helpers.getDatePickerSettings());
 
             TRNMNT_sendData({
                 selector: '#game-form',
@@ -218,6 +212,7 @@
             });
 
             $('#getGames').on('click', function () {
+                TRNMNT_helpers.disableButtons();
                 $.ajax({
                     url: '{{ action('Ajax\EaController@getLastGames') }}',
                     data: {
@@ -226,7 +221,11 @@
                         awayTeamId: {{ $game->away_team_id }}
                     },
                     success: function (response) {
+                        TRNMNT_helpers.enableButtons();
                         console.log(response);
+                    },
+                    error: function(error) {
+                        TRNMNT_helpers.enableButtons();
                     }
                 });
             });
