@@ -94,14 +94,14 @@ class EaController extends Controller
                     'away_shot'             => 0,//a
                     'home_hit'              => 0,//a
                     'away_hit'              => 0,//a
-                    'home_attack_time'      => '',//m — заполняется вручную
-                    'away_attack_time'      => '',//m — заполняется вручную
+                    'home_attack_time'      => '',//a
+                    'away_attack_time'      => '',//a
                     'home_pass_percent'     => '',//m — заполняется вручную
                     'away_pass_percent'     => '',//m — заполняется вручную
                     'home_faceoff'          => 0,//a
                     'away_faceoff'          => 0,//a
-                    'home_penalty_time'     => '00:00',//a
-                    'away_penalty_time'     => '00:00',//a
+                    'home_penalty_time'     => '00:00',//m — заполняется вручную
+                    'away_penalty_time'     => '00:00',//m — заполняется вручную
                     'home_penalty_total'    => 0,//a
                     'away_penalty_total'    => 0,//a
                     'home_penalty_success'  => 0,//a
@@ -135,7 +135,7 @@ class EaController extends Controller
                     $matches[$matchId]['game']['home_penalty_total'] = (int)$club['ppo'];
                     $matches[$matchId]['game']['home_penalty_success'] = (int)$club['ppg'];
                     $date->setTimestamp((int)$club['toa']);
-                    $matches[$matchId]['game']['home_powerplay_time'] = $date->format('i:s');
+                    $matches[$matchId]['game']['home_attack_time'] = $date->format('i:s');
                 } else {
                     $matches[$matchId]['game']['away_team'] = (int)$clubId === $homeClubId
                         ? $homeTeam->name : $awayTeam->name;
@@ -144,7 +144,7 @@ class EaController extends Controller
                     $matches[$matchId]['game']['away_penalty_total'] = (int)$club['ppo'];
                     $matches[$matchId]['game']['away_penalty_success'] = (int)$club['ppg'];
                     $date->setTimestamp((int)$club['toa']);
-                    $matches[$matchId]['game']['away_powerplay_time'] = $date->format('i:s');
+                    $matches[$matchId]['game']['away_attack_time'] = $date->format('i:s');
                 }
             }
 

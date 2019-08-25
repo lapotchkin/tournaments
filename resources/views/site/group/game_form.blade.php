@@ -220,9 +220,8 @@
                     url: '{{ action('Ajax\EaController@getLastGames', ['gameId' => $game->id]) }}',
                     success: function (response) {
                         TRNMNT_helpers.enableButtons();
-                        console.log(response);
 
-                        const $table = $('<table class="table table-sm"/>');
+                        const $table = $('<table class="table table-sm mt-3"/>');
                         $eaGames.append($table);
 
                         const $tbody = $('<tbody/>');
@@ -250,11 +249,13 @@
                             `);
                         }
                     },
-                    error: function (error) {
-                        TRNMNT_helpers.enableButtons();
-                    }
+                    error: TRNMNT_helpers.onErrorAjax
                 });
             });
+
+            function fillData() {
+
+            }
         });
     </script>
 @endsection
