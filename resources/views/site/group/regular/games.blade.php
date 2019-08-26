@@ -29,10 +29,11 @@
                         <thead>
                         <tr>
                             <th style="width: 2em;"></th>
+                            <th style="width: 6em;">Дата игры</th>
                             <th class="text-right">Хозяева</th>
-                            <th style="width: 3em;"></th>
+                            <th class="text-right" style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
                             <th style="width: 1em;"></th>
-                            <th style="width: 3em;"></th>
+                            <th style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
                             <th class="text-left">Гости</th>
                             <th style="width: 8em;"></th>
                         </tr>
@@ -45,6 +46,7 @@
                                     <span class="badge badge-pill badge-dark">{{ $game->isShootout ? 'Б' : '' }}</span>
                                     <span class="badge badge-pill badge-danger">{{ $game->isTechnicalDefeat ? 'T' : '' }}</span>
                                 </td>
+                                <td>{{ $game->playedAt ? (new \DateTime($game->playedAt))->format('d.m.Y') : '' }}</td>
                                 <td class="text-right">
                                     @if ($game->home_score > $game->away_score)
                                         <strong>{{ $game->homeTeam->team->name }}</strong>
@@ -66,7 +68,7 @@
                                         {{ $game->awayTeam->team->name }}
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <a class="btn btn-sm btn-primary"
                                        href="{{ route('group.tournament.regular.game', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}">
                                         <i class="fas fa-gamepad"></i> протокол

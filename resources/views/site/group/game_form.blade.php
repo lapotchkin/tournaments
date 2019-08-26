@@ -208,7 +208,9 @@
                 url: '{{ action('Ajax\GroupController@editRegularGame', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}',
                 success: function (response) {
                     console.log(response);
-                }
+                },
+                error: TRNMNT_helpers.onErrorAjax,
+                context: TRNMNT_helpers
             });
 
             const $eaGames = $('#eaGames');
@@ -229,7 +231,7 @@
 
                         for (let gameId in response.data) {
                             const game = response.data[gameId].game;
-                            const date = new Date(game.date * 1000);
+                            const date = new Date(game.playedAt);
                             $tbody.append(`
                                 <tr>
                                     <td>${date.getShortDate()}</td>
@@ -243,18 +245,22 @@
                                     </td>
                                     <td>${game.away_team}</td>
                                     <td class="text-right">
-                                        <button class="btn btn-primary btn-sm">Заполнить</button>
+                                        <button type="button" class="btn btn-primary btn-sm">Заполнить</button>
                                     </td>
                                 </tr>
                             `);
+                            $tbody.find('button').click(() => fillGameProtocol(game));
                         }
                     },
-                    error: TRNMNT_helpers.onErrorAjax
+                    error: TRNMNT_helpers.onErrorAjax,
+                    context: TRNMNT_helpers
                 });
             });
 
-            function fillData() {
-
+            function fillGameProtocol(game) {
+                for (let field in game) {
+                    $(`#${field}`).val(game[field]);
+                }
             }
         });
     </script>

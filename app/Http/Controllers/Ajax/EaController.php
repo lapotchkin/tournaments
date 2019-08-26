@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Http\Requests\StoreRequest;
 use App\Models\GroupGameRegular;
 use App\Models\GroupTournament;
 use App\Models\Player;
 use App\Models\Team;
+use DateInterval;
 use DateTime;
 use Exception;
 use GuzzleHttp\Client;
@@ -14,6 +16,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use stdClass;
 
 /**
@@ -34,7 +37,7 @@ class EaController extends Controller
      * @throws GuzzleException
      * @throws Exception
      */
-    public function getLastGames(Request $request, int $gameId)
+    public function getLastGames(StoreRequest $request, int $gameId)
     {
         $game = GroupGameRegular::find($gameId);
 
@@ -52,11 +55,19 @@ class EaController extends Controller
             ),
             ['query' => ['match_type' => 'club_private', 'matches_returned' => self::MATCHES_PER_REQUEST]]
         );
-        $matches = $this->parseMatches(
-            json_decode((string)$response->getBody(), true),
-            $game->tournament,
-            $game->homeTeam->team,
-            $game->awayTeam->team
+
+        //Cache::flush();
+        $matches = Cache::remember(
+            "game_{$gameId}",
+            new DateInterval('PT1H'),
+            function () use ($response, $game) {
+                return EaController::parseMatches(
+                    json_decode((string)$response->getBody(), true),
+                    $game->tournament,
+                    $game->homeTeam->team,
+                    $game->awayTeam->team
+                );
+            }
         );
 
         return $this->renderAjax($matches);
@@ -70,7 +81,7 @@ class EaController extends Controller
      * @return array
      * @throws Exception
      */
-    protected function parseMatches(array $response, GroupTournament $tournament, Team $homeTeam, Team $awayTeam)
+    protected static function parseMatches(array $response, GroupTournament $tournament, Team $homeTeam, Team $awayTeam)
     {
         $matches = [];
         $homeClubId = (int)$homeTeam->getClubId($tournament->app_id);
@@ -80,14 +91,15 @@ class EaController extends Controller
             if (!in_array($homeClubId, $clubIds) || !in_array($awayClubId, $clubIds)) {
                 continue;
             }
-
+            $date = new DateTime();
+            $date->setTimestamp($match['timestamp']);
             $matches[$matchId] = [
                 'game'    => [
                     'home_team'             => null,
                     'away_team'             => null,
                     'home_club_id'          => null,
                     'away_club_id'          => null,
-                    'date'                  => $match['timestamp'],
+                    'playedAt'              => $date->format('Y-m-d'),
                     'home_score'            => 0,//a
                     'away_score'            => 0,//a
                     'home_shot'             => 0,//a
@@ -158,7 +170,7 @@ class EaController extends Controller
                         $matches[$matchId]['game']['home_faceoff'] += (int)$player['skfow'];
                         $matches[$matchId]['game']['home_shorthanded_goal'] += (int)$player['skshg'];
                         $homePenaltyTime += (int)$player['skpim'];
-                        $matches[$matchId]['players']['home'][] = $this->getPlayer(
+                        $matches[$matchId]['players']['home'][] = self::getPlayer(
                             $player,
                             $homeTeam,
                             $matches[$matchId]['game']['home_score'] > $matches[$matchId]['game']['away_score']
@@ -169,7 +181,7 @@ class EaController extends Controller
                         $matches[$matchId]['game']['away_faceoff'] += (int)$player['skfow'];
                         $matches[$matchId]['game']['away_shorthanded_goal'] += (int)$player['skshg'];
                         $awayPenaltyTime += (int)$player['skpim'];
-                        $matches[$matchId]['players']['away'][] = $this->getPlayer(
+                        $matches[$matchId]['players']['away'][] = self::getPlayer(
                             $player,
                             $awayTeam,
                             $matches[$matchId]['game']['home_score'] < $matches[$matchId]['game']['away_score']
@@ -192,7 +204,7 @@ class EaController extends Controller
      * @param bool  $isWin
      * @return array
      */
-    protected function getPlayer(array $playerData, Team $team, bool $isWin)
+    protected static function getPlayer(array $playerData, Team $team, bool $isWin)
     {
         $player = Player::where('tag', '=', $playerData['playername'])
             ->where('platform_id', '=', $team->platform_id)
