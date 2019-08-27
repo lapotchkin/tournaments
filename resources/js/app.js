@@ -35,3 +35,17 @@ Date.prototype.getFullDate = function (delimiter) {
 Date.prototype.getDayBegin = function () {
     return new Date(this.getFullYear(), this.getMonth(), this.getDate(), 0, 0, 0);
 };
+
+/**
+ * Подставить данные в строку
+ * @link http://habrahabr.ru/post/192124/#comment_6673074
+ * @returns {string}
+ */
+String.prototype.format = function () {
+    let i = -1;
+    const args = arguments;
+
+    return this.replace(/#\{(.*?)\}/g, function (_, two) {
+        return (typeof args[0] === 'object') ? args[0][two] : args[++i];
+    });
+};

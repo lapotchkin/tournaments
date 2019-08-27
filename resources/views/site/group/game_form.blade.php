@@ -27,16 +27,16 @@
         <div class="form-inline mb-2" style="justify-content:center">
             <div class="form-check mr-2">
                 <label class="form-check-label">
-                    <input type="checkbox" id="isovertime" class="form-check-input" name="isOvertime"
+                    <input type="checkbox" id="isOvertime" class="form-check-input" name="isOvertime"
                            @if($game->isOvertime) checked @endif>
-                    <label for="isovertime">Овертайм</label>
+                    <label for="isOvertime">Овертайм</label>
                 </label>
             </div>
             <div class="form-check">
                 <label class="form-check-label">
-                    <input type="checkbox" id="istechnicaldefeat" class="form-check-input" name="isTechnicalDefeat"
+                    <input type="checkbox" id="isTechnicalDefeat" class="form-check-input" name="isTechnicalDefeat"
                            @if($game->isTechnicalDefeat) checked @endif>
-                    <label for="istechnicaldefeat">Техническое поражение</label>
+                    <label for="isTechnicalDefeat">Техническое поражение</label>
                 </label>
             </div>
         </div>
@@ -190,8 +190,42 @@
             <input type="submit" class="btn btn-primary" value="Сохранить">
         </div>
     </form>
+
+    <h3 class="mt-3">Статистика игроков</h3>
+    <div class="row">
+        <div class="col">
+            <table class="table table-sm table-striped" id="homePlayers">
+                <thead>
+                <tr>
+                    <th style="">Игрок</th>
+                    <th class="text-center" style="width: 5rem;">Позиция</th>
+                    <th class="text-center" style="width: 5rem;">Голы</th>
+                    <th class="text-center" style="width: 5rem;">Пасы</th>
+                    <th style="width: 3rem;"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table table-sm table-striped" id="awayPlayers">
+                <thead>
+                <tr>
+                    <th style="">Игрок</th>
+                    <th class="text-center" style="width: 5rem;">Позиция</th>
+                    <th class="text-center" style="width: 5rem;">Голы</th>
+                    <th class="text-center" style="width: 5rem;">Пасы</th>
+                    <th style="width: 3rem;"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="mt-3">
         <button class="btn btn-primary" id="getGames">Запросить игры для автозаполнения</button>
+        <button class="btn btn-danger d-none" id="resetGame">Сбросить для ручного ввода</button>
     </div>
     <div id="eaGames"></div>
 @endsection
@@ -201,6 +235,140 @@
     <script>
         $(document).ready(function () {
             $('#playedAt').datepicker(TRNMNT_helpers.getDatePickerSettings());
+
+            const TRNMNT_gameFormModule = (function () {
+                let _isInitialized = false;
+                let _$eaGames = null;
+                let _$getGames = null;
+                let _$resetGame = null;
+                let _$homePlayers = null;
+                let _$awayPlayers = null;
+                let _gameToSave = null;
+                let _url = null;
+                const _templates = {
+                    game: `
+                        <tr>
+                            <td>#{date}</td>
+                            <td class="text-right">#{home_team}</td>
+                            <td class="text-right">
+                                <span class="badge badge-primary badge-pill">#{home_score}</span>
+                            </td>
+                            <td class="text-center">:</td>
+                            <td>
+                                <span class="badge badge-primary badge-pill">#{away_score}</span>
+                            </td>
+                            <td>#{away_team}</td>
+                            <td class="text-right">
+                                <button type="button" class="btn btn-primary btn-sm">Заполнить</button>
+                            </td>
+                        </tr>`,
+                    player: `
+                        <tr>
+                            <td>#{tag}</td>
+                            <td class="text-center">#{position}</td>
+                            <td class="text-right">#{goals}</td>
+                            <td class="text-right">#{assists}</td>
+                            <td></td>
+                        </tr>
+                    `,
+                };
+
+                return {
+                    init: _init
+                };
+
+                function _init(url) {
+                    if (_isInitialized) return;
+                    _isInitialized = true;
+                    _url = url;
+                    _$eaGames = $('#eaGames');
+                    _$getGames = $('#getGames');
+                    _$resetGame = $('#resetGame');
+                    _$homePlayers = $('#homePlayers');
+                    _$awayPlayers = $('#awayPlayers');
+
+                    _$getGames.on('click', _onClickGetGames);
+                    _$resetGame.on('click', _onClickResetGames);
+                }
+
+                function _onClickGetGames() {
+                    TRNMNT_helpers.disableButtons();
+                    _$eaGames.empty();
+                    $.ajax({
+                        url: _url.lastGames,
+                        success: _onSuccessGetGames,
+                        error: TRNMNT_helpers.onErrorAjax,
+                        context: TRNMNT_helpers
+                    });
+                }
+
+                function _onClickResetGames() {
+                    for (let field in _gameToSave.game) {
+                        const $field = $(`#${field}`);
+                        if (['checkbox', 'radio'].indexOf($field.attr('type')) !== -1) {
+                            $field.prop('checked', false);
+                        } else {
+                            $field.val('');
+                            if (field !== 'playedAt') $field.prop('readonly', false);
+                        }
+                    }
+                    _gameToSave = null;
+                    _$resetGame.addClass('d-none');
+                }
+
+                function _onSuccessGetGames(response) {
+                    TRNMNT_helpers.enableButtons();
+
+                    const $table = $('<table class="table table-sm table-striped mt-3"/>');
+                    _$eaGames.append($table);
+
+                    const $tbody = $('<tbody/>');
+                    $table.append($tbody);
+
+                    for (let gameId in response.data) {
+                        const game = response.data[gameId].game;
+                        const date = new Date(game.playedAt);
+                        const $row = $(_templates.game.format({
+                            date: date.getShortDate(),
+                            home_team: game.home_team,
+                            away_team: game.away_team,
+                            home_score: game.home_score,
+                            away_score: game.away_score,
+                        }));
+                        $row.find('button').click(() => _fillGameProtocol(response.data[gameId]));
+                        $tbody.append($row);
+                    }
+                }
+
+                function _fillGameProtocol(game) {
+                    _$resetGame.removeClass('d-none');
+                    _gameToSave = game;
+                    for (let field in _gameToSave.game) {
+                        const $field = $(`#${field}`);
+                        $field.val(_gameToSave.game[field]);
+                        if (_gameToSave.game[field] !== '') $field.prop('readonly', true);
+                    }
+                    _fillPlayers(_gameToSave.players);
+                }
+
+                function _fillPlayers(players) {
+                    for (let side in players) {
+                        const $tbody = side === 'home' ? _$homePlayers.find('tbody') : _$awayPlayers.find('tbody');
+                        for (let player of players[side]) {
+                            $tbody.append(_templates.player.format({
+                                tag: player.name,
+                                position: player.position_id,
+                                goals: player.goals,
+                                assists: player.assists,
+                            }));
+                        }
+                    }
+                }
+            }());
+
+            TRNMNT_gameFormModule.init({
+                lastGames: '{{ action('Ajax\EaController@getLastGames', ['gameId' => $game->id]) }}'
+            });
 
             TRNMNT_sendData({
                 selector: '#game-form',
@@ -212,56 +380,6 @@
                 error: TRNMNT_helpers.onErrorAjax,
                 context: TRNMNT_helpers
             });
-
-            const $eaGames = $('#eaGames');
-
-            $('#getGames').on('click', function () {
-                TRNMNT_helpers.disableButtons();
-                $eaGames.empty();
-                $.ajax({
-                    url: '{{ action('Ajax\EaController@getLastGames', ['gameId' => $game->id]) }}',
-                    success: function (response) {
-                        TRNMNT_helpers.enableButtons();
-
-                        const $table = $('<table class="table table-sm mt-3"/>');
-                        $eaGames.append($table);
-
-                        const $tbody = $('<tbody/>');
-                        $table.append($tbody);
-
-                        for (let gameId in response.data) {
-                            const game = response.data[gameId].game;
-                            const date = new Date(game.playedAt);
-                            $tbody.append(`
-                                <tr>
-                                    <td>${date.getShortDate()}</td>
-                                    <td class="text-right">${game.home_team}</td>
-                                    <td class="text-right">
-                                        <span class="badge badge-primary badge-pill">${game.home_score}</span>
-                                    </td>
-                                    <td class="text-center">:</td>
-                                    <td>
-                                        <span class="badge badge-primary badge-pill">${game.away_score}</span>
-                                    </td>
-                                    <td>${game.away_team}</td>
-                                    <td class="text-right">
-                                        <button type="button" class="btn btn-primary btn-sm">Заполнить</button>
-                                    </td>
-                                </tr>
-                            `);
-                            $tbody.find('button').click(() => fillGameProtocol(game));
-                        }
-                    },
-                    error: TRNMNT_helpers.onErrorAjax,
-                    context: TRNMNT_helpers
-                });
-            });
-
-            function fillGameProtocol(game) {
-                for (let field in game) {
-                    $(`#${field}`).val(game[field]);
-                }
-            }
         });
     </script>
 @endsection
