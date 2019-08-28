@@ -18,8 +18,33 @@
 @import '~@fortawesome/fontawesome-free/scss/brands';
 
 footer.footer {
-  background-color: $gray-300;
-  //border-top: 1px solid $secondary;
-  padding: 1rem;
-  margin-top: 1rem
+    background-color: $gray-300;
+    //border-top: 1px solid $secondary;
+    padding: 1rem;
+    margin-top: 1rem
+}
+
+.badge-left_wing {
+    background: $green;
+    color: $light;
+}
+
+.badge-right_wing {
+    background: $cyan;
+    color: $light;
+}
+
+.badge-center {
+    background: $red;
+    color: $light;
+}
+
+.badge-defender {
+    background: $teal;
+    color: $light;
+}
+
+.badge-goalie {
+    background: $purple;
+    color: $light;
 }

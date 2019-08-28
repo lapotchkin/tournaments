@@ -36,15 +36,20 @@
                             <th style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
                             <th class="text-left">Гости</th>
                             <th style="width: 8em;"></th>
+                            @auth
+                                <th style="width: 2em;"></th>
+                            @endauth
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($games as $game)
                             <tr class="games {{ !is_null($game->home_score) ? 'alert-success' : '' }}">
                                 <td>
-                                    <span class="badge badge-pill badge-warning">{{ $game->isOvertime ? 'О' : '' }}</span>
+                                    <span
+                                        class="badge badge-pill badge-warning">{{ $game->isOvertime ? 'О' : '' }}</span>
                                     <span class="badge badge-pill badge-dark">{{ $game->isShootout ? 'Б' : '' }}</span>
-                                    <span class="badge badge-pill badge-danger">{{ $game->isTechnicalDefeat ? 'T' : '' }}</span>
+                                    <span
+                                        class="badge badge-pill badge-danger">{{ $game->isTechnicalDefeat ? 'T' : '' }}</span>
                                 </td>
                                 <td>{{ $game->playedAt ? (new \DateTime($game->playedAt))->format('d.m.Y') : '' }}</td>
                                 <td class="text-right">
@@ -74,6 +79,11 @@
                                         <i class="fas fa-gamepad"></i> протокол
                                     </a>
                                 </td>
+                                @auth
+                                    <td class="text-right">
+                                        <a href="{{ route('group.tournament.regular.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}" class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
+                                    </td>
+                                @endauth
                             </tr>
                         @endforeach
                         </tbody>

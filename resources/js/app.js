@@ -2,6 +2,8 @@ window.TRNMNT_sendData = require('./tools/dataSend').default;
 window.TRNMNT_deleteData = require('./tools/dataDelete').default;
 window.TRNMNT_helpers = require('./tools/helpers').default;
 
+require('./gameFormModule');
+
 Date.prototype.getShortDate = function (delimiter = '.', inverse = false) {
     const day = this.getDate().toString().length === 1 ? '0' + this.getDate() : this.getDate();
     const month = (this.getMonth() + 1).toString().length === 1 ? '0' + (this.getMonth() + 1) : (this.getMonth() + 1);

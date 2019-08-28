@@ -104,6 +104,7 @@ class GroupGameRegular extends Model
     use SoftDeletes;
 
     const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     const DELETED_AT = 'deletedAt';
 
     /**
@@ -166,6 +167,7 @@ class GroupGameRegular extends Model
         'createdAt',
         'playedAt',
         'deletedAt',
+        'match_id',
     ];
 
     /**

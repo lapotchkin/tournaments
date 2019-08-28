@@ -121,7 +121,50 @@ class GroupRegularController extends Controller
             }
         }
 
-        return view(Auth::check() ? 'site.group.game_form' : 'site.group.game_protocol', [
+        return view('site.group.game_protocol', [
+            'game' => $game,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param int     $tournamentId
+     * @param int     $gameId
+     * @return Factory|View
+     */
+    public function gameEdit(Request $request, int $tournamentId, int $gameId)
+    {
+        if (!Auth::check()) {
+            abort(403);
+        }
+
+        /** @var GroupGameRegular $game */
+        $game = GroupGameRegular::with([
+            'protocols.player',
+            'protocols.playerPosition',
+            'homeTeam.team',
+            'awayTeam.team',
+        ])
+            ->find($gameId);
+        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        foreach ($game->protocols as $protocol) {
+            if ($protocol->team_id === $game->home_team_id) {
+                $game->homeProtocols[] = $protocol;
+                if ($protocol->isGoalie) {
+                    $game->homeGoalie = $protocol;
+                }
+            } else {
+                $game->awayProtocols[] = $protocol;
+                if ($protocol->isGoalie) {
+                    $game->awayGoalie = $protocol;
+                }
+            }
+        }
+
+        return view('site.group.game_form', [
             'game' => $game,
         ]);
     }
