@@ -8,6 +8,8 @@ window.TRNMNT_gameFormModule = (function () {
     let _$gameForm = null;
     let _gameToSave = null;
     let _url = null;
+    let _gameId = null;
+    let _positions = null;
     const _templates = {
         game: `
             <tr>
@@ -31,37 +33,46 @@ window.TRNMNT_gameFormModule = (function () {
                 <td class="text-center">#{position}</td>
                 <td class="text-center">#{goals}</td>
                 <td class="text-center">#{assists}</td>
-                <td class="text-center">#{stars}</td>
+                <td class="text-center text-nowrap">#{stars}</td>
                 <td></td>
             </tr>`,
-        select: `
-            <select class="form-control form-control-sm">
+        starsSelect: `
+            <select class="form-control" name="star">
                 <option value="0">—</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
             </select>`,
         playerForm: `
-            <form>
-                <tr>
-                    <td>#{player}</td>
-                    <td class="text-center" style="width:5rem;">#{position}</td>
-                    <td><input type="text" class="text-right form-control" name="goals"></td>
-                    <td><input type="text" class="text-right form-control" name="assists"></td>
-                    <td>#{star}</td>
-                    <td>#{button}</td>
-                </tr>
-            </form>`,
+            <tr data-id="#{id}">
+                <td>#{player}</td>
+                <td class="text-center">#{position}</td>
+                <td><input type="text" class="text-right form-control" name="goals" value="#{goals}"></td>
+                <td><input type="text" class="text-right form-control" name="assists" value="#{assists}"></td>
+                <td>#{stars}</td>
+                <td>#{button}</td>
+            </tr>
+            `,
     };
 
     return {
         init: _init
     };
 
-    function _init(url, players, homeTeamId) {
+    /**
+     * @param url
+     * @param protocols
+     * @param players
+     * @param positions
+     * @param matchId
+     * @private
+     */
+    function _init(url, protocols, players, positions, matchId) {
         if (_isInitialized) return;
         _isInitialized = true;
         _url = url;
+        _positions = positions;
+        _gameId = +TRNMNT_helpers.parseUrl().segments[4];
         _$eaGames = $('#eaGames');
         _$getGames = $('#getGames');
         _$resetGame = $('#resetGame');
@@ -73,14 +84,18 @@ window.TRNMNT_gameFormModule = (function () {
         _$getGames.on('click', _onClickGetGames);
         _$resetGame.on('click', _onClickResetGames);
 
-        if (players.length) {
-            for (let player of players) {
-                const $tbody = player.team_id === homeTeamId ? _$homePlayers : _$awayPlayers;
+        if (!matchId) {
+            _createProtocolAddForm(_$homePlayers, players.home);
+            _createProtocolAddForm(_$awayPlayers, players.away);
+        }
+        for (let side in protocols) {
+            for (let player of protocols[side]) {
+                const $tbody = side === 'home' ? _$homePlayers : _$awayPlayers;
                 $tbody.append(_templates.player.format({
-                    tag: player.player.tag,
-                    position: _getPlayerBadge(player.position_id, player.player_position),
-                    goals: player.goals,
-                    assists: player.assists,
+                    tag: player.player_tag,
+                    position: _getPlayerBadge(player.position_id, player.position),
+                    goals: !player.isGoalie ? player.goals : '—',
+                    assists: !player.isGoalie ? player.assists : '—',
                     id: player.player_id,
                     stars: _getStars(player.star),
                 }));
@@ -88,6 +103,61 @@ window.TRNMNT_gameFormModule = (function () {
         }
     }
 
+    function _createProtocolAddForm($form, players) {
+        let playersSelect = '';
+        players.forEach(function (player) {
+            playersSelect += `<option value="${player.id}">${player.tag}</option>`;
+        });
+        const $row = $(_templates.playerForm.format({
+            id: '',
+            player: `<select class="form-control" name="player_id">${playersSelect}</select>`,
+            position: _getPositionSelect(_positions),
+            stars: _templates.starsSelect,
+            goals: '',
+            assists: '',
+            button: '<button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i></button>'
+        }));
+        $row.find('button').on('click', _onClickAddProtocol);
+        $form.append($row);
+    }
+
+    function _getPositionSelect(playerPosition) {
+        let positionSelect = '';
+        _positions.forEach(function (position) {
+            const selected = playerPosition === position.id ? 'selected' : '';
+            positionSelect += `<option value="${position.id}" ${selected}>${position.short_title}</option>`;
+        });
+        return `<select class="form-control" name="position_id">${positionSelect}</select>`;
+    }
+
+    function _onClickAddProtocol(event) {
+        event.preventDefault();
+        const $row = $(this).closest('tr');
+        const formData = {
+            game_id: _gameId,
+            team_id: +$row.closest('table').data('id'),
+            player_id: +$row.find('select[name=player_id]').val(),
+            position_id: +$row.find('select[name=position_id]').val(),
+            goals: +$row.find('input[name=goals]').val(),
+            assists: +$row.find('input[name=assists]').val(),
+            star: +$row.find('select[name=star]').val(),
+        };
+        console.log(formData);
+        const $playerOption = $row.find('select[name=player_id] option[value=' + formData.player_id + ']')
+        $row.closest('tbody').prepend(_templates.playerForm.format({
+            player: $playerOption.text(),
+            position: _getPositionSelect(formData.position_id),
+            goals: formData.goals,
+            assists: formData.assists,
+        }));
+        $playerOption.remove();
+    }
+
+    /**
+     * @param star
+     * @returns {string}
+     * @private
+     */
     function _getStars(star) {
         let stars = '';
         for (let i = 0; i < star; i += 1) {
@@ -96,6 +166,10 @@ window.TRNMNT_gameFormModule = (function () {
         return stars
     }
 
+    /**
+     * @param event
+     * @private
+     */
     function _onSubmitGame(event) {
         event.preventDefault();
         TRNMNT_helpers.disableButtons();
@@ -116,6 +190,10 @@ window.TRNMNT_gameFormModule = (function () {
         });
     }
 
+    /**
+     * @returns {string}
+     * @private
+     */
     function _getFormDataEA() {
         for (let field in _gameToSave.game) {
             const $field = $(`#${field}`);
@@ -129,15 +207,8 @@ window.TRNMNT_gameFormModule = (function () {
         }
 
         const players = {};
-        _$homePlayers.find('select').each((index, element) => {
-            const $element = $(element);
-            const playerId = $element.closest('tr').data('id');
-            players[playerId] = +$element.val();
-        });
-        _$awayPlayers.find('select').each((index, element) => {
-            const $element = $(element);
-            players[$element.data('id')] = +$element.val();
-        });
+        _$homePlayers.find('select').each(setPlayer);
+        _$awayPlayers.find('select').each(setPlayer);
 
         for (let side in _gameToSave.players) {
             for (let player of _gameToSave.players[side]) {
@@ -146,8 +217,18 @@ window.TRNMNT_gameFormModule = (function () {
         }
 
         return JSON.stringify(_gameToSave);
+
+        function setPlayer(index, element) {
+            const $element = $(element);
+            const playerId = $element.closest('tr').data('id');
+            players[playerId] = +$element.val();
+        }
     }
 
+    /**
+     * @returns {string}
+     * @private
+     */
     function _getFormData() {
         const formData = _$gameForm.serializeArray();
         const request = {
@@ -306,7 +387,7 @@ window.TRNMNT_gameFormModule = (function () {
                     goals: player.goals,
                     assists: player.assists,
                     id: player.player_id,
-                    stars: _templates.select,
+                    stars: _templates.starsSelect,
                 }));
             }
         }

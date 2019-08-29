@@ -7,6 +7,8 @@ use App\Models\GroupTournament;
 use App\Models\GroupTournamentGoalies;
 use App\Models\GroupTournamentLeaders;
 use App\Models\GroupTournamentPosition;
+use App\Models\Player;
+use App\Models\PlayerPosition;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -142,8 +144,8 @@ class GroupRegularController extends Controller
         $game = GroupGameRegular::with([
             'protocols.player',
             'protocols.playerPosition',
-            'homeTeam.team',
-            'awayTeam.team',
+            'homeTeam.team.players.player',
+            'awayTeam.team.players.player',
         ])
             ->find($gameId);
         if (is_null($game) || $game->tournament_id !== $tournamentId) {
@@ -163,9 +165,19 @@ class GroupRegularController extends Controller
                 }
             }
         }
+        $protocols = $game->getSafeProtocols();
+        $players = $game->getSafePlayersData();
+        $positionsRaw = PlayerPosition::all();
+        $positions = [];
+        foreach ($positionsRaw as $position) {
+            $positions[] = $position->getSafePosition();
+        }
 
         return view('site.group.game_form', [
-            'game' => $game,
+            'game'      => $game,
+            'protocols' => $protocols,
+            'players'   => $players,
+            'positions' => $positions,
         ]);
     }
 

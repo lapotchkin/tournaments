@@ -26,7 +26,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection|GroupGameRegularPlayer[] $gameRegularPlayers
  * @property-read Collection|GroupGameRegular[]       $gameRegulars
  * @property-read Platform|null                       $platform
- * @property-read Collection|TeamPlayer[]             $teamPlayers
+ * @property-read Collection|TeamPlayer[]             $players
  * @property-read Collection|GroupTournamentPlayoff[] $tournamentPlayoffs
  * @property-read Collection|GroupTournamentTeam[]    $tournamentTeams
  * @property-read Collection|AppTeam[]                $appTeams
@@ -130,7 +130,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function teamPlayers()
+    public function players()
     {
         return $this->hasMany('App\Models\TeamPlayer');
     }

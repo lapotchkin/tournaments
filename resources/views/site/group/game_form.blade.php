@@ -196,14 +196,14 @@
     <h3 class="mt-3">Статистика игроков</h3>
     <div class="row">
         <div class="col">
-            <table class="table table-sm table-striped" id="homePlayers">
+            <table class="table table-sm table-striped" id="homePlayers" data-id="{{ $game->home_team_id }}">
                 <thead>
                 <tr>
                     <th style="">Игрок</th>
-                    <th class="text-center" style="width: 5rem;">Позиция</th>
-                    <th class="text-center" style="width: 5rem;">Голы</th>
-                    <th class="text-center" style="width: 5rem;">Пасы</th>
-                    <th class="text-center" style="width: 0;"><i class="fas fa-star"></i></th>
+                    <th class="text-center" style="width: 5rem;">ПОЗ</th>
+                    <th class="text-center" style="width: 4rem;">Г</th>
+                    <th class="text-center" style="width: 4rem;">П</th>
+                    <th class="text-center" style="width: 4em;"><i class="fas fa-star"></i></th>
                     <th style="width: 0;"></th>
                 </tr>
                 </thead>
@@ -211,14 +211,14 @@
             </table>
         </div>
         <div class="col">
-            <table class="table table-sm table-striped" id="awayPlayers">
+            <table class="table table-sm table-striped" id="awayPlayers" data-id="{{ $game->away_team_id }}">
                 <thead>
                 <tr>
                     <th style="">Игрок</th>
-                    <th class="text-center" style="width: 5rem;">Позиция</th>
-                    <th class="text-center" style="width: 5rem;">Голы</th>
-                    <th class="text-center" style="width: 5rem;">Пасы</th>
-                    <th class="text-center" style="width: 0;"><i class="fas fa-star"></i></th>
+                    <th class="text-center" style="width: 5rem;">ПОЗ</th>
+                    <th class="text-center" style="width: 4rem;">Г</th>
+                    <th class="text-center" style="width: 4rem;">П</th>
+                    <th class="text-center" style="width: 4em;"><i class="fas fa-star"></i></th>
                     <th style="width: 0;"></th>
                 </tr>
                 </thead>
@@ -248,8 +248,10 @@
                     saveGame: '{{ action('Ajax\GroupController@editRegularGame', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}',
                     resetGame: '{{ action('Ajax\GroupController@resetRegularGame', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}'
                 },
-                {!! json_encode($game->protocols) !!},
-                {{ $game->home_team_id }}
+                {!! json_encode($protocols) !!},
+                {!! json_encode($players) !!},
+                {!! json_encode($positions) !!},
+                {{ $game->match_id ? $game->match_id : 'null' }}
             );
         });
     </script>

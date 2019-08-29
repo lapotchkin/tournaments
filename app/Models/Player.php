@@ -155,4 +155,16 @@ class Player extends Authenticatable
     {
         return $this->role === 1;
     }
+
+    /**
+     * @return object
+     */
+    public function getSafeData()
+    {
+        return (object)[
+            'id'   => $this->id,
+            'tag'  => $this->tag,
+            'name' => $this->name,
+        ];
+    }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\PlayerPosition
@@ -29,6 +30,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class PlayerPosition extends Model
 {
+    use SoftDeletes;
+
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = null;
+    const DELETED_AT = 'deletedAt';
+
     /**
      * The table associated with the model.
      *
@@ -69,5 +76,17 @@ class PlayerPosition extends Model
     public function groupGameRegularPlayers()
     {
         return $this->hasMany('App\Models\GroupGameRegularPlayer', 'position_id');
+    }
+
+    /**
+     * @return object
+     */
+    public function getSafePosition()
+    {
+        return (object)[
+            'id'          => $this->id,
+            'title'       => $this->title,
+            'short_title' => $this->short_title,
+        ];
     }
 }

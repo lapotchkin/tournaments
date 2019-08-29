@@ -164,9 +164,9 @@ class GroupGameRegular extends Model
         'isOvertime',
         'isShootout',
         'isTechnicalDefeat',
-        'createdAt',
+        //'createdAt',
         'playedAt',
-        'deletedAt',
+        //'deletedAt',
         'match_id',
     ];
 
@@ -200,5 +200,39 @@ class GroupGameRegular extends Model
     public function protocols()
     {
         return $this->hasMany('App\Models\GroupGameRegularPlayer', 'game_id');
+    }
+
+    /**
+     * @return array
+     */
+    public function getSafeProtocols()
+    {
+        $protocols = [
+            'home' => [],
+            'away' => [],
+        ];
+        foreach ($this->protocols as $protocol) {
+            if ($protocol->team_id === $this->home_team_id) {
+                $protocols['home'][] = $protocol->getSafeProtocol();
+            } else {
+                $protocols['away'][] = $protocol->getSafeProtocol();
+            }
+        }
+        return $protocols;
+    }
+
+    public function getSafePlayersData()
+    {
+        $players = [
+            'home' => [],
+            'away' => [],
+        ];
+        foreach ($this->homeTeam->team->players as $player) {
+            $players['home'][] = $player->player->getSafeData();
+        }
+        foreach ($this->awayTeam->team->players as $player) {
+            $players['away'][] = $player->player->getSafeData();
+        }
+        return $players;
     }
 }
