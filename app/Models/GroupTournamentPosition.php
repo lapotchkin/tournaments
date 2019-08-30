@@ -60,20 +60,23 @@ class GroupTournamentPosition
                 if(lot.lose > 0, lot.lose, 0) lose_ot,
                 if(lso.lose > 0, lso.lose, 0) lose_so,
                 if(l.lose > 0, l.lose, 0) lose,
-                (home_stats.goals_for + away_stats.goals_for) goals,
-                (home_stats.goals_against + away_stats.goals_against) goals_against,
-                (home_stats.shot_for + away_stats.shot_for) shots_for,
-                (home_stats.shot_against + away_stats.shot_against) shots_against,
-                (home_stats.penalty_for + away_stats.penalty_for) penalty_for,
-                (home_stats.penalty_for_success + away_stats.penalty_for_success) penalty_for_success,
-                (home_stats.penalty_against + away_stats.penalty_against) penalty_against,
-                (home_stats.penalty_against_success + away_stats.penalty_against_success) penalty_against_success,
-                (home_stats.faceoff_for + away_stats.faceoff_for) / (home_stats.faceoff_for + away_stats.faceoff_for + home_stats.faceoff_against + away_stats.faceoff_against) * 100 faceoff,
-                (home_stats.hit_for + away_stats.hit_for) hit_for,
-                (home_stats.hit_against + away_stats.hit_against) hit_against,
-                (home_stats.shorthanded_goal + away_stats.shorthanded_goal) shorthanded_goal,
-                (home_stats.attack_time + away_stats.attack_time) attack_time,
-                avg((home_stats.pass_percent + away_stats.pass_percent) /2) pass_percent
+                (ifnull(home_stats.goals_for, 0) + ifnull(away_stats.goals_for, 0)) goals,
+               (ifnull(home_stats.goals_against, 0) + ifnull(away_stats.goals_against, 0)) goals_against,
+               (ifnull(home_stats.shot_for, 0) + ifnull(away_stats.shot_for, 0)) shots_for,
+               (ifnull(home_stats.shot_against, 0) + ifnull(away_stats.shot_against, 0)) shots_against,
+               (ifnull(home_stats.penalty_for, 0) + ifnull(away_stats.penalty_for, 0)) penalty_for,
+               (ifnull(home_stats.penalty_for_success, 0) + ifnull(away_stats.penalty_for_success, 0)) penalty_for_success,
+               (ifnull(home_stats.penalty_against, 0) + ifnull(away_stats.penalty_against, 0)) penalty_against,
+               (ifnull(home_stats.penalty_against_success, 0) +
+                ifnull(away_stats.penalty_against_success, 0)) penalty_against_success,
+               (ifnull(home_stats.faceoff_for, 0) + ifnull(away_stats.faceoff_for, 0)) /
+               (ifnull(home_stats.faceoff_for, 0) + ifnull(away_stats.faceoff_for, 0) + ifnull(home_stats.faceoff_against, 0) +
+                ifnull(away_stats.faceoff_against, 0)) * 100 faceoff,
+               (ifnull(home_stats.hit_for, 0) + ifnull(away_stats.hit_for, 0)) hit_for,
+               (ifnull(home_stats.hit_against, 0) + ifnull(away_stats.hit_against, 0)) hit_against,
+               (ifnull(home_stats.shorthanded_goal, 0) + ifnull(away_stats.shorthanded_goal, 0)) shorthanded_goal,
+               (ifnull(home_stats.attack_time, 0) + ifnull(away_stats.attack_time, 0)) attack_time,
+               avg((ifnull(home_stats.pass_percent, 0) + ifnull(away_stats.pass_percent, 0)) / (if(home_stats.pass_percent is null, 0, 1) + if(away_stats.pass_percent is null, 0, 1))) pass_percent
             from team t
             
                 left join (

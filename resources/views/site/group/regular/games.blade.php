@@ -29,7 +29,7 @@
                         <thead>
                         <tr>
                             <th style="width: 2em;"></th>
-                            <th style="width: 6em;">Дата игры</th>
+                            <th style="width: 8em;">Дата игры</th>
                             <th class="text-right">Хозяева</th>
                             <th class="text-right" style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
                             <th style="width: 1em;"></th>
@@ -51,7 +51,12 @@
                                     <span
                                         class="badge badge-pill badge-danger">{{ $game->isTechnicalDefeat ? 'T' : '' }}</span>
                                 </td>
-                                <td>{{ $game->playedAt ? (new \DateTime($game->playedAt))->format('d.m.Y') : '' }}</td>
+                                <td>
+                                    {{ $game->playedAt ? (new \DateTime($game->playedAt))->format('d.m.Y') : '' }}
+                                    @if($game->match_id)
+                                        <em class="badge badge-secondary">EA</em>
+                                    @endif
+                                </td>
                                 <td class="text-right">
                                     @if ($game->home_score > $game->away_score)
                                         <strong>{{ $game->homeTeam->team->name }}</strong>
@@ -81,7 +86,8 @@
                                 </td>
                                 @auth
                                     <td class="text-right">
-                                        <a href="{{ route('group.tournament.regular.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}" class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
+                                        <a href="{{ route('group.tournament.regular.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
+                                           class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
                                     </td>
                                 @endauth
                             </tr>

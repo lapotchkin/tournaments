@@ -38,7 +38,7 @@ window.TRNMNT_gameFormModule = (function () {
                 <td></td>
             </tr>`,
         playerForm: `
-            <tr data-id="#{id}">
+            <tr data-id="#{id}" style="#{style}">
                 <td>#{player}</td>
                 <td class="text-center">#{position}</td>
                 <td><input type="text" class="text-right form-control" name="goals" value="#{goals}"></td>
@@ -128,7 +128,8 @@ window.TRNMNT_gameFormModule = (function () {
             stars: _getStarsSelect(),
             goals: '',
             assists: '',
-            button: '<button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i></button>'
+            button: '<button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i></button>',
+            style: 'border-top: 3px solid red;',
         }));
         $row.find('button').on('click', _onClickAddProtocol);
         $form.append($row);
@@ -197,6 +198,10 @@ window.TRNMNT_gameFormModule = (function () {
             success: response => {
                 TRNMNT_helpers.enableButtons();
                 _onSuccessAddProtocol(formData, response.data.id, $row);
+                $row.find('select[name=position_id]').val('0');
+                $row.find('input[name=goals]').val('');
+                $row.find('input[name=assists]').val('');
+                $row.find('select[name=star]').val('0');
             },
             error: TRNMNT_helpers.onErrorAjax,
             context: TRNMNT_helpers
@@ -221,6 +226,7 @@ window.TRNMNT_gameFormModule = (function () {
             button: '<button class="btn btn-primary"><i class="fas fa-edit"></i></button> <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>',
         }));
         $row.closest('tbody').prepend($protocolRow);
+        $protocolRow.find('button.btn-primary').on('click', _onClickEditProtocol);
         $protocolRow.find('button.btn-danger').on('click', _onClickRemoveProtocol);
         $playerOption.remove();
         const $playerOptions = $row.find('select[name=player_id] option');
@@ -265,6 +271,39 @@ window.TRNMNT_gameFormModule = (function () {
                 context: TRNMNT_helpers
             });
         }
+    }
+
+    /**
+     * @param event
+     * @private
+     */
+    function _onClickEditProtocol(event) {
+        event.preventDefault();
+        const $row = $(this).closest('tr');
+        const formData = {
+            position_id: +$row.find('select[name=position_id]').val(),
+            goals: +$row.find('input[name=goals]').val(),
+            assists: +$row.find('input[name=assists]').val(),
+            star: +$row.find('select[name=star]').val(),
+        };
+        formData.isGoalie = formData.position_id === 0 ? 1 : 0;
+        TRNMNT_helpers.disableButtons();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'post',
+            url: _url.protocol + '/' + $row.data('id'),
+            dataType: 'json',
+            contentType: 'json',
+            data: JSON.stringify(formData),
+            processData: false,
+            success: response => {
+                TRNMNT_helpers.enableButtons();
+            },
+            error: TRNMNT_helpers.onErrorAjax,
+            context: TRNMNT_helpers
+        });
     }
 
     /**
