@@ -10,6 +10,7 @@ window.TRNMNT_gameFormModule = (function () {
     let _url = null;
     let _gameId = null;
     let _positions = null;
+    let _players = null;
     const _templates = {
         game: `
             <tr>
@@ -36,13 +37,6 @@ window.TRNMNT_gameFormModule = (function () {
                 <td class="text-center text-nowrap">#{stars}</td>
                 <td></td>
             </tr>`,
-        starsSelect: `
-            <select class="form-control" name="star">
-                <option value="0">—</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-            </select>`,
         playerForm: `
             <tr data-id="#{id}">
                 <td>#{player}</td>
@@ -50,7 +44,7 @@ window.TRNMNT_gameFormModule = (function () {
                 <td><input type="text" class="text-right form-control" name="goals" value="#{goals}"></td>
                 <td><input type="text" class="text-right form-control" name="assists" value="#{assists}"></td>
                 <td>#{stars}</td>
-                <td>#{button}</td>
+                <td class="text-nowrap">#{button}</td>
             </tr>
             `,
     };
@@ -72,6 +66,7 @@ window.TRNMNT_gameFormModule = (function () {
         _isInitialized = true;
         _url = url;
         _positions = positions;
+        _players = players;
         _gameId = +TRNMNT_helpers.parseUrl().segments[4];
         _$eaGames = $('#eaGames');
         _$getGames = $('#getGames');
@@ -84,25 +79,43 @@ window.TRNMNT_gameFormModule = (function () {
         _$getGames.on('click', _onClickGetGames);
         _$resetGame.on('click', _onClickResetGames);
 
+        let $homeAddForm = null;
+        let $awayAddForm = null;
         if (!matchId) {
-            _createProtocolAddForm(_$homePlayers, players.home);
-            _createProtocolAddForm(_$awayPlayers, players.away);
+            $homeAddForm = _createProtocolAddForm(_$homePlayers, players.home);
+            $awayAddForm = _createProtocolAddForm(_$awayPlayers, players.away);
         }
         for (let side in protocols) {
             for (let player of protocols[side]) {
                 const $tbody = side === 'home' ? _$homePlayers : _$awayPlayers;
-                $tbody.append(_templates.player.format({
-                    tag: player.player_tag,
-                    position: _getPlayerBadge(player.position_id, player.position),
-                    goals: !player.isGoalie ? player.goals : '—',
-                    assists: !player.isGoalie ? player.assists : '—',
-                    id: player.player_id,
-                    stars: _getStars(player.star),
-                }));
+                if (matchId) {
+                    $tbody.append(_templates.player.format({
+                        tag: player.player_tag,
+                        position: _getPlayerBadge(player.position_id, player.position),
+                        goals: !player.isGoalie ? player.goals : '—',
+                        assists: !player.isGoalie ? player.assists : '—',
+                        id: player.player_id,
+                        stars: _getStars(player.star),
+                    }));
+                } else {
+                    _onSuccessAddProtocol({
+                        player_id: player.player_id,
+                        position_id: player.position_id,
+                        goals: player.goals,
+                        assists: player.assists,
+                        star: player.star,
+                    }, player.id, side === 'home' ? $homeAddForm : $awayAddForm);
+                }
             }
         }
     }
 
+    /**
+     * @param $form
+     * @param players
+     * @returns {jQuery.fn.init|jQuery|HTMLElement}
+     * @private
+     */
     function _createProtocolAddForm($form, players) {
         let playersSelect = '';
         players.forEach(function (player) {
@@ -111,16 +124,23 @@ window.TRNMNT_gameFormModule = (function () {
         const $row = $(_templates.playerForm.format({
             id: '',
             player: `<select class="form-control" name="player_id">${playersSelect}</select>`,
-            position: _getPositionSelect(_positions),
-            stars: _templates.starsSelect,
+            position: _getPositionSelect(),
+            stars: _getStarsSelect(),
             goals: '',
             assists: '',
             button: '<button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i></button>'
         }));
         $row.find('button').on('click', _onClickAddProtocol);
         $form.append($row);
+
+        return $row;
     }
 
+    /**
+     * @param playerPosition
+     * @returns {string}
+     * @private
+     */
     function _getPositionSelect(playerPosition) {
         let positionSelect = '';
         _positions.forEach(function (position) {
@@ -130,6 +150,25 @@ window.TRNMNT_gameFormModule = (function () {
         return `<select class="form-control" name="position_id">${positionSelect}</select>`;
     }
 
+    /**
+     * @param playerStar
+     * @returns {string}
+     * @private
+     */
+    function _getStarsSelect(playerStar) {
+        const stars = ['—', '1', '2', '3'];
+        let starsSelect = '';
+        for (let i = 0; i < stars.length; i += 1) {
+            const selected = playerStar === i ? 'selected' : '';
+            starsSelect += `<option value="${i}" ${selected}>${stars[i]}</option>`;
+        }
+        return `<select class="form-control" name="star">${starsSelect}</select>`;
+    }
+
+    /**
+     * @param event
+     * @private
+     */
     function _onClickAddProtocol(event) {
         event.preventDefault();
         const $row = $(this).closest('tr');
@@ -142,15 +181,90 @@ window.TRNMNT_gameFormModule = (function () {
             assists: +$row.find('input[name=assists]').val(),
             star: +$row.find('select[name=star]').val(),
         };
-        console.log(formData);
-        const $playerOption = $row.find('select[name=player_id] option[value=' + formData.player_id + ']')
-        $row.closest('tbody').prepend(_templates.playerForm.format({
+        formData.isGoalie = formData.position_id === 0 ? 1 : 0;
+
+        TRNMNT_helpers.disableButtons();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'put',
+            url: _url.protocol,
+            dataType: 'json',
+            contentType: 'json',
+            processData: false,
+            data: JSON.stringify(formData),
+            success: response => {
+                TRNMNT_helpers.enableButtons();
+                _onSuccessAddProtocol(formData, response.data.id, $row);
+            },
+            error: TRNMNT_helpers.onErrorAjax,
+            context: TRNMNT_helpers
+        });
+    }
+
+    /**
+     * @param formData
+     * @param protocolId
+     * @param $row
+     * @private
+     */
+    function _onSuccessAddProtocol(formData, protocolId, $row) {
+        const $playerOption = $row.find('select[name=player_id] option[value=' + formData.player_id + ']');
+        const $protocolRow = $(_templates.playerForm.format({
+            id: protocolId,
             player: $playerOption.text(),
             position: _getPositionSelect(formData.position_id),
             goals: formData.goals,
             assists: formData.assists,
+            stars: _getStarsSelect(formData.star),
+            button: '<button class="btn btn-primary"><i class="fas fa-edit"></i></button> <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>',
         }));
+        $row.closest('tbody').prepend($protocolRow);
+        $protocolRow.find('button.btn-danger').on('click', _onClickRemoveProtocol);
         $playerOption.remove();
+        const $playerOptions = $row.find('select[name=player_id] option');
+        if (!$playerOptions.length) {
+            $row.hide();
+        }
+    }
+
+    /**
+     * @param event
+     * @private
+     */
+    function _onClickRemoveProtocol(event) {
+        event.preventDefault();
+        if (confirm('Удалить протокол')) {
+            const $row = $(this).closest('tr');
+            const playerTag = $($row.find('td')[0]).text();
+            for (let side in _players) {
+                for (let player of _players[side]) {
+                    if (playerTag !== player.tag) continue;
+                    const $playerSelect = $row.closest('table')
+                        .find('select[name=player_id]');
+                    $playerSelect.append(`<option value="${player.id}">${player.tag}</option>`);
+                    $playerSelect.closest('tr').show();
+                }
+            }
+            $row.remove();
+            TRNMNT_helpers.disableButtons();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'delete',
+                url: _url.protocol + '/' + $row.data('id'),
+                dataType: 'json',
+                contentType: 'json',
+                processData: false,
+                success: response => {
+                    TRNMNT_helpers.enableButtons();
+                },
+                error: TRNMNT_helpers.onErrorAjax,
+                context: TRNMNT_helpers
+            });
+        }
     }
 
     /**
@@ -387,7 +501,7 @@ window.TRNMNT_gameFormModule = (function () {
                     goals: player.goals,
                     assists: player.assists,
                     id: player.player_id,
-                    stars: _templates.starsSelect,
+                    stars: _getStarsSelect,
                 }));
             }
         }

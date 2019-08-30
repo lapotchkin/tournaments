@@ -323,4 +323,62 @@ class GroupController extends Controller
 
         return $this->renderAjax([], 'Протокол игры обнулён');
     }
+
+    /**
+     * @param StoreRequest $request
+     * @return ResponseFactory|Response
+     */
+    public function createRegularProtocol(StoreRequest $request, int $tournamentId, int $gameId)
+    {
+        /** @var GroupGameRegular $game */
+        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        $input = json_decode($request->getContent(), true);
+        $protocol = new GroupGameRegularPlayer;
+        $protocol->fill($input);
+        $protocol->save();
+
+        return $this->renderAjax(['id' => $protocol->id]);
+    }
+
+    public function updateRegularProtocol(StoreRequest $request, int $tournamentId, int $gameId, int $protocolId) {
+        /** @var GroupGameRegular $game */
+        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        $protocol = GroupGameRegularPlayer::find($protocolId);
+        if (is_null($game) || $game->tournament_id !== $tournamentId || is_null($protocol)) {
+            abort(404);
+        }
+
+        $input = json_decode($request->getContent(), true);
+        $protocol->fill($input);
+        $protocol->save();
+
+        return $this->renderAjax();
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $protocolId
+     * @return ResponseFactory|Response
+     * @throws Exception
+     */
+    public function deleteRegularProtocol(StoreRequest $request, int $tournamentId, int $gameId, int $protocolId)
+    {
+        /** @var GroupGameRegular $game */
+        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        $protocol = GroupGameRegularPlayer::find($protocolId);
+        if (is_null($game) || $game->tournament_id !== $tournamentId || is_null($protocol)) {
+            abort(404);
+        }
+
+        $protocol->delete();
+
+        return $this->renderAjax();
+    }
 }

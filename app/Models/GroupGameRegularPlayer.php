@@ -200,6 +200,7 @@ class GroupGameRegularPlayer extends Model
     public function getSafeProtocol()
     {
         $protocol = new stdClass;
+        $protocol->id = $this->id;
         foreach ($this->fillable as $field) {
             $protocol->{$field} = $this->{$field};
         }

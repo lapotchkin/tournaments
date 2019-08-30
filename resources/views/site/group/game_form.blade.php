@@ -246,7 +246,8 @@
                 {
                     lastGames: '{{ action('Ajax\EaController@getLastGames', ['gameId' => $game->id]) }}',
                     saveGame: '{{ action('Ajax\GroupController@editRegularGame', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}',
-                    resetGame: '{{ action('Ajax\GroupController@resetRegularGame', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}'
+                    resetGame: '{{ action('Ajax\GroupController@resetRegularGame', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}',
+                    protocol: '{{ action('Ajax\GroupController@createRegularProtocol', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}'
                 },
                 {!! json_encode($protocols) !!},
                 {!! json_encode($players) !!},
