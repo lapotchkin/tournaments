@@ -205,10 +205,11 @@ class GroupGameRegularPlayer extends Model
             $protocol->{$field} = $this->{$field};
         }
         $protocol->player_tag = $this->player->tag;
-        $protocol->position = (object)[
+        $protocol->position = $this->playerPosition ? (object)[
             'title'       => $this->playerPosition->title,
             'short_title' => $this->playerPosition->short_title,
-        ];
+        ] : null;
+
         return $protocol;
     }
 }

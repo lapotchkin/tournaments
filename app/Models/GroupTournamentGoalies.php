@@ -21,9 +21,17 @@ class GroupTournamentGoalies
         $position = DB::select("
             select
                 p.id,
-                concat(p.name, ' (', p.tag, ')') goalie,
-                t.name team,
-                t.id team_id,
+                concat('<a href=\"/player/', p.id, '\">', p.name, '</a> <small>', p.tag, '</small>') goalie,
+                (
+                   select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge badge-success badge-pill\">', t.short_name, '</span>') name
+                   from groupGameRegular_player gGRp
+                        inner join groupGameRegular gGR on gGRp.game_id = gGR.id and gGR.tournament_id = ?
+                        inner join team t on gGRp.team_id = t.id
+                   where gGRp.player_id = p.id and gGRp.deletedAt is null
+                   order by gGRp.id desc
+                   limit 0,1
+               ) team,
+                t.id as team_id,
                 count(p.name) games,
                 sum(if(gGRp.team_id = gGR.home_team_id and gGR.home_score > gGR.away_score, 1, 0))
                     + sum(if(gGRp.team_id = gGR.away_team_id and gGR.away_score > gGR.home_score, 1, 0)) wins,
@@ -40,10 +48,10 @@ class GroupTournamentGoalies
                 {$dateString}
                 and gGRp.deletedAt is null
             
-            group by p.id, p.name, p.tag, t.name, t.id
+            group by p.id, p.name, p.tag, t.id
             
             order by team, goalie
-        ", [$tournamentId]);
+        ", [$tournamentId, $tournamentId]);
 
         return $position;
     }

@@ -21,7 +21,7 @@ class GroupTournamentLeaders
         $leaders = DB::select("
             select leaders.*,
                    (
-                       select t.name
+                       select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge badge-success badge-pill\">', t.short_name, '</span>') name
                        from groupGameRegular_player gGRp
                             inner join groupGameRegular gGR on gGRp.game_id = gGR.id and gGR.tournament_id = ?
                             inner join team t on gGRp.team_id = t.id
@@ -32,7 +32,7 @@ class GroupTournamentLeaders
             from
                 (
                     select p.id,
-                           concat(p.name, ' (', p.tag, ')') player,
+                           concat('<a href=\"/player/', p.id, '\">', p.name, '</a> <small>', p.tag, '</small>') player,
                            count(gGRp.id) games,
                            sum(gGRp.goals) goals,
                            sum(gGRp.assists) assists,

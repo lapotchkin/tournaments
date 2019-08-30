@@ -37,7 +37,7 @@ class GroupTournamentPosition
     {
         $dateString = is_null($date) ? '' : "and updatedAt < '{$date}'";
         $position = DB::select("
-            select t.name as team,
+            select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge badge-success badge-pill\">', t.short_name, '</span>') as team,
                 t.id as id,
                 (
                     if(w.wins > 0, w.wins, 0) +

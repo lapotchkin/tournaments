@@ -220,8 +220,8 @@ window.TRNMNT_gameFormModule = (function () {
             id: protocolId,
             player: $playerOption.text(),
             position: _getPositionSelect(formData.position_id),
-            goals: formData.goals,
-            assists: formData.assists,
+            goals: formData.goals !== null ? formData.goals : '',
+            assists: formData.assists !== null ? formData.assists : '',
             stars: _getStarsSelect(formData.star),
             button: '<button class="btn btn-primary"><i class="fas fa-edit"></i></button> <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>',
         }));
@@ -540,7 +540,7 @@ window.TRNMNT_gameFormModule = (function () {
                     goals: player.goals,
                     assists: player.assists,
                     id: player.player_id,
-                    stars: _getStarsSelect,
+                    stars: _getStarsSelect(),
                 }));
             }
         }

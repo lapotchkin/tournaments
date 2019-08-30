@@ -10,7 +10,7 @@
 
     <h3>Турнирная таблица</h3>
     <table id="teams" class="teams table table-striped table-sm">
-        <thead></thead>
+        <thead class="thead-dark"></thead>
         <tbody></tbody>
     </table>
     <table class="table table-sm">
@@ -38,7 +38,7 @@
 
     <h3 class="mt-3">Статистика команд</h3>
     <table id="teamsExtended" class="teams table table-striped table-sm">
-        <thead></thead>
+        <thead class="thead-dark"></thead>
         <tbody></tbody>
     </table>
     <table class="table table-sm">
@@ -64,19 +64,19 @@
 
     <h3 class="mt-3">Лучшие по очкам</h3>
     <table id="topPoints" class="leaders table table-striped table-sm">
-        <thead></thead>
+        <thead class="thead-dark"></thead>
         <tbody></tbody>
     </table>
 
     <h3 class="mt-3">Лучшие по голам</h3>
     <table id="topGoals" class="leaders table table-striped table-sm">
-        <thead></thead>
+        <thead class="thead-dark"></thead>
         <tbody></tbody>
     </table>
 
     <h3 class="mt-3">Лучшие по передачам</h3>
     <table id="topAssists" class="leaders table table-striped table-sm">
-        <thead></thead>
+        <thead class="thead-dark"></thead>
         <tbody></tbody>
     </table>
 
@@ -85,7 +85,7 @@
         <small class="text-muted">В таблице только вратари, сыгравшие не менее 25% от общего числа игр команды</small>
     </h3>
     <table id="goalies" class="leaders table table-striped table-sm">
-        <thead></thead>
+        <thead class="thead-dark"></thead>
         <tbody></tbody>
     </table>
 @endsection
@@ -202,15 +202,15 @@
                     {'data': 'prevPlace', 'title': ''},
                     {'data': 'goalie', 'title': 'Вратарь'},
                     {'data': 'team', 'title': 'Команда'},
-                    {'data': 'games', 'title': 'Игры'},
-                    {'data': 'wins', 'title': 'Победы'},
-                    {'data': 'loses', 'title': 'Поражения'},
-                    {'data': 'shot_against', 'title': 'Броски'},
-                    {'data': 'saves', 'title': 'Сэйвы'},
+                    {'data': 'games', 'title': 'И'},
+                    {'data': 'wins', 'title': 'ПОБ'},
+                    {'data': 'loses', 'title': 'ПОР'},
+                    {'data': 'shot_against', 'title': 'БРОС'},
+                    {'data': 'saves', 'title': 'ОТБ'},
                     {'data': 'goal_against', 'title': 'Голы'},
-                    {'data': 'saves_percent', 'title': 'Сэйвы %'},
-                    {'data': 'goal_against_per_game', 'title': 'Гол/Игра'},
-                    {'data': 'shootouts', 'title': 'Сухие'},
+                    {'data': 'saves_percent', 'title': 'КН'},
+                    {'data': 'goal_against_per_game', 'title': 'ГОЛ/И'},
+                    {'data': 'shootouts', 'title': 'СУХ'},
                 ],
                 'ordering': false,
                 'paging': false,
@@ -222,7 +222,7 @@
     </script>
 
     <style>
-        .teams.dataTable tbody tr:nth-child(4) td {
+        .teams.dataTable tbody tr:nth-child({{ pow(2, $tournament->playoff_rounds) }}) td {
             border-bottom: 3px red solid !important;
         }
         .dataTable thead th{
@@ -248,14 +248,6 @@
         .teams.dataTable tbody td:nth-child(3),
         .leaders.dataTable tbody td:nth-child(3) {
             font-weight: bold;
-        }
-
-        #topPoints.dataTable tbody td:nth-child(8),
-        #topGoals.dataTable tbody td:nth-child(6),
-        #topAssists.dataTable tbody td:nth-child(7),
-        #goalies.dataTable tbody td:nth-child(11) {
-            background-color: #cce5ff !important;
-            /*color: white !important;*/
         }
     </style>
 @endsection

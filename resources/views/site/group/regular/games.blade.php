@@ -25,14 +25,14 @@
                     @if (count($divisions) > 1)
                         <h4>Группа {{ TextUtils::divisionLetter($division) }}</h4>
                     @endif
-                    <table class="table table-sm">
-                        <thead>
+                    <table class="table table-striped table-sm">
+                        <thead class="thead-dark">
                         <tr>
                             <th style="width: 2em;"></th>
                             <th style="width: 8em;">Дата игры</th>
                             <th class="text-right">Хозяева</th>
                             <th class="text-right" style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
-                            <th style="width: 1em;"></th>
+                            <th style="width: 1em;">:</th>
                             <th style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
                             <th class="text-left">Гости</th>
                             <th style="width: 8em;"></th>
@@ -43,7 +43,7 @@
                         </thead>
                         <tbody>
                         @foreach($games as $game)
-                            <tr class="games {{ !is_null($game->home_score) ? 'alert-success' : '' }}">
+                            <tr class="games {{ !is_null($game->home_score) ? 'table-success' : '' }}">
                                 <td>
                                     <span
                                         class="badge badge-pill badge-warning">{{ $game->isOvertime ? 'О' : '' }}</span>
@@ -59,23 +59,29 @@
                                 </td>
                                 <td class="text-right">
                                     @if ($game->home_score > $game->away_score)
-                                        <strong>{{ $game->homeTeam->team->name }}</strong>
+                                        <strong><a href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a></strong>
                                     @else
-                                        {{ $game->homeTeam->team->name }}
+                                        <a href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a>
                                     @endif
+                                    <span class="badge badge-success badge-pill">
+                                        {{ $game->homeTeam->team->short_name }}
+                                    </span>
                                 </td>
                                 <td class="text-right">
-                                    {!! !is_null($game->home_score) ? '<span class="badge badge-primary badge-pill">' . $game->home_score . '</span>' : '—' !!}
+                                    {!! !is_null($game->home_score) ? '<span class="badge badge-dark badge-pill">' . $game->home_score . '</span>' : '—' !!}
                                 </td>
                                 <td class="text-center">:</td>
                                 <td class="text-left">
-                                    {!! !is_null($game->away_score) ? '<span class="badge badge-primary badge-pill">' . $game->away_score . '</span>' : '—' !!}
+                                    {!! !is_null($game->away_score) ? '<span class="badge badge-dark badge-pill">' . $game->away_score . '</span>' : '—' !!}
                                 </td>
                                 <td class="text-left">
+                                    <span class="badge badge-success badge-pill">
+                                        {{ $game->awayTeam->team->short_name }}
+                                    </span>
                                     @if ($game->home_score < $game->away_score)
-                                        <strong>{{ $game->awayTeam->team->name }}</strong>
+                                        <strong><a href="{{ route('team', ['teamId' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a></strong>
                                     @else
-                                        {{ $game->awayTeam->team->name }}
+                                        <a href="{{ route('team', ['teamId' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a>
                                     @endif
                                 </td>
                                 <td class="text-right">

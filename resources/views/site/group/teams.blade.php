@@ -11,7 +11,7 @@
     <div class="card-deck">
         @foreach($divisions as $number => $division)
             <div class="card mb-3" id="division-{{ $number }}">
-                <h4 class="card-header">Группа {{ TextUtils::divisionLetter($number) }}</h4>
+                <h4 class="card-header bg-dark text-light">Группа {{ TextUtils::divisionLetter($number) }}</h4>
                 <div class="card-body">
                     <table class="table table-striped table-sm" id="team-table">
                         <tbody>
@@ -19,9 +19,8 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    <a href="{{ action('Site\TeamController@team', ['teamId' => $team->id]) }}">
-                                        {{ $team->name }}
-                                    </a>
+                                    <a href="{{ route('team', ['teamId' => $team->id]) }}">{{ $team->name }}</a>
+                                    <span class="badge badge-success badge-pill">{{ $team->short_name }}</span>
                                 </td>
                                 <td class="text-right">
                                     @auth

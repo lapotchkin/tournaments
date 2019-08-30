@@ -58,4 +58,34 @@ class TextUtils
         }
         return preg_replace('/^00:/', '', $time, 1);
     }
+
+    /**
+     * @param $positionId
+     * @return string
+     */
+    public static function positionBadge($position)
+    {
+        if (is_null($position)) {
+            return  '';
+        }
+        $badgeClass = '';
+        switch ($position->id) {
+            case 0:
+                $badgeClass = 'badge-goalie';
+                break;
+            case 1:
+                $badgeClass = 'badge-defender';
+                break;
+            case 3:
+                $badgeClass = 'badge-left_wing';
+                break;
+            case 4:
+                $badgeClass = 'badge-center';
+                break;
+            case 5:
+                $badgeClass = 'badge-right_wing';
+                break;
+        }
+        return "<span class=\"badge {$badgeClass}\">{$position->short_title}</span>";
+    }
 }

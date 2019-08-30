@@ -87,7 +87,8 @@ Route::get('/personal', 'Site\PersonalController@index');
  */
 Route::get('/team', 'Site\TeamController@index');
 Route::get('/team/{teamId}', 'Site\TeamController@team')
-    ->where(['teamId' => '[0-9]+']);
+    ->where(['teamId' => '[0-9]+'])
+    ->name('team');
 
 /*
  * Player

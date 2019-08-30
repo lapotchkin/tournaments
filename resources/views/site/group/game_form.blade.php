@@ -197,7 +197,7 @@
     <div class="row">
         <div class="col">
             <table class="table table-sm table-striped" id="homePlayers" data-id="{{ $game->home_team_id }}">
-                <thead>
+                <thead class="thead-dark">
                 <tr>
                     <th style="">Игрок</th>
                     <th class="text-center" style="width: 5rem;">ПОЗ</th>
@@ -212,7 +212,7 @@
         </div>
         <div class="col">
             <table class="table table-sm table-striped" id="awayPlayers" data-id="{{ $game->away_team_id }}">
-                <thead>
+                <thead class="thead-dark">
                 <tr>
                     <th style="">Игрок</th>
                     <th class="text-center" style="width: 5rem;">ПОЗ</th>
