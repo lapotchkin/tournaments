@@ -4,14 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>@yield('title')Киберспортивная лига</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     @section('script')
         <script src="{!! mix('/js/bootstrap.js') !!}"></script>
         {{--        <script src="{!! mix('/js/common.js') !!}"></script>--}}
         <script src="{!! mix('/js/app.js') !!}"></script>
+        <link href="{!! mix('/css/app.css') !!}" rel="stylesheet" type="text/css">
     @show
-
-    <link href="{!! mix('/css/app.css') !!}" rel="stylesheet" type="text/css">
 </head>
 {{--<body style="background-image: url({{ asset('images/pic/thumb10.jpg') }})">--}}
 <body>

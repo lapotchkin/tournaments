@@ -21,5 +21,6 @@ mix.js('resources/js/bootstrap.js', 'public/js');
 // mix.js('resources/js/common.js', 'public/js');
 
 mix.sass('resources/sass/app.scss', 'public/css');
+mix.sass('resources/sass/brackets.scss', 'public/css');
 
 if (mix.inProduction()) mix.version();

@@ -63,7 +63,7 @@
                                     @else
                                         <a href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a>
                                     @endif
-                                    <span class="badge badge-success badge-pill">
+                                    <span class="badge badge-success">
                                         {{ $game->homeTeam->team->short_name }}
                                     </span>
                                 </td>
@@ -75,7 +75,7 @@
                                     {!! !is_null($game->away_score) ? '<span class="badge badge-dark badge-pill">' . $game->away_score . '</span>' : '—' !!}
                                 </td>
                                 <td class="text-left">
-                                    <span class="badge badge-success badge-pill">
+                                    <span class="badge badge-success">
                                         {{ $game->awayTeam->team->short_name }}
                                     </span>
                                     @if ($game->home_score < $game->away_score)

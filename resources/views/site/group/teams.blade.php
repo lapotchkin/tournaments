@@ -20,7 +20,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
                                     <a href="{{ route('team', ['teamId' => $team->id]) }}">{{ $team->name }}</a>
-                                    <span class="badge badge-success badge-pill">{{ $team->short_name }}</span>
+                                    <span class="badge badge-success">{{ $team->short_name }}</span>
                                 </td>
                                 <td class="text-right">
                                     @auth

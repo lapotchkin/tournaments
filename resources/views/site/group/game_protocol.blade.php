@@ -15,7 +15,7 @@
                     <a href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a>
                 </h2>
                 <h4>
-                    <span class="badge badge-success badge-pill">
+                    <span class="badge badge-success">
                         {{ $game->homeTeam->team->short_name }}
                     </span>
                 </h4>
@@ -44,7 +44,7 @@
                     <a href="{{ route('team', ['teamId' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a>
                 </h2>
                 <h4>
-                    <span class="badge badge-success badge-pill">
+                    <span class="badge badge-success">
                         {{ $game->awayTeam->team->short_name }}
                     </span>
                 </h4>

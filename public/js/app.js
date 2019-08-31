@@ -1,1 +1,1220 @@
-!function(t){var e={};function a(n){if(e[n])return e[n].exports;var r=e[n]={i:n,l:!1,exports:{}};return t[n].call(r.exports,r,r.exports,a),r.l=!0,r.exports}a.m=t,a.c=e,a.d=function(t,e,n){a.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},a.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},a.t=function(t,e){if(1&e&&(t=a(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(a.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var r in t)a.d(n,r,function(e){return t[e]}.bind(null,r));return n},a.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return a.d(e,"a",e),e},a.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},a.p="/",a(a.s=4)}({"/Vo2":function(t,e,a){"use strict";a.r(e),e.default=function(t){$.ajaxSetup({headers:{"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")}}),$(t.selector).submit(function(e){e.preventDefault(),TRNMNT_helpers.disableButtons();for(var a=$(this),n=a.serializeArray(),r={},o=0;o<n.length;o+=1){n[o].value&&(r[n[o].name]=n[o].value);var s=a.find("[name="+n[o].name+"]");s.removeClass("is-invalid"),s.closest(".form-group").find(".invalid-feedback").empty()}$.ajax({type:t.method,url:t.url,data:r,dataType:"json",success:function(e){TRNMNT_helpers.enableButtons(),t.success(e)},error:function(t){for(var e in TRNMNT_helpers.onErrorAjax(t),t.responseJSON.errors){var n=t.responseJSON.errors[e],r=a.find("[name="+e+"]");r.addClass("is-invalid");for(var o="",s=0;s<n.length;s+=1)o+=n[s]+"<br>";r.closest(".form-group").find(".invalid-feedback").html(o)}}})})}},4:function(t,e,a){t.exports=a("bUC5")},GGTS:function(t,e){window.TRNMNT_gameFormModule=function(){var t=!1,e=null,a=null,n=null,r=null,o=null,s=null,i=null,l=null,c=null,d=null,p=null,u={game:'\n            <tr>\n                <td>#{date}</td>\n                <td class="text-right">#{home_team}</td>\n                <td class="text-right">\n                    <span class="badge badge-primary badge-pill">#{home_score}</span>\n                </td>\n                <td class="text-center">:</td>\n                <td>\n                    <span class="badge badge-primary badge-pill">#{away_score}</span>\n                </td>\n                <td>#{away_team}</td>\n                <td class="text-right">\n                    <button type="button" class="btn btn-primary btn-sm">Заполнить</button>\n                </td>\n            </tr>',player:'\n            <tr data-id="#{id}">\n                <td>#{tag}</td>\n                <td class="text-center">#{position}</td>\n                <td class="text-center">#{goals}</td>\n                <td class="text-center">#{assists}</td>\n                <td class="text-center text-nowrap">#{stars}</td>\n                <td></td>\n            </tr>',playerForm:'\n            <tr data-id="#{id}" style="#{style}">\n                <td>#{player}</td>\n                <td class="text-center">#{position}</td>\n                <td><input type="text" class="text-right form-control" name="goals" value="#{goals}"></td>\n                <td><input type="text" class="text-right form-control" name="assists" value="#{assists}"></td>\n                <td>#{stars}</td>\n                <td class="text-nowrap">#{button}</td>\n            </tr>\n            '};return{init:function(i,h,m,g,v){if(t)return;t=!0,l=i,d=g,p=m,c=+TRNMNT_helpers.parseUrl().segments[4],e=$("#eaGames"),a=$("#getGames"),n=$("#resetGame"),r=$("#homePlayers").find("tbody"),o=$("#awayPlayers").find("tbody"),(s=$("#game-form")).on("submit",x),a.on("click",M),n.on("click",S);var b=null,N=null;v||(b=f(r,m.home),N=f(o,m.away));for(var _ in h){var w=!0,R=!1,D=void 0;try{for(var k,O=h[_][Symbol.iterator]();!(w=(k=O.next()).done);w=!0){var E=k.value,B="home"===_?r:o;v?B.append(u.player.format({tag:E.player_tag,position:j(E.position_id,E.position),goals:E.isGoalie?"—":E.goals,assists:E.isGoalie?"—":E.assists,id:E.player_id,stars:T(E.star)})):y({player_id:E.player_id,position_id:E.position_id,goals:E.goals,assists:E.assists,star:E.star},E.id,"home"===_?b:N)}}catch(t){R=!0,D=t}finally{try{w||null==O.return||O.return()}finally{if(R)throw D}}}}};function f(t,e){var a="";e.forEach(function(t){a+='<option value="'.concat(t.id,'">').concat(t.tag,"</option>")});var n=$(u.playerForm.format({id:"",player:'<select class="form-control" name="player_id">'.concat(a,"</select>"),position:h(),stars:m(),goals:"",assists:"",button:'<button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i></button>',style:"border-top: 3px solid red;"}));return n.find("button").on("click",g),t.append(n),n}function h(t){var e="";return d.forEach(function(a){var n=t===a.id?"selected":"";e+='<option value="'.concat(a.id,'" ').concat(n,">").concat(a.short_title,"</option>")}),'<select class="form-control" name="position_id">'.concat(e,"</select>")}function m(t){for(var e=["—","1","2","3"],a="",n=0;n<e.length;n+=1){var r=t===n?"selected":"";a+='<option value="'.concat(n,'" ').concat(r,">").concat(e[n],"</option>")}return'<select class="form-control" name="star">'.concat(a,"</select>")}function g(t){t.preventDefault();var e=$(this).closest("tr"),a={game_id:c,team_id:+e.closest("table").data("id"),player_id:+e.find("select[name=player_id]").val(),position_id:+e.find("select[name=position_id]").val(),goals:+e.find("input[name=goals]").val(),assists:+e.find("input[name=assists]").val(),star:+e.find("select[name=star]").val()};a.isGoalie=0===a.position_id?1:0,TRNMNT_helpers.disableButtons(),$.ajax({headers:{"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")},type:"put",url:l.protocol,dataType:"json",contentType:"json",processData:!1,data:JSON.stringify(a),success:function(t){TRNMNT_helpers.enableButtons(),y(a,t.data.id,e),e.find("select[name=position_id]").val("0"),e.find("input[name=goals]").val(""),e.find("input[name=assists]").val(""),e.find("select[name=star]").val("0")},error:TRNMNT_helpers.onErrorAjax,context:TRNMNT_helpers})}function y(t,e,a){var n=a.find("select[name=player_id] option[value="+t.player_id+"]"),r=$(u.playerForm.format({id:e,player:n.text(),position:h(t.position_id),goals:null!==t.goals?t.goals:"",assists:null!==t.assists?t.assists:"",stars:m(t.star),button:'<button class="btn btn-primary"><i class="fas fa-edit"></i></button> <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>'}));a.closest("tbody").prepend(r),r.find("button.btn-primary").on("click",b),r.find("button.btn-danger").on("click",v),n.remove(),a.find("select[name=player_id] option").length||a.hide()}function v(t){if(t.preventDefault(),confirm("Удалить протокол")){var e=$(this).closest("tr"),a=$(e.find("td")[0]).text();for(var n in p){var r=!0,o=!1,s=void 0;try{for(var i,c=p[n][Symbol.iterator]();!(r=(i=c.next()).done);r=!0){var d=i.value;if(a===d.tag){var u=e.closest("table").find("select[name=player_id]");u.append('<option value="'.concat(d.id,'">').concat(d.tag,"</option>")),u.closest("tr").show()}}}catch(t){o=!0,s=t}finally{try{r||null==c.return||c.return()}finally{if(o)throw s}}}e.remove(),TRNMNT_helpers.disableButtons(),$.ajax({headers:{"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")},type:"delete",url:l.protocol+"/"+e.data("id"),dataType:"json",contentType:"json",processData:!1,success:function(t){TRNMNT_helpers.enableButtons()},error:TRNMNT_helpers.onErrorAjax,context:TRNMNT_helpers})}}function b(t){t.preventDefault();var e=$(this).closest("tr"),a={position_id:+e.find("select[name=position_id]").val(),goals:+e.find("input[name=goals]").val(),assists:+e.find("input[name=assists]").val(),star:+e.find("select[name=star]").val()};a.isGoalie=0===a.position_id?1:0,TRNMNT_helpers.disableButtons(),$.ajax({headers:{"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")},type:"post",url:l.protocol+"/"+e.data("id"),dataType:"json",contentType:"json",data:JSON.stringify(a),processData:!1,success:function(t){TRNMNT_helpers.enableButtons()},error:TRNMNT_helpers.onErrorAjax,context:TRNMNT_helpers})}function T(t){for(var e="",a=0;a<t;a+=1)e+='<i class="fas fa-star text-danger"></i>';return e}function x(t){t.preventDefault(),TRNMNT_helpers.disableButtons(),$.ajax({headers:{"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")},type:"post",url:l.saveGame,dataType:"json",contentType:"json",processData:!1,data:i?N():_(),success:w,error:TRNMNT_helpers.onErrorAjax,context:TRNMNT_helpers})}function N(){for(var t in i.game){var e=$("#".concat(t));if(!1===e.prop("readonly")){var a=e.val();-1!==t.indexOf("_percent")&&(a=a?parseFloat(a.replace(",",".")):0),i.game[t]=a}}var n={};for(var s in r.find("select").each(h),o.find("select").each(h),i.players){var l=!0,c=!1,d=void 0;try{for(var p,u=i.players[s][Symbol.iterator]();!(l=(p=u.next()).done);l=!0){var f=p.value;f.star=n[f.player_id]}}catch(t){c=!0,d=t}finally{try{l||null==u.return||u.return()}finally{if(c)throw d}}}return JSON.stringify(i);function h(t,e){var a=$(e),r=a.closest("tr").data("id");n[r]=+a.val()}}function _(){for(var t=s.serializeArray(),e={game:{}},a=0;a<t.length;a+=1)if(t[a].value){var n=t[a].value;-1!==t[a].name.indexOf("_percent")&&(n=parseFloat(n.replace(",","."))),e.game[t[a].name]=n}return s.find("input[type=checkbox]").each(function(t,a){e.game[a.id]=+$(a).prop("checked")}),JSON.stringify(e)}function w(t){TRNMNT_helpers.enableButtons(),TRNMNT_helpers.showNotification(t.message),i&&(i=null)}function M(){TRNMNT_helpers.disableButtons(),e.empty(),$.ajax({url:l.lastGames,success:R,error:TRNMNT_helpers.onErrorAjax,context:TRNMNT_helpers})}function S(){confirm("На самом деле хотите обнулить протокол?")&&(s.find("input").each(function(t,e){var a=$(e);-1!==["checkbox","radio"].indexOf(a.attr("type"))?a.prop("checked",!1):-1!==["submit"].indexOf(a.attr("type"))||(a.val(""),"playedAt"!==e.id&&a.prop("readonly",!1))}),i?i=null:(TRNMNT_helpers.disableButtons(),$.ajax({headers:{"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")},type:"post",url:l.resetGame,dataType:"json",contentType:"json",processData:!1,success:w,error:TRNMNT_helpers.onErrorAjax,context:TRNMNT_helpers})),r.empty(),o.empty(),n.addClass("d-none"),e.find("button").prop("disabled",!1))}function R(t){TRNMNT_helpers.enableButtons();var a=$('<table class="table table-sm table-striped mt-3"/>');e.append(a);var s=$("<tbody/>");a.append(s);var l=function(a){var l=t.data[a].game,c=new Date(l.playedAt),d=$(u.game.format({date:c.getShortDate(),home_team:l.home_team,away_team:l.away_team,home_score:l.home_score,away_score:l.away_score}));d.find("button").click(function(){n.removeClass("d-none"),e.find("button").prop("disabled",!1),$(this).prop("disabled",!0),function(t){for(var e in(i=t).game){var a=$("#".concat(e));-1!==["checkbox","radio"].indexOf(a.attr("type"))?a.prop("checked",!!i.game[e]):a.val(i.game[e]),""!==i.game[e]&&a.prop("readonly",!0)}!function(t){for(var e in r.empty(),o.empty(),t){var a="home"===e?r:o,n=!0,s=!1,i=void 0;try{for(var l,c=t[e][Symbol.iterator]();!(n=(l=c.next()).done);n=!0){var d=l.value;a.append(u.player.format({tag:d.name,position:j(d.position_id,d.position),goals:d.goals,assists:d.assists,id:d.player_id,stars:m()}))}}catch(t){s=!0,i=t}finally{try{n||null==c.return||c.return()}finally{if(s)throw i}}}}(i.players)}(t.data[a])}),s.append(d)};for(var c in t.data)l(c)}function j(t,e){var a="";switch(t){case 0:a="badge-goalie";break;case 1:a="badge-defender";break;case 3:a="badge-left_wing";break;case 4:a="badge-center";break;case 5:a="badge-right_wing"}return'<span class="badge '.concat(a,'">').concat(e.short_title,"</span>")}}()},UNwh:function(t,e,a){"use strict";a.r(e),e.default=function(t){$.ajaxSetup({headers:{"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")}}),$(t.selector).click(function(e){e.preventDefault(),confirm("Точно удалить?")&&$.ajax({type:"delete",url:t.url,dataType:"json",success:function(e){TRNMNT_helpers.enableButtons(),t.success(e)},error:TRNMNT_helpers.onErrorAjax})})}},a5cO:function(t,e,a){"use strict";a.r(e),e.default={showPreLoader:function(){$('<div id="bigPreloader"></div>').appendTo("body").html('\n                <span style="vertical-align:middle; display: table-cell;">\n                    <i class="fas fa-cog fa-spin fa-7x"></i>\n                </span>').css({position:"fixed",width:"100%",height:"100%",background:"rgba(255,255,255,0.9)",top:0,left:0,"z-index":1e5,"text-align":"center",display:"table"})},hidePreLoader:function(){$("#bigPreloader").remove()},disableButtons:function(t){$("input[type=submit], input[type=button], button").prop("disabled",!0),this.hidePreLoader(),t||this.showPreLoader()},enableButtons:function(){$("input[type=submit], input[type=button], button").prop("disabled",!1),this.hidePreLoader()},showNotification:function(t,e){var a={blockClass:"alert",duration:1e4,animationDuration:500,alertType:"success",types:{success:"alert-success",info:"alert-info",warning:"alert-warning",error:"alert-danger"},position:"se",margin:30},n={nw:{top:a.margin+"px",left:a.margin+"px"},ne:{top:a.margin+"px",right:a.margin+"px"},sw:{bottom:a.margin+"px",left:a.margin+"px"},se:{bottom:a.margin+"px",right:a.margin+"px"}};e=e||{},$.extend(!0,a,e);var r=-1!==["sw","se"].indexOf(a.position)?"bottom":"top",o=$('<div class="notification '+a.blockClass+" "+a.types[a.alertType]+'"></div>').click(function(t){var e,n,o,s;t.preventDefault(),e=$(this),n=$("."+a.blockClass),o=e.height()+2*parseInt(e.css("padding"))+10,s=n.index(e),e.hide(),n.each(function(t,e){var a=$(e);t<s&&a.css(r,parseInt(a.css(r))-o+"px")}),e.remove()}).css($.extend(!0,n[a.position],{position:"fixed",display:"none","z-index":1050})).appendTo("body").html(t).animate({opacity:"show"},a.animationDuration).delay(a.duration).animate({opacity:"hide"},a.animationDuration).delay(a.animationDuration).queue(function(){$(this).remove()});$("."+a.blockClass).not(o).each(function(t,e){var a=$(e),n=o.height()+2*parseInt(o.css("padding"))+10;a.css(r,parseInt(a.css(r))+n+"px")})},hideNotifications:function(){$(".notification").remove()},getParameterByName:function(t){t=t.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");var e=new RegExp("[\\?&]"+t+"=([^&#]*)").exec(location.search);return null===e?"":decodeURIComponent(e[1].replace(/\+/g," "))},jsonStringify:function(t,e){var a=JSON.stringify(t);return e?a:a.replace(/(\\\\)/g,"/").replace(/(\\n)/g," ").replace(/(\s+\\")/g," «").replace(/("\\")/g,'"«').replace(/(\\")/g,"»")},parseUrl:function(){var t,e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:window.location.href,a=document.createElement("a"),n=null,r=[];a.href=e,(t=a.search.replace("?","")).length&&(n={},(t=(t=decodeURI(t)).split("&")).forEach(function(t){var e=t.split("=");n[e[0]]=e[1]})),t=a.pathname.split("/");for(var o=0;o<t.length;o++)""!==t[o]&&r.push(t[o]);return{url:a.href,protocol:a.protocol.replace(":",""),host:a.host,port:a.port,path:a.pathname,search:a.search,params:n,segments:r}},onErrorAjax:function(t){var e;if(void 0!==t.responseText){var a=(e=JSON.parse(t.responseText)).message;if(e.errors)for(var n in e.errors){var r=!0,o=!1,s=void 0;try{for(var i,l=e.errors[n][Symbol.iterator]();!(r=(i=l.next()).done);r=!0){var c=i.value;a+="<br>".concat(n,": ").concat(c)}}catch(t){o=!0,s=t}finally{try{r||null==l.return||l.return()}finally{if(o)throw s}}}this.showNotification(a,{alertType:"error"})}else this.showNotification("Server error.",{alertType:"error"});this.enableButtons(),this.hidePreLoader()},updateCount:function(t,e){var a=$(t),n=parseInt(a.text())-1,r=a.parent();a.text(n),0===n&&(r.text(r.text().replace(/\s+\(.*/,"")),e&&$(e).show())},validateEmail:function(t){return/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(t)},validateUrl:function(t){return/^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/.test(t)},getDatePickerSettings:function(){return{format:"yyyy-mm-dd",weekStart:1,todayHighlight:!0,autoclose:!0,language:"ru"}}}},bUC5:function(t,e,a){function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}window.TRNMNT_sendData=a("/Vo2").default,window.TRNMNT_deleteData=a("UNwh").default,window.TRNMNT_helpers=a("a5cO").default,a("GGTS"),Date.prototype.getShortDate=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:".",e=arguments.length>1&&void 0!==arguments[1]&&arguments[1],a=1===this.getDate().toString().length?"0"+this.getDate():this.getDate(),n=1===(this.getMonth()+1).toString().length?"0"+(this.getMonth()+1):this.getMonth()+1;return e?this.getFullYear()+t+n+t+a:a+t+n+t+this.getFullYear()},Date.prototype.getFullDate=function(t){t=t||".";var e=1===this.getDate().toString().length?"0"+this.getDate():this.getDate(),a=1===(this.getMonth()+1).toString().length?"0"+(this.getMonth()+1):this.getMonth()+1,n=1===this.getHours().toString().length?"0"+this.getHours():this.getHours(),r=1===this.getMinutes().toString().length?"0"+this.getMinutes():this.getMinutes();return e+t+a+t+this.getFullYear()+" "+n+":"+r},Date.prototype.getDayBegin=function(){return new Date(this.getFullYear(),this.getMonth(),this.getDate(),0,0,0)},String.prototype.format=function(){var t=-1,e=arguments;return this.replace(/#\{(.*?)\}/g,function(a,r){return"object"===n(e[0])?e[0][r]:e[++t]})}}});
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "/";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./resources/js/app.js":
+/*!*****************************!*\
+  !*** ./resources/js/app.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+window.TRNMNT_sendData = __webpack_require__(/*! ./tools/dataSend */ "./resources/js/tools/dataSend.js")["default"];
+window.TRNMNT_deleteData = __webpack_require__(/*! ./tools/dataDelete */ "./resources/js/tools/dataDelete.js")["default"];
+window.TRNMNT_helpers = __webpack_require__(/*! ./tools/helpers */ "./resources/js/tools/helpers.js")["default"];
+
+__webpack_require__(/*! ./gameFormModule */ "./resources/js/gameFormModule.js");
+
+Date.prototype.getShortDate = function () {
+  var delimiter = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.';
+  var inverse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var day = this.getDate().toString().length === 1 ? '0' + this.getDate() : this.getDate();
+  var month = (this.getMonth() + 1).toString().length === 1 ? '0' + (this.getMonth() + 1) : this.getMonth() + 1;
+  if (!inverse) return day + delimiter + month + delimiter + this.getFullYear();
+  return this.getFullYear() + delimiter + month + delimiter + day;
+};
+/**
+ * Получить дату со временем.
+ * @param {String} [delimiter]
+ * @returns {String}
+ */
+
+
+Date.prototype.getFullDate = function (delimiter) {
+  delimiter = delimiter || '.';
+  var day = this.getDate().toString().length === 1 ? '0' + this.getDate() : this.getDate();
+  var month = (this.getMonth() + 1).toString().length === 1 ? '0' + (this.getMonth() + 1) : this.getMonth() + 1;
+  var hour = this.getHours().toString().length === 1 ? '0' + this.getHours() : this.getHours();
+  var minute = this.getMinutes().toString().length === 1 ? '0' + this.getMinutes() : this.getMinutes(); // let second = this.getSeconds().toString().length === 1 ? '0' + this.getSeconds() : this.getSeconds();
+
+  return day + delimiter + month + delimiter + this.getFullYear() + ' ' + hour + ':' + minute;
+};
+/**
+ * Получить объект даты начала дня
+ * @returns {Date}
+ */
+
+
+Date.prototype.getDayBegin = function () {
+  return new Date(this.getFullYear(), this.getMonth(), this.getDate(), 0, 0, 0);
+};
+/**
+ * Подставить данные в строку
+ * @link http://habrahabr.ru/post/192124/#comment_6673074
+ * @returns {string}
+ */
+
+
+String.prototype.format = function () {
+  var i = -1;
+  var args = arguments;
+  return this.replace(/#\{(.*?)\}/g, function (_, two) {
+    return _typeof(args[0]) === 'object' ? args[0][two] : args[++i];
+  });
+};
+
+/***/ }),
+
+/***/ "./resources/js/gameFormModule.js":
+/*!****************************************!*\
+  !*** ./resources/js/gameFormModule.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+window.TRNMNT_gameFormModule = function () {
+  var _isInitialized = false;
+  var _$eaGames = null;
+  var _$getGames = null;
+  var _$resetGame = null;
+  var _$homePlayers = null;
+  var _$awayPlayers = null;
+  var _$gameForm = null;
+  var _gameToSave = null;
+  var _url = null;
+  var _gameId = null;
+  var _positions = null;
+  var _players = null;
+  var _templates = {
+    game: "\n            <tr>\n                <td>#{date}</td>\n                <td class=\"text-right\">#{home_team}</td>\n                <td class=\"text-right\">\n                    <span class=\"badge badge-primary badge-pill\">#{home_score}</span>\n                </td>\n                <td class=\"text-center\">:</td>\n                <td>\n                    <span class=\"badge badge-primary badge-pill\">#{away_score}</span>\n                </td>\n                <td>#{away_team}</td>\n                <td class=\"text-right\">\n                    <button type=\"button\" class=\"btn btn-primary btn-sm\">\u0417\u0430\u043F\u043E\u043B\u043D\u0438\u0442\u044C</button>\n                </td>\n            </tr>",
+    player: "\n            <tr data-id=\"#{id}\">\n                <td>#{tag}</td>\n                <td class=\"text-center\">#{position}</td>\n                <td class=\"text-center\">#{goals}</td>\n                <td class=\"text-center\">#{assists}</td>\n                <td class=\"text-center text-nowrap\">#{stars}</td>\n                <td></td>\n            </tr>",
+    playerForm: "\n            <tr data-id=\"#{id}\" style=\"#{style}\">\n                <td>#{player}</td>\n                <td class=\"text-center\">#{position}</td>\n                <td><input type=\"text\" class=\"text-right form-control\" name=\"goals\" value=\"#{goals}\"></td>\n                <td><input type=\"text\" class=\"text-right form-control\" name=\"assists\" value=\"#{assists}\"></td>\n                <td>#{stars}</td>\n                <td class=\"text-nowrap\">#{button}</td>\n            </tr>\n            "
+  };
+  return {
+    init: _init
+  };
+  /**
+   * @param url
+   * @param protocols
+   * @param players
+   * @param positions
+   * @param matchId
+   * @private
+   */
+
+  function _init(url, protocols, players, positions, matchId) {
+    if (_isInitialized) return;
+    _isInitialized = true;
+    _url = url;
+    _positions = positions;
+    _players = players;
+    _gameId = +TRNMNT_helpers.parseUrl().segments[4];
+    _$eaGames = $('#eaGames');
+    _$getGames = $('#getGames');
+    _$resetGame = $('#resetGame');
+    _$homePlayers = $('#homePlayers').find('tbody');
+    _$awayPlayers = $('#awayPlayers').find('tbody');
+    _$gameForm = $('#game-form');
+
+    _$gameForm.on('submit', _onSubmitGame);
+
+    _$getGames.on('click', _onClickGetGames);
+
+    _$resetGame.on('click', _onClickResetGames);
+
+    var $homeAddForm = null;
+    var $awayAddForm = null;
+
+    if (!matchId) {
+      $homeAddForm = _createProtocolAddForm(_$homePlayers, players.home);
+      $awayAddForm = _createProtocolAddForm(_$awayPlayers, players.away);
+    }
+
+    for (var side in protocols) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = protocols[side][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var player = _step.value;
+          var $tbody = side === 'home' ? _$homePlayers : _$awayPlayers;
+
+          if (matchId) {
+            $tbody.append(_templates.player.format({
+              tag: player.player_tag,
+              position: _getPlayerBadge(player.position_id, player.position),
+              goals: !player.isGoalie ? player.goals : '—',
+              assists: !player.isGoalie ? player.assists : '—',
+              id: player.player_id,
+              stars: _getStars(player.star)
+            }));
+          } else {
+            _onSuccessAddProtocol({
+              player_id: player.player_id,
+              position_id: player.position_id,
+              goals: player.goals,
+              assists: player.assists,
+              star: player.star
+            }, player.id, side === 'home' ? $homeAddForm : $awayAddForm);
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  }
+  /**
+   * @param $form
+   * @param players
+   * @returns {jQuery.fn.init|jQuery|HTMLElement}
+   * @private
+   */
+
+
+  function _createProtocolAddForm($form, players) {
+    var playersSelect = '';
+    players.forEach(function (player) {
+      playersSelect += "<option value=\"".concat(player.id, "\">").concat(player.tag, "</option>");
+    });
+    var $row = $(_templates.playerForm.format({
+      id: '',
+      player: "<select class=\"form-control\" name=\"player_id\">".concat(playersSelect, "</select>"),
+      position: _getPositionSelect(),
+      stars: _getStarsSelect(),
+      goals: '',
+      assists: '',
+      button: '<button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i></button>',
+      style: 'border-top: 3px solid red;'
+    }));
+    $row.find('button').on('click', _onClickAddProtocol);
+    $form.append($row);
+    return $row;
+  }
+  /**
+   * @param playerPosition
+   * @returns {string}
+   * @private
+   */
+
+
+  function _getPositionSelect(playerPosition) {
+    var positionSelect = '';
+
+    _positions.forEach(function (position) {
+      var selected = playerPosition === position.id ? 'selected' : '';
+      positionSelect += "<option value=\"".concat(position.id, "\" ").concat(selected, ">").concat(position.short_title, "</option>");
+    });
+
+    return "<select class=\"form-control\" name=\"position_id\">".concat(positionSelect, "</select>");
+  }
+  /**
+   * @param playerStar
+   * @returns {string}
+   * @private
+   */
+
+
+  function _getStarsSelect(playerStar) {
+    var stars = ['—', '1', '2', '3'];
+    var starsSelect = '';
+
+    for (var i = 0; i < stars.length; i += 1) {
+      var selected = playerStar === i ? 'selected' : '';
+      starsSelect += "<option value=\"".concat(i, "\" ").concat(selected, ">").concat(stars[i], "</option>");
+    }
+
+    return "<select class=\"form-control\" name=\"star\">".concat(starsSelect, "</select>");
+  }
+  /**
+   * @param event
+   * @private
+   */
+
+
+  function _onClickAddProtocol(event) {
+    event.preventDefault();
+    var $row = $(this).closest('tr');
+    var formData = {
+      game_id: _gameId,
+      team_id: +$row.closest('table').data('id'),
+      player_id: +$row.find('select[name=player_id]').val(),
+      position_id: +$row.find('select[name=position_id]').val(),
+      goals: +$row.find('input[name=goals]').val(),
+      assists: +$row.find('input[name=assists]').val(),
+      star: +$row.find('select[name=star]').val()
+    };
+    formData.isGoalie = formData.position_id === 0 ? 1 : 0;
+    TRNMNT_helpers.disableButtons();
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      type: 'put',
+      url: _url.protocol,
+      dataType: 'json',
+      contentType: 'json',
+      processData: false,
+      data: JSON.stringify(formData),
+      success: function success(response) {
+        TRNMNT_helpers.enableButtons();
+
+        _onSuccessAddProtocol(formData, response.data.id, $row);
+
+        $row.find('select[name=position_id]').val('0');
+        $row.find('input[name=goals]').val('');
+        $row.find('input[name=assists]').val('');
+        $row.find('select[name=star]').val('0');
+      },
+      error: TRNMNT_helpers.onErrorAjax,
+      context: TRNMNT_helpers
+    });
+  }
+  /**
+   * @param formData
+   * @param protocolId
+   * @param $row
+   * @private
+   */
+
+
+  function _onSuccessAddProtocol(formData, protocolId, $row) {
+    var $playerOption = $row.find('select[name=player_id] option[value=' + formData.player_id + ']');
+    var $protocolRow = $(_templates.playerForm.format({
+      id: protocolId,
+      player: $playerOption.text(),
+      position: _getPositionSelect(formData.position_id),
+      goals: formData.goals !== null ? formData.goals : '',
+      assists: formData.assists !== null ? formData.assists : '',
+      stars: _getStarsSelect(formData.star),
+      button: '<button class="btn btn-primary"><i class="fas fa-edit"></i></button> <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>'
+    }));
+    $row.closest('tbody').prepend($protocolRow);
+    $protocolRow.find('button.btn-primary').on('click', _onClickEditProtocol);
+    $protocolRow.find('button.btn-danger').on('click', _onClickRemoveProtocol);
+    $playerOption.remove();
+    var $playerOptions = $row.find('select[name=player_id] option');
+
+    if (!$playerOptions.length) {
+      $row.hide();
+    }
+  }
+  /**
+   * @param event
+   * @private
+   */
+
+
+  function _onClickRemoveProtocol(event) {
+    event.preventDefault();
+
+    if (confirm('Удалить протокол')) {
+      var $row = $(this).closest('tr');
+      var playerTag = $($row.find('td')[0]).text();
+
+      for (var side in _players) {
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = _players[side][Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var player = _step2.value;
+            if (playerTag !== player.tag) continue;
+            var $playerSelect = $row.closest('table').find('select[name=player_id]');
+            $playerSelect.append("<option value=\"".concat(player.id, "\">").concat(player.tag, "</option>"));
+            $playerSelect.closest('tr').show();
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+              _iterator2["return"]();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+      }
+
+      $row.remove();
+      TRNMNT_helpers.disableButtons();
+      $.ajax({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'delete',
+        url: _url.protocol + '/' + $row.data('id'),
+        dataType: 'json',
+        contentType: 'json',
+        processData: false,
+        success: function success(response) {
+          TRNMNT_helpers.enableButtons();
+        },
+        error: TRNMNT_helpers.onErrorAjax,
+        context: TRNMNT_helpers
+      });
+    }
+  }
+  /**
+   * @param event
+   * @private
+   */
+
+
+  function _onClickEditProtocol(event) {
+    event.preventDefault();
+    var $row = $(this).closest('tr');
+    var formData = {
+      position_id: +$row.find('select[name=position_id]').val(),
+      goals: +$row.find('input[name=goals]').val(),
+      assists: +$row.find('input[name=assists]').val(),
+      star: +$row.find('select[name=star]').val()
+    };
+    formData.isGoalie = formData.position_id === 0 ? 1 : 0;
+    TRNMNT_helpers.disableButtons();
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      type: 'post',
+      url: _url.protocol + '/' + $row.data('id'),
+      dataType: 'json',
+      contentType: 'json',
+      data: JSON.stringify(formData),
+      processData: false,
+      success: function success(response) {
+        TRNMNT_helpers.enableButtons();
+      },
+      error: TRNMNT_helpers.onErrorAjax,
+      context: TRNMNT_helpers
+    });
+  }
+  /**
+   * @param star
+   * @returns {string}
+   * @private
+   */
+
+
+  function _getStars(star) {
+    var stars = '';
+
+    for (var i = 0; i < star; i += 1) {
+      stars += '<i class="fas fa-star text-danger"></i>';
+    }
+
+    return stars;
+  }
+  /**
+   * @param event
+   * @private
+   */
+
+
+  function _onSubmitGame(event) {
+    event.preventDefault();
+    TRNMNT_helpers.disableButtons();
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      type: 'post',
+      url: _url.saveGame,
+      dataType: 'json',
+      contentType: 'json',
+      processData: false,
+      data: _gameToSave ? _getFormDataEA() : _getFormData(),
+      success: _onSuccessSubmitGame,
+      error: TRNMNT_helpers.onErrorAjax,
+      context: TRNMNT_helpers
+    });
+  }
+  /**
+   * @returns {string}
+   * @private
+   */
+
+
+  function _getFormDataEA() {
+    for (var field in _gameToSave.game) {
+      var $field = $("#".concat(field));
+
+      if ($field.prop('readonly') === false) {
+        var val = $field.val();
+
+        if (field.indexOf('_percent') !== -1) {
+          val = val ? parseFloat(val.replace(',', '.')) : 0;
+        }
+
+        _gameToSave.game[field] = val;
+      }
+    }
+
+    var players = {};
+
+    _$homePlayers.find('select').each(setPlayer);
+
+    _$awayPlayers.find('select').each(setPlayer);
+
+    for (var side in _gameToSave.players) {
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = _gameToSave.players[side][Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var player = _step3.value;
+          player.star = players[player.player_id];
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+            _iterator3["return"]();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+    }
+
+    return JSON.stringify(_gameToSave);
+
+    function setPlayer(index, element) {
+      var $element = $(element);
+      var playerId = $element.closest('tr').data('id');
+      players[playerId] = +$element.val();
+    }
+  }
+  /**
+   * @returns {string}
+   * @private
+   */
+
+
+  function _getFormData() {
+    var formData = _$gameForm.serializeArray();
+
+    var request = {
+      game: {}
+    };
+
+    for (var i = 0; i < formData.length; i += 1) {
+      if (formData[i].value) {
+        var val = formData[i].value;
+
+        if (formData[i].name.indexOf('_percent') !== -1) {
+          val = parseFloat(val.replace(',', '.'));
+        }
+
+        request.game[formData[i].name] = val;
+      }
+    }
+
+    _$gameForm.find('input[type=checkbox]').each(function (index, element) {
+      request.game[element.id] = +$(element).prop('checked');
+    });
+
+    return JSON.stringify(request);
+  }
+  /**
+   * @param response
+   * @private
+   */
+
+
+  function _onSuccessSubmitGame(response) {
+    TRNMNT_helpers.enableButtons();
+    TRNMNT_helpers.showNotification(response.message);
+
+    if (_gameToSave) {
+      _gameToSave = null;
+    }
+  }
+  /**
+   * @private
+   */
+
+
+  function _onClickGetGames() {
+    TRNMNT_helpers.disableButtons();
+
+    _$eaGames.empty();
+
+    $.ajax({
+      url: _url.lastGames,
+      success: _onSuccessGetGames,
+      error: TRNMNT_helpers.onErrorAjax,
+      context: TRNMNT_helpers
+    });
+  }
+  /**
+   * @private
+   */
+
+
+  function _onClickResetGames() {
+    if (confirm('На самом деле хотите обнулить протокол?')) {
+      _$gameForm.find('input').each(function (index, element) {
+        var $field = $(element);
+
+        if (['checkbox', 'radio'].indexOf($field.attr('type')) !== -1) {
+          $field.prop('checked', false);
+        } else if (['submit'].indexOf($field.attr('type')) !== -1) {//do nothing
+        } else {
+          $field.val('');
+          if (element.id !== 'playedAt') $field.prop('readonly', false);
+        }
+      });
+
+      if (_gameToSave) {
+        _gameToSave = null;
+      } else {
+        TRNMNT_helpers.disableButtons();
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          type: 'post',
+          url: _url.resetGame,
+          dataType: 'json',
+          contentType: 'json',
+          processData: false,
+          success: _onSuccessSubmitGame,
+          error: TRNMNT_helpers.onErrorAjax,
+          context: TRNMNT_helpers
+        });
+      }
+
+      _$homePlayers.empty();
+
+      _$awayPlayers.empty();
+
+      _$resetGame.addClass('d-none');
+
+      _$eaGames.find('button').prop('disabled', false);
+    }
+  }
+  /**
+   * @param response
+   * @private
+   */
+
+
+  function _onSuccessGetGames(response) {
+    TRNMNT_helpers.enableButtons();
+    var $table = $('<table class="table table-sm table-striped mt-3"/>');
+
+    _$eaGames.append($table);
+
+    var $tbody = $('<tbody/>');
+    $table.append($tbody);
+
+    var _loop = function _loop(gameId) {
+      var game = response.data[gameId].game;
+      var date = new Date(game.playedAt);
+      var $row = $(_templates.game.format({
+        date: date.getShortDate(),
+        home_team: game.home_team,
+        away_team: game.away_team,
+        home_score: game.home_score,
+        away_score: game.away_score
+      }));
+      $row.find('button').click(function () {
+        _$resetGame.removeClass('d-none');
+
+        _$eaGames.find('button').prop('disabled', false);
+
+        $(this).prop('disabled', true);
+
+        _fillGameProtocol(response.data[gameId]);
+      });
+      $tbody.append($row);
+    };
+
+    for (var gameId in response.data) {
+      _loop(gameId);
+    }
+  }
+  /**
+   * @param game
+   * @private
+   */
+
+
+  function _fillGameProtocol(game) {
+    _gameToSave = game;
+
+    for (var field in _gameToSave.game) {
+      var $field = $("#".concat(field));
+
+      if (['checkbox', 'radio'].indexOf($field.attr('type')) !== -1) {
+        $field.prop('checked', !!_gameToSave.game[field]);
+      } else {
+        $field.val(_gameToSave.game[field]);
+      }
+
+      if (_gameToSave.game[field] !== '') $field.prop('readonly', true);
+    }
+
+    _fillPlayers(_gameToSave.players);
+  }
+  /**
+   * @param players
+   * @private
+   */
+
+
+  function _fillPlayers(players) {
+    _$homePlayers.empty();
+
+    _$awayPlayers.empty();
+
+    for (var side in players) {
+      var $tbody = side === 'home' ? _$homePlayers : _$awayPlayers;
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
+
+      try {
+        for (var _iterator4 = players[side][Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var player = _step4.value;
+          $tbody.append(_templates.player.format({
+            tag: player.name,
+            position: _getPlayerBadge(player.position_id, player.position),
+            goals: player.goals,
+            assists: player.assists,
+            id: player.player_id,
+            stars: _getStarsSelect()
+          }));
+        }
+      } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+            _iterator4["return"]();
+          }
+        } finally {
+          if (_didIteratorError4) {
+            throw _iteratorError4;
+          }
+        }
+      }
+    }
+  }
+  /**
+   * @param positionId
+   * @param position
+   * @returns {string}
+   * @private
+   */
+
+
+  function _getPlayerBadge(positionId, position) {
+    var badgeClass = '';
+
+    switch (positionId) {
+      case 0:
+        badgeClass = 'badge-goalie';
+        break;
+
+      case 1:
+        badgeClass = 'badge-defender';
+        break;
+
+      case 3:
+        badgeClass = 'badge-left_wing';
+        break;
+
+      case 4:
+        badgeClass = 'badge-center';
+        break;
+
+      case 5:
+        badgeClass = 'badge-right_wing';
+        break;
+    }
+
+    return "<span class=\"badge ".concat(badgeClass, "\">").concat(position.short_title, "</span>");
+  }
+}();
+
+/***/ }),
+
+/***/ "./resources/js/tools/dataDelete.js":
+/*!******************************************!*\
+  !*** ./resources/js/tools/dataDelete.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function (params) {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $(params.selector).click(function (e) {
+    e.preventDefault();
+
+    if (confirm('Точно удалить?')) {
+      $.ajax({
+        type: 'delete',
+        url: params.url,
+        dataType: 'json',
+        success: function success(response) {
+          TRNMNT_helpers.enableButtons();
+          params.success(response);
+        },
+        error: TRNMNT_helpers.onErrorAjax
+      });
+    }
+  });
+});
+;
+
+/***/ }),
+
+/***/ "./resources/js/tools/dataSend.js":
+/*!****************************************!*\
+  !*** ./resources/js/tools/dataSend.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function (params) {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $(params.selector).submit(function (e) {
+    e.preventDefault();
+    TRNMNT_helpers.disableButtons();
+    var form = $(this);
+    var formData = form.serializeArray();
+    var request = {};
+
+    for (var i = 0; i < formData.length; i += 1) {
+      if (formData[i].value) {
+        request[formData[i].name] = formData[i].value;
+      }
+
+      var field = form.find('[name=' + formData[i].name + ']');
+      field.removeClass('is-invalid');
+      field.closest('.form-group').find('.invalid-feedback').empty();
+    }
+
+    $.ajax({
+      type: params.method,
+      url: params.url,
+      data: request,
+      dataType: 'json',
+      success: function success(response) {
+        TRNMNT_helpers.enableButtons();
+        params.success(response);
+      },
+      error: function error(response) {
+        TRNMNT_helpers.onErrorAjax(response);
+
+        for (var key in response.responseJSON.errors) {
+          var errors = response.responseJSON.errors[key];
+
+          var _field = form.find('[name=' + key + ']');
+
+          _field.addClass('is-invalid');
+
+          var message = '';
+
+          for (var _i = 0; _i < errors.length; _i += 1) {
+            message += errors[_i] + '<br>';
+          }
+
+          _field.closest('.form-group').find('.invalid-feedback').html(message);
+        }
+      }
+    });
+  });
+});
+;
+
+/***/ }),
+
+/***/ "./resources/js/tools/helpers.js":
+/*!***************************************!*\
+  !*** ./resources/js/tools/helpers.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  showPreLoader: function showPreLoader() {
+    $('<div id="bigPreloader"></div>').appendTo('body').html("\n                <span style=\"vertical-align:middle; display: table-cell;\">\n                    <i class=\"fas fa-cog fa-spin fa-7x\"></i>\n                </span>").css({
+      position: 'fixed',
+      width: '100%',
+      height: '100%',
+      background: 'rgba(255,255,255,0.9)',
+      top: 0,
+      left: 0,
+      'z-index': 100000,
+      'text-align': 'center',
+      'display': 'table'
+    });
+  },
+  hidePreLoader: function hidePreLoader() {
+    $('#bigPreloader').remove();
+  },
+  disableButtons: function disableButtons(noPreloader) {
+    $('input[type=submit], input[type=button], button').prop('disabled', true);
+    this.hidePreLoader();
+
+    if (!noPreloader) {
+      this.showPreLoader();
+    }
+  },
+  enableButtons: function enableButtons() {
+    $('input[type=submit], input[type=button], button').prop('disabled', false);
+    this.hidePreLoader();
+  },
+  showNotification: function showNotification(message, params) {
+    var settings = {
+      blockClass: 'alert',
+      duration: 10000,
+      //Время отображения сообщения
+      animationDuration: 500,
+      //Длительность анимации
+      alertType: 'success',
+      //Цвет сообщения
+      types: {
+        //Варианты цветов сообщений
+        success: 'alert-success',
+        info: 'alert-info',
+        warning: 'alert-warning',
+        error: 'alert-danger'
+      },
+      position: 'se',
+      //Позиционирование элемента
+      margin: 30 //Отступ
+
+    };
+    var css = {
+      nw: {
+        top: settings.margin + 'px',
+        left: settings.margin + 'px'
+      },
+      ne: {
+        top: settings.margin + 'px',
+        right: settings.margin + 'px'
+      },
+      sw: {
+        bottom: settings.margin + 'px',
+        left: settings.margin + 'px'
+      },
+      se: {
+        bottom: settings.margin + 'px',
+        right: settings.margin + 'px'
+      }
+    };
+    params = params || {};
+    $.extend(true, settings, params);
+    var direction = ['sw', 'se'].indexOf(settings.position) !== -1 ? 'bottom' : 'top';
+    var $note = $('<div class="notification ' + settings.blockClass + ' ' + settings.types[settings.alertType] + '"></div>').click(function (event) {
+      event.preventDefault();
+      removeNote($(this));
+    }).css($.extend(true, css[settings.position], {
+      position: 'fixed',
+      display: 'none',
+      'z-index': 1050
+    })).appendTo('body').html(message).animate({
+      opacity: 'show'
+    }, settings.animationDuration).delay(settings.duration).animate({
+      opacity: 'hide'
+    }, settings.animationDuration).delay(settings.animationDuration).queue(function () {
+      $(this).remove();
+    });
+    $('.' + settings.blockClass).not($note).each(function (index, element) {
+      var block = $(element);
+      var height = $note.height() + parseInt($note.css('padding')) * 2 + 10;
+      block.css(direction, parseInt(block.css(direction)) + height + 'px');
+    });
+
+    function removeNote($noteToRemove) {
+      var $notes = $('.' + settings.blockClass);
+      var height = $noteToRemove.height() + parseInt($noteToRemove.css('padding')) * 2 + 10;
+      var noteToRemoveIndex = $notes.index($noteToRemove);
+      $noteToRemove.hide();
+      $notes.each(function (index, element) {
+        var block = $(element);
+
+        if (index < noteToRemoveIndex) {
+          block.css(direction, parseInt(block.css(direction)) - height + 'px');
+        }
+      });
+      $noteToRemove.remove();
+    }
+  },
+  hideNotifications: function hideNotifications() {
+    $('.notification').remove();
+  },
+  getParameterByName: function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  },
+  jsonStringify: function jsonStringify(s, emit_unicode) {
+    var json = JSON.stringify(s);
+    var result;
+
+    if (emit_unicode) {
+      result = json;
+    } else {
+      result = json.replace(/(\\\\)/g, '/').replace(/(\\n)/g, ' ').replace(/(\s+\\")/g, ' «').replace(/("\\")/g, '"«').replace(/(\\")/g, '»');
+    }
+
+    return result;
+  },
+  parseUrl: function parseUrl() {
+    var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.location.href;
+    var a = document.createElement('a'),
+        params = null,
+        segments = [],
+        tmp;
+    a.href = url;
+    tmp = a.search.replace('?', '');
+
+    if (tmp.length) {
+      params = {};
+      tmp = decodeURI(tmp);
+      tmp = tmp.split('&');
+      tmp.forEach(function (p) {
+        var t = p.split('=');
+        params[t[0]] = t[1];
+      });
+    }
+
+    tmp = a.pathname.split('/');
+
+    for (var i = 0; i < tmp.length; i++) {
+      if (tmp[i] !== '') {
+        segments.push(tmp[i]);
+      }
+    }
+
+    return {
+      url: a.href,
+      protocol: a.protocol.replace(':', ''),
+      host: a.host,
+      port: a.port,
+      path: a.pathname,
+      search: a.search,
+      params: params,
+      segments: segments
+    };
+  },
+  onErrorAjax: function onErrorAjax(e) {
+    var response;
+
+    if (e.responseText !== undefined) {
+      response = JSON.parse(e.responseText);
+      var message = response.message;
+
+      if (response.errors) {
+        for (var error in response.errors) {
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = response.errors[error][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var serverMessage = _step.value;
+              message += "<br>".concat(error, ": ").concat(serverMessage);
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+                _iterator["return"]();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
+          }
+        }
+      }
+
+      this.showNotification(message, {
+        alertType: 'error'
+      });
+    } else {
+      this.showNotification('Server error.', {
+        alertType: 'error'
+      });
+    }
+
+    this.enableButtons();
+    this.hidePreLoader();
+  },
+  updateCount: function updateCount(selector, selectorEmpty) {
+    var countNode = $(selector);
+    var count = parseInt(countNode.text()) - 1;
+    var parentNode = countNode.parent();
+    countNode.text(count);
+
+    if (count === 0) {
+      parentNode.text(parentNode.text().replace(/\s+\(.*/, ''));
+      selectorEmpty && $(selectorEmpty).show();
+    }
+  },
+  validateEmail: function validateEmail(email) {
+    var pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return pattern.test(email);
+  },
+  validateUrl: function validateUrl(url) {
+    var pattern = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/;
+    return pattern.test(url);
+  },
+  getDatePickerSettings: function getDatePickerSettings() {
+    return {
+      format: "yyyy-mm-dd",
+      weekStart: 1,
+      todayHighlight: true,
+      autoclose: true,
+      language: "ru"
+    };
+  }
+});
+
+/***/ }),
+
+/***/ 1:
+/*!***********************************!*\
+  !*** multi ./resources/js/app.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! /Users/lapotchkin/Sites/my/tournaments-laravel/resources/js/app.js */"./resources/js/app.js");
+
+
+/***/ })
+
+/******/ });
