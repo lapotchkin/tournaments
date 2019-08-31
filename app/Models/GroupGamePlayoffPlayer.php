@@ -103,10 +103,8 @@ use Illuminate\Support\Carbon;
  */
 class GroupGamePlayoffPlayer extends Model
 {
-    use SoftDeletes;
-
     const CREATED_AT = 'createdAt';
-    const DELETED_AT = 'deletedAt';
+    const UPDATED_AT = null;
 
     /**
      * The table associated with the model.
@@ -118,7 +116,43 @@ class GroupGamePlayoffPlayer extends Model
     /**
      * @var array
      */
-    protected $fillable = ['game_id', 'team_id', 'player_id', 'goals', 'assists', 'isGoalie', 'createdAt', 'deletedAt'];
+    protected $fillable = [
+        'game_id',
+        'team_id',
+        'player_id',
+        'class_id',
+        'position_id',
+        'star',
+        'time_on_ice_seconds',
+        'goals',
+        'power_play_goals',
+        'shorthanded_goals',
+        'game_winning_goals',
+        'shots',
+        'plus_minus',
+        'faceoff_win',
+        'faceoff_lose',
+        'blocks',
+        'giveaways',
+        'takeaways',
+        'hits',
+        'penalty_minutes',
+        'rating_defense',
+        'rating_offense',
+        'rating_teamplay',
+        'shots_on_goal',
+        'saves',
+        'breakeaway_shots',
+        'breakeaway_saves',
+        'penalty_shots',
+        'penalty_saves',
+        'goals_against',
+        'pokechecks',
+        'isWin',
+        'assists',
+        'isGoalie',
+        'createdAt',
+    ];
 
     /**
      * @return BelongsTo

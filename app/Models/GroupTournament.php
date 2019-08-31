@@ -16,19 +16,20 @@ use Illuminate\Support\Carbon;
 /**
  * App\Models\GroupTournament
  *
- * @property int                                      $id             ID
- * @property string                                   $platform_id    ID игровой платформы
- * @property string                                   $app_id         ID игры
- * @property string                                   $title          Название
- * @property int|null                                 $playoff_rounds Количество раундов плейоф
- * @property int|null                                 $min_players    Минимальное количество игроков в команде
- * @property Carbon                                   $createdAt      Дата создания
- * @property Carbon|null                              $deletedAt      Дата удаления
+ * @property int                                      $id               ID
+ * @property string                                   $platform_id      ID игровой платформы
+ * @property string                                   $app_id           ID игры
+ * @property string                                   $title            Название
+ * @property int|null                                 $playoff_rounds   Количество раундов плейоф
+ * @property int|null                                 $min_players      Минимальное количество игроков в команде
+ * @property Carbon                                   $createdAt        Дата создания
+ * @property Carbon|null                              $deletedAt        Дата удаления
+ * @property int                                      $thirdPlaceSeries Серия за третье место
  * @property-read App                                 $app
  * @property-read Platform                            $platform
  * @property-read Collection|GroupGameRegular[]       $regularGames
  * @property-read Collection|Team[]                   $teams
- * @property-read Collection|GroupTournamentPlayoff[] $tournamentPlayoffs
+ * @property-read Collection|GroupTournamentPlayoff[] $playoff
  * @property-read Collection|GroupTournamentTeam[]    $tournamentTeams
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|GroupTournament newModelQuery()
@@ -66,7 +67,16 @@ class GroupTournament extends Model
     /**
      * @var array
      */
-    protected $fillable = ['platform_id', 'app_id', 'title', 'playoff_rounds', 'min_players', 'createdAt', 'deletedAt'];
+    protected $fillable = [
+        'platform_id',
+        'app_id',
+        'title',
+        'playoff_rounds',
+        'min_players',
+        'createdAt',
+        'deletedAt',
+        'thirdPlaceSeries',
+    ];
 
     /**
      * @return BelongsTo
@@ -95,7 +105,7 @@ class GroupTournament extends Model
     /**
      * @return HasMany
      */
-    public function tournamentPlayoffs()
+    public function playoff()
     {
         return $this->hasMany('App\Models\GroupTournamentPlayoff', 'tournament_id');
     }

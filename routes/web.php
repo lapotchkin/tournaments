@@ -43,7 +43,7 @@ Route::get('/group/{tournamentId}/edit', 'Site\GroupController@edit')
 Route::get('/group/{tournamentId}/team/{teamId}', 'Site\GroupController@team')
     ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+'])
     ->name('group.tournament.team');
-
+//Regular
 Route::get('/group/{tournamentId}/regular', 'Site\GroupRegularController@index')
     ->where(['tournamentId' => '[0-9]+'])
     ->name('group.tournament.regular');
@@ -59,7 +59,7 @@ Route::get('/group/{tournamentId}/regular/games/{gameId}/edit', 'Site\GroupRegul
 Route::get('/group/{tournamentId}/regular/schedule', 'Site\GroupRegularController@schedule')
     ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+'])
     ->name('group.tournament.regular.schedule');
-
+//Playoff
 Route::get('/group/{tournamentId}/playoff', 'Site\GroupPlayoffController@index')
     ->where(['tournamentId' => '[0-9]+'])
     ->name('group.tournament.playoff');
@@ -85,7 +85,8 @@ Route::get('/personal', 'Site\PersonalController@index');
 /*
  * Team
  */
-Route::get('/team', 'Site\TeamController@index');
+Route::get('/team', 'Site\TeamController@index')
+    ->name('teams');
 Route::get('/team/{teamId}', 'Site\TeamController@team')
     ->where(['teamId' => '[0-9]+'])
     ->name('team');
@@ -93,9 +94,11 @@ Route::get('/team/{teamId}', 'Site\TeamController@team')
 /*
  * Player
  */
-Route::get('/player', 'Site\PlayerController@index');
+Route::get('/player', 'Site\PlayerController@index')
+    ->name('players');
 Route::get('/player/{playerId}', 'Site\PlayerController@player')
-    ->where(['playerId' => '[0-9]+']);
+    ->where(['playerId' => '[0-9]+'])
+    ->name('player');
 
 /***********************************
  ************** AJAX ***************

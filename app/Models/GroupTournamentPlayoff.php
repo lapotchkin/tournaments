@@ -15,15 +15,15 @@ use Illuminate\Support\Carbon;
 /**
  * App\Models\GroupTournamentPlayoff
  *
- * @property int                                $id ID
+ * @property int                                $id            ID
  * @property int                                $tournament_id ID турнира
- * @property int                                $round Круг
- * @property int                                $pair Пара
- * @property int|null                           $team_one_id ID первой команды
- * @property int|null                           $team_two_id ID второй команды
- * @property Carbon                             $createdAt Дата создания
- * @property Carbon|null                        $deletedAt Дата удаления
- * @property-read Collection|GroupGamePlayoff[] $gamePlayoffs
+ * @property int                                $round         Круг
+ * @property int                                $pair          Пара
+ * @property int|null                           $team_one_id   ID первой команды
+ * @property int|null                           $team_two_id   ID второй команды
+ * @property Carbon                             $createdAt     Дата создания
+ * @property Carbon|null                        $deletedAt     Дата удаления
+ * @property-read Collection|GroupGamePlayoff[] $games
  * @property-read GroupTournament               $groupTournament
  * @property-read Team|null                     $teamOne
  * @property-read Team|null                     $teamTwo
@@ -91,8 +91,49 @@ class GroupTournamentPlayoff extends Model
     /**
      * @return HasMany
      */
-    public function gamePlayoffs()
+    public function games()
     {
         return $this->hasMany('App\Models\GroupGamePlayoff', 'playoff_pair_id');
+    }
+
+    /**
+     * @return int
+     */
+    public function getWinner()
+    {
+        if (!$this->teamOne || !$this->teamTwo) {
+            return null;
+        }
+        $seriesResult = $this->getSeriesResult();
+        if ($seriesResult[$this->teamOne->id] === $seriesResult[$this->teamTwo->id]) {
+            return null;
+        }
+        return $seriesResult[$this->teamOne->id] > $seriesResult[$this->teamTwo->id]
+            ? $this->teamOne->id
+            : $this->teamTwo->id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSeriesResult()
+    {
+        if (!$this->teamOne || !$this->teamTwo) {
+            return null;
+        }
+
+        $series = [];
+        $series[$this->teamOne->id] = 0;
+        $series[$this->teamTwo->id] = 0;
+
+        foreach ($this->games as $game) {
+            if ($game->home_score > $game->away_score) {
+                $series[$game->home_team_id] += 1;
+            } else {
+                $series[$game->away_team_id] += 1;
+            }
+        }
+
+        return $series;
     }
 }

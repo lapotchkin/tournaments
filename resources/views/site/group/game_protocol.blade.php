@@ -11,7 +11,9 @@
         <tbody>
         <tr>
             <td class="text-right" style="width:40%;">
-                <h2>{{ $game->homeTeam->team->name }}</h2>
+                <h2>
+                    <a href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a>
+                </h2>
                 <h4>
                     <span class="badge badge-success badge-pill">
                         {{ $game->homeTeam->team->short_name }}
@@ -38,7 +40,9 @@
                 </h1>
             </td>
             <td class="text-left" style="width:40%;">
-                <h2>{{ $game->awayTeam->team->name }}</h2>
+                <h2>
+                    <a href="{{ route('team', ['teamId' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a>
+                </h2>
                 <h4>
                     <span class="badge badge-success badge-pill">
                         {{ $game->awayTeam->team->short_name }}
@@ -169,7 +173,9 @@
                 @if (!$protocol->isGoalie)
                     <tr>
                         <td>
-                            <strong>{{ $protocol->player->name }}</strong>
+                            <strong>
+                                <a href="{{ route('player', ['playerId' => $protocol->player_id]) }}">{{ $protocol->player->name }}</a>
+                            </strong>
                             <small>{{ $protocol->player->tag }}</small>
                         </td>
                         <td class="text-center">
@@ -217,7 +223,9 @@
                 <tbody>
                 <tr>
                     <td>
-                        <strong>{{ $game->homeGoalie->player->name }}</strong>
+                        <strong>
+                            <a href="{{ route('player', ['playerId' => $game->homeGoalie->player_id]) }}">{{ $game->homeGoalie->player->name }}</a>
+                        </strong>
                         <small>{{ $game->homeGoalie->player->tag }}</small>
                     </td>
                     <td class="text-center">
@@ -262,7 +270,9 @@
                 @if (!$protocol->isGoalie)
                     <tr>
                         <td>
-                            <strong>{{ $protocol->player->name }}</strong>
+                            <strong>
+                                <a href="{{ route('player', ['playerId' => $protocol->player_id]) }}">{{ $protocol->player->name }}</a>
+                            </strong>
                             <small>{{ $protocol->player->tag }}</small>
                         </td>
                         <td class="text-center">
@@ -310,7 +320,9 @@
                 <tbody>
                 <tr>
                     <td>
-                        <strong>{{ $game->awayGoalie->player->name }}</strong>
+                        <strong>
+                            <a href="{{ route('player', ['playerId' => $game->awayGoalie->player_id]) }}">{{ $game->awayGoalie->player->name }}</a>
+                        </strong>
                         <small>{{ $game->awayGoalie->player->tag }}</small>
                     </td>
                     <td class="text-center">

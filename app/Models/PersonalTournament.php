@@ -15,14 +15,15 @@ use Illuminate\Support\Carbon;
 /**
  * App\Models\PersonalTournament
  *
- * @property int                                        $id             ID
- * @property string                                     $platform_id    ID платформы
- * @property string                                     $app_id         ID игры
- * @property string|null                                $league_id      ID лиги
- * @property string                                     $title          Название
- * @property int|null                                   $playoff_rounds Количество раундов плейоф
- * @property Carbon                                     $createdAt      Дата создания
- * @property Carbon|null                                $deletedAt      Дата удаления
+ * @property int                                        $id               ID
+ * @property string                                     $platform_id      ID платформы
+ * @property string                                     $app_id           ID игры
+ * @property string|null                                $league_id        ID лиги
+ * @property string                                     $title            Название
+ * @property int|null                                   $playoff_rounds   Количество раундов плейоф
+ * @property Carbon                                     $createdAt        Дата создания
+ * @property Carbon|null                                $deletedAt        Дата удаления
+ * @property int                                        $thirdPlaceSeries Серия за третье место
  * @property-read App                                   $app
  * @property-read League|null                           $league
  * @property-read Collection|PersonalGameRegular[]      $personalGameRegulars
@@ -63,7 +64,16 @@ class PersonalTournament extends Model
     /**
      * @var array
      */
-    protected $fillable = ['platform_id', 'app_id', 'league_id', 'title', 'playoff_rounds', 'createdAt', 'deletedAt'];
+    protected $fillable = [
+        'platform_id',
+        'app_id',
+        'league_id',
+        'title',
+        'playoff_rounds',
+        'createdAt',
+        'deletedAt',
+        'thirdPlaceSeries',
+    ];
 
     /**
      * @return BelongsTo

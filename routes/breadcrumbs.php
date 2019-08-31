@@ -79,3 +79,11 @@ Breadcrumbs::for('group.tournament.regular.schedule', function ($trail, $tournam
         route('group.tournament.regular.schedule', ['tournamentId' => $tournament->id])
     );
 });
+//Group > Tournament > Playoff
+Breadcrumbs::for('group.tournament.playoff', function ($trail, $tournament) {
+    $trail->parent('group.tournament', $tournament);
+    $trail->push(
+        'Плей-офф',
+        route('group.tournament.playoff', ['tournamentId' => $tournament->id])
+    );
+});
