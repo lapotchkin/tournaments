@@ -66,6 +66,9 @@ Route::get('/group/{tournamentId}/playoff', 'Site\GroupPlayoffController@index')
 Route::get('/group/{tournamentId}/playoff/games', 'Site\GroupPlayoffController@games')
     ->where(['tournamentId' => '[0-9]+'])
     ->name('group.tournament.playoff.games');
+Route::get('/group/{tournamentId}/playoff/games/add', 'Site\GroupPlayoffController@gameAdd')
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('group.tournament.playoff.game.add');
 Route::get('/group/{tournamentId}/playoff/games/{gameId}', 'Site\GroupPlayoffController@game')
     ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+'])
     ->name('group.tournament.playoff.game');

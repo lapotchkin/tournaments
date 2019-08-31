@@ -3,7 +3,11 @@
 @section('title', $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' (Тур ' . $game->round . ') — ')
 
 @section('content')
-    {{ Breadcrumbs::render('group.tournament.regular.game', $game) }}
+    @if (isset($game->tournament_id))
+        {{ Breadcrumbs::render('group.tournament.regular.game', $game) }}
+    @else
+{{--        {{ Breadcrumbs::render('group.tournament.regular.game', $game) }}--}}
+    @endif
 
     <h4 class="text-center">Тур {{ $game->round }}</h4>
 
@@ -103,7 +107,7 @@
                 <th class="text-center">Выигранные вбрасывания</th>
                 <td class="text-left">{{ !is_null($game->away_faceoff) ? $game->away_faceoff : '—' }}</td>
             </tr>
-            @if ($game->tournament->min_players === 6)
+            @if ($tournament->min_players === 6)
                 <tr>
                     <td class="text-right">
                         {{ !is_null($game->home_penalty_time) ? TextUtils::protocolTime($game->home_penalty_time) : '—'}}

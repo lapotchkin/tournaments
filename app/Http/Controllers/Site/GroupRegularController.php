@@ -124,7 +124,8 @@ class GroupRegularController extends Controller
         }
 
         return view('site.group.game_protocol', [
-            'game' => $game,
+            'game'       => $game,
+            'tournament' => $game->tournament,
         ]);
     }
 

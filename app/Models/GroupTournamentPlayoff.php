@@ -24,7 +24,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon                             $createdAt     Дата создания
  * @property Carbon|null                        $deletedAt     Дата удаления
  * @property-read Collection|GroupGamePlayoff[] $games
- * @property-read GroupTournament               $groupTournament
+ * @property-read GroupTournament               $tournament
  * @property-read Team|null                     $teamOne
  * @property-read Team|null                     $teamTwo
  * @method static bool|null forceDelete()
@@ -67,7 +67,7 @@ class GroupTournamentPlayoff extends Model
     /**
      * @return BelongsTo
      */
-    public function groupTournament()
+    public function tournament()
     {
         return $this->belongsTo('App\Models\GroupTournament', 'tournament_id');
     }

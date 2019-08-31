@@ -47,10 +47,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null                              $deletedAt             Дата удаления
  * @property string|null                              $updatedAt             Дата редактирования
  * @property string|null                              $match_id              ID матча в EASHL
- * @property-read Team                                $awayTeam
- * @property-read Collection|GroupGamePlayoffPlayer[] $gamePlayoffPlayers
- * @property-read GroupTournamentPlayoff              $groupTournamentPlayoff
- * @property-read Team                                $homeTeam
+ * @property-read GroupTournamentTeam                 $homeTeam
+ * @property-read GroupTournamentTeam                 $awayTeam
+ * @property-read Collection|GroupGamePlayoffPlayer[] $protocols
+ * @property-read GroupTournamentPlayoff              $playoffPair
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|GroupGamePlayoff newModelQuery()
  * @method static EloquentBuilder|GroupGamePlayoff newQuery()
@@ -145,7 +145,7 @@ class GroupGamePlayoff extends Model
     /**
      * @return BelongsTo
      */
-    public function groupTournamentPlayoff()
+    public function playoffPair()
     {
         return $this->belongsTo('App\Models\GroupTournamentPlayoff', 'playoff_pair_id');
     }
@@ -155,7 +155,7 @@ class GroupGamePlayoff extends Model
      */
     public function homeTeam()
     {
-        return $this->belongsTo('App\Models\Team', 'home_team_id');
+        return $this->belongsTo('App\Models\GroupTournamentTeam', 'home_team_id', 'team_id');
     }
 
     /**
@@ -163,14 +163,48 @@ class GroupGamePlayoff extends Model
      */
     public function awayTeam()
     {
-        return $this->belongsTo('App\Models\Team', 'away_team_id');
+        return $this->belongsTo('App\Models\GroupTournamentTeam', 'away_team_id', 'team_id');
     }
 
     /**
      * @return HasMany
      */
-    public function gamePlayoffPlayers()
+    public function protocols()
     {
         return $this->hasMany('App\Models\GroupGamePlayoffPlayer', 'game_id');
+    }
+
+    /**
+     * @return array
+     */
+    public function getSafeProtocols()
+    {
+        $protocols = [
+            'home' => [],
+            'away' => [],
+        ];
+        foreach ($this->protocols as $protocol) {
+            if ($protocol->team_id === $this->home_team_id) {
+                $protocols['home'][] = $protocol->getSafeProtocol();
+            } else {
+                $protocols['away'][] = $protocol->getSafeProtocol();
+            }
+        }
+        return $protocols;
+    }
+
+    public function getSafePlayersData()
+    {
+        $players = [
+            'home' => [],
+            'away' => [],
+        ];
+        foreach ($this->homeTeam->team->players as $player) {
+            $players['home'][] = $player->player->getSafeData();
+        }
+        foreach ($this->awayTeam->team->players as $player) {
+            $players['away'][] = $player->player->getSafeData();
+        }
+        return $players;
     }
 }

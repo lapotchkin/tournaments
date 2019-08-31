@@ -50,7 +50,7 @@ use Illuminate\Support\Carbon;
  * @property int                   $isGoalie            Вратарь
  * @property Carbon                $createdAt           Дата создания
  * @property Carbon|null           $deletedAt           Дата удаления
- * @property-read GroupGamePlayoff $groupGamePlayoff
+ * @property-read GroupGamePlayoff $playoffGame
  * @property-read Player           $player
  * @property-read Team             $team
  * @property-read PlayerClass      $playerClass
@@ -157,7 +157,7 @@ class GroupGamePlayoffPlayer extends Model
     /**
      * @return BelongsTo
      */
-    public function groupGamePlayoff()
+    public function playoffGame()
     {
         return $this->belongsTo('App\Models\GroupGamePlayoff', 'game_id');
     }
