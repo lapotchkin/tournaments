@@ -156,14 +156,8 @@ class GroupRegularController extends Controller
         foreach ($game->protocols as $protocol) {
             if ($protocol->team_id === $game->home_team_id) {
                 $game->homeProtocols[] = $protocol;
-                if ($protocol->isGoalie) {
-                    $game->homeGoalie = $protocol;
-                }
             } else {
                 $game->awayProtocols[] = $protocol;
-                if ($protocol->isGoalie) {
-                    $game->awayGoalie = $protocol;
-                }
             }
         }
         $protocols = $game->getSafeProtocols();

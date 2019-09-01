@@ -8,14 +8,16 @@
             </a>
         @endif
     </li>
-    <li class="nav-item">
-        @if (Route::currentRouteName() === 'group.tournament.playoff.games')
-            <a class="nav-link active" href="#">Расписание</a>
-        @else
-            <a class="nav-link"
-               href="{{ route('group.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}">
-                Расписание
-            </a>
-        @endif
-    </li>
+    @auth
+        <li class="nav-item">
+            @if (Route::currentRouteName() === 'group.tournament.playoff.games')
+                <a class="nav-link active" href="#">Расписание</a>
+            @else
+                <a class="nav-link"
+                   href="{{ route('group.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}">
+                    Расписание
+                </a>
+            @endif
+        </li>
+    @endauth
 </ul>

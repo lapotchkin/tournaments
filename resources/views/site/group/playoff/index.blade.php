@@ -11,14 +11,7 @@
     <div class="tournament-bracket tournament-bracket--rounded">
         @foreach ($bracket as $round => $pairs)
             <div class="tournament-bracket__round w-25">
-                <h4>
-                    @switch($maxTeams / pow(2, $round))
-                        @case(8) ⅛ финала @break
-                        @case(4) ¼ финала @break
-                        @case(2) ½ финала @break
-                        @default Финал
-                    @endswitch
-                </h4>
+                <h4>{{ TextUtils::playoffRound($tournament, $round) }}</h4>
                 <ul class="tournament-bracket__list">
                     @foreach ($pairs as $pair)
                         @php
@@ -64,7 +57,7 @@
                                         @if(!is_null($pair))
                                             @foreach($pair->games as $game)
                                                 <a href="{{ route('group.tournament.playoff.game', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
-                                                    class="badge {{ $game->home_score > $game->away_score ? 'badge-danger' : 'badge-warning' }}">
+                                                   class="badge {{ $game->home_score > $game->away_score ? 'badge-danger' : 'badge-warning' }}">
                                                     {{ $game->home_score }} : {{ $game->away_score }}
                                                 </a>
                                             @endforeach

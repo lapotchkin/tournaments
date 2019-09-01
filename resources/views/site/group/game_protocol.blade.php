@@ -6,10 +6,16 @@
     @if (isset($game->tournament_id))
         {{ Breadcrumbs::render('group.tournament.regular.game', $game) }}
     @else
-{{--        {{ Breadcrumbs::render('group.tournament.regular.game', $game) }}--}}
+        {{ Breadcrumbs::render('group.tournament.playoff.game', $game) }}
     @endif
 
-    <h4 class="text-center">Тур {{ $game->round }}</h4>
+    <h4 class="text-center">
+        @if ($game->playoffPair)
+            {{ TextUtils::playoffRound($game->tournament, $game->playoffPair->round) }}
+        @else
+            Тур {{ $game->round }}
+        @endif
+    </h4>
 
     <table class="w-100">
         <tbody>
@@ -107,7 +113,7 @@
                 <th class="text-center">Выигранные вбрасывания</th>
                 <td class="text-left">{{ !is_null($game->away_faceoff) ? $game->away_faceoff : '—' }}</td>
             </tr>
-            @if ($tournament->min_players === 6)
+            @if ($game->tournament->min_players === 6)
                 <tr>
                     <td class="text-right">
                         {{ !is_null($game->home_penalty_time) ? TextUtils::protocolTime($game->home_penalty_time) : '—'}}

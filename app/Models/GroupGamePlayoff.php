@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
@@ -51,6 +52,7 @@ use Illuminate\Support\Carbon;
  * @property-read GroupTournamentTeam                 $awayTeam
  * @property-read Collection|GroupGamePlayoffPlayer[] $protocols
  * @property-read GroupTournamentPlayoff              $playoffPair
+ * @property-read GroupTournament                     $tournament
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|GroupGamePlayoff newModelQuery()
  * @method static EloquentBuilder|GroupGamePlayoff newQuery()
@@ -106,6 +108,23 @@ class GroupGamePlayoff extends Model
      * @var string
      */
     protected $table = 'groupGamePlayoff';
+
+    /**
+     * @var GroupGameRegularPlayer[]
+     */
+    public $homeProtocols = [];
+    /**
+     * @var GroupGameRegularPlayer[]
+     */
+    public $awayProtocols = [];
+    /**
+     * @var null|GroupGameRegularPlayer
+     */
+    public $homeGoalie = null;
+    /**
+     * @var null|GroupGameRegularPlayer
+     */
+    public $awayGoalie = null;
 
     /**
      * @var array
@@ -172,6 +191,21 @@ class GroupGamePlayoff extends Model
     public function protocols()
     {
         return $this->hasMany('App\Models\GroupGamePlayoffPlayer', 'game_id');
+    }
+
+    /**
+     * @return HasOneThrough
+     */
+    public function tournament()
+    {
+        return $this->hasOneThrough(
+            'App\Models\GroupTournament',
+            'App\Models\GroupTournamentPlayoff',
+            'id',
+            'id',
+            'playoff_pair_id',
+            'tournament_id'
+        );
     }
 
     /**

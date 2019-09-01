@@ -3,6 +3,8 @@
 
 namespace App\Utils;
 
+use App\Models\GroupTournament;
+
 /**
  * Class TextUtils
  * @package App\Utils
@@ -66,7 +68,7 @@ class TextUtils
     public static function positionBadge($position)
     {
         if (is_null($position)) {
-            return  '';
+            return '';
         }
         $badgeClass = '';
         switch ($position->id) {
@@ -87,5 +89,25 @@ class TextUtils
                 break;
         }
         return "<span class=\"badge {$badgeClass}\">{$position->short_title}</span>";
+    }
+
+    /**
+     * @param GroupTournament $tournament
+     * @param int             $round
+     * @return string
+     */
+    public static function playoffRound(GroupTournament $tournament, int $round)
+    {
+        $maxTeams = pow(2, $tournament->playoff_rounds);
+        switch ($maxTeams / pow(2, $round)) {
+            case 8:
+                return '⅛ финала';
+            case 4:
+                return '¼ финала';
+            case 2:
+                return '½ финала';
+            default:
+                return 'Финал';
+        }
     }
 }

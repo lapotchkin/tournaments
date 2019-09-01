@@ -28,7 +28,6 @@ class GroupPlayoffController extends Controller
             abort(404);
         }
 
-        $maxTeams = pow(2, $tournament->playoff_rounds);
         $bracket = [];
         for ($i = 1; $i <= $tournament->playoff_rounds; $i += 1) {
             for ($j = 1; $j <= $maxTeams / pow(2, $i); $j += 1) {
@@ -41,7 +40,6 @@ class GroupPlayoffController extends Controller
 
         return view('site.group.playoff.index', [
             'tournament' => $tournament,
-            'maxTeams'   => $maxTeams,
             'bracket'    => $bracket,
         ]);
     }
@@ -61,7 +59,6 @@ class GroupPlayoffController extends Controller
             abort(404);
         }
 
-        dd($game->protocols);
         foreach ($game->protocols as $protocol) {
             if ($protocol->team_id === $game->home_team_id) {
                 $game->homeProtocols[] = $protocol;
@@ -77,8 +74,7 @@ class GroupPlayoffController extends Controller
         }
 
         return view('site.group.game_protocol', [
-            'game'       => $game,
-            'tournament' => $game->playoffPair->tournament,
+            'game' => $game,
         ]);
     }
 }

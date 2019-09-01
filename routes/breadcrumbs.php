@@ -1,6 +1,8 @@
 <?php
 
 // Group
+use App\Models\GroupGamePlayoff;
+
 Breadcrumbs::for('group', function ($trail) {
     $trail->push('Командные турниры', route('group'));
 });
@@ -85,5 +87,17 @@ Breadcrumbs::for('group.tournament.playoff', function ($trail, $tournament) {
     $trail->push(
         'Плей-офф',
         route('group.tournament.playoff', ['tournamentId' => $tournament->id])
+    );
+});
+//Group > Tournament > Playoff > Games > Game
+Breadcrumbs::for('group.tournament.playoff.game', function ($trail, GroupGamePlayoff $game) {
+    $trail->parent('group.tournament.playoff', $game->tournament);
+    $trail->push(
+        TextUtils::playoffRound($game->tournament, $game->playoffPair->round)
+        . ': ' . $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name,
+        route(
+            'group.tournament.playoff.game',
+            ['tournamentId' => $game->tournament->id, 'gameId' => $game->id]
+        )
     );
 });
