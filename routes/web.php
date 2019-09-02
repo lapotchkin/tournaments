@@ -137,5 +137,8 @@ Route::post(
     'Ajax\GroupController@updateRegularProtocol'
 )->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
 
+Route::put('/ajax/group/{tournamentId}/playoff/pair', 'Ajax\GroupController@savePair')
+    ->where(['tournamentId' => '[0-9]+']);
+
 Route::get('/ajax/ea/lastGames/{gameId}', 'Ajax\EaController@getLastGames')
     ->where(['gameId' => '[0-9]+']);

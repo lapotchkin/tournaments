@@ -8,6 +8,7 @@ use App\Http\Requests\StoreRequest;
 use App\Models\GroupGameRegular;
 use App\Models\GroupGameRegularPlayer;
 use App\Models\GroupTournament;
+use App\Models\GroupTournamentPlayoff;
 use App\Models\GroupTournamentTeam;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -383,5 +384,51 @@ class GroupController extends Controller
         $protocol->delete();
 
         return $this->renderAjax();
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @return ResponseFactory|Response
+     * @throws ValidationException
+     */
+    public function savePair(StoreRequest $request, int $tournamentId)
+    {
+        /** @var GroupTournament $game */
+        $tournament = GroupTournament::find($tournamentId);
+        if (is_null($tournament)) {
+            abort(404);
+        }
+
+        $input = json_decode($request->getContent(), true);
+        $rules = [
+            'round'       => 'required|int',
+            'pair'        => 'required|int',
+            'team_one_id' => 'required|int|exists:team,id',
+            'team_two_id' => 'required|int|exists:team,id',
+        ];
+        $validator = Validator::make($input, $rules);
+        $validatedData = $validator->validate();
+        $validatedData['tournament_id'] = $tournamentId;
+
+        /** @var GroupTournamentPlayoff $pair */
+        $pair = GroupTournamentPlayoff::where('tournament_id', '=', $tournamentId)
+            ->where('round', '=', $validatedData['round'])
+            ->where('round', '=', $validatedData['pair'])
+            ->get();
+
+        if (is_null($pair)) {
+            $pair->fill([
+                'team_one_id' => $validatedData['team_one_id'],
+                'team_two_id' => $validatedData['team_two_id'],
+            ]);
+        } else {
+            $pair = new GroupTournamentPlayoff;
+            $pair->fill($validatedData);
+        }
+
+        $pair->save();
+
+        return $this->renderAjax(['id' => $pair->id], 'Пара создана');
     }
 }

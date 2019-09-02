@@ -22,7 +22,6 @@ use Illuminate\Support\Carbon;
  * @property int|null                           $team_one_id   ID первой команды
  * @property int|null                           $team_two_id   ID второй команды
  * @property Carbon                             $createdAt     Дата создания
- * @property Carbon|null                        $deletedAt     Дата удаления
  * @property-read Collection|GroupGamePlayoff[] $games
  * @property-read GroupTournament               $tournament
  * @property-read Team|null                     $teamOne
@@ -47,10 +46,8 @@ use Illuminate\Support\Carbon;
  */
 class GroupTournamentPlayoff extends Model
 {
-    use SoftDeletes;
-
     const CREATED_AT = 'createdAt';
-    const DELETED_AT = 'deletedAt';
+    const UPDATED_AT = null;
 
     /**
      * The table associated with the model.
@@ -62,7 +59,7 @@ class GroupTournamentPlayoff extends Model
     /**
      * @var array
      */
-    protected $fillable = ['tournament_id', 'team_one_id', 'team_two_id', 'round', 'pair', 'createdAt', 'deletedAt'];
+    protected $fillable = ['tournament_id', 'team_one_id', 'team_two_id', 'round', 'pair', 'createdAt'];
 
     /**
      * @return BelongsTo

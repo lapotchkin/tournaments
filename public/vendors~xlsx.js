@@ -13988,7 +13988,7 @@ function filename(p) {
 	return (c === -1) ? p : p.slice(c+1);
 }
 var fs;
-function get_fs() { return fs || (fs = __webpack_require__(/*! fs */ 4)); }
+function get_fs() { return fs || (fs = __webpack_require__(/*! fs */ 5)); }
 function parse(file, options) {
 if(file.length < 512) throw new Error("CFB file size " + file.length + " < 512");
 var mver = 3;
@@ -14676,7 +14676,7 @@ return exports;
 
 if( true && typeof DO_NOT_EXPORT_CFB === 'undefined') { module.exports = CFB; }
 var _fs;
-if(true) try { _fs = __webpack_require__(/*! fs */ 4); } catch(e) {}
+if(true) try { _fs = __webpack_require__(/*! fs */ 5); } catch(e) {}
 
 /* normalize data for blob ctor */
 function blobify(data) {
@@ -15554,7 +15554,7 @@ var make_offcrypto = function(O, _crypto) {
 	var crypto;
 	if(typeof _crypto !== 'undefined') crypto = _crypto;
 	else if(true) {
-		try { crypto = __webpack_require__(/*! crypto */ 5); }
+		try { crypto = __webpack_require__(/*! crypto */ 6); }
 		catch(e) { crypto = null; }
 	}
 
@@ -32850,7 +32850,7 @@ return utils;
 })(utils);
 
 if(has_buf && "function" != 'undefined') (function() {
-	var Readable = __webpack_require__(/*! stream */ 6).Readable;
+	var Readable = __webpack_require__(/*! stream */ 7).Readable;
 
 	var write_csv_stream = function(sheet, opts) {
 		var stream = Readable();

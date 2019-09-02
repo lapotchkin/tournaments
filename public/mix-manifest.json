@@ -5,6 +5,7 @@
     "/js/app.js": "/js/app.js",
     "/js/bootstrap.js": "/js/bootstrap.js",
     "/js/gameFormModule.js": "/js/gameFormModule.js",
+    "/js/playoffModule.js": "/js/playoffModule.js",
     "/vendors~canvg.js": "/vendors~canvg.js",
     "/vendors~pdfmake.js": "/vendors~pdfmake.js",
     "/vendors~xlsx.js": "/vendors~xlsx.js",
