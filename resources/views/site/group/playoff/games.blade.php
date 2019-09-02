@@ -61,7 +61,7 @@
                                                 </a>
                                             @endforeach
                                         @endif
-                                        <a href="{{ route('group.tournament.playoff.game.add', ['tournamentId' => $tournament->id]) }}" class="btn btn-sm btn-success" {!! !is_null($pair) ? '' : 'style="display:none;"' !!}>
+                                        <a href="{{ route('group.tournament.playoff.game.add', ['tournamentId' => $tournament->id]) }}" class="btn btn-sm btn-success addGame" {!! !is_null($pair) ? '' : 'style="display:none;"' !!}>
                                             <i class="fas fa-plus"></i>
                                         </a>
                                     </div>

@@ -19,11 +19,15 @@ window.TRNMNT_playoffModule = (function () {
         const $pair = $button.closest('li');
 
         const formData = {
-            team_one_id: +$pair.find('select[name=team_one_id]').val(),
-            team_two_id: +$pair.find('select[name=team_two_id]').val(),
             round: $pair.closest('div.tournament-bracket__round').index() + 1,
             pair: $pair.index() + 1,
         };
+        const teamOneId = +$pair.find('select[name=team_one_id]').val();
+        const teamTwoId = +$pair.find('select[name=team_two_id]').val();
+        if (teamOneId) formData.team_one_id = teamOneId;
+        if (teamTwoId) formData.team_two_id = teamTwoId;
+
+        // if (!teamOneId && !teamTwoId) return;
 
         TRNMNT_helpers.disableButtons();
         $.ajax({
@@ -39,6 +43,7 @@ window.TRNMNT_playoffModule = (function () {
             success: function (response) {
                 TRNMNT_helpers.enableButtons();
                 TRNMNT_helpers.showNotification(response.message);
+                $pair.find('.addGame').show();
             },
             error: TRNMNT_helpers.onErrorAjax,
             context: TRNMNT_helpers

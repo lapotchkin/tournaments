@@ -404,12 +404,16 @@ class GroupController extends Controller
         $rules = [
             'round'       => 'required|int',
             'pair'        => 'required|int',
-            'team_one_id' => 'required|int|exists:team,id',
-            'team_two_id' => 'required|int|exists:team,id',
+            'team_one_id' => 'int|exists:team,id',
+            'team_two_id' => 'int|exists:team,id',
         ];
         $validator = Validator::make($input, $rules);
         $validatedData = $validator->validate();
         $validatedData['tournament_id'] = $tournamentId;
+
+        if (!isset($validatedData['team_one_id']) && !isset($validatedData['team_two_id'])) {
+            abort(400, 'Не передан ни один ID команды');
+        }
 
         /** @var GroupTournamentPlayoff $pair */
         $pair = GroupTournamentPlayoff::where('tournament_id', '=', $tournamentId)
