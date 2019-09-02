@@ -1,9 +1,12 @@
+$mediaMaxWidth: 24em;
+$mediaMinWidth: 62em;
+
 .tournament-bracket {
     display: flex;
     flex-direction: column;
 }
 
-@media (min-width: 38em) {
+@media (min-width: $mediaMinWidth) {
     .tournament-bracket {
         flex-direction: row;
     }
@@ -12,7 +15,7 @@
 .tournament-bracket__round {
     display: block;
     margin-left: -3px;
-    //flex: 1;
+    flex: 1;
 }
 
 .tournament-bracket__list {
@@ -29,14 +32,14 @@
     padding-inline-start: 0;
 }
 
-@media (max-width: 24em) {
+@media (max-width: $mediaMaxWidth) {
     .tournament-bracket__list {
         padding-bottom: 1em;
         margin-bottom: 1em;
     }
 }
 
-@media (min-width: 38em) {
+@media (min-width: $mediaMinWidth) {
     .tournament-bracket__list {
         margin-bottom: 0;
         padding-bottom: 0;
@@ -73,7 +76,7 @@
     transition: width 0.2s linear;
 }
 
-@media (max-width: 24em) {
+@media (max-width: $mediaMaxWidth) {
     .tournament-bracket__item {
         width: 100%;
     }
@@ -85,7 +88,7 @@
     }
 }
 
-@media (min-width: 38em) {
+@media (min-width: $mediaMinWidth) {
     .tournament-bracket__item {
         padding: 0.5em 1em;
         width: 100%;
@@ -167,13 +170,13 @@
     transition: padding 0.2s ease-in-out, border 0.2s linear;
 }
 
-@media (max-width: 24em) {
+@media (max-width: $mediaMaxWidth) {
     .tournament-bracket__match {
         padding: 0.75em 0.5em;
     }
 }
 
-@media (min-width: 38em) {
+@media (min-width: $mediaMinWidth) {
     .tournament-bracket__match::before,
     .tournament-bracket__match::after {
         position: absolute;

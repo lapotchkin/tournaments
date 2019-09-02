@@ -63,7 +63,7 @@ class Team extends Model
     /**
      * @var array
      */
-    protected $fillable = ['platform_id', 'name', 'createdAt', 'deletedAt'];
+    protected $fillable = ['platform_id', 'name', 'short_name', 'createdAt', 'deletedAt'];
 
     /**
      * @return BelongsTo

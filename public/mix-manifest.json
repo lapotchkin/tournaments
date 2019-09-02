@@ -1,11 +1,11 @@
 {
-    "/js/amcharts.js": "/js/amcharts.js",
-    "/css/app.css": "/css/app.css",
-    "/css/brackets.css": "/css/brackets.css",
-    "/js/app.js": "/js/app.js",
-    "/js/bootstrap.js": "/js/bootstrap.js",
-    "/vendors~canvg.js": "/vendors~canvg.js",
-    "/vendors~pdfmake.js": "/vendors~pdfmake.js",
-    "/vendors~xlsx.js": "/vendors~xlsx.js",
-    "/xlsx.js": "/xlsx.js"
+    "/js/amcharts.js": "/js/amcharts.js?id=18d16989f53674f9aadf",
+    "/css/app.css": "/css/app.css?id=81a8bdf2fd069f85d301",
+    "/css/brackets.css": "/css/brackets.css?id=def936226834de5dd11d",
+    "/js/app.js": "/js/app.js?id=d5a96b7c01c1c39d8923",
+    "/js/bootstrap.js": "/js/bootstrap.js?id=6b68b0ad37b6e4ed708e",
+    "/vendors~canvg.js": "/vendors~canvg.js?id=ad976b34c6995288a308",
+    "/vendors~pdfmake.js": "/vendors~pdfmake.js?id=d3e6766c27fc35bf945d",
+    "/vendors~xlsx.js": "/vendors~xlsx.js?id=d575b3a3da6c39afd1bb",
+    "/xlsx.js": "/xlsx.js?id=2fb450643909827a3936"
 }
