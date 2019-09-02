@@ -89,6 +89,14 @@ Breadcrumbs::for('group.tournament.playoff', function ($trail, $tournament) {
         route('group.tournament.playoff', ['tournamentId' => $tournament->id])
     );
 });
+//Group > Tournament > Playoff > Stats
+Breadcrumbs::for('group.tournament.playoff.stats', function ($trail, $tournament) {
+    $trail->parent('group.tournament', $tournament);
+    $trail->push(
+        'Статистика',
+        route('group.tournament.playoff.stats', ['tournamentId' => $tournament->id])
+    );
+});
 //Group > Tournament > Playoff > Games > Game
 Breadcrumbs::for('group.tournament.playoff.game', function ($trail, GroupGamePlayoff $game) {
     $trail->parent('group.tournament.playoff', $game->tournament);

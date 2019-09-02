@@ -107,7 +107,27 @@ class TextUtils
             case 2:
                 return '½ финала';
             default:
+                if ($tournament->thirdPlaceSeries && $tournament->playoff_rounds === $round) {
+                    return '3-е место';
+                }
                 return 'Финал';
         }
+    }
+
+    /**
+     * @param int $iteration
+     * @param int $total
+     * @return string
+     */
+    public static function playoffClass(int $iteration, int $total)
+    {
+        if ($iteration === $total) {
+            return 'tournament-bracket__final';
+        }
+        if ($iteration === $total - 1) {
+            return 'tournament-bracket__3rdplace';
+        }
+
+        return '';
     }
 }

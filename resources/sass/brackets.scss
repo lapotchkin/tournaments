@@ -229,17 +229,22 @@ $mediaMinWidth: 62em;
     }
 }
 
-.tournament-bracket__with_third_place .tournament-bracket__match::before,
-.tournament-bracket__with_third_place .tournament-bracket__match::after {
+.tournament-bracket__final .tournament-bracket__match::before,
+.tournament-bracket__final .tournament-bracket__match::after {
     border-left: 0;
 }
 
-.tournament-bracket__with_third_place .tournament-bracket__match::before {
+.tournament-bracket__final .tournament-bracket__match::before {
     border-bottom-left-radius: 0;
 }
 
-.tournament-bracket__with_third_place .tournament-bracket__match::after {
+.tournament-bracket__final .tournament-bracket__match::after {
     display: none;
+}
+
+.tournament-bracket__3rdplace .tournament-bracket__item::after {
+    border-right: 0;
+    border-top-right-radius: 0 !important;
 }
 
 //.tournament-bracket__round:last-child .tournament-bracket__match::before,

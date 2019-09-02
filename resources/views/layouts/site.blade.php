@@ -6,7 +6,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @section('script')
         <script src="{!! mix('/js/bootstrap.js') !!}"></script>
-        {{--        <script src="{!! mix('/js/common.js') !!}"></script>--}}
         <script src="{!! mix('/js/app.js') !!}"></script>
         <link href="{!! mix('/css/app.css') !!}" rel="stylesheet" type="text/css">
     @show

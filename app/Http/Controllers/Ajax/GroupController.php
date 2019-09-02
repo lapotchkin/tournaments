@@ -35,6 +35,7 @@ class GroupController extends Controller
         $tournament->title = $validatedData['title'];
         $tournament->playoff_rounds = $validatedData['playoff_rounds'];
         $tournament->min_players = $validatedData['min_players'];
+        $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
 
         $tournament->save();
 
@@ -56,6 +57,7 @@ class GroupController extends Controller
         $tournament->title = $validatedData['title'];
         $tournament->playoff_rounds = $validatedData['playoff_rounds'];
         $tournament->min_players = $validatedData['min_players'];
+        $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
 
         $tournament->save();
 
@@ -345,7 +347,8 @@ class GroupController extends Controller
         return $this->renderAjax(['id' => $protocol->id]);
     }
 
-    public function updateRegularProtocol(StoreRequest $request, int $tournamentId, int $gameId, int $protocolId) {
+    public function updateRegularProtocol(StoreRequest $request, int $tournamentId, int $gameId, int $protocolId)
+    {
         /** @var GroupGameRegular $game */
         $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
             ->find($gameId);

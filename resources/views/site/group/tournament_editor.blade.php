@@ -72,6 +72,19 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label for="playoff_rounds">Матч плей-офф за третье место</label>
+                    <select id="playoff_rounds" class="form-control" name="thirdPlaceSeries">
+                        <option value="0"
+                            {{ !is_null($tournament) && $tournament->thirdPlaceSeries !== 1 ? 'selected' : '' }}>
+                            Нет
+                        </option>
+                        <option value="1"
+                            {{ !is_null($tournament) && $tournament->thirdPlaceSeries === 1 ? 'selected' : '' }}>
+                            Да
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <button type="submit" class="btn btn-primary">
                         {{ is_null($tournament) ? 'Добавить' : 'Принять изменения' }}
                     </button>

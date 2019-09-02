@@ -10,7 +10,8 @@
 
     <div class="tournament-bracket tournament-bracket--rounded">
         @foreach ($bracket as $round => $pairs)
-            <div class="tournament-bracket__round">
+            <div
+                class="tournament-bracket__round {{ $tournament->thirdPlaceSeries ? TextUtils::playoffClass($loop->iteration, count($bracket)) : '' }}">
                 <h4>{{ TextUtils::playoffRound($tournament, $round) }}</h4>
                 <ul class="tournament-bracket__list">
                     @foreach ($pairs as $pair)
@@ -21,7 +22,7 @@
                         <li class="tournament-bracket__item">
                             <div class="tournament-bracket__match" tabindex="0">
                                 <div class="row">
-                                    <div class="col-9">
+                                    <div class="col-10">
                                         <span class="badge badge-pill badge-danger">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->teamOne && $pair->teamOne->name)
                                             <a href="{{ route('team', ['teamId' => $pair->team_one_id]) }}">
@@ -36,7 +37,7 @@
                                             ?
                                         @endif
                                     </div>
-                                    <div class="col-3 text-right">
+                                    <div class="col-2 text-right">
                                         @if (!is_null($pair) && $pair->teamOne && isset($seriesResult[$pair->teamOne->id]))
                                             @if ($winner === $pair->team_one_id)
                                                 <span class="badge badge-pill badge-dark">
@@ -58,7 +59,7 @@
                                             @foreach($pair->games as $game)
                                                 <a href="{{ route('group.tournament.playoff.game', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
                                                    class="btn btn-sm {{ $game->home_score > $game->away_score ? 'btn-danger' : 'btn-warning' }}">
-                                                    {{ $game->home_score }} : {{ $game->away_score }}
+                                                    {{ $game->home_score }}:{{ $game->away_score }}
                                                 </a>
                                             @endforeach
                                         @endif
@@ -66,7 +67,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-9">
+                                    <div class="col-10">
                                         <span class="badge badge-pill badge-warning">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->teamTwo && $pair->teamTwo->name)
                                             <a href="{{ route('team', ['teamId' => $pair->team_two_id]) }}">
@@ -81,7 +82,7 @@
                                             ?
                                         @endif
                                     </div>
-                                    <div class="col-3 text-right">
+                                    <div class="col-2 text-right">
                                         @if (!is_null($pair) && $pair->teamTwo && isset($seriesResult[$pair->teamTwo->id]))
                                             @if ($winner === $pair->team_two_id)
                                                 <span class="badge badge-pill badge-dark">

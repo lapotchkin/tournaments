@@ -238,6 +238,7 @@
 
 @section('script')
     @parent
+    <script src="{!! mix('/js/gameFormModule.js') !!}"></script>
     <script>
         $(document).ready(function () {
             $('#playedAt').datepicker(TRNMNT_helpers.getDatePickerSettings());

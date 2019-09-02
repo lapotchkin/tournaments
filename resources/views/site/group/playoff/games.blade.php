@@ -10,7 +10,7 @@
 
     <div class="tournament-bracket tournament-bracket--rounded">
         @foreach ($bracket as $round => $pairs)
-            <div class="tournament-bracket__round">
+            <div class="tournament-bracket__round {{ $tournament->thirdPlaceSeries ? TextUtils::playoffClass($loop->iteration, count($bracket)) : '' }}">
                 <h4>{{ TextUtils::playoffRound($tournament, $round) }}</h4>
                 <ul class="tournament-bracket__list">
                     @foreach ($pairs as $pair)
@@ -56,7 +56,7 @@
                                             @foreach($pair->games as $game)
                                                 <a href="{{ route('group.tournament.playoff.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
                                                    class="btn btn-sm {{ $game->home_score > $game->away_score ? 'btn-danger' : 'btn-warning' }}">
-                                                    {{ $game->home_score }} : {{ $game->away_score }}
+                                                    {{ $game->home_score }}:{{ $game->away_score }}
                                                 </a>
                                             @endforeach
                                             <a href="{{ route('group.tournament.playoff.game.add', ['tournamentId' => $tournament->id]) }}"

@@ -20,4 +20,8 @@ GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/ps4/clubs/532775
  &matches_returned=10
 Accept: application/json
 
+### PS4 Mancipium Fraternitatis
+GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/ps4/clubs/518516/matches?match_type=club_private&matches_returned=15
+Accept: application/json
+
 ###

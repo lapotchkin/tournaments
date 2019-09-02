@@ -15,10 +15,24 @@ mix.babelConfig({
  |
  */
 
-mix.js('resources/js/amcharts.js', 'public/js');
-mix.js('resources/js/app.js', 'public/js');
-mix.js('resources/js/bootstrap.js', 'public/js');
-// mix.js('resources/js/common.js', 'public/js');
+// mix.js('resources/js/amcharts.js', 'public/js');
+// mix.js('resources/js/app.js', 'public/js');
+// mix.js('resources/js/bootstrap.js', 'public/js');
+// mix.js('resources/js/*.js', 'public/js');
+
+let fs = require('fs');
+
+let getFiles = function (dir) {
+    // get all 'files' in this directory
+    // filter directories
+    return fs.readdirSync(dir).filter(file => {
+        return fs.statSync(`${dir}/${file}`).isFile();
+    });
+};
+
+getFiles('resources/js').forEach(function (filepath) {
+    mix.js('resources/js/' + filepath, 'public/js');
+});
 
 mix.sass('resources/sass/app.scss', 'public/css');
 mix.sass('resources/sass/brackets.scss', 'public/css');
