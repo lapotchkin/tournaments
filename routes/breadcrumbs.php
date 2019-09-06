@@ -2,6 +2,7 @@
 
 // Group
 use App\Models\GroupGamePlayoff;
+use App\Models\GroupTournamentPlayoff;
 
 Breadcrumbs::for('group', function ($trail) {
     $trail->push('Командные турниры', route('group'));
@@ -97,15 +98,40 @@ Breadcrumbs::for('group.tournament.playoff.stats', function ($trail, $tournament
         route('group.tournament.playoff.stats', ['tournamentId' => $tournament->id])
     );
 });
-//Group > Tournament > Playoff > Games > Game
+//Group > Tournament > Playoff > Game
 Breadcrumbs::for('group.tournament.playoff.game', function ($trail, GroupGamePlayoff $game) {
     $trail->parent('group.tournament.playoff', $game->tournament);
+    $roundText = TextUtils::playoffRound($game->tournament, $game->playoffPair->round);
+    $pairText = strstr($roundText, 'финала') ? ' (пара ' . $game->playoffPair->pair . ')' : '';
     $trail->push(
-        TextUtils::playoffRound($game->tournament, $game->playoffPair->round)
-        . ': ' . $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name,
+        $roundText . $pairText . ': ' . $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name,
         route(
             'group.tournament.playoff.game',
-            ['tournamentId' => $game->tournament->id, 'gameId' => $game->id]
+            ['tournamentId' => $game->tournament->id, 'pairId' => $game->playoff_pair_id, 'gameId' => $game->id]
+        )
+    );
+});
+//Group > Tournament > Playoff > Games
+Breadcrumbs::for('group.tournament.playoff.games', function ($trail, $tournament) {
+    $trail->parent('group.tournament.playoff', $tournament);
+    $trail->push(
+        'Расписание',
+        route(
+            'group.tournament.playoff.games',
+            ['tournamentId' => $tournament->id]
+        )
+    );
+});
+//Group > Tournament > Playoff > Games > New Game
+Breadcrumbs::for('group.tournament.playoff.game.add', function ($trail, GroupTournamentPlayoff $pair) {
+    $trail->parent('group.tournament.playoff.games', $pair->tournament);
+    $roundText = TextUtils::playoffRound($pair->tournament, $pair->round);
+    $pairText = strstr($roundText, 'финала') ? ' (пара ' . $pair->pair . ')' : '';
+    $trail->push(
+        $roundText . $pairText,
+        route(
+            'group.tournament.playoff.game.add',
+            ['tournamentId' => $pair->tournament->id, 'pairId' => $pair->id]
         )
     );
 });

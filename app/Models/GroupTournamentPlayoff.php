@@ -133,4 +133,19 @@ class GroupTournamentPlayoff extends Model
 
         return $series;
     }
+
+    public function getSafePlayersData()
+    {
+        $players = [
+            'home' => [],
+            'away' => [],
+        ];
+        foreach ($this->teamOne->players as $player) {
+            $players['home'][] = $player->player->getSafeData();
+        }
+        foreach ($this->teamTwo->players as $player) {
+            $players['away'][] = $player->player->getSafeData();
+        }
+        return $players;
+    }
 }

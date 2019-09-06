@@ -18,6 +18,7 @@ window.TRNMNT_playoffModule = (function () {
         const $button = $(this);
         const $pair = $button.closest('li');
 
+        let pairId = +$pair.data('id');
         const formData = {
             round: $pair.closest('div.tournament-bracket__round').index() + 1,
             pair: $pair.index() + 1,
@@ -34,8 +35,8 @@ window.TRNMNT_playoffModule = (function () {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            type: 'put',
-            url: _url.createPair,
+            type: pairId ? 'post' : 'put',
+            url: pairId ? _url.createPair + '/' + pairId : _url.createPair,
             data: JSON.stringify(formData),
             dataType: 'json',
             contentType: 'json',
@@ -43,7 +44,15 @@ window.TRNMNT_playoffModule = (function () {
             success: function (response) {
                 TRNMNT_helpers.enableButtons();
                 TRNMNT_helpers.showNotification(response.message);
-                $pair.find('.addGame').show();
+                const $link = $pair.find('.addGame');
+                if (response.data.id) {
+                    pairId = response.data.id;
+                    $pair.data('id', pairId);
+                }
+                if ($link.length) {
+                    $link.attr('href', $link.attr('href') + '/' + pairId + '/add');
+                    $link.show();
+                }
             },
             error: TRNMNT_helpers.onErrorAjax,
             context: TRNMNT_helpers

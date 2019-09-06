@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequest;
 use App\Models\GroupGameRegular;
 use App\Models\GroupTournament;
+use App\Models\GroupTournamentPlayoff;
 use App\Models\Player;
 use App\Models\PlayerPosition;
 use App\Models\Team;
@@ -35,24 +36,43 @@ class EaController extends Controller
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function getLastGames(StoreRequest $request, int $gameId)
+    public function getLastGames(StoreRequest $request)
     {
-        $game = GroupGameRegular::find($gameId);
+        $validatedData = $request->validate([
+            'gameId' => 'sometimes|required|int',
+            'pairId' => 'sometimes|required|int',
+        ]);
+
+        $game = null;
+        $pair = null;
+        if (isset($validatedData['gameId'])) {
+            $game = GroupGameRegular::find($validatedData['gameId']);
+            $key = "game_{$game->id}_response";
+            $clubId = $game->homeTeam->team->getClubId($game->tournament->app_id);
+            $platform = $game->tournament->platform_id === 'playstation4' ? 'ps4' : $game->tournament->platform_id;
+        } elseif (isset($validatedData['pairId'])) {
+            $pair = GroupTournamentPlayoff::find($validatedData['pairId']);
+            $key = "pair_{$pair->id}_response";
+            $clubId = $pair->teamOne->getClubId($pair->tournament->app_id);
+            $platform = $pair->tournament->platform_id === 'playstation4' ? 'ps4' : $pair->tournament->platform_id;
+        } else {
+            abort('404', 'Не указан ID для поиска');
+        }
+        if (is_null($pair) && is_null($game)) {
+            abort(400, 'Не найдена пара или игра');
+        }
+
         //Cache::flush();
         $responseJSON = Cache::remember(
-            "game_{$gameId}_response",
+            $key,
             new DateInterval('PT1H'),
-            function () use ($game) {
-                $clubId = $game->homeTeam->team->getClubId($game->tournament->app_id);
+            function () use ($clubId, $platform) {
                 $httpClient = new Client(['base_uri' => self::BASE_URL]);
                 $response = $httpClient->request(
                     'GET',
                     str_replace(
                         ['{platformId}', '{clubId}'],
-                        [
-                            $game->tournament->platform_id === 'playstation4' ? 'ps4' : $game->tournament->platform_id,
-                            $clubId,
-                        ],
+                        [$platform, $clubId],
                         self::API_PATH . self::MATCHES_PATH
                     ),
                     [
@@ -69,9 +89,9 @@ class EaController extends Controller
 
         $matches = EaController::parseMatches(
             json_decode($responseJSON, true),
-            $game->tournament,
-            $game->homeTeam->team,
-            $game->awayTeam->team
+            $pair ? $pair->tournament : $game->tournament,
+            $pair ? $pair->teamOne : $game->homeTeam->team,
+            $pair ? $pair->teamTwo : $game->awayTeam->team
         );
 
         return $this->renderAjax($matches);

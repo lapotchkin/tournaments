@@ -392,7 +392,7 @@ class GroupController extends Controller
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
-    public function savePair(StoreRequest $request, int $tournamentId)
+    public function createPair(StoreRequest $request, int $tournamentId)
     {
         /** @var GroupTournament $game */
         $tournament = GroupTournament::find($tournamentId);
@@ -418,21 +418,47 @@ class GroupController extends Controller
         /** @var GroupTournamentPlayoff $pair */
         $pair = GroupTournamentPlayoff::where('tournament_id', '=', $tournamentId)
             ->where('round', '=', $validatedData['round'])
-            ->where('round', '=', $validatedData['pair'])
-            ->get();
+            ->where('pair', '=', $validatedData['pair'])
+            ->first();
 
         if (is_null($pair)) {
-            $pair->fill([
-                'team_one_id' => $validatedData['team_one_id'],
-                'team_two_id' => $validatedData['team_two_id'],
-            ]);
-        } else {
             $pair = new GroupTournamentPlayoff;
-            $pair->fill($validatedData);
         }
-
+        $pair->fill($validatedData);
         $pair->save();
 
         return $this->renderAjax(['id' => $pair->id], 'Пара создана');
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
+     * @return ResponseFactory|Response
+     */
+    public function updatePair(StoreRequest $request, int $tournamentId, int $pairId)
+    {
+        /** @var GroupTournamentPlayoff $pair */
+        $pair = GroupTournamentPlayoff::find($pairId);
+        if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        $input = json_decode($request->getContent(), true);
+        $rules = [
+            'team_one_id' => 'int|exists:team,id',
+            'team_two_id' => 'int|exists:team,id',
+        ];
+        $validator = Validator::make($input, $rules);
+        $validatedData = $validator->validate();
+
+        if (!isset($validatedData['team_one_id']) && !isset($validatedData['team_two_id'])) {
+            abort(400, 'Не передан ни один ID команды');
+        }
+
+        $pair->fill($validatedData);
+        $pair->save();
+
+        return $this->renderAjax([], 'Пара обновлена');
     }
 }

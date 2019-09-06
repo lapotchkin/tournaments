@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Site;
 
 use App\Models\GroupGamePlayoff;
 use App\Models\GroupTournament;
+use App\Models\GroupTournamentPlayoff;
 use App\Models\GroupTournamentPlayoffGoalies;
 use App\Models\GroupTournamentPlayoffLeaders;
 use App\Models\GroupTournamentPlayoffPosition;
+use App\Models\PlayerPosition;
+use App\Utils\TextUtils;
+use Auth;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -57,10 +61,11 @@ class GroupPlayoffController extends Controller
     /**
      * @param Request $request
      * @param int     $tournamentId
+     * @param int     $pairId
      * @param int     $gameId
      * @return Factory|View
      */
-    public function game(Request $request, int $tournamentId, int $gameId)
+    public function game(Request $request, int $tournamentId, int $pairId, int $gameId)
     {
         /** @var GroupGamePlayoff $game */
         $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
@@ -83,8 +88,11 @@ class GroupPlayoffController extends Controller
             }
         }
 
+        $roundText = TextUtils::playoffRound($pair->tournament, $pair->round);
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $pair->pair . ')' : '';
         return view('site.group.game_protocol', [
-            'game' => $game,
+            'title' => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' : ' . $roundText . $pairText,
+            'game'  => $game,
         ]);
     }
 
@@ -137,6 +145,10 @@ class GroupPlayoffController extends Controller
      */
     public function games(Request $request, int $tournamentId)
     {
+        if (!Auth::check()) {
+            abort(403);
+        }
+
         /** @var GroupTournament $tournament */
         $tournament = GroupTournament::find($tournamentId);
         if (is_null($tournament)) {
@@ -160,6 +172,47 @@ class GroupPlayoffController extends Controller
         return view('site.group.playoff.games', [
             'tournament' => $tournament,
             'bracket'    => $bracket,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param int     $tournamentId
+     * @param int     $pairId
+     * @return Factory|View
+     */
+    public function gameAdd(Request $request, int $tournamentId, int $pairId)
+    {
+        if (!Auth::check()) {
+            abort(403);
+        }
+
+        /** @var GroupTournamentPlayoff $pair */
+        $pair = GroupTournamentPlayoff::find($pairId);
+        if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        $view = !$pair->team_one_id || !$pair->team_two_id
+            ? 'site.group.playoff.incomplete_pair_protocol'
+            : 'site.group.game_form';
+
+        //$players = $pair->getSafePlayersData();
+        $positionsRaw = PlayerPosition::all();
+        $positions = [];
+        foreach ($positionsRaw as $position) {
+            $positions[] = $position->getSafePosition();
+        }
+
+        $roundText = TextUtils::playoffRound($pair->tournament, $pair->round);
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $pair->pair . ')' : '';
+        return view($view, [
+            'title'     => $roundText . $pairText,
+            'pair'      => $pair,
+            'game'      => null,
+            'protocols' => [],
+            'players'   => null,
+            'positions' => $positions,
         ]);
     }
 

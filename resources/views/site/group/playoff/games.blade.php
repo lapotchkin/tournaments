@@ -3,7 +3,7 @@
 @section('title', $tournament->title . ': Плей-офф — ')
 
 @section('content')
-    {{ Breadcrumbs::render('group.tournament.playoff', $tournament) }}
+    {{ Breadcrumbs::render('group.tournament.playoff.games', $tournament) }}
     @widget('groupHeader', ['tournament' => $tournament])
     @widget('groupMenu', ['tournament' => $tournament])
     @widget('groupPlayoffMenu', ['tournament' => $tournament])
@@ -20,7 +20,7 @@
                             $seriesResult = !is_null($pair) ? $pair->getSeriesResult() : null;
                         @endphp
                         <li class="tournament-bracket__item"
-                            {{ !is_null($pair) ? 'data-id="' . $pair->id . '"' : '' }}>
+                            {!! !is_null($pair) ? 'data-id="' . $pair->id . '"' : '' !!}>
                             <div class="tournament-bracket__match" tabindex="0">
                                 <div class="row">
                                     <div class="col-10 form-inline">
@@ -55,15 +55,21 @@
                                     <div class="col-10 text-center">
                                         @if(!is_null($pair))
                                             @foreach($pair->games as $game)
-                                                <a href="{{ route('group.tournament.playoff.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
+                                                <a href="{{ route('group.tournament.playoff.game.edit', ['tournamentId' => $tournament->id, 'pairId' => $pair->id, 'gameId' => $game->id]) }}"
                                                    class="btn btn-sm {{ $game->home_score > $game->away_score ? 'btn-danger' : 'btn-warning' }}">
                                                     {{ $game->home_score }}:{{ $game->away_score }}
                                                 </a>
                                             @endforeach
+                                            <a href="{{ route('group.tournament.playoff.game.add', ['tournamentId' => $tournament->id, 'pairId' => $pair->id]) }}"
+                                               class="btn btn-sm btn-success">
+                                                <i class="fas fa-plus"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('group.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}"
+                                               class="btn btn-sm btn-success addGame" style="display:none;">
+                                                <i class="fas fa-plus"></i>
+                                            </a>
                                         @endif
-                                        <a href="{{ route('group.tournament.playoff.game.add', ['tournamentId' => $tournament->id]) }}" class="btn btn-sm btn-success addGame" {!! !is_null($pair) ? '' : 'style="display:none;"' !!}>
-                                            <i class="fas fa-plus"></i>
-                                        </a>
                                     </div>
                                     <div class="col-2 text-right">
                                         <button type="button" class="btn btn-sm btn-primary savePair">
@@ -116,7 +122,7 @@
     <script>
         $(document).ready(function () {
             TRNMNT_playoffModule.init({
-                createPair: '{{ action('Ajax\GroupController@savePair', ['tournamentId' => $tournament->id]) }}'
+                createPair: '{{ action('Ajax\GroupController@createPair', ['tournamentId' => $tournament->id]) }}'
             });
         });
     </script>

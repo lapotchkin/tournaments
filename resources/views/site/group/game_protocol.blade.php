@@ -1,6 +1,6 @@
 @extends('layouts.site')
 
-@section('title', $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' (' . TextUtils::playoffRound($game->tournament, $game->playoffPair->round) . ') — ')
+@section('title', $title . ' — ')
 
 @section('content')
     @if (isset($game->tournament_id))

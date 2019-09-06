@@ -124,8 +124,8 @@ class GroupRegularController extends Controller
         }
 
         return view('site.group.game_protocol', [
-            'game'       => $game,
-            'tournament' => $game->tournament,
+            'title' => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' (Тур ' . $game->round . ')',
+            'game'  => $game,
         ]);
     }
 
@@ -169,6 +169,8 @@ class GroupRegularController extends Controller
         }
 
         return view('site.group.game_form', [
+            'title'     => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' (Тур ' . $game->round . ')',
+            'pair'      => null,
             'game'      => $game,
             'protocols' => $protocols,
             'players'   => $players,

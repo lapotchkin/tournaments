@@ -81,9 +81,9 @@ window.TRNMNT_gameFormModule = (function () {
 
         let $homeAddForm = null;
         let $awayAddForm = null;
-        if (!matchId) {
-            $homeAddForm = _createProtocolAddForm(_$homePlayers, players.home);
-            $awayAddForm = _createProtocolAddForm(_$awayPlayers, players.away);
+        if (!matchId && _players) {
+            $homeAddForm = _createProtocolAddForm(_$homePlayers, _players.home);
+            $awayAddForm = _createProtocolAddForm(_$awayPlayers, _players.away);
         }
         for (let side in protocols) {
             for (let player of protocols[side]) {
@@ -143,6 +143,7 @@ window.TRNMNT_gameFormModule = (function () {
      * @private
      */
     function _getPositionSelect(playerPosition) {
+        console.log(playerPosition);
         let positionSelect = '';
         _positions.forEach(function (position) {
             const selected = playerPosition === position.id ? 'selected' : '';
