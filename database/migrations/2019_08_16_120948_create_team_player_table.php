@@ -46,7 +46,7 @@ class CreateTeamPlayerTable extends Migration
      */
     public function down()
     {
-        Schema::table('app_team', function (Blueprint $table) {
+        Schema::table('team_player', function (Blueprint $table) {
             $table->dropForeign(['team_id']);
             $table->dropForeign(['player_id']);
         });
