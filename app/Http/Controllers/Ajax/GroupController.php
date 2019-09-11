@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\GroupTournamentWinner;
 use App\Http\Requests\StoreGroupTournament;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequest;
@@ -171,8 +172,61 @@ class GroupController extends Controller
     public function delete(StoreRequest $request, int $tournamentId)
     {
         $tournament = GroupTournament::find($tournamentId);
-
         $tournament->delete();
+
+        return $this->renderAjax();
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @return ResponseFactory|Response
+     */
+    public function createWinner(StoreRequest $request, int $tournamentId)
+    {
+        $validatedData = $request->validate([
+            'team_id' => 'required|int|exists:team,id',
+            'place'   => 'required|int|min:1|max:3',
+        ]);
+        $validatedData['tournament_id'] = $tournamentId;
+        $winner = new GroupTournamentWinner($validatedData);
+        $winner->save();
+
+        return $this->renderAjax(['id' => $winner->id]);
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $winnerId
+     * @return ResponseFactory|Response
+     */
+    public function updateWinner(StoreRequest $request, int $tournamentId, int $winnerId)
+    {
+        $validatedData = $request->validate([
+            'team_id' => 'required|int|exists:team,id',
+            'place'   => 'required|int|min:1|max:3',
+        ]);
+        /** @var GroupTournamentWinner $winner */
+        $winner = GroupTournamentWinner::find($winnerId);
+        $winner->fill($validatedData);
+        $winner->save();
+
+        return $this->renderAjax(['id' => $winner->id]);
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $winnerId
+     * @return ResponseFactory|Response
+     * @throws Exception
+     */
+    public function deleteWinner(StoreRequest $request, int $tournamentId, int $winnerId)
+    {
+        /** @var GroupTournamentWinner $winner */
+        $winner = GroupTournamentWinner::find($winnerId);
+        $winner->delete();
 
         return $this->renderAjax();
     }
@@ -209,7 +263,6 @@ class GroupController extends Controller
                     'deletedAt' => null,
                 ]);
         }
-
 
         return $this->renderAjax();
     }

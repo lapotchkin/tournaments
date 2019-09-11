@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\GroupTournamentWinner;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
@@ -31,6 +32,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection|Team[]                   $teams
  * @property-read Collection|GroupTournamentPlayoff[] $playoff
  * @property-read Collection|GroupTournamentTeam[]    $tournamentTeams
+ * @property-read Collection|GroupTournamentWinner[]  $winners
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|GroupTournament newModelQuery()
  * @method static EloquentBuilder|GroupTournament newQuery()
@@ -132,5 +134,13 @@ class GroupTournament extends Model
             'team_id'
         )
             ->orderBy('team.name');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function winners()
+    {
+        return $this->hasMany('App\Models\GroupTournamentWinner', 'tournament_id');
     }
 }
