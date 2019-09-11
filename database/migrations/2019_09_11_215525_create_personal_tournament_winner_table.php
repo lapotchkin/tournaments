@@ -28,8 +28,6 @@ class CreatePersonalTournamentWinnerTable extends Migration
             $table->integer('place')->comment('Место');
             $table->dateTime('createdAt');
             $table->softDeletes('deletedAt');
-
-            $table->unique(['tournament_id', 'place']);
         });
 
         Schema::table('personalTournamentWinner', function (Blueprint $table) {
