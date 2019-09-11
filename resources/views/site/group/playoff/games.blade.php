@@ -25,15 +25,27 @@
                                 <div class="row">
                                     <div class="col-10 form-inline">
                                         <span class="badge badge-pill badge-danger mr-2">&nbsp;</span>
-                                        <select class="form-control form-control-sm" name="team_one_id">
-                                            <option value="">--</option>
-                                            @foreach($tournament->tournamentTeams as $tournamentTeam)
-                                                <option value="{{ $tournamentTeam->team_id }}"
-                                                    {{ !is_null($pair) && $pair->team_one_id === $tournamentTeam->team_id ? 'selected' : '' }}>
-                                                    {{ $tournamentTeam->team->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        @if (!is_null($pair) && $pair->teamOne && count($pair->games))
+                                            <a href="{{ route('team', ['teamId' => $pair->team_one_id]) }}">
+                                                @if ($winner === $pair->team_one_id)
+                                                    <strong>{{$pair->teamOne->name }}</strong>
+                                                @else
+                                                    {{$pair->teamOne->name }}
+                                                @endif
+                                            </a>
+                                            <span
+                                                class="badge badge-success ml-1">{{ $pair->teamOne->short_name }}</span>
+                                        @else
+                                            <select class="form-control form-control-sm" name="team_one_id">
+                                                <option value="">--</option>
+                                                @foreach($tournament->tournamentTeams as $tournamentTeam)
+                                                    <option value="{{ $tournamentTeam->team_id }}"
+                                                        {{ !is_null($pair) && $pair->team_one_id === $tournamentTeam->team_id ? 'selected' : '' }}>
+                                                        {{ $tournamentTeam->team->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @endif
                                     </div>
                                     <div class="col-2 text-right">
                                         @if (!is_null($pair) && $pair->teamOne && isset($seriesResult[$pair->teamOne->id]))
@@ -80,15 +92,27 @@
                                 <div class="row">
                                     <div class="col-10 form-inline">
                                         <span class="badge badge-pill badge-warning mr-2">&nbsp;</span>
-                                        <select class="form-control form-control-sm" name="team_two_id">
-                                            <option value="">--</option>
-                                            @foreach($tournament->tournamentTeams as $tournamentTeam)
-                                                <option value="{{ $tournamentTeam->team_id }}"
-                                                    {{ !is_null($pair) && $pair->team_two_id === $tournamentTeam->team_id ? 'selected' : '' }}>
-                                                    {{ $tournamentTeam->team->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        @if (!is_null($pair) && $pair->teamTwo && count($pair->games))
+                                            <a href="{{ route('team', ['teamId' => $pair->team_two_id]) }}">
+                                                @if ($winner === $pair->team_two_id)
+                                                    <strong>{{$pair->teamTwo->name }}</strong>
+                                                @else
+                                                    {{$pair->teamTwo->name }}
+                                                @endif
+                                            </a>
+                                            <span
+                                                class="badge badge-success ml-1">{{ $pair->teamTwo->short_name }}</span>
+                                        @else
+                                            <select class="form-control form-control-sm" name="team_two_id">
+                                                <option value="">--</option>
+                                                @foreach($tournament->tournamentTeams as $tournamentTeam)
+                                                    <option value="{{ $tournamentTeam->team_id }}"
+                                                        {{ !is_null($pair) && $pair->team_two_id === $tournamentTeam->team_id ? 'selected' : '' }}>
+                                                        {{ $tournamentTeam->team->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @endif
                                     </div>
                                     <div class="col-2 text-right">
                                         @if (!is_null($pair) && $pair->teamTwo && isset($seriesResult[$pair->teamTwo->id]))

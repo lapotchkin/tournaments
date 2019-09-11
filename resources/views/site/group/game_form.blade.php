@@ -262,16 +262,40 @@
     @php
         if ($pair) {
             $lastGamesUrl = action('Ajax\EaController@getLastGames') . '?pairId=' . $pair->id;
-            $saveGameUrl = action(
-                'Ajax\GroupController@createPlayoffGame',
-                 ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id]
-             );
+            $resetGameUrl = $protocolUrl = '';
+            if ($game) {
+                $saveGameUrl = action(
+                    'Ajax\GroupController@editPlayoffGame',
+                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                 );
+                 $resetGameUrl = action(
+                    'Ajax\GroupController@resetPlayoffGame',
+                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                 );
+                 $protocolUrl = action(
+                    'Ajax\GroupController@createPlayoffProtocol',
+                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                 );
+             } else {
+                $saveGameUrl = action(
+                    'Ajax\GroupController@createPlayoffGame',
+                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id]
+                 );
+             }
         } else {
             $lastGamesUrl = action('Ajax\EaController@getLastGames') . '?gameId=' . $game->id;
             $saveGameUrl = action(
                 'Ajax\GroupController@editRegularGame',
                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
             );
+            $resetGameUrl = action(
+                'Ajax\GroupController@resetRegularGame',
+                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+             );
+             $protocolUrl = action(
+                'Ajax\GroupController@createRegularProtocol',
+                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+             );
         }
     @endphp
     <script src="{!! mix('/js/gameFormModule.js') !!}"></script>
@@ -284,8 +308,8 @@
                     lastGames: '{{ $lastGamesUrl }}',
                     saveGame: '{{ $saveGameUrl }}',
                     @if ($game)
-                    resetGame: '{{ action('Ajax\GroupController@resetRegularGame', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}',
-                    protocol: '{{ action('Ajax\GroupController@createRegularProtocol', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}'
+                    resetGame: '{{ $resetGameUrl }}',
+                    protocol: '{{ $protocolUrl }}'
                     @endif
                 },
                 {!! json_encode($protocols) !!},

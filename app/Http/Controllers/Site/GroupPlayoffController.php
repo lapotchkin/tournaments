@@ -70,7 +70,7 @@ class GroupPlayoffController extends Controller
         /** @var GroupGamePlayoff $game */
         $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
             ->find($gameId);
-        if (is_null($game) || $game->playoffPair->tournament_id !== $tournamentId) {
+        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
             abort(404);
         }
 
@@ -88,8 +88,8 @@ class GroupPlayoffController extends Controller
             }
         }
 
-        $roundText = TextUtils::playoffRound($pair->tournament, $pair->round);
-        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $pair->pair . ')' : '';
+        $roundText = TextUtils::playoffRound($game->playoffPair->tournament, $game->playoffPair->round);
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $game->playoffPair->pair . ')' : '';
         return view('site.group.game_protocol', [
             'title' => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' : ' . $roundText . $pairText,
             'game'  => $game,
@@ -228,7 +228,8 @@ class GroupPlayoffController extends Controller
             abort(404);
         }
 
-        //$players = $pair->getSafePlayersData();
+        $protocols = $game->getSafeProtocols();
+        $players = $game->getSafePlayersData();
         $positionsRaw = PlayerPosition::all();
         $positions = [];
         foreach ($positionsRaw as $position) {
@@ -241,8 +242,8 @@ class GroupPlayoffController extends Controller
             'title'     => $roundText . $pairText,
             'pair'      => $game->playoffPair,
             'game'      => $game,
-            'protocols' => [],
-            'players'   => null,
+            'protocols' => $protocols,
+            'players'   => $players,
             'positions' => $positions,
         ]);
     }

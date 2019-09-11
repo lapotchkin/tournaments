@@ -160,6 +160,7 @@ class GroupGamePlayoff extends Model
         'isOvertime',
         'isTechnicalDefeat',
         'playedAt',
+        'match_id',
         //'createdAt',
         //'deletedAt',
     ];

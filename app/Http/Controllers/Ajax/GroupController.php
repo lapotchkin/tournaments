@@ -91,6 +91,34 @@ class GroupController extends Controller
         'players.*.isGoalie'            => 'int|min:0|max:1',
     ];
 
+    const GAME_EMPTY = [
+        'home_score'            => null,
+        'away_score'            => null,
+        'home_shot'             => null,
+        'away_shot'             => null,
+        'home_hit'              => null,
+        'away_hit'              => null,
+        'home_attack_time'      => null,
+        'away_attack_time'      => null,
+        'home_pass_percent'     => null,
+        'away_pass_percent'     => null,
+        'home_faceoff'          => null,
+        'away_faceoff'          => null,
+        'home_penalty_time'     => null,
+        'away_penalty_time'     => null,
+        'home_penalty_total'    => null,
+        'away_penalty_total'    => null,
+        'home_penalty_success'  => null,
+        'away_penalty_success'  => null,
+        'home_powerplay_time'   => null,
+        'away_powerplay_time'   => null,
+        'home_shorthanded_goal' => null,
+        'away_shorthanded_goal' => null,
+        'isOvertime'            => 0,
+        'isTechnicalDefeat'     => 0,
+        'match_id'              => null,
+    ];
+
     /**
      * @param StoreGroupTournament $request
      * @return ResponseFactory|Response
@@ -294,34 +322,9 @@ class GroupController extends Controller
             abort(404);
         }
 
-        $game->fill([
-            'home_score'            => null,
-            'away_score'            => null,
-            'home_shot'             => null,
-            'away_shot'             => null,
-            'home_hit'              => null,
-            'away_hit'              => null,
-            'home_attack_time'      => null,
-            'away_attack_time'      => null,
-            'home_pass_percent'     => null,
-            'away_pass_percent'     => null,
-            'home_faceoff'          => null,
-            'away_faceoff'          => null,
-            'home_penalty_time'     => null,
-            'away_penalty_time'     => null,
-            'home_penalty_total'    => null,
-            'away_penalty_total'    => null,
-            'home_penalty_success'  => null,
-            'away_penalty_success'  => null,
-            'home_powerplay_time'   => null,
-            'away_powerplay_time'   => null,
-            'home_shorthanded_goal' => null,
-            'away_shorthanded_goal' => null,
-            'isOvertime'            => 0,
-            'isShootout'            => 0,
-            'isTechnicalDefeat'     => 0,
-            'match_id'              => null,
-        ]);
+        $emptyGame = self::GAME_EMPTY;
+        $emptyGame['isShootout'] = 0;
+        $game->fill($emptyGame);
         $game->save();
         foreach ($game->protocols as $protocol) {
             $protocol->delete();
@@ -582,5 +585,124 @@ class GroupController extends Controller
         }
 
         return $this->renderAjax([], 'Протокол игры сохранён');
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
+     * @param int          $gameId
+     * @return ResponseFactory|Response
+     * @throws Exception
+     */
+    public function resetPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    {
+        /** @var GroupGamePlayoff $game */
+        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        $game->fill(self::GAME_EMPTY);
+        $game->save();
+        foreach ($game->protocols as $protocol) {
+            $protocol->delete();
+        }
+
+        return $this->renderAjax([], 'Протокол игры обнулён');
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
+     * @param int          $gameId
+     * @return ResponseFactory|Response
+     */
+    public function createPlayoffProtocol(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    {
+        /** @var GroupGamePlayoff $game */
+        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        $input = json_decode($request->getContent(), true);
+        $protocol = new GroupGamePlayoffPlayer;
+        $protocol->fill($input);
+        $protocol->save();
+
+        return $this->renderAjax(['id' => $protocol->id]);
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
+     * @param int          $gameId
+     * @param int          $protocolId
+     * @return ResponseFactory|Response
+     */
+    public function updatePlayoffProtocol(
+        StoreRequest $request,
+        int $tournamentId,
+        int $pairId,
+        int $gameId,
+        int $protocolId
+    ) {
+        /** @var GroupGamePlayoff $game */
+        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        $protocol = GroupGamePlayoffPlayer::find($protocolId);
+        if (
+            is_null($game)
+            || $game->playoff_pair_id !== $pairId
+            || $game->playoffPair->tournament_id !== $tournamentId
+            || is_null($protocol)
+        ) {
+            abort(404);
+        }
+
+        $input = json_decode($request->getContent(), true);
+        $protocol->fill($input);
+        $protocol->save();
+
+        return $this->renderAjax();
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
+     * @param int          $gameId
+     * @param int          $protocolId
+     * @return ResponseFactory|Response
+     * @throws Exception
+     */
+    public function deletePlayoffProtocol(
+        StoreRequest $request,
+        int $tournamentId,
+        int $pairId,
+        int $gameId,
+        int $protocolId
+    ) {
+        /** @var GroupGamePlayoff $game */
+        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        $protocol = GroupGamePlayoffPlayer::find($protocolId);
+        if (
+            is_null($game)
+            || $game->playoff_pair_id !== $pairId
+            || $game->playoffPair->tournament_id !== $tournamentId
+            || is_null($protocol)
+        ) {
+            abort(404);
+        }
+
+        $protocol->delete();
+
+        return $this->renderAjax();
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
+use stdClass;
 
 /**
  * App\Models\GroupGamePlayoffPlayer
@@ -192,5 +193,24 @@ class GroupGamePlayoffPlayer extends Model
     public function playerPosition()
     {
         return $this->belongsTo('App\Models\PlayerPosition');
+    }
+
+    /**
+     * @return stdClass
+     */
+    public function getSafeProtocol()
+    {
+        $protocol = new stdClass;
+        $protocol->id = $this->id;
+        foreach ($this->fillable as $field) {
+            $protocol->{$field} = $this->{$field};
+        }
+        $protocol->player_tag = $this->player->tag;
+        $protocol->position = $this->playerPosition ? (object)[
+            'title'       => $this->playerPosition->title,
+            'short_title' => $this->playerPosition->short_title,
+        ] : null;
+
+        return $protocol;
     }
 }

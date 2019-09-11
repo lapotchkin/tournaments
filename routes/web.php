@@ -136,28 +136,40 @@ Route::post('/ajax/group/{tournamentId}/team/{teamId}', 'Ajax\GroupController@ed
 Route::delete('/ajax/group/{tournamentId}/team/{teamId}', 'Ajax\GroupController@deleteTeam')
     ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+']);
 
-Route::post('/ajax/group/{tournamentId}/regular/games/{gameId}', 'Ajax\GroupController@editRegularGame')
+Route::post('/ajax/group/{tournamentId}/regular/{gameId}', 'Ajax\GroupController@editRegularGame')
     ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/regular/games/{gameId}/reset', 'Ajax\GroupController@resetRegularGame')
+Route::post('/ajax/group/{tournamentId}/regular/{gameId}/reset', 'Ajax\GroupController@resetRegularGame')
     ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
-Route::put('/ajax/group/{tournamentId}/regular/games/{gameId}/protocol', 'Ajax\GroupController@createRegularProtocol')
+Route::put('/ajax/group/{tournamentId}/regular/{gameId}/protocol', 'Ajax\GroupController@createRegularProtocol')
     ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
 Route::delete(
-    '/ajax/group/{tournamentId}/regular/games/{gameId}/protocol/{protocolId}',
+    '/ajax/group/{tournamentId}/regular/{gameId}/protocol/{protocolId}',
     'Ajax\GroupController@deleteRegularProtocol'
 )->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
 Route::post(
-    '/ajax/group/{tournamentId}/regular/games/{gameId}/protocol/{protocolId}',
+    '/ajax/group/{tournamentId}/regular/{gameId}/protocol/{protocolId}',
     'Ajax\GroupController@updateRegularProtocol'
 )->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
 
-Route::put('/ajax/group/{tournamentId}/playoff/pair', 'Ajax\GroupController@createPair')
+Route::put('/ajax/group/{tournamentId}/playoff', 'Ajax\GroupController@createPair')
     ->where(['tournamentId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/playoff/pair/{pairId}', 'Ajax\GroupController@updatePair')
+Route::post('/ajax/group/{tournamentId}/playoff/{pairId}', 'Ajax\GroupController@updatePair')
     ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+']);
-Route::put('/ajax/group/{tournamentId}/playoff/pair/{pairId}', 'Ajax\GroupController@createPlayoffGame')
+Route::put('/ajax/group/{tournamentId}/playoff/{pairId}', 'Ajax\GroupController@createPlayoffGame')
     ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/playoff/pair/{pairId}/{gameId}', 'Ajax\GroupController@editPlayoffGame')
+Route::post('/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}', 'Ajax\GroupController@editPlayoffGame')
     ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::post('/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/reset', 'Ajax\GroupController@resetPlayoffGame')
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::put('/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/protocol', 'Ajax\GroupController@createPlayoffProtocol')
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::delete(
+    '/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/protocol/{protocolId}',
+    'Ajax\GroupController@deletePlayoffProtocol'
+)->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
+Route::post(
+    '/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/protocol/{protocolId}',
+    'Ajax\GroupController@updatePlayoffProtocol'
+)->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
 
 Route::get('/ajax/ea/lastGames', 'Ajax\EaController@getLastGames');

@@ -71,7 +71,7 @@ window.TRNMNT_gameFormModule = (function () {
         _players = players;
         _pairId = parsedUrl.segments[2] === 'playoff' ? +parsedUrl.segments[4] : null;
         if (parsedUrl.segments[2] === 'playoff') {
-            _gameId = parsedUrl.segments[5] === 'add' ? null : +TRNMNT_helpers.parseUrl().segments[4];
+            _gameId = parsedUrl.segments[5] === 'add' ? null : +TRNMNT_helpers.parseUrl().segments[5];
         } else {
             _gameId = +TRNMNT_helpers.parseUrl().segments[4];
         }
@@ -420,14 +420,15 @@ window.TRNMNT_gameFormModule = (function () {
      * @private
      */
     function _onSuccessSubmitGame(response) {
+        if (response.data.id) {
+            window.location.href = window.location.href.replace('add', response.data.id) + '/edit';
+            return;
+        }
         TRNMNT_helpers.enableButtons();
         TRNMNT_helpers.showNotification(response.message);
 
         if (_gameToSave) {
             _gameToSave = null;
-        }
-        if (response.data.id) {
-            window.location.href = window.location.href.replace('add', response.data.id);
         }
     }
 
