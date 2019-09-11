@@ -25,6 +25,6 @@ class GroupGamesCarousel extends AbstractWidget
      */
     public function run()
     {
-        return view('widgets.group_games_carousel', [$this->config]);
+        return view('widgets.group_games_carousel', $this->config);
     }
 }
