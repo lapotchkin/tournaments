@@ -4,7 +4,12 @@ GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/xboxone/clubs/34
  &match_type=club_private
  &matches_returned=1
 Accept: application/json
-#2773344550302
+
+### Xbox One Отцы
+GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/xboxone/clubs/13100/matches
+ ?match_type=club_private
+ &matches_returned=20
+Accept: application/json
 
 ### PS4 HC Virtuoso
 GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/ps4/clubs/295491/matches

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Ajax;
 use App\Http\Requests\StoreGroupTournament;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequest;
+use App\Models\GroupGamePlayoff;
+use App\Models\GroupGamePlayoffPlayer;
 use App\Models\GroupGameRegular;
 use App\Models\GroupGameRegularPlayer;
 use App\Models\GroupTournament;
@@ -22,6 +24,73 @@ use Validator;
  */
 class GroupController extends Controller
 {
+    const GAME_RULES = [
+        'game'                          => 'required|array',
+        'game.home_score'               => 'required|int',
+        'game.away_score'               => 'required|int',
+        'game.home_shot'                => 'int',
+        'game.away_shot'                => 'int',
+        'game.home_hit'                 => 'int',
+        'game.away_hit'                 => 'int',
+        'game.home_attack_time'         => 'date_format:i:s',
+        'game.away_attack_time'         => 'date_format:i:s',
+        'game.home_pass_percent'        => 'numeric',
+        'game.away_pass_percent'        => 'numeric',
+        'game.home_faceoff'             => 'int',
+        'game.away_faceoff'             => 'int',
+        'game.home_penalty_time'        => 'date_format:i:s',
+        'game.away_penalty_time'        => 'date_format:i:s',
+        'game.home_penalty_total'       => 'int',
+        'game.away_penalty_total'       => 'int',
+        'game.home_penalty_success'     => 'int',
+        'game.away_penalty_success'     => 'int',
+        'game.home_powerplay_time'      => 'date_format:i:s',
+        'game.away_powerplay_time'      => 'date_format:i:s',
+        'game.home_shorthanded_goal'    => 'int',
+        'game.away_shorthanded_goal'    => 'int',
+        'game.isOvertime'               => 'int|min:0|max:1',
+        'game.isShootout'               => 'int|min:0|max:1',
+        'game.isTechnicalDefeat'        => 'int|min:0|max:1',
+        'game.playedAt'                 => 'date',
+        'game.match_id'                 => 'int',
+        'players'                       => 'sometimes|required|array',
+        'players.home'                  => 'sometimes|required|array',
+        'players.away'                  => 'sometimes|required|array',
+        'players.*.team_id'             => 'int',
+        'players.*.player_id'           => 'int',
+        'players.*.class_id'            => 'int',
+        'players.*.position_id'         => 'int',
+        'players.*.star'                => 'int',
+        'players.*.time_on_ice_seconds' => 'int',
+        'players.*.goals'               => 'int',
+        'players.*.power_play_goals'    => 'int',
+        'players.*.shorthanded_goals'   => 'int',
+        'players.*.game_winning_goals'  => 'int',
+        'players.*.assists'             => 'int',
+        'players.*.shots'               => 'int',
+        'players.*.plus_minus'          => 'int',
+        'players.*.faceoff_win'         => 'int',
+        'players.*.faceoff_lose'        => 'int',
+        'players.*.blocks'              => 'int',
+        'players.*.giveaways'           => 'int',
+        'players.*.takeaways'           => 'int',
+        'players.*.hits'                => 'int',
+        'players.*.penalty_minutes'     => 'int',
+        'players.*.rating_defense'      => 'float',
+        'players.*.rating_offense'      => 'float',
+        'players.*.rating_teamplay'     => 'float',
+        'players.*.shots_on_goal'       => 'int',
+        'players.*.saves'               => 'int',
+        'players.*.breakeaway_shots'    => 'int',
+        'players.*.breakeaway_saves'    => 'int',
+        'players.*.penalty_shots'       => 'int',
+        'players.*.penalty_saves'       => 'int',
+        'players.*.goals_against'       => 'int',
+        'players.*.pokechecks'          => 'int',
+        'players.*.isWin'               => 'int|min:0|max:1',
+        'players.*.isGoalie'            => 'int|min:0|max:1',
+    ];
+
     /**
      * @param StoreGroupTournament $request
      * @return ResponseFactory|Response
@@ -169,73 +238,7 @@ class GroupController extends Controller
         }
 
         $input = json_decode($request->getContent(), true);
-        $rules = [
-            'game'                          => 'required|array',
-            'game.home_score'               => 'required|int',
-            'game.away_score'               => 'required|int',
-            'game.home_shot'                => 'int',
-            'game.away_shot'                => 'int',
-            'game.home_hit'                 => 'int',
-            'game.away_hit'                 => 'int',
-            'game.home_attack_time'         => 'date_format:i:s',
-            'game.away_attack_time'         => 'date_format:i:s',
-            'game.home_pass_percent'        => 'numeric',
-            'game.away_pass_percent'        => 'numeric',
-            'game.home_faceoff'             => 'int',
-            'game.away_faceoff'             => 'int',
-            'game.home_penalty_time'        => 'date_format:i:s',
-            'game.away_penalty_time'        => 'date_format:i:s',
-            'game.home_penalty_total'       => 'int',
-            'game.away_penalty_total'       => 'int',
-            'game.home_penalty_success'     => 'int',
-            'game.away_penalty_success'     => 'int',
-            'game.home_powerplay_time'      => 'date_format:i:s',
-            'game.away_powerplay_time'      => 'date_format:i:s',
-            'game.home_shorthanded_goal'    => 'int',
-            'game.away_shorthanded_goal'    => 'int',
-            'game.isOvertime'               => 'int|min:0|max:1',
-            'game.isShootout'               => 'int|min:0|max:1',
-            'game.isTechnicalDefeat'        => 'int|min:0|max:1',
-            'game.playedAt'                 => 'date',
-            'game.match_id'                 => 'int',
-            'players'                       => 'sometimes|required|array',
-            'players.home'                  => 'sometimes|required|array',
-            'players.away'                  => 'sometimes|required|array',
-            'players.*.team_id'             => 'int',
-            'players.*.player_id'           => 'int',
-            'players.*.class_id'            => 'int',
-            'players.*.position_id'         => 'int',
-            'players.*.star'                => 'int',
-            'players.*.time_on_ice_seconds' => 'int',
-            'players.*.goals'               => 'int',
-            'players.*.power_play_goals'    => 'int',
-            'players.*.shorthanded_goals'   => 'int',
-            'players.*.game_winning_goals'  => 'int',
-            'players.*.assists'             => 'int',
-            'players.*.shots'               => 'int',
-            'players.*.plus_minus'          => 'int',
-            'players.*.faceoff_win'         => 'int',
-            'players.*.faceoff_lose'        => 'int',
-            'players.*.blocks'              => 'int',
-            'players.*.giveaways'           => 'int',
-            'players.*.takeaways'           => 'int',
-            'players.*.hits'                => 'int',
-            'players.*.penalty_minutes'     => 'int',
-            'players.*.rating_defense'      => 'float',
-            'players.*.rating_offense'      => 'float',
-            'players.*.rating_teamplay'     => 'float',
-            'players.*.shots_on_goal'       => 'int',
-            'players.*.saves'               => 'int',
-            'players.*.breakeaway_shots'    => 'int',
-            'players.*.breakeaway_saves'    => 'int',
-            'players.*.penalty_shots'       => 'int',
-            'players.*.penalty_saves'       => 'int',
-            'players.*.goals_against'       => 'int',
-            'players.*.pokechecks'          => 'int',
-            'players.*.isWin'               => 'int|min:0|max:1',
-            'players.*.isGoalie'            => 'int|min:0|max:1',
-        ];
-        $validator = Validator::make($input, $rules);
+        $validator = Validator::make($input, self::GAME_RULES);
         $validatedData = $validator->validate();
 
         $attributes = $game->attributesToArray();
@@ -460,5 +463,124 @@ class GroupController extends Controller
         $pair->save();
 
         return $this->renderAjax([], 'Пара обновлена');
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
+     * @return ResponseFactory|Response
+     * @throws ValidationException
+     */
+    public function createPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId)
+    {
+        /** @var GroupTournamentPlayoff $pair */
+        $pair = GroupTournamentPlayoff::find($pairId);
+        if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        $input = json_decode($request->getContent(), true);
+        $validator = Validator::make($input, self::GAME_RULES);
+        $validatedData = $validator->validate();
+
+        $game = new GroupGamePlayoff;
+        $attributes = $game->getFillable();
+        foreach ($validatedData['game'] as $field => $value) {
+            if (!in_array($field, $attributes)) {
+                continue;
+            }
+
+            if ($value === '') {
+                $game->{$field} = null;
+            } elseif (strstr($field, '_time')) {
+                $game->{$field} = '00:' . $value;
+            } else {
+                $game->{$field} = $value;
+            }
+        }
+        $game->playoff_pair_id = $pairId;
+        $game->home_team_id = $pair->team_one_id;
+        $game->away_team_id = $pair->team_two_id;
+
+        $game->save();
+
+        if (isset($input['players'])) {
+            foreach ($input['players'] as $side => $players) {
+                foreach ($players as $playerData) {
+                    $playerData['game_id'] = $game->id;
+                    $player = GroupGamePlayoffPlayer::where('game_id', '=', $game->id)
+                        ->where('team_id', '=', $playerData['team_id'])
+                        ->where('player_id', '=', $playerData['player_id'])
+                        ->first();
+                    if (!is_null($player)) {
+                        $player->fill($playerData);
+                    } else {
+                        $player = new GroupGamePlayoffPlayer($playerData);
+                    }
+                    $player->save();
+                }
+            }
+        }
+
+        return $this->renderAjax(['id' => $game->id], 'Игра добавлена');
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
+     * @param int          $gameId
+     * @return ResponseFactory|Response
+     * @throws ValidationException
+     */
+    public function editPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    {
+        /** @var GroupGamePlayoff $game */
+        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        $input = json_decode($request->getContent(), true);
+        $validator = Validator::make($input, self::GAME_RULES);
+        $validatedData = $validator->validate();
+
+        $attributes = $game->getFillable();
+        foreach ($validatedData['game'] as $field => $value) {
+            if (!in_array($field, $attributes)) {
+                continue;
+            }
+
+            if ($value === '') {
+                $game->{$field} = null;
+            } elseif (strstr($field, '_time')) {
+                $game->{$field} = '00:' . $value;
+            } else {
+                $game->{$field} = $value;
+            }
+        }
+        $game->save();
+
+        if (isset($input['players'])) {
+            foreach ($input['players'] as $side => $players) {
+                foreach ($players as $playerData) {
+                    $playerData['game_id'] = $gameId;
+                    $player = GroupGamePlayoffPlayer::where('game_id', '=', $gameId)
+                        ->where('team_id', '=', $playerData['team_id'])
+                        ->where('player_id', '=', $playerData['player_id'])
+                        ->first();
+                    if (!is_null($player)) {
+                        $player->fill($playerData);
+                    } else {
+                        $player = new GroupGamePlayoffPlayer($playerData);
+                    }
+                    $player->save();
+                }
+            }
+        }
+
+        return $this->renderAjax([], 'Протокол игры сохранён');
     }
 }

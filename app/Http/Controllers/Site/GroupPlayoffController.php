@@ -216,6 +216,37 @@ class GroupPlayoffController extends Controller
         ]);
     }
 
+    public function gameEdit(Request $request, int $tournamentId, int $pairId, int $gameId) {
+        if (!Auth::check()) {
+            abort(403);
+        }
+
+        /** @var GroupGamePlayoff $game */
+        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+            ->find($gameId);
+        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        //$players = $pair->getSafePlayersData();
+        $positionsRaw = PlayerPosition::all();
+        $positions = [];
+        foreach ($positionsRaw as $position) {
+            $positions[] = $position->getSafePosition();
+        }
+
+        $roundText = TextUtils::playoffRound($game->playoffPair->tournament, $game->playoffPair->round);
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $game->playoffPair->pair . ')' : '';
+        return view('site.group.game_form', [
+            'title'     => $roundText . $pairText,
+            'pair'      => $game->playoffPair,
+            'game'      => $game,
+            'protocols' => [],
+            'players'   => null,
+            'positions' => $positions,
+        ]);
+    }
+
     /**
      * @param $prevPlace
      * @return string

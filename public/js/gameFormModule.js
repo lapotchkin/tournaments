@@ -103,6 +103,7 @@ window.TRNMNT_gameFormModule = function () {
   var _$gameForm = null;
   var _gameToSave = null;
   var _url = null;
+  var _pairId = null;
   var _gameId = null;
   var _positions = null;
   var _players = null;
@@ -125,11 +126,21 @@ window.TRNMNT_gameFormModule = function () {
 
   function _init(url, protocols, players, positions, matchId) {
     if (_isInitialized) return;
+    var parsedUrl = TRNMNT_helpers.parseUrl();
     _isInitialized = true;
     _url = url;
     _positions = positions;
     _players = players;
-    _gameId = +TRNMNT_helpers.parseUrl().segments[4];
+    _pairId = parsedUrl.segments[2] === 'playoff' ? +parsedUrl.segments[4] : null;
+
+    if (parsedUrl.segments[2] === 'playoff') {
+      _gameId = parsedUrl.segments[5] === 'add' ? null : +TRNMNT_helpers.parseUrl().segments[4];
+    } else {
+      _gameId = +TRNMNT_helpers.parseUrl().segments[4];
+    }
+
+    console.log('_pairId', _pairId);
+    console.log('_gameId', _gameId);
     _$eaGames = $('#eaGames');
     _$getGames = $('#getGames');
     _$resetGame = $('#resetGame');
@@ -452,11 +463,12 @@ window.TRNMNT_gameFormModule = function () {
   function _onSubmitGame(event) {
     event.preventDefault();
     TRNMNT_helpers.disableButtons();
+    console.log(_gameToSave);
     $.ajax({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       },
-      type: 'post',
+      type: _pairId && !_gameId ? 'put' : 'post',
       url: _url.saveGame,
       dataType: 'json',
       contentType: 'json',
@@ -571,6 +583,10 @@ window.TRNMNT_gameFormModule = function () {
 
     if (_gameToSave) {
       _gameToSave = null;
+    }
+
+    if (response.data.id) {
+      window.location.href = window.location.href.replace('add', response.data.id);
     }
   }
   /**

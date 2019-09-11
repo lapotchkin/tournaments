@@ -155,5 +155,9 @@ Route::put('/ajax/group/{tournamentId}/playoff/pair', 'Ajax\GroupController@crea
     ->where(['tournamentId' => '[0-9]+']);
 Route::post('/ajax/group/{tournamentId}/playoff/pair/{pairId}', 'Ajax\GroupController@updatePair')
     ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+']);
+Route::put('/ajax/group/{tournamentId}/playoff/pair/{pairId}', 'Ajax\GroupController@createPlayoffGame')
+    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+']);
+Route::post('/ajax/group/{tournamentId}/playoff/pair/{pairId}/{gameId}', 'Ajax\GroupController@editPlayoffGame')
+    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
 
 Route::get('/ajax/ea/lastGames', 'Ajax\EaController@getLastGames');

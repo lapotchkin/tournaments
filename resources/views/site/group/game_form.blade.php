@@ -259,6 +259,21 @@
 
 @section('script')
     @parent
+    @php
+        if ($pair) {
+            $lastGamesUrl = action('Ajax\EaController@getLastGames') . '?pairId=' . $pair->id;
+            $saveGameUrl = action(
+                'Ajax\GroupController@createPlayoffGame',
+                 ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id]
+             );
+        } else {
+            $lastGamesUrl = action('Ajax\EaController@getLastGames') . '?gameId=' . $game->id;
+            $saveGameUrl = action(
+                'Ajax\GroupController@editRegularGame',
+                ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+            );
+        }
+    @endphp
     <script src="{!! mix('/js/gameFormModule.js') !!}"></script>
     <script>
         $(document).ready(function () {
@@ -266,9 +281,9 @@
 
             TRNMNT_gameFormModule.init(
                 {
-                    lastGames: '{{ action('Ajax\EaController@getLastGames') }}?{{ $pair ? 'pairId=' . $pair->id : 'gameId=' . $game->id }}',
+                    lastGames: '{{ $lastGamesUrl }}',
+                    saveGame: '{{ $saveGameUrl }}',
                     @if ($game)
-                    saveGame: '{{ action('Ajax\GroupController@editRegularGame', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}',
                     resetGame: '{{ action('Ajax\GroupController@resetRegularGame', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}',
                     protocol: '{{ action('Ajax\GroupController@createRegularProtocol', ['tournamentId' => $game->tournament_id, 'gameId' => $game->id])}}'
                     @endif

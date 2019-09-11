@@ -42,6 +42,7 @@ use Illuminate\Support\Carbon;
  * @property string|null                              $away_powerplay_time   Гости время в большинстве
  * @property int|null                                 $home_shorthanded_goal Хозяева голы в меньшинстве
  * @property int|null                                 $away_shorthanded_goal Гости голы в меньшинстве
+ * @property int                                      $isOvertime            Овертайм
  * @property int                                      $isTechnicalDefeat     Техническое поражение
  * @property string|null                              $playedAt              Дата игры
  * @property Carbon                                   $createdAt             Дата создания
@@ -101,6 +102,7 @@ class GroupGamePlayoff extends Model
 
     const CREATED_AT = 'createdAt';
     const DELETED_AT = 'deletedAt';
+    const UPDATED_AT = 'updatedAt';
 
     /**
      * The table associated with the model.
@@ -155,10 +157,11 @@ class GroupGamePlayoff extends Model
         'away_powerplay_time',
         'home_shorthanded_goal',
         'away_shorthanded_goal',
+        'isOvertime',
         'isTechnicalDefeat',
         'playedAt',
-        'createdAt',
-        'deletedAt',
+        //'createdAt',
+        //'deletedAt',
     ];
 
     /**
