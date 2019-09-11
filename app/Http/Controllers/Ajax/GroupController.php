@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\GroupTournamentWinner;
 use App\Http\Requests\StoreGroupTournament;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequest;
@@ -13,6 +12,7 @@ use App\Models\GroupGameRegularPlayer;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentPlayoff;
 use App\Models\GroupTournamentTeam;
+use App\Models\GroupTournamentWinner;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
@@ -182,53 +182,30 @@ class GroupController extends Controller
      * @param int          $tournamentId
      * @return ResponseFactory|Response
      */
-    public function createWinner(StoreRequest $request, int $tournamentId)
+    public function setWinner(StoreRequest $request, int $tournamentId)
     {
         $validatedData = $request->validate([
-            'team_id' => 'required|int|exists:team,id',
+            'team_id' => 'required|int|min:0',
             'place'   => 'required|int|min:1|max:3',
         ]);
-        $validatedData['tournament_id'] = $tournamentId;
-        $winner = new GroupTournamentWinner($validatedData);
-        $winner->save();
+        $winner = GroupTournamentWinner::where('tournament_id', $tournamentId)
+            ->where('place', $validatedData['place'])
+            ->first();
 
-        return $this->renderAjax(['id' => $winner->id]);
-    }
+        $message = $validatedData['place'] . ' место сохранено';
+        if (is_null($winner)) {
+            $validatedData['tournament_id'] = $tournamentId;
+            $winner = new GroupTournamentWinner($validatedData);
+            $winner->save();
+        } elseif ($validatedData['team_id'] === '0') {
+            $winner->delete();
+            $message = $validatedData['place'] . ' место удалено';
+        } else {
+            $winner->fill($validatedData);
+            $winner->save();
+        }
 
-    /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $winnerId
-     * @return ResponseFactory|Response
-     */
-    public function updateWinner(StoreRequest $request, int $tournamentId, int $winnerId)
-    {
-        $validatedData = $request->validate([
-            'team_id' => 'required|int|exists:team,id',
-            'place'   => 'required|int|min:1|max:3',
-        ]);
-        /** @var GroupTournamentWinner $winner */
-        $winner = GroupTournamentWinner::find($winnerId);
-        $winner->fill($validatedData);
-        $winner->save();
-
-        return $this->renderAjax(['id' => $winner->id]);
-    }
-
-    /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $winnerId
-     * @return ResponseFactory|Response
-     * @throws Exception
-     */
-    public function deleteWinner(StoreRequest $request, int $tournamentId, int $winnerId)
-    {
-        /** @var GroupTournamentWinner $winner */
-        $winner = GroupTournamentWinner::find($winnerId);
-        $winner->delete();
-
-        return $this->renderAjax();
+        return $this->renderAjax([], $message);
     }
 
     /**

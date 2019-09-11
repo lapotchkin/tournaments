@@ -1,5 +1,5 @@
 <h2>
-    <i class="fab fa-{{ $tournament->platform->icon }} @if($tournament->platform->icon === 'xbox') text-success @endif" ></i>
+    <i class="fab fa-{{ $tournament->platform->icon }} @if($tournament->platform->icon === 'xbox') text-success @endif"></i>
     {{ $tournament->title }}
     <span class="badge badge-pill badge-secondary">
         {{ $tournament->min_players }} на {{ $tournament->min_players }}
@@ -13,3 +13,29 @@
     @endauth
 </h2>
 <p>Создан: {{ (new \DateTime($tournament->createdAt))->format('d.m.Y') }}</p>
+@if(count($tournament->winners))
+    <h3>Победитель и призёры</h3>
+    <div class="row">
+        @foreach($tournament->winners as $winner)
+            @php
+                switch($winner->place) {
+                    case (1):
+                    $class = 'warning';
+                    break;
+                    case (2):
+                    $class = 'secondary';
+                    break;
+                    default:
+                    $class = 'danger';
+                }
+            @endphp
+            <div class="col-12 col-md-4">
+                <blockquote class="blockquote alert alert-{{ $class }}">
+                    <footer class="blockquote-footer"><i class="fas fa-trophy"></i> {{ $winner->place }} место</footer>
+                    <p class="mb-0"><a
+                            href="{{ route('team', ['teamId' => $winner->team_id]) }}">{{ $winner->team->name }}</a></p>
+                </blockquote>
+            </div>
+        @endforeach
+    </div>
+@endif

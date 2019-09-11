@@ -11,8 +11,6 @@ use App\Models\GroupTournamentPlayoffPosition;
 use App\Models\PlayerPosition;
 use App\Utils\TextUtils;
 use Auth;
-use DateInterval;
-use DateTime;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -33,7 +31,8 @@ class GroupPlayoffController extends Controller
     public function index(Request $request, int $tournamentId)
     {
         /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::find($tournamentId);
+        $tournament = GroupTournament::with(['playoff.teamOne', 'playoff.teamTwo', 'winners.team'])
+            ->find($tournamentId);
         if (is_null($tournament)) {
             abort(404);
         }
@@ -105,7 +104,8 @@ class GroupPlayoffController extends Controller
     public function stats(Request $request, int $tournamentId)
     {
         /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::find($tournamentId);
+        $tournament = GroupTournament::with(['winners.team'])
+            ->find($tournamentId);
         if (is_null($tournament)) {
             abort(404);
         }
@@ -150,7 +150,8 @@ class GroupPlayoffController extends Controller
         }
 
         /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::find($tournamentId);
+        $tournament = GroupTournament::with(['playoff.teamOne', 'playoff.teamTwo', 'winners.team'])
+            ->find($tournamentId);
         if (is_null($tournament)) {
             abort(404);
         }
@@ -216,7 +217,8 @@ class GroupPlayoffController extends Controller
         ]);
     }
 
-    public function gameEdit(Request $request, int $tournamentId, int $pairId, int $gameId) {
+    public function gameEdit(Request $request, int $tournamentId, int $pairId, int $gameId)
+    {
         if (!Auth::check()) {
             abort(403);
         }

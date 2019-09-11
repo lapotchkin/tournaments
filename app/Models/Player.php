@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\PersonalTournamentWinner;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
@@ -37,6 +38,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection|PersonalTournamentPlayoff[]                $personalTournamentPlayoffs
  * @property-read Platform|null                                         $platform
  * @property-read Collection|TeamPlayer[]                               $teamPlayers
+ * @property-read Collection|PersonalTournamentWinner[]                 $tournamentWins
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|Player newModelQuery()
  * @method static EloquentBuilder|Player newQuery()
@@ -146,6 +148,14 @@ class Player extends Authenticatable
     public function teamPlayers()
     {
         return $this->hasMany('App\Models\TeamPlayer');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function tournamentWins()
+    {
+        return $this->hasMany('App\Models\PersonalTournamentWinner');
     }
 
     /**

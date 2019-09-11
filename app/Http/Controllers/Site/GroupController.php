@@ -81,7 +81,7 @@ class GroupController extends Controller
     public function teams(Request $request, int $tournamentId)
     {
         /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with(['tournamentTeams', 'tournamentTeams.team'])
+        $tournament = GroupTournament::with(['tournamentTeams', 'tournamentTeams.team', 'winners.team'])
             ->find($tournamentId);
         if (is_null($tournament)) {
             abort(404);

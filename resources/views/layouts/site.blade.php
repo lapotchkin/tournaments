@@ -57,6 +57,11 @@
 @show
 
 @section('submenu')
+    @if(strstr(url()->current(), 'group'))
+        <div class="container">
+            @widget('groupGamesCarousel')
+        </div>
+    @endif
 @show
 
 <div class="container">
