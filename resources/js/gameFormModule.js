@@ -98,6 +98,7 @@ window.TRNMNT_gameFormModule = (function () {
             for (let player of protocols[side]) {
                 const $tbody = side === 'home' ? _$homePlayers : _$awayPlayers;
                 if (matchId) {
+                    console.log(player);
                     $tbody.append(_templates.player.format({
                         tag: player.player_tag,
                         position: _getPlayerBadge(player.position_id, player.position),

@@ -184,7 +184,7 @@ class GroupGamePlayoffPlayer extends Model
      */
     public function playerClass()
     {
-        return $this->belongsTo('App\Models\PlayerClass');
+        return $this->belongsTo('App\Models\PlayerClass', 'class_id');
     }
 
     /**
@@ -192,7 +192,7 @@ class GroupGamePlayoffPlayer extends Model
      */
     public function playerPosition()
     {
-        return $this->belongsTo('App\Models\PlayerPosition');
+        return $this->belongsTo('App\Models\PlayerPosition', 'position_id');
     }
 
     /**

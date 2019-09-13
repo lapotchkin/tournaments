@@ -2,6 +2,8 @@
 
 namespace App\Widgets;
 
+use App\Models\GroupGamePlayoff;
+use App\Models\GroupGameRegular;
 use Arrilot\Widgets\AbstractWidget;
 
 /**
@@ -11,20 +13,26 @@ use Arrilot\Widgets\AbstractWidget;
 class GroupGamesCarousel extends AbstractWidget
 {
     /**
-     * The configuration array.
-     *
-     * @var array
-     */
-    protected $config = [
-        'games' => [],
-    ];
-
-    /**
      * Treat this method as a controller action.
      * Return view() or other content to display.
      */
     public function run()
     {
-        return view('widgets.group_games_carousel', $this->config);
+        $regularGames = GroupGameRegular::with(['homeTeam.team', 'awayTeam.team', 'tournament'])
+            ->whereNotNull('playedAt')
+            ->orderByDesc('playedAt')
+            ->take(10)
+            ->get();
+        $playoffGames = GroupGamePlayoff::with(['homeTeam.team', 'awayTeam.team', 'tournament', 'playoffPair'])
+            ->whereNotNull('playedAt')
+            ->orderByDesc('playedAt', 'desc')
+            ->take(10)
+            ->get();
+        $games = $regularGames->merge($playoffGames)
+            ->sortByDesc('playedAt');
+
+        return view('widgets.group_games_carousel', [
+            'games' => $games,
+        ]);
     }
 }

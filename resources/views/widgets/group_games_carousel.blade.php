@@ -1,31 +1,57 @@
+<style>
+    #carousel-games a {
+        color: #fff;
+    }
+    #carousel-games a:hover {
+        text-decoration: none !important;
+    }
+</style>
+
 <div id="carousel-games" class="carousel slide bg-dark text-white mb-3" data-ride="carousel">
     <div class="carousel-inner row w-100 mx-auto" role="listbox">
-        <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 active border-light border-right"
-             style="height: 6rem">
-            Игра 1<br>
-            nhfkfkf
-        </div>
-        <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 border-light border-right" style="height: 6rem">
-            2
-        </div>
-        <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 border-light border-right" style="height: 6rem">
-            3
-        </div>
-        <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 border-light border-right" style="height: 6rem">
-            4
-        </div>
-        <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 border-light border-right" style="height: 6rem">
-            5
-        </div>
-        <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 border-light border-right" style="height: 6rem">
-            6
-        </div>
-        <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 border-light border-right" style="height: 6rem">
-            7
-        </div>
-        <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 border-light border-right" style="height: 6rem">
-            8
-        </div>
+        @foreach($games as $game)
+            @if($loop->iteration > 10)
+                @break
+            @endif
+            @php
+                if ($game->playoff_pair_id) {
+                    $link = route('group.tournament.playoff.game', ['tournamentId' => $game->tournament->id, 'pairId' => $game->playoff_pair_id, 'gameId' => $game->id]);
+                } else {
+                    $link = route('group.tournament.regular.game', ['tournamentId' => $game->tournament->id, 'gameId' => $game->id]);
+                }
+            @endphp
+            <a
+                href="{{ $link }}"
+                class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 border-light border-right {{ $loop->iteration === 1 ? 'active' : '' }} p-3">
+                <div class="text-center">
+                    <strong>{{ $game->tournament->title }}</strong>
+                    <span
+                        class="badge badge-pill badge-secondary">{{ $game->tournament->min_players }} на {{ $game->tournament->min_players }}</span>
+                </div>
+                <div class="text-center text-muted mb-1">
+                    @if($game->playoff_pair_id)
+                        {{ TextUtils::playoffRound($game->tournament, $game->playoffPair->round) }}
+                    @else
+                        Регулярный чемпионат
+                    @endif
+                </div>
+                <div class="h2 text-center">
+                    {{ $game->homeTeam->team->short_name }}
+                    <span class="badge badge-pill badge-light">{{ $game->home_score }}</span>
+                    :
+                    <span class="badge badge-pill badge-light">{{ $game->away_score }}</span>
+                    {{ $game->awayTeam->team->short_name }}
+                </div>
+                <div class="text-center text-muted">
+                    {{ (new \DateTime($game->playedAt))->format('d.m.Y') }}
+                </div>
+                {{--                <div class="row">--}}
+                {{--                    <div class="col-6 text-right">{{ $game->homeTeam->team->name }}</div>--}}
+                {{--                    <div></div>--}}
+                {{--                    <div class="col-6">{{ $game->awayTeam->team->name }}</div>--}}
+                {{--                </div>--}}
+            </a>
+        @endforeach
     </div>
     <a class="carousel-control-prev" href="#carousel-games" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>

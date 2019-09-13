@@ -183,7 +183,7 @@ class GroupGameRegularPlayer extends Model
      */
     public function playerClass()
     {
-        return $this->belongsTo('App\Models\PlayerClass');
+        return $this->belongsTo('App\Models\PlayerClass', 'class_id');
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\GroupTournamentWinner;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
