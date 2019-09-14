@@ -231,6 +231,9 @@ class GroupGamePlayoff extends Model
         return $protocols;
     }
 
+    /**
+     * @return array
+     */
     public function getSafePlayersData()
     {
         $players = [
@@ -244,5 +247,19 @@ class GroupGamePlayoff extends Model
             $players['away'][] = $player->player->getSafeData();
         }
         return $players;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getStars() {
+        $stars = new Collection;
+        foreach ($this->protocols as $protocol) {
+            if ($protocol->star > 0) {
+                $stars->push($protocol);
+            }
+        }
+        $stars = $stars->sortBy('star');
+        return $stars;
     }
 }

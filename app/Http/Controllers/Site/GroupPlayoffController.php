@@ -92,6 +92,7 @@ class GroupPlayoffController extends Controller
         return view('site.group.game_protocol', [
             'title' => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' : ' . $roundText . $pairText,
             'game'  => $game,
+            'stars' => $game->getStars(),
         ]);
     }
 

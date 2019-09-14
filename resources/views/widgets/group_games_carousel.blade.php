@@ -23,7 +23,7 @@
                 <div class="text-center">
                     <strong>{{ $game->tournament->title }}</strong>
                     <span
-                        class="badge badge-pill badge-secondary">{{ $game->tournament->min_players }} на {{ $game->tournament->min_players }}</span>
+                        class="badge badge-pill badge-light">{{ $game->tournament->min_players }} на {{ $game->tournament->min_players }}</span>
                 </div>
                 <div class="text-center text-white-50">
                     @if($game->playoff_pair_id)
@@ -42,11 +42,6 @@
                 <div class="text-center text-white-50">
                     {{ (new \DateTime($game->playedAt))->format('d.m.Y') }}
                 </div>
-                {{--                <div class="row">--}}
-                {{--                    <div class="col-6 text-right">{{ $game->homeTeam->team->name }}</div>--}}
-                {{--                    <div></div>--}}
-                {{--                    <div class="col-6">{{ $game->awayTeam->team->name }}</div>--}}
-                {{--                </div>--}}
             </a>
         @endforeach
     </div>

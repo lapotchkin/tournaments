@@ -158,6 +158,21 @@
             </tbody>
         </table>
 
+        @if(count($stars))
+            <div class="text-center">
+                @foreach($stars as $protocol)
+                    @for ($i = 0; $i < $protocol->star; $i++)
+                        <i class="fas fa-star text-danger"></i>
+                    @endfor
+                    <a href="{{ route('player', ['userID' => $protocol->player_id]) }}">{{ $protocol->player->name }}</a>
+                    <small>{{ $protocol->player->tag }}</small>
+                    @if (!$loop->last)
+                        &nbsp;&nbsp;&nbsp;
+                    @endif
+                @endforeach
+            </div>
+        @endif
+
         <h3>{{ $game->homeTeam->team->name }}</h3>
         <table class="table table-sm table-striped">
             <thead class="thead-dark">

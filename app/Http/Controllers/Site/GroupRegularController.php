@@ -78,7 +78,11 @@ class GroupRegularController extends Controller
     public function games(Request $request, int $tournamentId)
     {
         /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with(['regularGames.homeTeam.team', 'regularGames.awayTeam.team', 'winners.team'])
+        $tournament = GroupTournament::with([
+            'regularGames.homeTeam.team',
+            'regularGames.awayTeam.team',
+            'winners.team',
+        ])
             ->find($tournamentId);
         if (is_null($tournament)) {
             abort(404);
@@ -127,6 +131,7 @@ class GroupRegularController extends Controller
         return view('site.group.game_protocol', [
             'title' => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' (Тур ' . $game->round . ')',
             'game'  => $game,
+            'stars' => $game->getStars(),
         ]);
     }
 
@@ -187,7 +192,11 @@ class GroupRegularController extends Controller
     public function schedule(Request $request, int $tournamentId)
     {
         /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with(['regularGames.homeTeam.team', 'regularGames.awayTeam.team', 'winners.team'])
+        $tournament = GroupTournament::with([
+            'regularGames.homeTeam.team',
+            'regularGames.awayTeam.team',
+            'winners.team',
+        ])
             ->find($tournamentId);
         if (is_null($tournament)) {
             abort(404);
