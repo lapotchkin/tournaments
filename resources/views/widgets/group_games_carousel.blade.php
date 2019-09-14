@@ -1,13 +1,10 @@
 <style>
-    #carousel-games a {
-        color: #fff;
-    }
     #carousel-games a:hover {
         text-decoration: none !important;
     }
 </style>
 
-<div id="carousel-games" class="carousel slide bg-dark text-white mb-3" data-ride="carousel">
+<div id="carousel-games" class="carousel slide bg-secondary mb-3" data-ride="carousel">
     <div class="carousel-inner row w-100 mx-auto" role="listbox">
         @foreach($games as $game)
             @if($loop->iteration > 10)
@@ -22,27 +19,27 @@
             @endphp
             <a
                 href="{{ $link }}"
-                class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 border-light border-right {{ $loop->iteration === 1 ? 'active' : '' }} p-3">
+                class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 text-light border-light border-right {{ $loop->iteration === 1 ? 'active' : '' }} p-1">
                 <div class="text-center">
                     <strong>{{ $game->tournament->title }}</strong>
                     <span
                         class="badge badge-pill badge-secondary">{{ $game->tournament->min_players }} на {{ $game->tournament->min_players }}</span>
                 </div>
-                <div class="text-center text-muted mb-1">
+                <div class="text-center text-white-50">
                     @if($game->playoff_pair_id)
                         {{ TextUtils::playoffRound($game->tournament, $game->playoffPair->round) }}
                     @else
                         Регулярный чемпионат
                     @endif
                 </div>
-                <div class="h2 text-center">
+                <div class="h4 text-center mb-1">
                     {{ $game->homeTeam->team->short_name }}
-                    <span class="badge badge-pill badge-light">{{ $game->home_score }}</span>
+                    <span class="badge badge-pill badge-dark">{{ $game->home_score }}</span>
                     :
-                    <span class="badge badge-pill badge-light">{{ $game->away_score }}</span>
+                    <span class="badge badge-pill badge-dark">{{ $game->away_score }}</span>
                     {{ $game->awayTeam->team->short_name }}
                 </div>
-                <div class="text-center text-muted">
+                <div class="text-center text-white-50">
                     {{ (new \DateTime($game->playedAt))->format('d.m.Y') }}
                 </div>
                 {{--                <div class="row">--}}
