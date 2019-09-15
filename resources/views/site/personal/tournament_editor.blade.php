@@ -4,9 +4,9 @@
 
 @section('content')
     @if(is_null($tournament))
-        {{ Breadcrumbs::render('group.new') }}
+        {{ Breadcrumbs::render('personal.new') }}
     @else
-        {{ Breadcrumbs::render('group.tournament.edit', $tournament) }}
+        {{ Breadcrumbs::render('personal.tournament.edit', $tournament) }}
     @endif
 
     <h2>{{ $title }}</h2>
@@ -41,22 +41,22 @@
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
-                    <label for="title">Название</label>
-                    <input type="text" id="title" class="form-control" name="title"
-                           value="{{ !is_null($tournament) ? $tournament->title : '' }}">
-                    <div class="invalid-feedback"></div>
-                </div>
-                <div class="form-group">
-                    <label for="min_players">Минимальное количество игроков в команде</label>
-                    <select id="min_players" class="form-control" name="min_players">
-                        <option value="">--Не выбрано--</option>
-                        @foreach([3, 6] as $count)
-                            <option value="{{ $count }}"
-                                {{ !is_null($tournament) && $tournament->min_players === $count ? 'selected' : '' }}>
-                                {{ $count }}
+                    <label for="app_id">Лига</label>
+                    <select id="app_id" class="form-control" name="league_id">
+                        <option value="">--Не выбрана--</option>
+                        @foreach($leagues as $league)
+                            <option value="{{ $league->id }}"
+                                {{ !is_null($tournament) && $tournament->league_id === $league->id ? 'selected' : '' }}>
+                                {{ $league->title }}
                             </option>
                         @endforeach
                     </select>
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="title">Название</label>
+                    <input type="text" id="title" class="form-control" name="title"
+                           value="{{ !is_null($tournament) ? $tournament->title : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
@@ -102,15 +102,15 @@
             <input type="hidden" name="place" value="1">
             <div class="form-group mb-2">
                 <label for="first_place">Первое место</label>
-                <select id="first_place" class="form-control ml-2 mr-2" name="team_id">
-                    <option value="0">--Не выбрана--</option>
-                    @foreach($tournament->teams as $team)
-                        <option value="{{ $team->id }}"
+                <select id="first_place" class="form-control ml-2 mr-2" name="player_id">
+                    <option value="0">--Не выбран--</option>
+                    @foreach($tournament->players as $player)
+                        <option value="{{ $player->id }}"
                                 @foreach($tournament->winners as $winner)
-                                @if($winner->place === 1 && $winner->team_id === $team->id) selected @endif
+                                @if($winner->place === 1 && $winner->player_id === $player->id) selected @endif
                             @endforeach
                         >
-                            {{ $team->name }}
+                            {{ $player->tag }} ({{ $player->name }})
                         </option>
                     @endforeach
                 </select>
@@ -124,15 +124,15 @@
             <input type="hidden" name="place" value="2">
             <div class="form-group mb-2">
                 <label for="second_place">Второе место</label>
-                <select id="second_place" class="form-control ml-2 mr-2" name="team_id">
-                    <option value="0">--Не выбрана--</option>
-                    @foreach($tournament->teams as $team)
-                        <option value="{{ $team->id }}"
+                <select id="second_place" class="form-control ml-2 mr-2" name="player_id">
+                    <option value="0">--Не выбран--</option>
+                    @foreach($tournament->players as $player)
+                        <option value="{{ $player->id }}"
                                 @foreach($tournament->winners as $winner)
-                                @if($winner->place === 2 && $winner->team_id === $team->id) selected @endif
+                                @if($winner->place === 2 && $winner->player_id === $player->id) selected @endif
                             @endforeach
                         >
-                            {{ $team->name }}
+                            {{ $player->tag }} ({{ $player->name }})
                         </option>
                     @endforeach
                 </select>
@@ -147,15 +147,15 @@
                 <input type="hidden" name="place" value="3">
                 <div class="form-group mb-2">
                     <label for="third_place">Третье место</label>
-                    <select id="third_place" class="form-control ml-2 mr-2" name="team_id">
-                        <option value="0">--Не выбрана--</option>
-                        @foreach($tournament->teams as $team)
-                            <option value="{{ $team->id }}"
+                    <select id="third_place" class="form-control ml-2 mr-2" name="player_id">
+                        <option value="0">--Не выбран--</option>
+                        @foreach($tournament->players as $player)
+                            <option value="{{ $player->id }}"
                                     @foreach($tournament->winners as $winner)
-                                    @if($winner->place === 3 && $winner->team_id === $team->id) selected @endif
+                                    @if($winner->place === 3 && $winner->player_id === $player->id) selected @endif
                                 @endforeach
                             >
-                                {{ $team->name }}
+                                {{ $player->tag }} ({{ $player->name }})
                             </option>
                         @endforeach
                     </select>
@@ -175,25 +175,25 @@
             TRNMNT_sendData({
                 selector: '#tournament-form',
                 method: '{{ is_null($tournament) ? 'put' : 'post' }}',
-                url: '{{ is_null($tournament) ? action('Ajax\GroupController@create') : action('Ajax\GroupController@edit', ['tournamentId' => $tournament->id])}}',
+                url: '{{ is_null($tournament) ? action('Ajax\PersonalController@create') : action('Ajax\PersonalController@edit', ['tournamentId' => $tournament->id])}}',
                 success: function (response) {
-                    window.location.href = '{{ route('group') }}/' + response.data.id;
+                    window.location.href = '{{ route('personal') }}/' + response.data.id;
                 }
             });
 
             @if (!is_null($tournament))
             TRNMNT_deleteData({
                 selector: '#tournament-delete-button',
-                url: '{{ action('Ajax\GroupController@delete', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\PersonalController@delete', ['tournamentId' => $tournament->id])}}',
                 success: function () {
-                    window.location.href = '{{ route('group') }}';
+                    window.location.href = '{{ route('personal') }}';
                 }
             });
 
             TRNMNT_sendData({
                 selector: '#first_place-form',
                 method: 'post',
-                url: '{{ action('Ajax\GroupController@setWinner', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\PersonalController@setWinner', ['tournamentId' => $tournament->id])}}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                 },
@@ -202,7 +202,7 @@
             TRNMNT_sendData({
                 selector: '#second_place-form',
                 method: 'post',
-                url: '{{ action('Ajax\GroupController@setWinner', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\PersonalController@setWinner', ['tournamentId' => $tournament->id])}}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                 },
@@ -212,7 +212,7 @@
             TRNMNT_sendData({
                 selector: '#third_place-form',
                 method: 'post',
-                url: '{{ action('Ajax\GroupController@setWinner', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\PersonalController@setWinner', ['tournamentId' => $tournament->id])}}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                 },

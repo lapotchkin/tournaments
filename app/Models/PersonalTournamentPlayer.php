@@ -20,7 +20,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon                  $createdAt     Дата создания
  * @property Carbon|null             $deletedAt     Дата удаления
  * @property-read Club|null          $club
- * @property-read PersonalTournament $personalTournament
+ * @property-read PersonalTournament $tournament
  * @property-read Player             $player
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|PersonalTournamentPlayer newModelQuery()
@@ -43,6 +43,7 @@ class PersonalTournamentPlayer extends Model
     use SoftDeletes;
 
     const CREATED_AT = 'createdAt';
+    const UPDATED_AT = null;
     const DELETED_AT = 'deletedAt';
 
     /**
@@ -68,7 +69,7 @@ class PersonalTournamentPlayer extends Model
     /**
      * @return BelongsTo
      */
-    public function personalTournament()
+    public function tournament()
     {
         return $this->belongsTo('App\Models\PersonalTournament', 'tournament_id');
     }

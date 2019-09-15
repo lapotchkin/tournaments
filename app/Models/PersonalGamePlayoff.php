@@ -6,6 +6,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
@@ -25,7 +26,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null                    $deletedAt         Дата удаления
  * @property-read Player                    $awayPlayer
  * @property-read Player                    $homePlayer
- * @property-read PersonalTournamentPlayoff $personalTournamentPlayoff
+ * @property-read PersonalTournamentPlayoff $playoffPair
+ * @property-read PersonalTournament        $tournament
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|PersonalGamePlayoff newModelQuery()
  * @method static EloquentBuilder|PersonalGamePlayoff newQuery()
@@ -78,9 +80,24 @@ class PersonalGamePlayoff extends Model
     /**
      * @return BelongsTo
      */
-    public function personalTournamentPlayoff()
+    public function playoffPair()
     {
         return $this->belongsTo('App\Models\PersonalTournamentPlayoff', 'playoff_pair_id');
+    }
+
+    /**
+     * @return HasOneThrough
+     */
+    public function tournament()
+    {
+        return $this->hasOneThrough(
+            'App\Models\PersonalTournament',
+            'App\Models\PersonalTournamentPlayoff',
+            'id',
+            'id',
+            'playoff_pair_id',
+            'tournament_id'
+        );
     }
 
     /**

@@ -4,6 +4,7 @@
 namespace App\Utils;
 
 use App\Models\GroupTournament;
+use App\Models\PersonalTournament;
 
 /**
  * Class TextUtils
@@ -92,14 +93,14 @@ class TextUtils
     }
 
     /**
-     * @param GroupTournament $tournament
-     * @param int             $round
+     * @param GroupTournament|PersonalTournament $tournament
+     * @param int                                $round
      * @return string
      */
-    public static function playoffRound(GroupTournament $tournament, int $round)
+    public static function playoffRound($tournament, int $round)
     {
-        $maxTeams = pow(2, $tournament->playoff_rounds);
-        switch ($maxTeams / pow(2, $round)) {
+        $maxCompetitors = pow(2, $tournament->playoff_rounds);
+        switch ($maxCompetitors / pow(2, $round)) {
             case 8:
                 return '⅛ финала';
             case 4:

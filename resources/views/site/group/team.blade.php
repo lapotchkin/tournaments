@@ -5,7 +5,7 @@
 @section('content')
     {{ Breadcrumbs::render('group.tournament.team', $tournamentTeam, $title) }}
     <h2>
-        <i class="fab fa-{{ $tournamentTeam->team->platform->icon }}"></i>
+        <i class="fab fa-{{ $tournamentTeam->team->platform->icon }} {{ $tournamentTeam->team->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
         {{ $title }}
     </h2>
 

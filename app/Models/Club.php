@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
 /**
  * App\Models\Club
  *
- * @property int                                        $id        ID
+ * @property string                                     $id        ID
  * @property string                                     $league_id ID лиги
  * @property string                                     $title     Название
  * @property Carbon                                     $createdAt Дата создания
@@ -50,6 +50,13 @@ class Club extends Model
      * @var string
      */
     protected $table = 'club';
+
+    /**
+     * The "type" of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
 
     /**
      * @var array

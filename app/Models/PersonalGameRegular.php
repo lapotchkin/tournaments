@@ -29,7 +29,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null             $deletedAt         Дата удаления
  * @property-read Player             $awayPlayer
  * @property-read Player             $homePlayer
- * @property-read PersonalTournament $personalTournament
+ * @property-read PersonalTournament $tournament
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|PersonalGameRegular newModelQuery()
  * @method static EloquentBuilder|PersonalGameRegular newQuery()
@@ -89,7 +89,7 @@ class PersonalGameRegular extends Model
     /**
      * @return BelongsTo
      */
-    public function personalTournament()
+    public function tournament()
     {
         return $this->belongsTo('App\Models\PersonalTournament', 'tournament_id');
     }

@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\PersonalTournamentWinner;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
@@ -27,8 +27,8 @@ use Illuminate\Support\Carbon;
  * @property int                                        $thirdPlaceSeries Серия за третье место
  * @property-read App                                   $app
  * @property-read League|null                           $league
- * @property-read Collection|PersonalGameRegular[]      $personalGameRegulars
- * @property-read Collection|PersonalTournamentPlayer[] $personalTournamentPlayers
+ * @property-read Collection|PersonalGameRegular[]      $regularGames
+ * @property-read Collection|PersonalTournamentPlayer[] $tournamentPlayers
  * @property-read Collection|PersonalTournamentWinner[] $winners
  * @property-read Platform                              $platform
  * @method static bool|null forceDelete()
@@ -54,6 +54,7 @@ class PersonalTournament extends Model
     use SoftDeletes;
 
     const CREATED_AT = 'createdAt';
+    const UPDATED_AT = null;
     const DELETED_AT = 'deletedAt';
 
     /**
@@ -104,7 +105,7 @@ class PersonalTournament extends Model
     /**
      * @return HasMany
      */
-    public function personalGameRegulars()
+    public function regularGames()
     {
         return $this->hasMany('App\Models\PersonalGameRegular', 'tournament_id');
     }
@@ -112,9 +113,33 @@ class PersonalTournament extends Model
     /**
      * @return HasMany
      */
-    public function personalTournamentPlayers()
+    public function playoff()
+    {
+        return $this->hasMany('App\Models\PersonalTournamentPlayoff', 'tournament_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function tournamentPlayers()
     {
         return $this->hasMany('App\Models\PersonalTournamentPlayer', 'tournament_id');
+    }
+
+    /**
+     * @return HasManyThrough
+     */
+    public function players()
+    {
+        return $this->hasManyThrough(
+            'App\Models\Player',
+            'App\Models\PersonalTournamentPlayer',
+            'tournament_id',
+            'id',
+            'id',
+            'player_id'
+        )
+            ->orderBy('player.tag');
     }
 
     /**

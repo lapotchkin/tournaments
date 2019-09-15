@@ -24,7 +24,9 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $apps = App::with(['groupTournaments.platform'])->get();
+        $apps = App::with(['groupTournaments.platform'])
+            ->orderByDesc('createdAt')
+            ->get();
 
         return view('site.group.index', [
             'apps' => $apps,

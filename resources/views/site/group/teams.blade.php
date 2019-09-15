@@ -41,39 +41,35 @@
         @endforeach
     </div>
 
+    @auth
     <form id="team-add">
-        <div class="form-row">
-            <div class="form-group">
-                <div class="form-group">
-                    <label for="team_id">Команда</label>
-                    <select id="team_id" class="form-control" name="team_id">
-                        <option value="">--Не выбрана--</option>
-                        @foreach($nonTournamentTeams as $team)
-                            <option value="{{ $team->id }}">{{ $team->name }}</option>
-                        @endforeach
-                    </select>
-
-                    <div class="invalid-feedback"></div>
-                </div>
+        <div class="form-inline">
+            <div class="input-group">
+                <label for="team_id" class="mr-2">Команда</label>
+                <select id="team_id" class="form-control mr-3" name="team_id">
+                    <option value="">--Не выбрана--</option>
+                    @foreach($nonTournamentTeams as $team)
+                        <option value="{{ $team->id }}">{{ $team->name }}</option>
+                    @endforeach
+                </select>
+                <div class="invalid-feedback"></div>
             </div>
-            <div class="form-group col-2">
-                <div class="form-group">
-                    <label for="division">Группа</label>
-                    <select id="division" class="form-control" name="division">
-                        <option value="">--Не выбрана--</option>
-                        @foreach([1, 2, 3, 4] as $divisionId)
-                            <option value="{{ $divisionId }}">
-                                {{ TextUtils::divisionLetter($divisionId) }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+            <div class="input-group">
+                <label for="division" class="mr-2">Группа</label>
+                <select id="division" class="form-control mr-3" name="division">
+                    <option value="">--Не выбрана--</option>
+                    @foreach([1, 2, 3, 4] as $divisionId)
+                        <option value="{{ $divisionId }}">
+                            {{ TextUtils::divisionLetter($divisionId) }}
+                        </option>
+                    @endforeach
+                </select>
+                <div class="invalid-feedback"></div>
             </div>
-            <div class="form-group ml-2" style="margin-top: 2rem">
-                <button type="submit" class="btn btn-primary" name="team-add-button">Добавить</button>
-            </div>
+            <button type="submit" class="btn btn-primary" name="team-add-button">Добавить</button>
         </div>
     </form>
+    @endauth
 @endsection
 
 @section('script')
@@ -111,7 +107,7 @@
 
                         var letters = 'ABCD';
                         $('.card-deck').append(
-                            '<div class="card mb-3" id="division-' + division + '"><h4 class="card-header">Группа ' + letters.charAt(division - 1) + '</h4><div class="card-body"><table class="table table-striped table-sm" id="team-table"><tbody></tbody></table></div></div>');
+                            '<div class="card mb-3" id="division-' + division + '"><h4 class="card-header bg-dark text-light">Группа ' + letters.charAt(division - 1) + '</h4><div class="card-body"><table class="table table-striped table-sm" id="team-table"><tbody></tbody></table></div></div>');
                     }
                 });
             </script>

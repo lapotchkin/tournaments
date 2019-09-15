@@ -3,7 +3,13 @@
 // Group
 use App\Models\GroupGamePlayoff;
 use App\Models\GroupTournamentPlayoff;
+use App\Models\PersonalGamePlayoff;
+use App\Models\PersonalGameRegular;
+use App\Models\PersonalTournament;
+use App\Models\PersonalTournamentPlayer;
+use App\Models\PersonalTournamentPlayoff;
 
+//Group
 Breadcrumbs::for('group', function ($trail) {
     $trail->push('Командные турниры', route('group'));
 });
@@ -131,6 +137,132 @@ Breadcrumbs::for('group.tournament.playoff.game.add', function ($trail, GroupTou
         $roundText . $pairText,
         route(
             'group.tournament.playoff.game.add',
+            ['tournamentId' => $pair->tournament->id, 'pairId' => $pair->id]
+        )
+    );
+});
+
+
+//Personal
+Breadcrumbs::for('personal', function ($trail) {
+    $trail->push('Турниры 1 на 1 ', route('personal'));
+});
+//Personal > New
+Breadcrumbs::for('personal.new', function ($trail) {
+    $trail->parent('personal');
+    $trail->push('Новый турнир', route('personal.new'));
+});
+//Personal > Tournament
+Breadcrumbs::for('personal.tournament', function ($trail, PersonalTournament $tournament) {
+    $trail->parent('personal');
+    $trail->push(
+        $tournament->title,
+        route('personal.tournament', ['tournamentId' => $tournament->id])
+    );
+});
+//Personal > Tournament > Editor
+Breadcrumbs::for('personal.tournament.edit', function ($trail, PersonalTournament $tournament) {
+    $trail->parent('personal.tournament', $tournament);
+    $trail->push(
+        'Редактировать турнир',
+        route('personal.tournament.edit', ['tournamentId' => $tournament->id])
+    );
+});
+//Personal > Tournament > Player
+Breadcrumbs::for('personal.tournament.player', function ($trail, PersonalTournamentPlayer $tournamentPlayer, $title) {
+    $trail->parent('personal.tournament', $tournamentPlayer->tournament);
+    $trail->push(
+        $title,
+        route(
+            'personal.tournament.player',
+            ['tournamentId' => $tournamentPlayer->tournament->id, 'playerId' => $tournamentPlayer->player_id]
+        )
+    );
+});
+//Personal > Tournament > VK
+Breadcrumbs::for('personal.tournament.copypaste', function ($trail, PersonalTournament $tournament) {
+    $trail->parent('personal.tournament', $tournament);
+    $trail->push(
+        'Данные для ВК',
+        route('personal.tournament.copypaste', ['tournamentId' => $tournament->id])
+    );
+});
+//Personal > Tournament > Regular
+Breadcrumbs::for('personal.tournament.regular', function ($trail, PersonalTournament $tournament) {
+    $trail->parent('personal.tournament', $tournament);
+    $trail->push(
+        'Чемпионат',
+        route('personal.tournament.regular', ['tournamentId' => $tournament->id])
+    );
+});
+//Personal > Tournament > Regular > Games
+Breadcrumbs::for('personal.tournament.regular.games', function ($trail, PersonalTournament $tournament) {
+    $trail->parent('personal.tournament.regular', $tournament);
+    $trail->push(
+        'Расписание',
+        route('personal.tournament.regular.games', ['tournamentId' => $tournament->id])
+    );
+});
+//Personal > Tournament > Regular > Games > Game
+Breadcrumbs::for('personal.tournament.regular.game', function ($trail, PersonalGameRegular $game) {
+    $trail->parent('personal.tournament.regular.games', $game->tournament);
+    $trail->push(
+        'Тур ' . $game->round . ': ' . $game->homePlayer->name . ' (' . $game->homePlayer->tag . ') vs. ' . $game->awayPlayer->name . ' (' . $game->awayPlayer->tag . ')',
+        route(
+            'personal.tournament.regular.game',
+            ['tournamentId' => $game->tournament->id, 'gameId' => $game->id]
+        )
+    );
+});
+//Personal > Tournament > Regular > VK
+Breadcrumbs::for('personal.tournament.regular.schedule', function ($trail, PersonalTournament $tournament) {
+    $trail->parent('personal.tournament.regular', $tournament);
+    $trail->push(
+        'Расписание ВК',
+        route('personal.tournament.regular.schedule', ['tournamentId' => $tournament->id])
+    );
+});
+//Personal > Tournament > Playoff
+Breadcrumbs::for('personal.tournament.playoff', function ($trail, PersonalTournament $tournament) {
+    $trail->parent('personal.tournament', $tournament);
+    $trail->push(
+        'Плей-офф',
+        route('personal.tournament.playoff', ['tournamentId' => $tournament->id])
+    );
+});
+//Personal > Tournament > Playoff > Game
+Breadcrumbs::for('personal.tournament.playoff.game', function ($trail, PersonalGamePlayoff $game) {
+    $trail->parent('personal.tournament.playoff', $game->tournament);
+    $roundText = TextUtils::playoffRound($game->tournament, $game->playoffPair->round);
+    $pairText = strstr($roundText, 'финала') ? ' (пара ' . $game->playoffPair->pair . ')' : '';
+    $trail->push(
+        $roundText . $pairText . ': ' . $game->homePlayer->name . ' (' . $game->homePlayer->tag . ') vs. ' . $game->awayPlayer->name . ' (' . $game->awayPlayer->tag . ')',
+        route(
+            'personal.tournament.playoff.game',
+            ['tournamentId' => $game->tournament->id, 'pairId' => $game->playoff_pair_id, 'gameId' => $game->id]
+        )
+    );
+});
+//Personal > Tournament > Playoff > Games
+Breadcrumbs::for('personal.tournament.playoff.games', function ($trail, PersonalTournament $tournament) {
+    $trail->parent('personal.tournament.playoff', $tournament);
+    $trail->push(
+        'Расписание',
+        route(
+            'personal.tournament.playoff.games',
+            ['tournamentId' => $tournament->id]
+        )
+    );
+});
+//Personal > Tournament > Playoff > Games > New Game
+Breadcrumbs::for('personal.tournament.playoff.game.add', function ($trail, PersonalTournamentPlayoff $pair) {
+    $trail->parent('personal.tournament.playoff.games', $pair->tournament);
+    $roundText = TextUtils::playoffRound($pair->tournament, $pair->round);
+    $pairText = strstr($roundText, 'финала') ? ' (пара ' . $pair->pair . ')' : '';
+    $trail->push(
+        $roundText . $pairText,
+        route(
+            'personal.tournament.playoff.game.add',
             ['tournamentId' => $pair->tournament->id, 'pairId' => $pair->id]
         )
     );

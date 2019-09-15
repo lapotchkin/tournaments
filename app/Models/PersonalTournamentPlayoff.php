@@ -23,7 +23,8 @@ use Illuminate\Support\Carbon;
  * @property int|null                              $player_two_id ID второго игрока
  * @property Carbon                                $createdAt     Дата создания
  * @property Carbon|null                           $deletedAt     Дата удаления
- * @property-read Collection|PersonalGamePlayoff[] $personalGamePlayoffs
+ * @property-read PersonalTournament|null          $tournament
+ * @property-read Collection|PersonalGamePlayoff[] $games
  * @property-read Player|null                      $playerOne
  * @property-read Player|null                      $playerTwo
  * @method static bool|null forceDelete()
@@ -74,6 +75,14 @@ class PersonalTournamentPlayoff extends Model
     /**
      * @return BelongsTo
      */
+    public function tournament()
+    {
+        return $this->belongsTo('App\Models\PersonalTournament', 'tournament_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
     public function playerOne()
     {
         return $this->belongsTo('App\Models\Player', 'player_one_id');
@@ -90,8 +99,49 @@ class PersonalTournamentPlayoff extends Model
     /**
      * @return HasMany
      */
-    public function personalGamePlayoffs()
+    public function games()
     {
         return $this->hasMany('App\Models\PersonalGamePlayoff', 'playoff_pair_id');
+    }
+
+    /**
+     * @return int
+     */
+    public function getWinner()
+    {
+        if (!$this->playerOne || !$this->playerTwo) {
+            return null;
+        }
+        $seriesResult = $this->getSeriesResult();
+        if ($seriesResult[$this->playerOne->id] === $seriesResult[$this->playerTwo->id]) {
+            return null;
+        }
+        return $seriesResult[$this->playerOne->id] > $seriesResult[$this->playerTwo->id]
+            ? $this->playerOne->id
+            : $this->playerTwo->id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSeriesResult()
+    {
+        if (!$this->playerOne || !$this->playerTwo) {
+            return null;
+        }
+
+        $series = [];
+        $series[$this->playerOne->id] = 0;
+        $series[$this->playerTwo->id] = 0;
+
+        foreach ($this->games as $game) {
+            if ($game->home_score > $game->away_score) {
+                $series[$game->home_player_id] += 1;
+            } else {
+                $series[$game->away_player_id] += 1;
+            }
+        }
+
+        return $series;
     }
 }
