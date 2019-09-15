@@ -19,11 +19,8 @@ $line-height-base: 1.5;
 @import '~@fortawesome/fontawesome-free/scss/solid';
 @import '~@fortawesome/fontawesome-free/scss/brands';
 
-footer.footer {
-    background-color: $gray-300;
-    //border-top: 1px solid $secondary;
-    padding: 1rem;
-    margin-top: 1rem
+.footer {
+    //background-color: $gray-300;
 }
 
 .badge-left_wing {
@@ -72,23 +69,25 @@ code customized by Azmind.com
     .carousel-inner .active.col-md-4.carousel-item + .carousel-item + .carousel-item + .carousel-item {
         position: absolute;
         top: 0;
-        right: -33.3333%;  /*change this with javascript in the future*/
+        right: -33.3333%; /*change this with javascript in the future*/
         z-index: -1;
         display: block;
         visibility: visible;
     }
 }
+
 @media (min-width: 576px) and (max-width: 768px) {
     /* Show 3rd slide on sm if col-sm-6*/
     .carousel-inner .active.col-sm-6.carousel-item + .carousel-item + .carousel-item {
         position: absolute;
         top: 0;
-        right: -50%;  /*change this with javascript in the future*/
+        right: -50%; /*change this with javascript in the future*/
         z-index: -1;
         display: block;
         visibility: visible;
     }
 }
+
 @media (min-width: 576px) {
     .carousel-item {
         margin-right: 0;
@@ -132,6 +131,7 @@ code customized by Azmind.com
         display: block;
     }
 }
+
 /* MD */
 @media (min-width: 768px) {
     /* show 3rd of 3 item slide */
@@ -159,6 +159,7 @@ code customized by Azmind.com
         display: block;
     }
 }
+
 /* LG */
 @media (min-width: 991px) {
     /* show 4th item */
@@ -172,7 +173,7 @@ code customized by Azmind.com
     .carousel-inner .active.col-lg-3.carousel-item + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
         position: absolute;
         top: 0;
-        right: -25%;  /*change this with javascript in the future*/
+        right: -25%; /*change this with javascript in the future*/
         z-index: -1;
         display: block;
         visibility: visible;
@@ -192,6 +193,6 @@ code customized by Azmind.com
     }
 }
 
-.carousel-control-prev, .carousel-control-next{
+.carousel-control-prev, .carousel-control-next {
     width: auto;
 }

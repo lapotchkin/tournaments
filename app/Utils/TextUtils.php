@@ -116,6 +116,22 @@ class TextUtils
     }
 
     /**
+     * @param int $place
+     * @return string
+     */
+    public static function winnerClass(int $place)
+    {
+        switch ($place) {
+            case (1):
+                return 'warning';
+            case (2):
+                return 'secondary';
+            default:
+                return 'danger';
+        }
+    }
+
+    /**
      * @param int $iteration
      * @param int $total
      * @return string

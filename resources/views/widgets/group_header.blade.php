@@ -17,20 +17,8 @@
     <h3>Победитель и призёры</h3>
     <div class="row">
         @foreach($tournament->winners as $winner)
-            @php
-                switch($winner->place) {
-                    case (1):
-                    $class = 'warning';
-                    break;
-                    case (2):
-                    $class = 'secondary';
-                    break;
-                    default:
-                    $class = 'danger';
-                }
-            @endphp
             <div class="col-12 col-md-4">
-                <blockquote class="blockquote alert alert-{{ $class }}">
+                <blockquote class="blockquote alert alert-{{ TextUtils::winnerClass($winner->place) }}">
                     <footer class="blockquote-footer"><i class="fas fa-trophy"></i> {{ $winner->place }} место</footer>
                     <p class="mb-0"><a
                             href="{{ route('team', ['teamId' => $winner->team_id]) }}">{{ $winner->team->name }}</a></p>

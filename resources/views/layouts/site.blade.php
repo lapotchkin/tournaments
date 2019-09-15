@@ -11,64 +11,67 @@
     @show
 </head>
 {{--<body style="background-image: url({{ asset('images/pic/thumb10.jpg') }})">--}}
-<body>
+<body class="d-flex flex-column h-100">
+<header>
+    @section('header')
+    @show
 
-@section('header')
-@show
-
-@section('menu')
-    <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark mb-3">
-        <div class="container">
-            <span class="navbar-brand mb-0 h1">Киберспортивная лига</span>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('home') }}">Турниры</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ action('Site\TeamController@index') }}">Команды</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ action('Site\PlayerController@index') }}">Игроки</a>
-                    </li>
-                    @auth
+    @section('menu')
+        <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark mb-3">
+            <div class="container">
+                <span class="navbar-brand mb-0 h1">Киберспортивная лига</span>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('logout') }}">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Выйти
-                            </a>
+                            <a class="nav-link" href="{{ route('home') }}">Турниры</a>
                         </li>
-                    @endauth
-                    @guest
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('social.redirect', ['provider' => 'vkontakte']) }}">
-                                <i class="fab fa-vk fa-inverse"></i> Войти
-                            </a>
+                            <a class="nav-link" href="{{ action('Site\TeamController@index') }}">Команды</a>
                         </li>
-                    @endguest
-                </ul>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ action('Site\PlayerController@index') }}">Игроки</a>
+                        </li>
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('logout') }}">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Выйти
+                                </a>
+                            </li>
+                        @endauth
+                        @guest
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('social.redirect', ['provider' => 'vkontakte']) }}">
+                                    <i class="fab fa-vk fa-inverse"></i> Войти
+                                </a>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
-@show
+        </nav>
+    @show
 
-@section('submenu')
-    @if(strstr(url()->current(), 'group'))
-        <div class="container">
-            @widget('groupGamesCarousel')
-        </div>
-    @endif
-@show
+    @section('submenu')
+        @if(strstr(url()->current(), 'group'))
+            <div class="container">
+                @widget('groupGamesCarousel')
+            </div>
+        @endif
+    @show
+</header>
 
-<div class="container">
-    @yield('content')
-</div>
+<main role="main" class="flex-shrink-0">
+    <div class="container">
+        @yield('content')
+    </div>
+</main>
 
-<footer class="footer">
+<footer class="footer mt-auto py-3">
     <div class="container">
         <div class="row">
             <div class="col-sm">&copy; Киберспортивная лига {{ date('Y') }}</div>

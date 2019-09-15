@@ -1,13 +1,13 @@
 {
-    "/js/amcharts.js": "/js/amcharts.js?id=1bf6d4877815d9dd7d71",
-    "/css/app.css": "/css/app.css?id=d6b7f493b38dcd0fca44",
+    "/js/amcharts.js": "/js/amcharts.js?id=4f60ca85818f7c36a049",
+    "/css/app.css": "/css/app.css?id=73b76cb8042feddab616",
     "/css/brackets.css": "/css/brackets.css?id=537b282343b5ac4d3b48",
-    "/js/app.js": "/js/app.js?id=232e3efe3aeabb5e0d8a",
-    "/js/bootstrap.js": "/js/bootstrap.js?id=6b68b0ad37b6e4ed708e",
-    "/js/gameFormModule.js": "/js/gameFormModule.js?id=d6fdd128bf8967d4dd64",
+    "/js/app.js": "/js/app.js?id=1024b65dadbb8f888337",
+    "/js/bootstrap.js": "/js/bootstrap.js?id=02f3b3592f1b86420291",
+    "/js/gameFormModule.js": "/js/gameFormModule.js?id=f882bebfcb67cb45855f",
     "/js/playoffModule.js": "/js/playoffModule.js?id=617da2f55a0c2822e814",
-    "/vendors~canvg.js": "/vendors~canvg.js?id=2613fc60bf6ec52e1f87",
-    "/vendors~pdfmake.js": "/vendors~pdfmake.js?id=a8344d800ee48a1b801b",
-    "/vendors~xlsx.js": "/vendors~xlsx.js?id=0cfb1e29fcb1024cf09b",
+    "/vendors~canvg.js": "/vendors~canvg.js?id=0b0d7b19e4fcd8004c77",
+    "/vendors~pdfmake.js": "/vendors~pdfmake.js?id=8840b028b0a47a0e98a0",
+    "/vendors~xlsx.js": "/vendors~xlsx.js?id=a6ad1428ed81b0176958",
     "/xlsx.js": "/xlsx.js?id=41730344aea6751b3f12"
 }

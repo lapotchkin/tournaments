@@ -1,6 +1,6 @@
 @if (count($breadcrumbs))
 
-    <ol class="breadcrumb">
+    <ol class="breadcrumb shadow-sm">
         <li class="breadcrumb-item">
             <a href="{{ route('home') }}"><i class="fas fa-home"></i></a>
         </li>
