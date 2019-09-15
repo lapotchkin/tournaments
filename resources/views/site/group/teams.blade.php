@@ -13,7 +13,7 @@
             <div class="card mb-3" id="division-{{ $number }}">
                 <h4 class="card-header bg-dark text-light">Группа {{ TextUtils::divisionLetter($number) }}</h4>
                 <div class="card-body">
-                    <table class="table table-striped table-sm" id="team-table">
+                    <table class="table table-striped table-sm mb-0" id="team-table">
                         <tbody>
                         @foreach($division as $team)
                             <tr>
@@ -38,6 +38,9 @@
                     </table>
                 </div>
             </div>
+            @if($loop->iteration % 2 === 0)
+                <div class="w-100"></div>
+            @endif
         @endforeach
     </div>
 

@@ -13,7 +13,7 @@
             <div class="card mb-3" id="division-{{ $number }}">
                 <h4 class="card-header bg-dark text-light">Группа {{ TextUtils::divisionLetter($number) }}</h4>
                 <div class="card-body">
-                    <table class="table table-striped table-sm" id="player-table">
+                    <table class="table table-striped table-sm mb-0" id="player-table">
                         <tbody>
                         @foreach($division as $player)
                             <tr>
@@ -21,7 +21,8 @@
                                 <td>
                                     <a href="{{ route('player', ['playerId' => $player->player_id]) }}">{{ $player->player->name }}</a>
                                     <small>{{ $player->player->tag }}</small>
-                                    <span class="badge badge-secondary badge-pill text-uppercase">{{ $player->club_id }}</span>
+                                    <span
+                                        class="badge badge-secondary badge-pill text-uppercase">{{ $player->club_id }}</span>
                                 </td>
                                 <td class="text-right">
                                     @auth
@@ -39,6 +40,9 @@
                     </table>
                 </div>
             </div>
+            @if($loop->iteration % 2 === 0)
+                <div class="w-100"></div>
+            @endif
         @endforeach
     </div>
 

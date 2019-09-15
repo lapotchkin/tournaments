@@ -159,13 +159,15 @@
         </table>
 
         @if(count($stars))
-            <div class="text-center">
+            <div class="text-center h5 mb-3">
                 @foreach($stars as $protocol)
-                    @for ($i = 0; $i < $protocol->star; $i++)
-                        <i class="fas fa-star text-danger"></i>
-                    @endfor
+                    <span class="text-nowrap">
+                        @for ($i = 0; $i < $protocol->star; $i++)
+                            <i class="fas fa-star text-danger"></i>
+                        @endfor
                     <a href="{{ route('player', ['userID' => $protocol->player_id]) }}">{{ $protocol->player->name }}</a>
                     <small>{{ $protocol->player->tag }}</small>
+                    </span>
                     @if (!$loop->last)
                         &nbsp;&nbsp;&nbsp;
                     @endif
