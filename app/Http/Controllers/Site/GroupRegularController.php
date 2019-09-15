@@ -7,7 +7,6 @@ use App\Models\GroupTournament;
 use App\Models\GroupTournamentGoalies;
 use App\Models\GroupTournamentLeaders;
 use App\Models\GroupTournamentPosition;
-use App\Models\Player;
 use App\Models\PlayerPosition;
 use DateInterval;
 use DateTime;

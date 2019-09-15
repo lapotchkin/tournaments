@@ -1,31 +1,50 @@
 <?php
 
 
-namespace app\models;
+namespace App\Models;
 
-
-use Yii;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class PersonalTournamentPosition
- * @package app\models
+ * @package App\Models
  */
 class PersonalTournamentPosition {
     /**
-     * @param $id
-     * @return array
-     * @throws \yii\db\Exception
+     * @param int $tournamentId
+     * @return Model|Builder|object|null
      */
-    public static function readPosition($id) {
-        $position = Yii::$app->db->createCommand("
+    public static function readLastUpdateDate(int $tournamentId)
+    {
+        return DB::table('groupGameRegular')
+            ->select([
+                DB::raw("DATE_FORMAT(updatedAt, '%Y-%m-%d 00:00:00') as date"),
+            ])
+            ->where('tournament_id', '=', $tournamentId)
+            ->whereNull('deletedAt')
+            ->orderByDesc('updatedAt')
+            ->first();
+    }
+
+    /**
+     * @param int         $tournamentId
+     * @param string|null $date
+     * @return mixed
+     */
+    public static function readPosition(int $tournamentId, string $date = null)
+    {
+        $dateString = is_null($date) ? '' : "and updatedAt < '{$date}'";
+        $position = DB::select("
             select
                 if (
                     pTp.club_id is null,
-                    concat('<b>', p.name, '</b> (', p.tag, ')'),
-                    concat('<span class=\"badge badge-pill badge-secondary\">', UPPER(pTp.club_id),'</span> <b>', p.name, '</b> (', p.tag, ')')
+                    concat('<a href=\"/player/', p.id ,'\">', p.name, '</a> <small>', p.tag, '</small>'),
+                    concat('<a href=\"/player/', p.id ,'\">', p.name, '</a> <small>', p.tag, '</small> <span class=\"badge badge-pill badge-success text-uppercase\">', pTp.club_id, '</span>')
                 ) as player,
                 p.id as id,
-                pTp.division,
+                pTp.division as division,
                 (
                     if(w.wins > 0, w.wins, 0) +
                     if(wot.wins > 0, wot.wins, 0) +
@@ -51,13 +70,17 @@ class PersonalTournamentPosition {
                 (ifnull(home_stats.goals_for, 0) + ifnull(away_stats.goals_for, 0)) goals,
                 (ifnull(home_stats.goals_against, 0) + ifnull(away_stats.goals_against, 0)) goals_against
             from player p
-                inner join personalTournament_player pTp on p.id = pTp.player_id and pTp.tournament_id = :id and pTp.deletedAt is null
-            
+                inner join personalTournament_player pTp on p.id = pTp.player_id
+                    and pTp.tournament_id = ?
+                     and pTp.deletedAt is null
                 left join (
                     select count(1) wins,
                            if(home_score > away_score, home_player_id, away_player_id) winner_player_id
                     from personalGameRegular
-                    where tournament_id = :id and (home_score is not null and away_score is not null)
+                    where tournament_id = ?
+                        {$dateString}
+                        and (home_score is not null
+                        and away_score is not null)
                         and (isOvertime = 0 and isShootout = 0)
                         and deletedAt is null
                     group by winner_player_id
@@ -67,7 +90,9 @@ class PersonalTournamentPosition {
                     select count(1) wins,
                            if(home_score > away_score, home_player_id, away_player_id) winner_player_id
                     from personalGameRegular
-                    where tournament_id = :id and (home_score is not null and away_score is not null)
+                    where tournament_id = ?
+                        {$dateString}
+                        and (home_score is not null and away_score is not null)
                         and (isOvertime = 1 and isShootout = 0)
                         and deletedAt is null
                     group by winner_player_id
@@ -77,7 +102,9 @@ class PersonalTournamentPosition {
                     select count(1) wins,
                            if(home_score > away_score, home_player_id, away_player_id) winner_player_id
                     from personalGameRegular
-                    where tournament_id = :id and (home_score is not null and away_score is not null)
+                    where tournament_id = ?
+                        {$dateString}
+                        and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 1)
                         and deletedAt is null
                     group by winner_player_id
@@ -87,7 +114,9 @@ class PersonalTournamentPosition {
                     select count(1) lose,
                            if(home_score < away_score, home_player_id, away_player_id) loser_player_id
                     from personalGameRegular
-                    where tournament_id = :id and (home_score is not null and away_score is not null)
+                    where tournament_id = ?
+                        {$dateString}
+                        and (home_score is not null and away_score is not null)
                         and (isOvertime = 1 and isShootout = 0)
                         and deletedAt is null
                     group by loser_player_id
@@ -97,7 +126,9 @@ class PersonalTournamentPosition {
                     select count(1) lose,
                            if(home_score < away_score, home_player_id, away_player_id) loser_player_id
                     from personalGameRegular
-                    where tournament_id = :id and (home_score is not null and away_score is not null)
+                    where tournament_id = ?
+                        {$dateString}
+                        and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 1)
                         and deletedAt is null
                     group by loser_player_id
@@ -107,7 +138,9 @@ class PersonalTournamentPosition {
                     select count(1) lose,
                            if(home_score < away_score, home_player_id, away_player_id) loser_player_id
                     from personalGameRegular
-                    where tournament_id = :id and (home_score is not null and away_score is not null)
+                    where tournament_id = ?
+                        {$dateString}
+                        and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 0)
                         and deletedAt is null
                     group by loser_player_id
@@ -118,7 +151,9 @@ class PersonalTournamentPosition {
                            sum(home_score) goals_for,
                            sum(away_score) goals_against
                     from personalGameRegular
-                    where tournament_id = :id and (home_score is not null and away_score is not null)
+                    where tournament_id = ?
+                        {$dateString}
+                        and (home_score is not null and away_score is not null)
                         and deletedAt is null
                     group by home_player_id
                 ) home_stats on home_stats.player_id = p.id
@@ -128,7 +163,9 @@ class PersonalTournamentPosition {
                            sum(away_score) goals_for,
                            sum(home_score) goals_against
                     from personalGameRegular
-                    where tournament_id = :id and (home_score is not null and away_score is not null)
+                    where tournament_id = ?
+                        {$dateString}
+                        and (home_score is not null and away_score is not null)
                         and deletedAt is null
                     group by away_player_id
                 ) away_stats on away_stats.player_id = p.id
@@ -140,8 +177,18 @@ class PersonalTournamentPosition {
                      (ifnull(home_stats.goals_for, 0) + ifnull(away_stats.goals_for, 0) - ifnull(home_stats.goals_against, 0) - ifnull(away_stats.goals_against,0)) desc,
                      (ifnull(home_stats.goals_for, 0) + ifnull(away_stats.goals_for, 0)) desc,
                      l.lose asc
-        ", [':id' => $id])
-            ->queryAll();
+        ", [
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+            $tournamentId,
+        ]);
 
         return $position;
     }
