@@ -3,10 +3,10 @@
 @section('title', $tournament->title . ': Чемпионат (ВК) — ')
 
 @section('content')
-    {{ Breadcrumbs::render('group.tournament.regular.schedule', $tournament) }}
-    @widget('groupHeader', ['tournament' => $tournament])
-    @widget('groupMenu', ['tournament' => $tournament])
-    @widget('groupRegularMenu', ['tournament' => $tournament])
+    {{ Breadcrumbs::render('personal.tournament.regular.schedule', $tournament) }}
+    @widget('personalHeader', ['tournament' => $tournament])
+    @widget('personalMenu', ['tournament' => $tournament])
+    @widget('personalRegularMenu', ['tournament' => $tournament])
 
     @foreach($rounds as $round => $divisions)
         <h3 class="{{ !$loop->first ? 'mt-3' : '' }}">Тур {{ $round }}</h3>
@@ -17,7 +17,7 @@
             @foreach($games as $game)
                 <div>
                     {{ $loop->iteration }}.
-                    {{ $game->homeTeam->team->name }} — {{ $game->awayTeam->team->name }}
+                    {{ $game->homePlayer->name }} — {{ $game->awayPlayer->name }}
                 </div>
             @endforeach
         @endforeach

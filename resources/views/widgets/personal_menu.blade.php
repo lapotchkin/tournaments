@@ -8,6 +8,20 @@
             </a>
         @endif
     </li>
+    @auth
+        @if(Auth::user()->isAdmin())
+            <li class="nav-item">
+                @if (Route::currentRouteName() === 'personal.tournament.map')
+                    <a class="nav-link active" href="#">Карта игроков</a>
+                @else
+                    <a class="nav-link"
+                       href="{{ route('personal.tournament.map', ['tournamentId' => $tournament->id]) }}">
+                        Карта игроков
+                    </a>
+                @endif
+            </li>
+        @endif
+    @endauth
     <li class="nav-item">
         @if (strstr(Route::currentRouteName(), 'regular'))
             <a class="nav-link active" href="#">Чемпионат</a>

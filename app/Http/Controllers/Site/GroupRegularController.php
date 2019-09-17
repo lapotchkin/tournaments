@@ -8,13 +8,13 @@ use App\Models\GroupTournamentGoalies;
 use App\Models\GroupTournamentLeaders;
 use App\Models\GroupTournamentPosition;
 use App\Models\PlayerPosition;
+use Auth;
 use DateInterval;
 use DateTime;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 /**

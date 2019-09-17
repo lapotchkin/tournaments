@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Models\PersonalGameRegular;
 use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPosition;
-use DateInterval;
-use DateTime;
+use Auth;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 /**
@@ -47,13 +46,6 @@ class PersonalRegularController extends Controller
         foreach ($positions as $position) {
             $divisions[$position->division][] = $position;
         }
-        //foreach ($divisions as &$division) {
-        //    usort($division, function ($a, $b) {
-        //        return strcmp(mb_strtolower($a->name), mb_strtolower($b->name));
-        //    });
-        //}
-        //unset($division);
-        //ksort($divisions);
 
         return view('site.personal.regular.index', [
             'tournament' => $tournament,
@@ -68,11 +60,11 @@ class PersonalRegularController extends Controller
      */
     public function games(Request $request, int $tournamentId)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with([
-            'regularGames.homeTeam.team',
-            'regularGames.awayTeam.team',
-            'winners.team',
+        /** @var PersonalTournament $tournament */
+        $tournament = PersonalTournament::with([
+            'regularGames.homePlayer',
+            'regularGames.awayPlayer',
+            'winners.player',
         ])
             ->find($tournamentId);
         if (is_null($tournament)) {
@@ -81,10 +73,10 @@ class PersonalRegularController extends Controller
 
         $rounds = [];
         foreach ($tournament->regularGames as $regularGame) {
-            $rounds[$regularGame->round][$regularGame->homeTeam->division][] = $regularGame;
+            $rounds[$regularGame->round][$regularGame->homePlayer->getDivision($tournamentId)][] = $regularGame;
         }
 
-        return view('site.group.regular.games', [
+        return view('site.personal.regular.games', [
             'tournament' => $tournament,
             'rounds'     => $rounds,
         ]);
@@ -98,31 +90,16 @@ class PersonalRegularController extends Controller
      */
     public function game(Request $request, int $tournamentId, int $gameId)
     {
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
+        /** @var PersonalGameRegular $game */
+        $game = PersonalGameRegular::with(['homePlayer', 'awayPlayer'])
             ->find($gameId);
         if (is_null($game) || $game->tournament_id !== $tournamentId) {
             abort(404);
         }
 
-        foreach ($game->protocols as $protocol) {
-            if ($protocol->team_id === $game->home_team_id) {
-                $game->homeProtocols[] = $protocol;
-                if ($protocol->isGoalie) {
-                    $game->homeGoalie = $protocol;
-                }
-            } else {
-                $game->awayProtocols[] = $protocol;
-                if ($protocol->isGoalie) {
-                    $game->awayGoalie = $protocol;
-                }
-            }
-        }
-
-        return view('site.group.game_protocol', [
-            'title' => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' (Тур ' . $game->round . ')',
+        return view('site.personal.game_protocol', [
+            'title' => $game->homePlayer->name . ' vs. ' . $game->awayPlayer->name . ' (Тур ' . $game->round . ')',
             'game'  => $game,
-            'stars' => $game->getStars(),
         ]);
     }
 
@@ -138,40 +115,20 @@ class PersonalRegularController extends Controller
             abort(403);
         }
 
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with([
-            'protocols.player',
-            'protocols.playerPosition',
-            'homeTeam.team.players.player',
-            'awayTeam.team.players.player',
+        /** @var PersonalGameRegular $game */
+        $game = PersonalGameRegular::with([
+            'homePlayer',
+            'awayPlayer',
         ])
             ->find($gameId);
         if (is_null($game) || $game->tournament_id !== $tournamentId) {
             abort(404);
         }
 
-        foreach ($game->protocols as $protocol) {
-            if ($protocol->team_id === $game->home_team_id) {
-                $game->homeProtocols[] = $protocol;
-            } else {
-                $game->awayProtocols[] = $protocol;
-            }
-        }
-        $protocols = $game->getSafeProtocols();
-        $players = $game->getSafePlayersData();
-        $positionsRaw = PlayerPosition::all();
-        $positions = [];
-        foreach ($positionsRaw as $position) {
-            $positions[] = $position->getSafePosition();
-        }
-
-        return view('site.group.game_form', [
-            'title'     => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' (Тур ' . $game->round . ')',
-            'pair'      => null,
-            'game'      => $game,
-            'protocols' => $protocols,
-            'players'   => $players,
-            'positions' => $positions,
+        return view('site.personal.game_form', [
+            'title' => $game->homePlayer->name . ' vs. ' . $game->awayPlayer->name . ' (Тур ' . $game->round . ')',
+            'pair'  => null,
+            'game'  => $game,
         ]);
     }
 
@@ -182,11 +139,11 @@ class PersonalRegularController extends Controller
      */
     public function schedule(Request $request, int $tournamentId)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with([
-            'regularGames.homeTeam.team',
-            'regularGames.awayTeam.team',
-            'winners.team',
+        /** @var PersonalTournament $tournament */
+        $tournament = PersonalTournament::with([
+            'regularGames.homePlayer',
+            'regularGames.awayPlayer',
+            'winners.player',
         ])
             ->find($tournamentId);
         if (is_null($tournament)) {
@@ -195,18 +152,18 @@ class PersonalRegularController extends Controller
 
         $rounds = [];
         foreach ($tournament->regularGames as $index => $regularGame) {
-            if (
-                $index > 0
-                && (
-                    $tournament->regularGames[$index - 1]->home_team_id === $tournament->regularGames[$index]->away_team_id
-                    && $tournament->regularGames[$index - 1]->away_team_id === $tournament->regularGames[$index]->home_team_id
-                )
-            ) {
-                $rounds[$regularGame->round][$regularGame->homeTeam->division][] = $regularGame;
-            }
+            //if (
+            //    $index > 0
+            //    && (
+            //        $tournament->regularGames[$index - 1]->home_player_id === $tournament->regularGames[$index]->away_player_id
+            //        && $tournament->regularGames[$index - 1]->away_player_id === $tournament->regularGames[$index]->home_player_id
+            //    )
+            //) {
+            $rounds[$regularGame->round][$regularGame->homePlayer->getDivision($tournamentId)][] = $regularGame;
+            //}
         }
 
-        return view('site.group.regular.schedule', [
+        return view('site.personal.regular.schedule', [
             'tournament' => $tournament,
             'rounds'     => $rounds,
         ]);
@@ -259,13 +216,17 @@ class PersonalRegularController extends Controller
             $player = $currentPosition[$i];
             $goalsDif = $player->goals - $player->goals_against;
 
-            $prevPlace = in_array($player->id, $previousPlaces[$player->division]) ? (array_search($player->id, $previousPlaces[$player->division]) + 1) - (array_search($player->id, $currentPlaces[$player->division]) + 1) : '—';
+            $prevPlace = isset($previousPlaces[$player->division]) && in_array($player->id,
+                $previousPlaces[$player->division])
+                ? (array_search($player->id, $previousPlaces[$player->division]) + 1)
+                - (array_search($player->id, $currentPlaces[$player->division]) + 1)
+                : '—';
             $position[] = (object)[
                 'place'                  => array_search($player->id, $currentPlaces[$player->division]) + 1,
                 'prevPlace'              => self::_getPrevPlace($prevPlace),
                 'id'                     => $player->id,
                 'player'                 => $player->player,
-                'division'                 => $player->division,
+                'division'               => $player->division,
                 'games'                  => $player->games,
                 'points'                 => $player->points,
                 'wins'                   => $player->wins,

@@ -11,7 +11,6 @@
 |
 */
 
-use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'Site\HomeController@index')->name('home');
 
@@ -107,6 +106,13 @@ Route::get('/personal/{tournamentId}/edit', 'Site\PersonalController@edit')
 Route::get('/personal/{tournamentId}/player/{playerId}', 'Site\PersonalController@player')
     ->where(['tournamentId' => '[0-9]+', 'playerId' => '[0-9]+'])
     ->name('personal.tournament.player');
+Route::get('/personal/{tournamentId}/map', 'Site\PersonalController@map')
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('personal.tournament.map');
+Route::get('/personal/{tournamentId}/copypaste', 'Site\PersonalController@copypaste')
+    ->where(['tournamentId' => '[0-9]+'])
+    ->name('personal.tournament.copypaste');
+
 /*
  * Regular
  */
@@ -144,9 +150,6 @@ Route::get('/personal/{tournamentId}/playoff/games/{pairId}/{gameId}/edit', 'Sit
     ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+'])
     ->name('personal.tournament.playoff.game.edit');
 
-Route::get('/personal/{tournamentId}/copypaste', 'Site\PersonalController@players')
-    ->where(['tournamentId' => '[0-9]+'])
-    ->name('personal.tournament.copypaste');
 /*
 |--------------------------------------------------------------------------
 | Team

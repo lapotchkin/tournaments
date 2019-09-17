@@ -150,4 +150,14 @@ class PersonalController extends Controller
             'clubs'            => $clubs,
         ]);
     }
+
+    public function map()
+    {
+
+    }
+
+    public function copypaste()
+    {
+
+    }
 }

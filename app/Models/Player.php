@@ -31,8 +31,8 @@ use Illuminate\Support\Carbon;
  * @property-read Collection|GroupGamePlayoffPlayer[]                   $gamePlayoffPlayers
  * @property-read Collection|GroupGameRegularPlayer[]                   $gameRegularPlayers
  * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
- * @property-read Collection|PersonalGamePlayoff[]                      $personalGamePlayoffs
- * @property-read Collection|PersonalGameRegular[]                      $personalGameRegulars
+ * @property-read Collection|PersonalGamePlayoff[]                      $personalPlayoffGames
+ * @property-read Collection|PersonalGameRegular[]                      $personalRegularGames
  * @property-read Collection|PersonalTournamentPlayer[]                 $personalTournamentPlayers
  * @property-read Collection|PersonalTournamentPlayoff[]                $personalTournamentPlayoffs
  * @property-read Platform|null                                         $platform
@@ -106,7 +106,7 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function personalGamePlayoffs()
+    public function personalPlayoffGames()
     {
         return $this->hasMany('App\Models\PersonalGamePlayoff')
             ->where('home_player_id', '=', 'id')
@@ -116,7 +116,7 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function personalGameRegulars()
+    public function personalRegularGames()
     {
         return $this->hasMany('App\Models\PersonalGameRegular', 'home_player_id')
             ->where('home_player_id', '=', 'id')
@@ -175,5 +175,33 @@ class Player extends Authenticatable
             'tag'  => $this->tag,
             'name' => $this->name,
         ];
+    }
+
+    /**
+     * @param int $tournamentId
+     * @return string|null
+     */
+    public function getClubId(int $tournamentId)
+    {
+        foreach ($this->personalTournamentPlayers as $competitor) {
+            if ($competitor->tournament_id === $tournamentId) {
+                return $competitor->club_id;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param int $tournamentId
+     * @return string|null
+     */
+    public function getDivision(int $tournamentId)
+    {
+        foreach ($this->personalTournamentPlayers as $competitor) {
+            if ($competitor->tournament_id === $tournamentId) {
+                return $competitor->division;
+            }
+        }
+        return null;
     }
 }

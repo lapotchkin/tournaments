@@ -3,16 +3,16 @@
 @section('title', $tournament->title . ': Чемпионат (Расписание) — ')
 
 @section('content')
-    {{ Breadcrumbs::render('group.tournament.regular.games', $tournament) }}
-    @widget('groupHeader', ['tournament' => $tournament])
-    @widget('groupMenu', ['tournament' => $tournament])
-    @widget('groupRegularMenu', ['tournament' => $tournament])
+    {{ Breadcrumbs::render('personal.tournament.regular.games', $tournament) }}
+    @widget('personalHeader', ['tournament' => $tournament])
+    @widget('personalMenu', ['tournament' => $tournament])
+    @widget('personalRegularMenu', ['tournament' => $tournament])
 
     <div class="mb-3 w-25">
-        <select id="teamsList" class="form-control mt-3" name="teams">
+        <select id="playersList" class="form-control mt-3" name="players">
             <option value="0">Все</option>
-            @foreach($tournament->teams as $team)
-                <option value="{{ $team->name }}">{{ $team->name }}</option>
+            @foreach($tournament->players as $player)
+                <option value="{{ $player->name }}">{{ $player->tag }} ({{ $player->name }})</option>
             @endforeach
         </select>
     </div>
@@ -29,7 +29,7 @@
                         <thead class="thead-dark">
                         <tr>
                             <th style="width: 2em;"></th>
-                            <th style="width: 8em;">Дата игры</th>
+                            <th style="width: 6em;">Дата игры</th>
                             <th class="text-right">Хозяева</th>
                             <th class="text-right" style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
                             <th style="width: 1em;">:</th>
@@ -53,18 +53,16 @@
                                 </td>
                                 <td>
                                     {{ $game->playedAt ? (new \DateTime($game->playedAt))->format('d.m.Y') : '' }}
-                                    @if($game->match_id)
-                                        <em class="badge badge-secondary">EA</em>
-                                    @endif
                                 </td>
                                 <td class="text-right">
                                     @if ($game->home_score > $game->away_score)
-                                        <strong><a href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a></strong>
+                                        <strong><a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->name }}</a></strong>
                                     @else
-                                        <a href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a>
+                                        <a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->name }}</a>
                                     @endif
-                                    <span class="badge badge-success">
-                                        {{ $game->homeTeam->team->short_name }}
+                                    <small>{{ $game->homePlayer->tag }}</small>
+                                    <span class="badge badge-success text-uppercase">
+                                        {{ $game->homePlayer->getClubId($game->tournament_id) }}
                                     </span>
                                 </td>
                                 <td class="text-right">
@@ -75,24 +73,25 @@
                                     {!! !is_null($game->away_score) ? '<span class="badge badge-dark badge-pill">' . $game->away_score . '</span>' : '—' !!}
                                 </td>
                                 <td class="text-left">
-                                    <span class="badge badge-success">
-                                        {{ $game->awayTeam->team->short_name }}
+                                    <span class="badge badge-success text-uppercase">
+                                        {{ $game->awayPlayer->getClubId($game->tournament_id) }}
                                     </span>
                                     @if ($game->home_score < $game->away_score)
-                                        <strong><a href="{{ route('team', ['teamId' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a></strong>
+                                        <strong><a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->name }}</a></strong>
                                     @else
-                                        <a href="{{ route('team', ['teamId' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a>
+                                        <a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->name }}</a>
                                     @endif
+                                    <small>{{ $game->awayPlayer->tag }}</small>
                                 </td>
                                 <td class="text-right">
                                     <a class="btn btn-sm btn-primary"
-                                       href="{{ route('group.tournament.regular.game', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}">
+                                       href="{{ route('personal.tournament.regular.game', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}">
                                         <i class="fas fa-gamepad"></i> протокол
                                     </a>
                                 </td>
                                 @auth
                                     <td class="text-right">
-                                        <a href="{{ route('group.tournament.regular.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
+                                        <a href="{{ route('personal.tournament.regular.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
                                            class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
                                     </td>
                                 @endauth
@@ -110,9 +109,9 @@
     @parent
     <script>
         $(document).ready(function () {
-            var $teamList = $('#teamsList');
+            var $playerList = $('#playersList');
 
-            $teamList.change(function () {
+            $playerList.change(function () {
                 console.log('fired');
                 const $rows = $('.games');
                 $rows.show();
@@ -127,7 +126,7 @@
             console.log(window.location.hash);
 
             if (window.location.hash) {
-                $teamList
+                $playerList
                     .val(window.location.hash.replace('#', ''))
                     .trigger('change');
             }
