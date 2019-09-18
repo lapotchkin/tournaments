@@ -4,6 +4,7 @@ namespace App\Widgets;
 
 use App\Models\GroupGamePlayoff;
 use App\Models\GroupGameRegular;
+use App\Models\GroupTournament;
 use Arrilot\Widgets\AbstractWidget;
 
 /**
@@ -18,15 +19,20 @@ class GroupGamesCarousel extends AbstractWidget
      */
     public function run()
     {
+        $deletedTournaments = GroupTournament::onlyTrashed()->get();
+        $deletedTournamentsIds = [];
+        foreach ($deletedTournaments as $deletedTournament) {
+            $deletedTournamentsIds[] = $deletedTournament->id;
+        }
+
         $regularGames = GroupGameRegular::with(['homeTeam.team', 'awayTeam.team', 'tournament'])
             ->whereNotNull('playedAt')
-            ->whereNotNull('deletedAt')
+            ->whereNotIn('tournament_id', $deletedTournamentsIds)
             ->orderByDesc('playedAt')
             ->take(10)
             ->get();
         $playoffGames = GroupGamePlayoff::with(['homeTeam.team', 'awayTeam.team', 'tournament', 'playoffPair'])
             ->whereNotNull('playedAt')
-            ->whereNotNull('deletedAt')
             ->orderByDesc('playedAt', 'desc')
             ->take(10)
             ->get();
