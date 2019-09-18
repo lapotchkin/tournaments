@@ -24,14 +24,13 @@ use Validator;
 class PersonalController extends Controller
 {
     const GAME_RULES = [
-        'game'                   => 'required|array',
-        'game.home_score'        => 'required|int',
-        'game.away_score'        => 'required|int',
-        'game.home_shot'         => 'int',
-        'game.isOvertime'        => 'int|min:0|max:1',
-        'game.isShootout'        => 'int|min:0|max:1',
-        'game.isTechnicalDefeat' => 'int|min:0|max:1',
-        'game.playedAt'          => 'date',
+        'home_score'        => 'required|int',
+        'away_score'        => 'required|int',
+        'home_shot'         => 'int',
+        'isOvertime'        => 'int|min:0|max:1',
+        'isShootout'        => 'int|min:0|max:1',
+        'isTechnicalDefeat' => 'int|min:0|max:1',
+        'playedAt'          => 'date',
     ];
 
     /**
@@ -206,30 +205,14 @@ class PersonalController extends Controller
     public function editRegularGame(StoreRequest $request, int $tournamentId, int $gameId)
     {
         /** @var PersonalGameRegular $game */
-        $game = PersonalGameRegular::with(['homePlayer.player', 'awayPlayer.player'])
+        $game = PersonalGameRegular::with(['homePlayer', 'awayPlayer'])
             ->find($gameId);
         if (is_null($game) || $game->tournament_id !== $tournamentId) {
             abort(404);
         }
 
-        $input = json_decode($request->getContent(), true);
-        $validator = Validator::make($input, self::GAME_RULES);
-        $validatedData = $validator->validate();
-
-        $attributes = $game->attributesToArray();
-        foreach ($validatedData['game'] as $field => $value) {
-            if (!array_key_exists($field, $attributes)) {
-                continue;
-            }
-
-            if ($value === '') {
-                $game->{$field} = null;
-            } elseif (strstr($field, '_time')) {
-                $game->{$field} = '00:' . $value;
-            } else {
-                $game->{$field} = $value;
-            }
-        }
+        $validatedData = $request->validate(self::GAME_RULES);
+        $game->fill($validatedData);
         $game->save();
 
         return $this->renderAjax([], 'Протокол игры сохранён');
@@ -284,6 +267,7 @@ class PersonalController extends Controller
      * @param int          $tournamentId
      * @param int          $pairId
      * @return ResponseFactory|Response
+     * @throws ValidationException
      */
     public function updatePair(StoreRequest $request, int $tournamentId, int $pairId)
     {
@@ -365,7 +349,7 @@ class PersonalController extends Controller
     public function editPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
     {
         /** @var PersonalGamePlayoff $game */
-        $game = PersonalGamePlayoff::with(['homePlayer.player', 'awayPlayer.player'])
+        $game = PersonalGamePlayoff::with(['homePlayer', 'awayPlayer'])
             ->find($gameId);
         if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
             abort(404);

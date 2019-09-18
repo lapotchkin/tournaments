@@ -90,42 +90,25 @@
 @section('script')
     @parent
     @php
+        $method = 'post';
         if ($pair) {
-            $lastGamesUrl = action('Ajax\EaController@getLastGames') . '?pairId=' . $pair->id;
-            $resetGameUrl = $protocolUrl = '';
             if ($game) {
                 $saveGameUrl = action(
-                    'Ajax\GroupController@editPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
-                 );
-                 $resetGameUrl = action(
-                    'Ajax\GroupController@resetPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
-                 );
-                 $protocolUrl = action(
-                    'Ajax\GroupController@createPlayoffProtocol',
+                    'Ajax\PersonalController@editPlayoffGame',
                      ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
                  );
              } else {
                 $saveGameUrl = action(
-                    'Ajax\GroupController@createPlayoffGame',
+                    'Ajax\PersonalController@createPlayoffGame',
                      ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id]
                  );
+                $method = 'put';
              }
         } else {
-            $lastGamesUrl = action('Ajax\EaController@getLastGames') . '?gameId=' . $game->id;
             $saveGameUrl = action(
-                'Ajax\GroupController@editRegularGame',
+                'Ajax\PersonalController@editRegularGame',
                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
             );
-            $resetGameUrl = action(
-                'Ajax\GroupController@resetRegularGame',
-                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
-             );
-             $protocolUrl = action(
-                'Ajax\GroupController@createRegularProtocol',
-                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
-             );
         }
     @endphp
     <script src="{!! mix('/js/gameFormModule.js') !!}"></script>
@@ -133,6 +116,14 @@
         $(document).ready(function () {
             $('#playedAt').datepicker(TRNMNT_helpers.getDatePickerSettings());
 
+            TRNMNT_sendData({
+                selector: '#game-form',
+                method: '{{ $method }}',
+                url: '{{ $saveGameUrl }}',
+                success: function (response) {
+                    TRNMNT_helpers.showNotification(response.message);
+                },
+            });
         });
     </script>
 @endsection

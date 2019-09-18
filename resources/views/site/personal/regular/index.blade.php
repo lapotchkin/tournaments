@@ -10,6 +10,7 @@
 
     <h3>Турнирная таблица</h3>
     @foreach($divisions as $division => $position)
+        <h4>Группа {{ TextUtils::divisionLetter($division) }}</h4>
         <table id="players{{ $division }}" class="players table table-striped table-sm">
             <thead class="thead-dark"></thead>
             <tbody></tbody>

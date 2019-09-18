@@ -12,9 +12,19 @@ export default function (params) {
         const form = $(this);
         const formData = form.serializeArray();
         const request = {};
+        console.log(formData);
         for (let i = 0; i < formData.length; i += 1) {
             if (formData[i].value) {
-                request[formData[i].name] = formData[i].value;
+                switch (formData[i].value) {
+                    case 'on':
+                        request[formData[i].name] = 1;
+                        break;
+                    case 'off':
+                        request[formData[i].name] = 1;
+                        break;
+                    default:
+                        request[formData[i].name] = formData[i].value;
+                }
             }
             const field = form.find('[name=' + formData[i].name + ']');
             field.removeClass('is-invalid');
