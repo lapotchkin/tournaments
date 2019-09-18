@@ -8,7 +8,7 @@
     @widget('groupMenu', ['tournament' => $tournament])
     @widget('groupPlayoffMenu', ['tournament' => $tournament])
 
-    <div class="tournament-bracket tournament-bracket--rounded">
+    <div class="tournament-bracket tournament-bracket--rounded pb-5">
         @foreach ($bracket as $round => $pairs)
             <div
                 class="tournament-bracket__round {{ $tournament->thirdPlaceSeries ? TextUtils::playoffClass($loop->iteration, count($bracket)) : '' }}">

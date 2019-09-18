@@ -65,19 +65,19 @@
     @show
 </header>
 
-<main role="main" class="flex-shrink-0">
+<main role="main" class="flex-shrink-0 mb-5">
     <div class="container">
         @yield('content')
     </div>
 </main>
 
-<footer class="footer mt-auto py-3">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">&copy; Киберспортивная лига {{ date('Y') }}</div>
-            <div class="col-sm text-right">Работает на <a href="https://laravel.com">Laravel</a></div>
-        </div>
-    </div>
-</footer>
+{{--<footer class="footer mt-auto py-3">--}}
+{{--    <div class="container">--}}
+{{--        <div class="row">--}}
+{{--            <div class="col-sm">&copy; Киберспортивная лига {{ date('Y') }}</div>--}}
+{{--            <div class="col-sm text-right">Работает на <a href="https://laravel.com">Laravel</a></div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+{{--</footer>--}}
 </body>
 </html>

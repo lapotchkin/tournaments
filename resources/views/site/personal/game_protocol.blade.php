@@ -27,7 +27,7 @@
                 <h4>
                     {{ $game->homePlayer->tag }}
                     <span class="badge badge-success text-uppercase">
-                        {{ $game->homePlayer->getClubId($game->tournament_id) }}
+                        {{ $game->homePlayer->getClubId($game->playoffPair ? $game->playoffPair->tournament_id : $game->tournament_id) }}
                     </span>
                 </h4>
             </td>
@@ -56,7 +56,7 @@
                 </h2>
                 <h4>
                     <span class="badge badge-success text-uppercase">
-                        {{ $game->awayPlayer->getClubId($game->tournament_id) }}
+                        {{ $game->awayPlayer->getClubId($game->playoffPair ? $game->playoffPair->tournament_id : $game->tournament_id) }}
                     </span>
                     {{ $game->awayPlayer->tag }}
                 </h4>
