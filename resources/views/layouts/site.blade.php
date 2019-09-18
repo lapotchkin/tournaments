@@ -62,6 +62,11 @@
                 @widget('groupGamesCarousel')
             </div>
         @endif
+        @if(strstr(url()->current(), 'personal'))
+            <div class="container">
+                @widget('personalGamesCarousel')
+            </div>
+        @endif
     @show
 </header>
 
