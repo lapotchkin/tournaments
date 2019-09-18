@@ -60,3 +60,5 @@ require('datatables.net-bs4');
 require('chosen-js');
 require('bootstrap-datepicker');
 require('bootstrap-datepicker/js/locales/bootstrap-datepicker.ru');
+require('leaflet/dist/leaflet-src');
+require('leaflet.markercluster/dist/leaflet.markercluster-src');

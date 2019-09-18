@@ -29,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property-read League|null                           $league
  * @property-read Collection|PersonalGameRegular[]      $regularGames
  * @property-read Collection|PersonalTournamentPlayer[] $tournamentPlayers
+ * @property-read Collection|Player[]                   $players
  * @property-read Collection|PersonalTournamentWinner[] $winners
  * @property-read Platform                              $platform
  * @method static bool|null forceDelete()

@@ -160,6 +160,14 @@ Breadcrumbs::for('personal.tournament', function ($trail, PersonalTournament $to
         route('personal.tournament', ['tournamentId' => $tournament->id])
     );
 });
+//Personal > Tournament > Map
+Breadcrumbs::for('personal.tournament.map', function ($trail, PersonalTournament $tournament) {
+    $trail->parent('personal.tournament', $tournament);
+    $trail->push(
+        'Карта игроков',
+        route('personal.tournament.map', ['tournamentId' => $tournament->id])
+    );
+});
 //Personal > Tournament > Editor
 Breadcrumbs::for('personal.tournament.edit', function ($trail, PersonalTournament $tournament) {
     $trail->parent('personal.tournament', $tournament);

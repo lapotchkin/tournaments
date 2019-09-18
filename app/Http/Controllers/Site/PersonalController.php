@@ -151,13 +151,54 @@ class PersonalController extends Controller
         ]);
     }
 
-    public function map()
+    /**
+     * @param Request $request
+     * @param int     $tournamentId
+     * @return Factory|View
+     */
+    public function map(Request $request, int $tournamentId)
     {
+        if (!Auth::check() || !Auth::user()->isAdmin()) {
+            abort(403);
+        }
 
+        /** @var PersonalTournament $tournament */
+        $tournament = PersonalTournament::find($tournamentId);
+        if (is_null($tournament)) {
+            abort(404);
+        }
+
+        $points = [];
+        foreach ($tournament->players as $player) {
+            $points[] = [$player->lat, $player->lon, $player->name . ' (' . $player->city . ')'];
+        }
+
+        return view('site.personal.map', [
+            'tournament' => $tournament,
+            'points'     => $points,
+        ]);
     }
 
     public function copypaste()
     {
+        if (!$id) {
+            throw new NotFoundHttpException('Page not found');
+        }
 
+        $tournament = PersonalTournament::find()
+            ->where([
+                PersonalTournament::tableName() . '.id'        => $id,
+                PersonalTournament::tableName() . '.deletedAt' => null,
+            ])
+            ->joinWith(['personalTournamentPlayers.club', 'personalTournamentPlayers.player'])
+            ->one();;
+
+        if (is_null($tournament)) {
+            throw new NotFoundHttpException('Турнир не найден');
+        }
+
+        return $this->render('copypaste', [
+            'tournament' => $tournament,
+        ]);
     }
 }
