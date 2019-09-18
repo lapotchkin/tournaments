@@ -20,13 +20,13 @@ class GroupGamesCarousel extends AbstractWidget
     {
         $regularGames = GroupGameRegular::with(['homeTeam.team', 'awayTeam.team', 'tournament'])
             ->whereNotNull('playedAt')
-            ->whereNotNull('deletedAt')
+            ->whereNull('deletedAt')
             ->orderByDesc('playedAt')
             ->take(10)
             ->get();
         $playoffGames = GroupGamePlayoff::with(['homeTeam.team', 'awayTeam.team', 'tournament', 'playoffPair'])
             ->whereNotNull('playedAt')
-            ->whereNotNull('deletedAt')
+            ->whereNull('deletedAt')
             ->orderByDesc('playedAt', 'desc')
             ->take(10)
             ->get();
