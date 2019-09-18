@@ -109,7 +109,7 @@ Route::get('/personal/{tournamentId}/player/{playerId}', 'Site\PersonalControlle
 Route::get('/personal/{tournamentId}/map', 'Site\PersonalController@map')
     ->where(['tournamentId' => '[0-9]+'])
     ->name('personal.tournament.map');
-Route::get('/personal/{tournamentId}/copypaste', 'Site\PersonalController@copypaste')
+Route::get('/personal/{tournamentId}/copypaste', 'Site\PersonalController@players')
     ->where(['tournamentId' => '[0-9]+'])
     ->name('personal.tournament.copypaste');
 

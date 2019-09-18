@@ -101,7 +101,7 @@ class PersonalController extends Controller
         ksort($divisions);
 
         if (strstr($request->path(), 'copypaste')) {
-            return view('site.group.copypaste', [
+            return view('site.personal.copypaste', [
                 'tournament' => $tournament,
                 'divisions'  => $divisions,
             ]);
@@ -176,29 +176,6 @@ class PersonalController extends Controller
         return view('site.personal.map', [
             'tournament' => $tournament,
             'points'     => $points,
-        ]);
-    }
-
-    public function copypaste()
-    {
-        if (!$id) {
-            throw new NotFoundHttpException('Page not found');
-        }
-
-        $tournament = PersonalTournament::find()
-            ->where([
-                PersonalTournament::tableName() . '.id'        => $id,
-                PersonalTournament::tableName() . '.deletedAt' => null,
-            ])
-            ->joinWith(['personalTournamentPlayers.club', 'personalTournamentPlayers.player'])
-            ->one();;
-
-        if (is_null($tournament)) {
-            throw new NotFoundHttpException('Турнир не найден');
-        }
-
-        return $this->render('copypaste', [
-            'tournament' => $tournament,
         ]);
     }
 }
