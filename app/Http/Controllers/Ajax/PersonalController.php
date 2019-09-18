@@ -300,7 +300,6 @@ class PersonalController extends Controller
      * @param int          $tournamentId
      * @param int          $pairId
      * @return ResponseFactory|Response
-     * @throws ValidationException
      */
     public function createPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId)
     {
@@ -310,25 +309,9 @@ class PersonalController extends Controller
             abort(404);
         }
 
-        $input = json_decode($request->getContent(), true);
-        $validator = Validator::make($input, self::GAME_RULES);
-        $validatedData = $validator->validate();
-
+        $validatedData = $request->validate(self::GAME_RULES);
         $game = new PersonalGamePlayoff();
-        $attributes = $game->getFillable();
-        foreach ($validatedData['game'] as $field => $value) {
-            if (!in_array($field, $attributes)) {
-                continue;
-            }
-
-            if ($value === '') {
-                $game->{$field} = null;
-            } elseif (strstr($field, '_time')) {
-                $game->{$field} = '00:' . $value;
-            } else {
-                $game->{$field} = $value;
-            }
-        }
+        $game->fill($validatedData);
         $game->playoff_pair_id = $pairId;
         $game->home_player_id = $pair->player_one_id;
         $game->away_player_id = $pair->player_two_id;
@@ -344,7 +327,6 @@ class PersonalController extends Controller
      * @param int          $pairId
      * @param int          $gameId
      * @return ResponseFactory|Response
-     * @throws ValidationException
      */
     public function editPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
     {
@@ -355,24 +337,8 @@ class PersonalController extends Controller
             abort(404);
         }
 
-        $input = json_decode($request->getContent(), true);
-        $validator = Validator::make($input, self::GAME_RULES);
-        $validatedData = $validator->validate();
-
-        $attributes = $game->getFillable();
-        foreach ($validatedData['game'] as $field => $value) {
-            if (!in_array($field, $attributes)) {
-                continue;
-            }
-
-            if ($value === '') {
-                $game->{$field} = null;
-            } elseif (strstr($field, '_time')) {
-                $game->{$field} = '00:' . $value;
-            } else {
-                $game->{$field} = $value;
-            }
-        }
+        $validatedData = $request->validate(self::GAME_RULES);
+        $game->fill($validatedData);
         $game->save();
 
         return $this->renderAjax([], 'Протокол игры сохранён');

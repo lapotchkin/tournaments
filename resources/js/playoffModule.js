@@ -1,15 +1,17 @@
 window.TRNMNT_playoffModule = (function () {
     let _isInitialized = false;
     let _url = null;
+    let _mode = 'team';
 
     return {
         init: _init,
     };
 
-    function _init(url) {
+    function _init(url, mode = 'team') {
         if (_isInitialized) return;
         _isInitialized = true;
         _url = url;
+        _mode = mode;
         $('.savePair').on('click', _onClickSavePair);
     }
 
@@ -23,12 +25,12 @@ window.TRNMNT_playoffModule = (function () {
             round: $pair.closest('div.tournament-bracket__round').index() + 1,
             pair: $pair.index() + 1,
         };
-        const teamOneId = +$pair.find('select[name=team_one_id]').val();
-        const teamTwoId = +$pair.find('select[name=team_two_id]').val();
-        if (teamOneId) formData.team_one_id = teamOneId;
-        if (teamTwoId) formData.team_two_id = teamTwoId;
+        const competitorOneId = +$pair.find('select[name=' + _mode + '_one_id]').val();
+        const competitorTwoId = +$pair.find('select[name=' + _mode + '_two_id]').val();
+        if (competitorOneId) formData[_mode + '_one_id'] = competitorOneId;
+        if (competitorTwoId) formData[_mode + '_two_id'] = competitorTwoId;
 
-        // if (!teamOneId && !teamTwoId) return;
+        // if (!competitorOneId && !competitorTwoId) return;
 
         TRNMNT_helpers.disableButtons();
         $.ajax({

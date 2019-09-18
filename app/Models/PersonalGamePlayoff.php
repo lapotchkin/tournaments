@@ -20,6 +20,8 @@ use Illuminate\Support\Carbon;
  * @property int                            $away_player_id    ID гостя
  * @property int|null                       $home_score        Забил хозяин
  * @property int|null                       $away_score        Забил гость
+ * @property int                            $isOvertime        Овертайм
+ * @property int                            $isShootout        Буллиты
  * @property int                            $isTechnicalDefeat Техническое поражение
  * @property string|null                    $playedAt          Дата игры
  * @property Carbon                         $createdAt         Дата создания
@@ -53,7 +55,7 @@ class PersonalGamePlayoff extends Model
     use SoftDeletes;
 
     const CREATED_AT = 'createdAt';
-    const UPDATED_AT = null;
+    const UPDATED_AT = 'updatedAt';
     const DELETED_AT = 'deletedAt';
 
     /**
@@ -72,6 +74,8 @@ class PersonalGamePlayoff extends Model
         'away_player_id',
         'home_score',
         'away_score',
+        'isOvertime',
+        'isShootout',
         'isTechnicalDefeat',
         'playedAt',
         'createdAt',

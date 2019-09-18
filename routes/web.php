@@ -137,7 +137,7 @@ Route::get('/personal/{tournamentId}/regular/schedule', 'Site\PersonalRegularCon
 Route::get('/personal/{tournamentId}/playoff', 'Site\PersonalPlayoffController@index')
     ->where(['tournamentId' => '[0-9]+'])
     ->name('personal.tournament.playoff');
-Route::get('/personal/{tournamentId}/playoff/games', 'Site\PersonalPlayoffController@games')
+Route::get('/personal/{tournamentId}/playoff/games', 'Site\PersonalPlayoffController@index')
     ->where(['tournamentId' => '[0-9]+'])
     ->name('personal.tournament.playoff.games');
 Route::get('/personal/{tournamentId}/playoff/games/{pairId}/add', 'Site\PersonalPlayoffController@gameAdd')

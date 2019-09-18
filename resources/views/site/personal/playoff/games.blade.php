@@ -3,10 +3,10 @@
 @section('title', $tournament->title . ': Плей-офф — ')
 
 @section('content')
-    {{ Breadcrumbs::render('group.tournament.playoff.games', $tournament) }}
-    @widget('groupHeader', ['tournament' => $tournament])
-    @widget('groupMenu', ['tournament' => $tournament])
-    @widget('groupPlayoffMenu', ['tournament' => $tournament])
+    {{ Breadcrumbs::render('personal.tournament.playoff.games', $tournament) }}
+    @widget('personalHeader', ['tournament' => $tournament])
+    @widget('personalMenu', ['tournament' => $tournament])
+    @widget('personalPlayoffMenu', ['tournament' => $tournament])
 
     <div class="tournament-bracket tournament-bracket--rounded">
         @foreach ($bracket as $round => $pairs)
@@ -25,37 +25,39 @@
                                 <div class="row">
                                     <div class="col-10 form-inline">
                                         <span class="badge badge-pill badge-danger mr-2">&nbsp;</span>
-                                        @if (!is_null($pair) && $pair->teamOne && count($pair->games))
-                                            <a href="{{ route('team', ['teamId' => $pair->team_one_id]) }}">
-                                                @if ($winner === $pair->team_one_id)
-                                                    <strong>{{$pair->teamOne->name }}</strong>
+                                        @if (!is_null($pair) && $pair->playerOne && count($pair->games))
+                                            <a href="{{ route('player', ['playerId' => $pair->player_one_id]) }}">
+                                                @if ($winner === $pair->player_one_id)
+                                                    <strong>{{$pair->playerOne->name }}</strong>
                                                 @else
-                                                    {{$pair->teamOne->name }}
+                                                    {{$pair->playerOne->name }}
                                                 @endif
                                             </a>
-                                            <span
-                                                class="badge badge-success ml-1">{{ $pair->teamOne->short_name }}</span>
+                                            <span class="badge badge-success text-uppercase ml-1">
+                                                {{ $pair->playerOne->getClubId($tournament->id) }}
+                                            </span>
                                         @else
-                                            <select class="form-control form-control-sm" name="team_one_id">
+                                            <select class="form-control form-control-sm" name="player_one_id">
                                                 <option value="">--</option>
-                                                @foreach($tournament->tournamentTeams as $tournamentTeam)
-                                                    <option value="{{ $tournamentTeam->team_id }}"
-                                                        {{ !is_null($pair) && $pair->team_one_id === $tournamentTeam->team_id ? 'selected' : '' }}>
-                                                        {{ $tournamentTeam->team->name }}
+                                                @foreach($tournament->tournamentPlayers as $tournamentPlayer)
+                                                    <option value="{{ $tournamentPlayer->player_id }}"
+                                                        {{ !is_null($pair) && $pair->player_one_id === $tournamentPlayer->player_id ? 'selected' : '' }}>
+                                                        {{ $tournamentPlayer->player->name }}
+                                                        ({{ $tournamentPlayer->player->tag }})
                                                     </option>
                                                 @endforeach
                                             </select>
                                         @endif
                                     </div>
                                     <div class="col-2 text-right">
-                                        @if (!is_null($pair) && $pair->teamOne && isset($seriesResult[$pair->teamOne->id]))
-                                            @if ($winner === $pair->team_one_id)
+                                        @if (!is_null($pair) && $pair->playerOne && isset($seriesResult[$pair->playerOne->id]))
+                                            @if ($winner === $pair->player_one_id)
                                                 <span class="badge badge-pill badge-dark">
-                                                    {{ $seriesResult[$pair->teamOne->id] }}
+                                                    {{ $seriesResult[$pair->playerOne->id] }}
                                                 </span>
                                             @else
                                                 <span class="badge badge-pill badge-secondary">
-                                                    {{ $seriesResult[$pair->teamOne->id] }}
+                                                    {{ $seriesResult[$pair->playerOne->id] }}
                                                 </span>
                                             @endif
                                         @else
@@ -64,65 +66,69 @@
                                     </div>
                                 </div>
                                 <div class="row pt-2 pb-2">
-                                    <div class="col-10 text-center">
+                                    <div class="col-9 text-center">
                                         @if(!is_null($pair))
                                             @foreach($pair->games as $game)
-                                                <a href="{{ route('group.tournament.playoff.game.edit', ['tournamentId' => $tournament->id, 'pairId' => $pair->id, 'gameId' => $game->id]) }}"
+                                                <a href="{{ route('personal.tournament.playoff.game.edit', ['tournamentId' => $tournament->id, 'pairId' => $pair->id, 'gameId' => $game->id]) }}"
                                                    class="btn btn-sm {{ $game->home_score > $game->away_score ? 'btn-danger' : 'btn-warning' }}">
                                                     {{ $game->home_score }}:{{ $game->away_score }}
                                                 </a>
                                             @endforeach
-                                            <a href="{{ route('group.tournament.playoff.game.add', ['tournamentId' => $tournament->id, 'pairId' => $pair->id]) }}"
+                                            <a href="{{ route('personal.tournament.playoff.game.add', ['tournamentId' => $tournament->id, 'pairId' => $pair->id]) }}"
                                                class="btn btn-sm btn-success">
                                                 <i class="fas fa-plus"></i>
                                             </a>
                                         @else
-                                            <a href="{{ route('group.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}"
+                                            <a href="{{ route('personal.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}"
                                                class="btn btn-sm btn-success addGame" style="display:none;">
                                                 <i class="fas fa-plus"></i>
                                             </a>
                                         @endif
                                     </div>
-                                    <div class="col-2 text-right">
-                                        <button type="button" class="btn btn-sm btn-primary savePair">
-                                            <i class="fas fa-save"></i>
-                                        </button>
-                                    </div>
+                                    @if (is_null($pair) || !count($pair->games))
+                                        <div class="col-3 text-right align-middle">
+                                            <button type="button" class="btn btn-sm btn-primary savePair">
+                                                <i class="fas fa-save"></i>
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="row">
                                     <div class="col-10 form-inline">
                                         <span class="badge badge-pill badge-warning mr-2">&nbsp;</span>
-                                        @if (!is_null($pair) && $pair->teamTwo && count($pair->games))
-                                            <a href="{{ route('team', ['teamId' => $pair->team_two_id]) }}">
-                                                @if ($winner === $pair->team_two_id)
-                                                    <strong>{{$pair->teamTwo->name }}</strong>
+                                        @if (!is_null($pair) && $pair->playerTwo && count($pair->games))
+                                            <a href="{{ route('player', ['playerId' => $pair->player_two_id]) }}">
+                                                @if ($winner === $pair->player_two_id)
+                                                    <strong>{{$pair->playerTwo->name }}</strong>
                                                 @else
-                                                    {{$pair->teamTwo->name }}
+                                                    {{$pair->playerTwo->name }}
                                                 @endif
                                             </a>
-                                            <span
-                                                class="badge badge-success ml-1">{{ $pair->teamTwo->short_name }}</span>
+                                            <span class="badge badge-success text-uppercase ml-1">
+                                                {{ $pair->playerTwo->getClubId($tournament->id) }}
+                                            </span>
                                         @else
-                                            <select class="form-control form-control-sm" name="team_two_id">
+                                            <select class="form-control form-control-sm" name="player_two_id">
                                                 <option value="">--</option>
-                                                @foreach($tournament->tournamentTeams as $tournamentTeam)
-                                                    <option value="{{ $tournamentTeam->team_id }}"
-                                                        {{ !is_null($pair) && $pair->team_two_id === $tournamentTeam->team_id ? 'selected' : '' }}>
-                                                        {{ $tournamentTeam->team->name }}
+                                                @foreach($tournament->tournamentPlayers as $tournamentPlayer)
+                                                    <option value="{{ $tournamentPlayer->player_id }}"
+                                                        {{ !is_null($pair) && $pair->player_two_id === $tournamentPlayer->player_id ? 'selected' : '' }}>
+                                                        {{ $tournamentPlayer->player->name }}
+                                                        ({{ $tournamentPlayer->player->tag }})
                                                     </option>
                                                 @endforeach
                                             </select>
                                         @endif
                                     </div>
                                     <div class="col-2 text-right">
-                                        @if (!is_null($pair) && $pair->teamTwo && isset($seriesResult[$pair->teamTwo->id]))
-                                            @if ($winner === $pair->team_two_id)
+                                        @if (!is_null($pair) && $pair->playerTwo && isset($seriesResult[$pair->playerTwo->id]))
+                                            @if ($winner === $pair->player_two_id)
                                                 <span class="badge badge-pill badge-dark">
-                                                    {{ $seriesResult[$pair->teamTwo->id] }}
+                                                    {{ $seriesResult[$pair->playerTwo->id] }}
                                                 </span>
                                             @else
                                                 <span class="badge badge-pill badge-secondary">
-                                                    {{ $seriesResult[$pair->teamTwo->id] }}
+                                                    {{ $seriesResult[$pair->playerTwo->id] }}
                                                 </span>
                                             @endif
                                         @else
@@ -145,9 +151,12 @@
     <script src="{!! mix('/js/playoffModule.js') !!}"></script>
     <script>
         $(document).ready(function () {
-            TRNMNT_playoffModule.init({
-                createPair: '{{ action('Ajax\GroupController@createPair', ['tournamentId' => $tournament->id]) }}'
-            });
+            TRNMNT_playoffModule.init(
+                {
+                    createPair: '{{ action('Ajax\PersonalController@createPair', ['tournamentId' => $tournament->id]) }}',
+                },
+                'player'
+            );
         });
     </script>
 @endsection

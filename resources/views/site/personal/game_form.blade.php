@@ -25,26 +25,24 @@
                     <h4>
                         {{ $pair ? $pair->playerOne->tag : $game->homePlayer->tag }}
                         <span class="badge badge-success text-uppercase">
-                            {{ $pair ? $game->playerOne->getClubId($game->tournament_id) : $game->homePlayer->getClubId($game->tournament_id) }}
+                            {{ $pair ? $pair->playerOne->getClubId($pair->tournament_id) : $game->homePlayer->getClubId($game->tournament_id) }}
                         </span>
                     </h4>
                 </td>
                 <td class="text-right" style="width:4rem;">
                     <input type="text" id="home_score" class="form-control form-control-lg text-center"
-                           name="home_score" value="{{ $game ? $game->home_score : '' }}"
-                        {{ $game && $game->match_id ? 'readonly' : '' }}>
+                           name="home_score" value="{{ $game ? $game->home_score : '' }}">
                 </td>
                 <td class="text-center" style="width:1rem;"><h2>:</h2></td>
                 <td class="text-left" style="width:4rem;">
                     <input type="text" id="away_score" class="form-control form-control-lg text-center"
-                           name="away_score" value="{{ $game ? $game->away_score : '' }}"
-                        {{ $game && $game->match_id ? 'readonly' : '' }}>
+                           name="away_score" value="{{ $game ? $game->away_score : '' }}">
                 </td>
                 <td class="text-left pl-3" style="width:40%;">
                     <h2>{{ $pair ? $pair->playerTwo->name : $game->awayPlayer->name }}</h2>
                     <h4>
                         <span class="badge badge-success text-uppercase">
-                            {{ $pair ? $game->playerTwo->getClubId($game->tournament_id) : $game->awayPlayer->getClubId($game->tournament_id) }}
+                            {{ $pair ? $pair->playerTwo->getClubId($pair->tournament_id) : $game->awayPlayer->getClubId($game->tournament_id) }}
                         </span>
                         {{ $pair ? $pair->playerTwo->tag : $game->awayPlayer->tag }}
                     </h4>
@@ -122,6 +120,9 @@
                 url: '{{ $saveGameUrl }}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
+                    if (response.data.id) {
+                        window.location.href = window.location.href.replace('add', response.data.id) + '/edit';
+                    }
                 },
             });
         });
