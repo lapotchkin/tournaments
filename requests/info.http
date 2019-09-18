@@ -1,5 +1,9 @@
-### Xbox One Chelyaba Egles
+### Xbox One Chelyaba Egles NHL 19
 GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/xboxone/clubs/348482/info
+Accept: application/json
+
+### Xbox One Chelyaba Egles NHL 20
+GET  https://proclubs.ea.com/api/nhl/clubs/info?platform=xboxone&clubIds=17753
 Accept: application/json
 
 ### PS4 HC Virtuoso

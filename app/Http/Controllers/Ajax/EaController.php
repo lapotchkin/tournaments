@@ -24,15 +24,20 @@ use Cache;
  */
 class EaController extends Controller
 {
-    const BASE_URL = 'https://www.easports.com';
-    const API_PATH = 'iframe/nhl14proclubs/api/platforms/{platformId}/clubs/{clubId}/';
+    const BASE_URL = [
+        'eanhl19' => 'https://www.easports.com',
+        'eanhl20' => 'https://proclubs.ea.com',
+    ];
+    const API_PATH = [
+        'eanhl19' => 'iframe/nhl14proclubs/api/platforms/{platformId}/clubs/{clubId}/',
+        'eanhl20' => 'api/nhl/clubs/',
+    ];
     const MATCHES_PATH = 'matches';
     const MATCHES_PER_REQUEST = 20;
     const OVERTIME_RESULTS = [5, 6];
 
     /**
      * @param StoreRequest $request
-     * @param int          $gameId
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -45,16 +50,22 @@ class EaController extends Controller
 
         $game = null;
         $pair = null;
+        $app = null;
+        $clubId = null;
+        $platform = null;
+        $key = null;
         if (isset($validatedData['gameId'])) {
             $game = GroupGameRegular::find($validatedData['gameId']);
             $key = "game_{$game->id}_response";
             $clubId = $game->homeTeam->team->getClubId($game->tournament->app_id);
             $platform = $game->tournament->platform_id === 'playstation4' ? 'ps4' : $game->tournament->platform_id;
+            $app = $game->tournament->app_id;
         } elseif (isset($validatedData['pairId'])) {
             $pair = GroupTournamentPlayoff::find($validatedData['pairId']);
             $key = "pair_{$pair->id}_response";
             $clubId = $pair->teamOne->getClubId($pair->tournament->app_id);
             $platform = $pair->tournament->platform_id === 'playstation4' ? 'ps4' : $pair->tournament->platform_id;
+            $app = $pair->tournament->app_id;
         } else {
             abort('404', 'Не указан ID для поиска');
         }
@@ -66,19 +77,21 @@ class EaController extends Controller
         $responseJSON = Cache::remember(
             $key,
             new DateInterval('PT1H'),
-            function () use ($clubId, $platform) {
-                $httpClient = new Client(['base_uri' => self::BASE_URL]);
+            function () use ($clubId, $platform, $app) {
+                $httpClient = new Client(['base_uri' => self::BASE_URL[$app]]);
                 $response = $httpClient->request(
                     'GET',
                     str_replace(
                         ['{platformId}', '{clubId}'],
                         [$platform, $clubId],
-                        self::API_PATH . self::MATCHES_PATH
+                        self::API_PATH[$app] . self::MATCHES_PATH
                     ),
                     [
                         'query' => [
                             'match_type'       => 'club_private',
                             'matches_returned' => self::MATCHES_PER_REQUEST,
+                            'platform'         => $platform,
+                            'clubIds'          => $clubId,
                         ],
                     ]
                 );
@@ -111,7 +124,10 @@ class EaController extends Controller
         $homeClubId = (int)$homeTeam->getClubId($tournament->app_id);
         $awayClubId = (int)$awayTeam->getClubId($tournament->app_id);
         $positions = self::getPlayerPositions();
-        foreach ($response['raw'] as $matchId => $match) {
+
+        $data = isset($response['raw']) ? $response['raw'] : $response;
+        foreach ($data as $match) {
+            $matchId = $data['matchId'];
             $clubIds = array_keys($match['clubs']);
             if (!in_array($homeClubId, $clubIds) || !in_array($awayClubId, $clubIds)) {
                 continue;
