@@ -127,7 +127,7 @@ class EaController extends Controller
 
         $data = isset($response['raw']) ? $response['raw'] : $response;
         foreach ($data as $match) {
-            $matchId = $data['matchId'];
+            $matchId = $match['matchId'];
             $clubIds = array_keys($match['clubs']);
             if (!in_array($homeClubId, $clubIds) || !in_array($awayClubId, $clubIds)) {
                 continue;
