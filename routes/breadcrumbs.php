@@ -276,12 +276,22 @@ Breadcrumbs::for('personal.tournament.playoff.game.add', function ($trail, Perso
         )
     );
 });
-//Group
+//Players
 Breadcrumbs::for('players', function ($trail) {
     $trail->push('Игроки', route('players'));
 });
-//Group > New
+//Players > New
+Breadcrumbs::for('player.add', function ($trail) {
+    $trail->parent('players');
+    $trail->push('Добавить игрока', route('player.add'));
+});
+//Players > Player
 Breadcrumbs::for('player', function ($trail, Player $player) {
     $trail->parent('players');
     $trail->push($player->name . ' (' . $player->tag . ')', route('player', ['playerId' => $player->id]));
+});
+//Players > Player > Edit
+Breadcrumbs::for('player.edit', function ($trail, Player $player) {
+    $trail->parent('player', $player);
+    $trail->push('Редактировать', route('player.edit', ['playerId' => $player->id]));
 });

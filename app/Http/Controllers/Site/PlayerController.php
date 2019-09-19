@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Http\Requests\StoreRequest;
 use App\Models\PersonalTournament;
 use App\Models\Platform;
 use App\Models\Player;
@@ -66,12 +67,49 @@ class PlayerController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param int     $playerId
+     * @return Factory|View
+     */
     public function player(Request $request, int $playerId)
     {
         $player = Player::with(['teamPlayers.team', 'personalTournamentPlayers.tournament.winners'])->find($playerId);
 
         return view('site.player.player', [
             'player' => $player,
+        ]);
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @return Factory|View
+     */
+    public function add(StoreRequest $request)
+    {
+        return view('site.player.player_form', [
+            'title'     => 'Добавить игрока',
+            'player'    => null,
+            'platforms' => Platform::all(),
+        ]);
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $playerId
+     * @return Factory|View
+     */
+    public function edit(StoreRequest $request, int $playerId)
+    {
+        $player = Player::find($playerId);
+        if (is_null($player)) {
+            abort(404);
+        }
+
+        return view('site.player.player_form', [
+            'title'     => 'Изменить даные игрока',
+            'player'    => $player,
+            'platforms' => Platform::all(),
         ]);
     }
 }

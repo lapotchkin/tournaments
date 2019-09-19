@@ -6,7 +6,14 @@
     {{ Breadcrumbs::render('player', $player) }}
     <h2>
         <i class="fab fa-{{ $player->platform->icon }} {{ $player->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
-        {{ $player->name }} <small>{{ $player->tag }}</small>
+        {{ $player->name }} <small class="text-muted">{{ $player->tag }}</small>
+        @auth
+            @if(Auth::user()->isAdmin())
+                <a class="btn btn-primary" href="{{ route('player.edit', ['playerId' => $player->id]) }}">
+                    <i class="fas fa-edit"></i>
+                </a>
+            @endif
+        @endauth
     </h2>
 
     @if(count($player->teamPlayers))

@@ -63,7 +63,7 @@ class PersonalController extends Controller
     {
         $validatedData = $request->validated();
 
-        /** @var @var PersonalTournament $tournament */
+        /** @var PersonalTournament $tournament */
         $tournament = PersonalTournament::find($tournamentId);
         $tournament->platform_id = $validatedData['platform_id'];
         $tournament->app_id = $validatedData['app_id'];
@@ -85,7 +85,7 @@ class PersonalController extends Controller
      */
     public function delete(StoreRequest $request, int $tournamentId)
     {
-        /** @var @var PersonalTournament $tournament */
+        /** @var PersonalTournament $tournament */
         $tournament = PersonalTournament::find($tournamentId);
         $tournament->delete();
 
@@ -96,6 +96,7 @@ class PersonalController extends Controller
      * @param StoreRequest $request
      * @param int          $tournamentId
      * @return ResponseFactory|Response
+     * @throws Exception
      */
     public function setWinner(StoreRequest $request, int $tournamentId)
     {

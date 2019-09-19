@@ -4,7 +4,16 @@
 
 @section('content')
     {{ Breadcrumbs::render('players') }}
-    <h2>Игроки</h2>
+    <h2>
+        Игроки
+        @auth
+            @if(Auth::user()->isAdmin())
+                <a class="btn btn-primary" href="{{ route('player.add') }}">
+                    <i class="fas fa-user-plus"></i>
+                </a>
+            @endif
+        @endauth
+    </h2>
 
     <h3>Зал славы</h3>
     @foreach($winners as $winner)
