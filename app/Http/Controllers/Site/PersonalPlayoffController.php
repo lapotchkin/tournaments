@@ -7,7 +7,6 @@ use App\Models\PersonalGamePlayoff;
 use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPlayoff;
 use Auth;
-use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

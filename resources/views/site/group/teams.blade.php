@@ -45,33 +45,35 @@
     </div>
 
     @auth
-    <form id="team-add">
-        <div class="form-inline">
-            <div class="input-group">
-                <label for="team_id" class="mr-2">Команда</label>
-                <select id="team_id" class="form-control mr-3" name="team_id">
-                    <option value="">--Не выбрана--</option>
-                    @foreach($nonTournamentTeams as $team)
-                        <option value="{{ $team->id }}">{{ $team->name }}</option>
-                    @endforeach
-                </select>
-                <div class="invalid-feedback"></div>
-            </div>
-            <div class="input-group">
-                <label for="division" class="mr-2">Группа</label>
-                <select id="division" class="form-control mr-3" name="division">
-                    <option value="">--Не выбрана--</option>
-                    @foreach([1, 2, 3, 4] as $divisionId)
-                        <option value="{{ $divisionId }}">
-                            {{ TextUtils::divisionLetter($divisionId) }}
-                        </option>
-                    @endforeach
-                </select>
-                <div class="invalid-feedback"></div>
-            </div>
-            <button type="submit" class="btn btn-primary" name="team-add-button">Добавить</button>
-        </div>
-    </form>
+        @if(Auth::user()->isAdmin())
+            <form id="team-add">
+                <div class="form-inline">
+                    <div class="input-group">
+                        <label for="team_id" class="mr-2">Команда</label>
+                        <select id="team_id" class="form-control mr-3" name="team_id">
+                            <option value="">--Не выбрана--</option>
+                            @foreach($nonTournamentTeams as $team)
+                                <option value="{{ $team->id }}">{{ $team->name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="division" class="mr-2">Группа</label>
+                        <select id="division" class="form-control mr-3" name="division">
+                            <option value="">--Не выбрана--</option>
+                            @foreach([1, 2, 3, 4] as $divisionId)
+                                <option value="{{ $divisionId }}">
+                                    {{ TextUtils::divisionLetter($divisionId) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="team-add-button">Добавить</button>
+                </div>
+            </form>
+        @endif
     @endauth
 @endsection
 

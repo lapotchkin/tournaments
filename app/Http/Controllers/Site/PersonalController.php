@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Http\Requests\StoreRequest;
 use App\Models\App;
 use App\Models\Club;
 use App\Models\League;
@@ -9,7 +10,6 @@ use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPlayer;
 use App\Models\Platform;
 use App\Models\Player;
-use Auth;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -29,14 +29,11 @@ class PersonalController extends Controller
     }
 
     /**
+     * @param StoreRequest $request
      * @return Factory|View
      */
-    public function new()
+    public function new(StoreRequest $request)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            abort(403);
-        }
-
         return view('site.personal.tournament_editor', [
             'title'      => 'Новый турнир',
             'platforms'  => Platform::all(),
@@ -47,16 +44,12 @@ class PersonalController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param StoreRequest $request
+     * @param int          $tournamentId
      * @return Factory|View
      */
-    public function edit(Request $request, int $tournamentId)
+    public function edit(StoreRequest $request, int $tournamentId)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            abort(403);
-        }
-
         /** @var PersonalTournament $tournament */
         $tournament = PersonalTournament::find($tournamentId);
         if (is_null($tournament)) {
@@ -120,17 +113,13 @@ class PersonalController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
-     * @param int     $playerId
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $playerId
      * @return Factory|View
      */
-    public function player(Request $request, int $tournamentId, int $playerId)
+    public function player(StoreRequest $request, int $tournamentId, int $playerId)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            abort(403);
-        }
-
         /** @var PersonalTournamentPlayer $tournamentPlayer */
         $tournamentPlayer = PersonalTournamentPlayer::where('tournament_id', $tournamentId)
             ->where('player_id', $playerId)
@@ -152,16 +141,12 @@ class PersonalController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param StoreRequest $request
+     * @param int          $tournamentId
      * @return Factory|View
      */
-    public function map(Request $request, int $tournamentId)
+    public function map(StoreRequest $request, int $tournamentId)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            abort(403);
-        }
-
         /** @var PersonalTournament $tournament */
         $tournament = PersonalTournament::find($tournamentId);
         if (is_null($tournament)) {

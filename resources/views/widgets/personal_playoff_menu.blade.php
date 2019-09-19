@@ -9,15 +9,17 @@
         @endif
     </li>
     @auth
-        <li class="nav-item">
-            @if (Route::currentRouteName() === 'personal.tournament.playoff.games')
-                <a class="nav-link active" href="#">Расписание</a>
-            @else
-                <a class="nav-link"
-                   href="{{ route('personal.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}">
-                    Расписание
-                </a>
-            @endif
-        </li>
+        @if(Auth::user()->isAdmin())
+            <li class="nav-item">
+                @if (Route::currentRouteName() === 'personal.tournament.playoff.games')
+                    <a class="nav-link active" href="#">Расписание</a>
+                @else
+                    <a class="nav-link"
+                       href="{{ route('personal.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}">
+                        Расписание
+                    </a>
+                @endif
+            </li>
+        @endif
     @endauth
 </ul>

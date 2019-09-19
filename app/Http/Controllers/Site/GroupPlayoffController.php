@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Http\Requests\StoreRequest;
 use App\Models\GroupGamePlayoff;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentPlayoff;
@@ -9,7 +10,6 @@ use App\Models\GroupTournamentPlayoffGoalies;
 use App\Models\GroupTournamentPlayoffLeaders;
 use App\Models\GroupTournamentPlayoffPosition;
 use App\Models\PlayerPosition;
-use Auth;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -140,16 +140,12 @@ class GroupPlayoffController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param StoreRequest $request
+     * @param int          $tournamentId
      * @return Factory|View
      */
-    public function games(Request $request, int $tournamentId)
+    public function games(StoreRequest $request, int $tournamentId)
     {
-        if (!Auth::check()) {
-            abort(403);
-        }
-
         /** @var GroupTournament $tournament */
         $tournament = GroupTournament::with(['playoff.teamOne', 'playoff.teamTwo', 'winners.team'])
             ->find($tournamentId);
@@ -178,17 +174,13 @@ class GroupPlayoffController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
-     * @param int     $pairId
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
      * @return Factory|View
      */
-    public function gameAdd(Request $request, int $tournamentId, int $pairId)
+    public function gameAdd(StoreRequest $request, int $tournamentId, int $pairId)
     {
-        if (!Auth::check()) {
-            abort(403);
-        }
-
         /** @var GroupTournamentPlayoff $pair */
         $pair = GroupTournamentPlayoff::find($pairId);
         if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
@@ -218,12 +210,15 @@ class GroupPlayoffController extends Controller
         ]);
     }
 
-    public function gameEdit(Request $request, int $tournamentId, int $pairId, int $gameId)
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
+     * @param int          $gameId
+     * @return Factory|View
+     */
+    public function gameEdit(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
     {
-        if (!Auth::check()) {
-            abort(403);
-        }
-
         /** @var GroupGamePlayoff $game */
         $game = GroupGamePlayoff::with([
             'protocols.player',

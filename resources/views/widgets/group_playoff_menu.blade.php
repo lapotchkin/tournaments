@@ -12,21 +12,24 @@
         @if (Route::currentRouteName() === 'group.tournament.playoff.stats')
             <a class="nav-link active" href="#">Статистика</a>
         @else
-            <a class="nav-link" href="{{ route('group.tournament.playoff.stats', ['tournamentId' => $tournament->id]) }}">
+            <a class="nav-link"
+               href="{{ route('group.tournament.playoff.stats', ['tournamentId' => $tournament->id]) }}">
                 Статистика
             </a>
         @endif
     </li>
     @auth
-        <li class="nav-item">
-            @if (Route::currentRouteName() === 'group.tournament.playoff.games')
-                <a class="nav-link active" href="#">Расписание</a>
-            @else
-                <a class="nav-link"
-                   href="{{ route('group.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}">
-                    Расписание
-                </a>
-            @endif
-        </li>
+        @if(Auth::user()->isAdmin())
+            <li class="nav-item">
+                @if (Route::currentRouteName() === 'group.tournament.playoff.games')
+                    <a class="nav-link active" href="#">Расписание</a>
+                @else
+                    <a class="nav-link"
+                       href="{{ route('group.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}">
+                        Расписание
+                    </a>
+                @endif
+            </li>
+        @endif
     @endauth
 </ul>

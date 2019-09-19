@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Http\Requests\StoreRequest;
 use App\Models\PersonalGameRegular;
 use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPosition;
-use Auth;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -104,17 +104,13 @@ class PersonalRegularController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
-     * @param int     $gameId
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $gameId
      * @return Factory|View
      */
-    public function gameEdit(Request $request, int $tournamentId, int $gameId)
+    public function gameEdit(StoreRequest $request, int $tournamentId, int $gameId)
     {
-        if (!Auth::check()) {
-            abort(403);
-        }
-
         /** @var PersonalGameRegular $game */
         $game = PersonalGameRegular::with([
             'homePlayer',

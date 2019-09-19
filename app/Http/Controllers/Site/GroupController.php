@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Http\Requests\StoreRequest;
 use App\Models\App;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentTeam;
@@ -10,7 +11,6 @@ use App\Models\Team;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 /**
@@ -34,14 +34,11 @@ class GroupController extends Controller
     }
 
     /**
+     * @param StoreRequest $request
      * @return Factory|View
      */
-    public function new()
+    public function new(StoreRequest $request)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            abort(403);
-        }
-
         return view('site.group.tournament_editor', [
             'title'      => 'Новый турнир',
             'platforms'  => Platform::all(),
@@ -51,16 +48,12 @@ class GroupController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param StoreRequest $request
+     * @param int          $tournamentId
      * @return Factory|View
      */
-    public function edit(Request $request, int $tournamentId)
+    public function edit(StoreRequest $request, int $tournamentId)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            abort(403);
-        }
-
         /** @var GroupTournament $tournament */
         $tournament = GroupTournament::find($tournamentId);
         if (is_null($tournament)) {
@@ -122,17 +115,13 @@ class GroupController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
-     * @param int     $teamId
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $teamId
      * @return Factory|View
      */
-    public function team(Request $request, int $tournamentId, int $teamId)
+    public function team(StoreRequest $request, int $tournamentId, int $teamId)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            abort(403);
-        }
-
         /** @var GroupTournamentTeam $tournamentTeam */
         $tournamentTeam = GroupTournamentTeam::where('tournament_id', $tournamentId)
             ->where('team_id', $teamId)

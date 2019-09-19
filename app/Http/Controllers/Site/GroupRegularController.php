@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Http\Requests\StoreRequest;
 use App\Models\GroupGameRegular;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentGoalies;
 use App\Models\GroupTournamentLeaders;
 use App\Models\GroupTournamentPosition;
 use App\Models\PlayerPosition;
-use Auth;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -135,17 +135,13 @@ class GroupRegularController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
-     * @param int     $gameId
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $gameId
      * @return Factory|View
      */
-    public function gameEdit(Request $request, int $tournamentId, int $gameId)
+    public function gameEdit(StoreRequest $request, int $tournamentId, int $gameId)
     {
-        if (!Auth::check()) {
-            abort(403);
-        }
-
         /** @var GroupGameRegular $game */
         $game = GroupGameRegular::with([
             'protocols.player',

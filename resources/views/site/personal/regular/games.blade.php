@@ -37,7 +37,9 @@
                             <th class="text-left">Гости</th>
                             <th style="width: 8em;"></th>
                             @auth
-                                <th style="width: 2em;"></th>
+                                @if(Auth::user()->isAdmin())
+                                    <th style="width: 2em;"></th>
+                                @endif
                             @endauth
                         </tr>
                         </thead>
@@ -56,7 +58,8 @@
                                 </td>
                                 <td class="text-right">
                                     @if ($game->home_score > $game->away_score)
-                                        <strong><a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->name }}</a></strong>
+                                        <strong><a
+                                                href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->name }}</a></strong>
                                     @else
                                         <a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->name }}</a>
                                     @endif
@@ -77,7 +80,8 @@
                                         {{ $game->awayPlayer->getClubId($game->tournament_id) }}
                                     </span>
                                     @if ($game->home_score < $game->away_score)
-                                        <strong><a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->name }}</a></strong>
+                                        <strong><a
+                                                href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->name }}</a></strong>
                                     @else
                                         <a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->name }}</a>
                                     @endif
@@ -90,10 +94,12 @@
                                     </a>
                                 </td>
                                 @auth
-                                    <td class="text-right">
-                                        <a href="{{ route('personal.tournament.regular.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
-                                           class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
-                                    </td>
+                                    @if(Auth::user()->isAdmin())
+                                        <td class="text-right">
+                                            <a href="{{ route('personal.tournament.regular.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
+                                               class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
+                                        </td>
+                                    @endif
                                 @endauth
                             </tr>
                         @endforeach

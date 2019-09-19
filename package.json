@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "@amcharts/amcharts4": "^4.5.10",
-        "@fortawesome/fontawesome-free": "^5.9.0",
+        "@fortawesome/fontawesome-free": "^5.11.1",
         "bootstrap-datepicker": "^1.9.0",
         "canvas": "^2.6.0",
         "chosen-js": "^1.8.7",
