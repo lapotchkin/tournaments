@@ -1,13 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Class ModifyGroupGameRegularPlayerTable
+ * Class ModifyGroupGamePlayoffPlayerTable
  */
-class ModifyGroupGameRegularPlayerTable extends Migration
+class ModifyGroupGamePlayoffPlayerTable201908311046 extends Migration
 {
     /**
      * Run the migrations.
@@ -16,7 +15,11 @@ class ModifyGroupGameRegularPlayerTable extends Migration
      */
     public function up()
     {
-        Schema::table('groupGameRegular_player', function (Blueprint $table) {
+        if (!Schema::hasColumn('groupGamePlayoff_player', 'deletedAt')) {
+            return;
+        }
+
+        Schema::table('groupGamePlayoff_player', function (Blueprint $table) {
             $table->dropSoftDeletes('deletedAt');
         });
     }
@@ -28,7 +31,7 @@ class ModifyGroupGameRegularPlayerTable extends Migration
      */
     public function down()
     {
-        Schema::table('groupGameRegular_player', function (Blueprint $table) {
+        Schema::table('groupGamePlayoff_player', function (Blueprint $table) {
             $table->softDeletes('deletedAt');
         });
     }

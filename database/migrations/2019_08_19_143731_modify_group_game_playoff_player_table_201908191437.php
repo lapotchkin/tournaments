@@ -4,9 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Class ModifyGroupGameRegularPlayerTable
+ * Class ModifyGroupGamePlayoffPlayerTable
  */
-class ModifyGroupGameRegularPlayerTable extends Migration
+class ModifyGroupGamePlayoffPlayerTable201908191437 extends Migration
 {
     /**
      * Run the migrations.
@@ -15,11 +15,11 @@ class ModifyGroupGameRegularPlayerTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('groupGameRegular_player', 'class_id')) {
+        if (Schema::hasColumn('groupGamePlayoff_player', 'class_id')) {
             return;
         }
 
-        Schema::table('groupGameRegular_player', function (Blueprint $table) {
+        Schema::table('groupGamePlayoff_player', function (Blueprint $table) {
             $table->tinyInteger('class_id')
                 ->nullable()
                 ->after('player_id')
@@ -141,7 +141,7 @@ class ModifyGroupGameRegularPlayerTable extends Migration
      */
     public function down()
     {
-        Schema::table('groupGameRegular_player', function (Blueprint $table) {
+        Schema::table('groupGamePlayoff_player', function (Blueprint $table) {
             $table->dropForeign(['class_id']);
             $table->dropForeign(['position_id']);
 

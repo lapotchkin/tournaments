@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 /**
  * Class ModifyGroupGameRegularPlayerTable
  */
-class ModifyGroupGameRegularPlayerTable extends Migration
+class ModifyGroupGameRegularPlayerTable201908311043 extends Migration
 {
     /**
      * Run the migrations.
@@ -15,16 +15,12 @@ class ModifyGroupGameRegularPlayerTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('groupGameRegular_player', 'star')) {
+        if (!Schema::hasColumn('groupGameRegular_player', 'deletedAt')) {
             return;
         }
 
         Schema::table('groupGameRegular_player', function (Blueprint $table) {
-            $table->tinyInteger('star')
-                ->nullable()
-                ->after('position_id')
-                ->default(0)
-                ->comment('Звезда матча');
+            $table->dropSoftDeletes('deletedAt');
         });
     }
 
@@ -36,9 +32,7 @@ class ModifyGroupGameRegularPlayerTable extends Migration
     public function down()
     {
         Schema::table('groupGameRegular_player', function (Blueprint $table) {
-            $table->dropColumn([
-                'star',
-            ]);
+            $table->softDeletes('deletedAt');
         });
     }
 }

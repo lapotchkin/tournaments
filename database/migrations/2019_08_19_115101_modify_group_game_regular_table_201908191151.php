@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 /**
  * Class ModifyGroupGameRegularTable
  */
-class ModifyGroupGameRegularTable extends Migration
+class ModifyGroupGameRegularTable201908191151 extends Migration
 {
     /**
      * Run the migrations.

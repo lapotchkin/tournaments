@@ -1,13 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
  * Class ModifyGroupGamePlayoff
  */
-class ModifyGroupGamePlayoff extends Migration
+class ModifyGroupGamePlayoffTable201908191214 extends Migration
 {
     /**
      * Run the migrations.
@@ -16,12 +15,12 @@ class ModifyGroupGamePlayoff extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('groupGamePlayoff', 'isOvertime')) {
+        if (Schema::hasColumn('groupGamePlayoff', 'match_id')) {
             return;
         }
 
         Schema::table('groupGamePlayoff', function (Blueprint $table) {
-            $table->tinyInteger('isOvertime')->default(0)->comment('Игра завершилась в овертайме');
+            $table->string('match_id', 20)->nullable()->comment('ID матча в EASHL');
         });
     }
 
@@ -33,7 +32,7 @@ class ModifyGroupGamePlayoff extends Migration
     public function down()
     {
         Schema::table('groupGamePlayoff', function (Blueprint $table) {
-            $table->dropColumn(['isOvertime']);
+            $table->dropColumn(['match_id']);
         });
     }
 }

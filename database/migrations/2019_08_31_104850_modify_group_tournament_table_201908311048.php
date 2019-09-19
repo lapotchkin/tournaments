@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ModifyGroupTournamentTable extends Migration
+class ModifyGroupTournamentTable201908311048 extends Migration
 {
     /**
      * Run the migrations.
@@ -13,6 +12,10 @@ class ModifyGroupTournamentTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasColumn('groupTournament', 'thirdPlaceSeries')) {
+            return;
+        }
+
         Schema::table('groupTournament', function (Blueprint $table) {
             $table->tinyInteger('thirdPlaceSeries')->default(0)->comment('Серия за третье место');
         });

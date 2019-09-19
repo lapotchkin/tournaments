@@ -35,6 +35,45 @@ class EaController extends Controller
     const MATCHES_PATH = 'matches';
     const MATCHES_PER_REQUEST = 20;
     const OVERTIME_RESULTS = [5, 6];
+    const MATCH_DEFAULTS = [
+        'game'    => [
+            'home_team'             => null,
+            'away_team'             => null,
+            'home_club_id'          => null,
+            'away_club_id'          => null,
+            'playedAt'              => null,
+            'home_score'            => 0,//a
+            'away_score'            => 0,//a
+            'home_shot'             => 0,//a
+            'away_shot'             => 0,//a
+            'home_hit'              => 0,//a
+            'away_hit'              => 0,//a
+            'home_attack_time'      => '00:00',//a
+            'away_attack_time'      => '00:00',//a
+            'home_pass_percent'     => '',//m — заполняется вручную
+            'away_pass_percent'     => '',//m — заполняется вручную
+            'home_faceoff'          => 0,//a
+            'away_faceoff'          => 0,//a
+            'home_penalty_time'     => '00:00',//a
+            'away_penalty_time'     => '00:00',//a
+            'home_penalty_total'    => 0,//a
+            'away_penalty_total'    => 0,//a
+            'home_penalty_success'  => 0,//a
+            'away_penalty_success'  => 0,//a
+            'home_powerplay_time'   => '',//m — заполняется вручную
+            'away_powerplay_time'   => '',//m — заполняется вручную
+            'home_shorthanded_goal' => 0,//a
+            'away_shorthanded_goal' => 0,//a
+            'isOvertime'            => 0,//a
+            'isShootout'            => 0,//m — заполняется вручную
+            'isTechnicalDefeat'     => 0,//m — заполняется вручную
+            'match_id'              => null,
+        ],
+        'players' => [
+            'home' => [],
+            'away' => [],
+        ],
+    ];
 
     /**
      * @param StoreRequest $request
@@ -88,6 +127,7 @@ class EaController extends Controller
                     ),
                     [
                         'query' => [
+                            'matchType'        => 'club_private',
                             'match_type'       => 'club_private',
                             'matches_returned' => self::MATCHES_PER_REQUEST,
                             'platform'         => $platform,
@@ -141,45 +181,9 @@ class EaController extends Controller
 
             $date = new DateTime();
             $date->setTimestamp($match['timestamp']);
-            $matches[$matchId] = [
-                'game'    => [
-                    'home_team'             => null,
-                    'away_team'             => null,
-                    'home_club_id'          => null,
-                    'away_club_id'          => null,
-                    'playedAt'              => $date->format('Y-m-d'),
-                    'home_score'            => 0,//a
-                    'away_score'            => 0,//a
-                    'home_shot'             => 0,//a
-                    'away_shot'             => 0,//a
-                    'home_hit'              => 0,//a
-                    'away_hit'              => 0,//a
-                    'home_attack_time'      => '00:00',//a
-                    'away_attack_time'      => '00:00',//a
-                    'home_pass_percent'     => '',//m — заполняется вручную
-                    'away_pass_percent'     => '',//m — заполняется вручную
-                    'home_faceoff'          => 0,//a
-                    'away_faceoff'          => 0,//a
-                    'home_penalty_time'     => '00:00',//a
-                    'away_penalty_time'     => '00:00',//a
-                    'home_penalty_total'    => 0,//a
-                    'away_penalty_total'    => 0,//a
-                    'home_penalty_success'  => 0,//a
-                    'away_penalty_success'  => 0,//a
-                    'home_powerplay_time'   => '',//m — заполняется вручную
-                    'away_powerplay_time'   => '',//m — заполняется вручную
-                    'home_shorthanded_goal' => 0,//a
-                    'away_shorthanded_goal' => 0,//a
-                    'isOvertime'            => 0,//a
-                    'isShootout'            => 0,//m — заполняется вручную
-                    'isTechnicalDefeat'     => 0,//m — заполняется вручную
-                    'match_id'              => $matchId,
-                ],
-                'players' => [
-                    'home' => [],
-                    'away' => [],
-                ],
-            ];
+            $matches[$matchId] = self::MATCH_DEFAULTS;
+            $matches[$matchId]['game']['playedAt'] = $date->format('Y-m-d');
+            $matches[$matchId]['game']['match_id'] = $matchId;
 
             $date = new DateTime();
             foreach ($match['clubs'] as $clubId => $club) {
@@ -253,6 +257,7 @@ class EaController extends Controller
      */
     protected static function getPlayer(array $playerData, Team $team, bool $isWin, array $positions)
     {
+        //echo $playerData['playername'] . PHP_EOL;
         $player = Player::where('tag', '=', $playerData['playername'])
             ->where('platform_id', '=', $team->platform_id)
             ->first();
@@ -308,6 +313,7 @@ class EaController extends Controller
             $result[$position->id] = (object)[
                 'title'       => $position->title,
                 'short_title' => $position->short_title,
+                'ea_id'       => $position->ea_id,
             ];
         }
         return $result;

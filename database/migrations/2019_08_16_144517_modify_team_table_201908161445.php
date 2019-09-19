@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 /**
  * Class AddEaIds
  */
-class ModifyTeamTable extends Migration
+class ModifyTeamTable201908161445 extends Migration
 {
     /**
      * Run the migrations.

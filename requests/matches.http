@@ -30,3 +30,9 @@ GET https://www.easports.com/iframe/nhl14proclubs/api/platforms/ps4/clubs/518516
 Accept: application/json
 
 ###
+
+GET https://proclubs.ea.com/api/nhl/clubs/matches?matchType=club_private&platform=ps4&clubIds=29165
+GET https://proclubs.ea.com/api/nhl/clubs/matches?match_type=club_private&matches_returned=20&platform=ps4&clubIds=29165
+Accept: application/json
+
+###
