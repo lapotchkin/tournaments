@@ -8,6 +8,7 @@ use App\Models\PersonalGameRegular;
 use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPlayer;
 use App\Models\PersonalTournamentPlayoff;
+use App\Models\Player;
 
 //Group
 Breadcrumbs::for('group', function ($trail) {
@@ -274,4 +275,13 @@ Breadcrumbs::for('personal.tournament.playoff.game.add', function ($trail, Perso
             ['tournamentId' => $pair->tournament->id, 'pairId' => $pair->id]
         )
     );
+});
+//Group
+Breadcrumbs::for('players', function ($trail) {
+    $trail->push('Игроки', route('players'));
+});
+//Group > New
+Breadcrumbs::for('player', function ($trail, Player $player) {
+    $trail->parent('players');
+    $trail->push($player->name . ' (' . $player->tag . ')', route('player', ['playerId' => $player->id]));
 });

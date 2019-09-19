@@ -68,6 +68,10 @@ class PlayerController extends Controller
 
     public function player(Request $request, int $playerId)
     {
+        $player = Player::with(['teamPlayers.team', 'personalTournamentPlayers.tournament.winners'])->find($playerId);
 
+        return view('site.player.player', [
+            'player' => $player,
+        ]);
     }
 }

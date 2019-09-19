@@ -28,8 +28,8 @@
                                 <div class="float-right">
                                     @foreach($tournament->winners as $winner)
                                         <span class="fa-stack" style="vertical-align: top;">
-                                          <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fas fa-trophy fa-stack-1x fa-inverse text-{{ TextUtils::winnerClass($winner->place) }}"></i>
+                                            <i class="fas fa-circle fa-stack-2x"></i>
+                                            <i class="fas fa-trophy fa-stack-1x fa-inverse text-{{ TextUtils::winnerClass($winner->place) }}"></i>
                                         </span>
                                         {{ $winner->player->name }}
                                     @endforeach
@@ -54,7 +54,12 @@
 @section('script')
     @parent
     <style>
-        .fa-stack { font-size: 0.5rem; }
-        i { vertical-align: middle; }
+        .fa-stack {
+            font-size: 0.5rem;
+        }
+
+        i {
+            vertical-align: middle;
+        }
     </style>
 @endsection

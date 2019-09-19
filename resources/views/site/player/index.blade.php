@@ -3,6 +3,7 @@
 @section('title', 'Игроки — ')
 
 @section('content')
+    {{ Breadcrumbs::render('players') }}
     <h2>Игроки</h2>
 
     <h3>Зал славы</h3>
@@ -14,12 +15,12 @@
                     @foreach($winner->cups as $place => $count)
                         @if($count > 0)
                             <span class="fa-layers fa-fw">
-                        <i class="fas fa-trophy text-{{ TextUtils::winnerClass($place) }}"></i>
-                        <span class="fa-layers-text fa-inverse {{ $place !== 2 ? 'text-dark' : '' }}"
-                              data-fa-transform="shrink-8 up-2" style="font-weight:900">
-                            {{ $count }}
-                        </span>
-                    </span>
+                                <i class="fas fa-trophy text-{{ TextUtils::winnerClass($place) }}"></i>
+                                <span class="fa-layers-text fa-inverse {{ $place !== 2 ? 'text-dark' : '' }}"
+                                      data-fa-transform="shrink-8 up-2" style="font-weight:900">
+                                    {{ $count }}
+                                </span>
+                            </span>
                         @endif
                     @endforeach
                 </div>
@@ -29,28 +30,6 @@
                 <div class="small">{{ $winner->player->tag }}</div>
             </div>
         </div>
-        {{--        <div class="float-left row">--}}
-        {{--            <div class="col-9">--}}
-        {{--                <span class="h5">{{ $winner->player->name }}</span>--}}
-
-        {{--            </div>--}}
-        {{--            <div class="col-3">--}}
-        {{--                <div class="fa-2x float-left">--}}
-        {{--                    @foreach($winner->cups as $place => $count)--}}
-        {{--                        @if($count > 0)--}}
-        {{--                            <span class="fa-layers fa-fw">--}}
-        {{--                        <i class="fas fa-trophy text-{{ TextUtils::winnerClass($place) }}"></i>--}}
-        {{--                        <span class="fa-layers-text fa-inverse {{ $place !== 2 ? 'text-dark' : '' }}"--}}
-        {{--                              data-fa-transform="shrink-8 up-2" style="font-weight:900">--}}
-        {{--                            {{ $count }}--}}
-        {{--                        </span>--}}
-        {{--                    </span>--}}
-        {{--                        @endif--}}
-        {{--                    @endforeach--}}
-        {{--                </div>--}}
-
-        {{--            </div>--}}
-        {{--        </div>--}}
     @endforeach
     <div class="clearfix"></div>
 
