@@ -112,19 +112,19 @@ class GroupGamePlayoff extends Model
     protected $table = 'groupGamePlayoff';
 
     /**
-     * @var GroupGameRegularPlayer[]
+     * @var GroupGamePlayoffPlayer[]
      */
     public $homeProtocols = [];
     /**
-     * @var GroupGameRegularPlayer[]
+     * @var GroupGamePlayoffPlayer[]
      */
     public $awayProtocols = [];
     /**
-     * @var null|GroupGameRegularPlayer
+     * @var null|GroupGamePlayoffPlayer
      */
     public $homeGoalie = null;
     /**
-     * @var null|GroupGameRegularPlayer
+     * @var null|GroupGamePlayoffPlayer
      */
     public $awayGoalie = null;
 

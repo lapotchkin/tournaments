@@ -261,13 +261,18 @@ class EaController extends Controller
         $player = Player::where('tag', '=', $playerData['playername'])
             ->where('platform_id', '=', $team->platform_id)
             ->first();
+        $positionId = is_numeric($playerData['position'])
+            ? (int)$playerData['position']
+            : $positions['byEaId'][$playerData['position']]->id;
         $protocol = [
             'name'                => $player->tag,
             'team_id'             => $team->id,
             'player_id'           => $player->id,
             'class_id'            => (int)$playerData['class'],
-            'position_id'         => (int)$playerData['position'],
-            'position'            => $positions[(int)$playerData['position']],
+            'position_id'         => $positionId,
+            'position'            => is_numeric($playerData['position'])
+                ? $positions['byId'][(int)$playerData['position']]
+                : $positions['byEaId'][$playerData['position']],
             'star'                => 0,//m — Заполняется вручную
             'time_on_ice_seconds' => (int)$playerData['toiseconds'],
             'goals'               => (int)$playerData['skgoals'],
@@ -296,7 +301,7 @@ class EaController extends Controller
             'goals_against'       => (int)$playerData['glga'],
             'pokechecks'          => (int)$playerData['glpokechecks'],
             'isWin'               => (int)$isWin,
-            'isGoalie'            => (int)((int)$playerData['position'] === 0),
+            'isGoalie'            => (int)($positionId === 0),
         ];
 
         return $protocol;
@@ -308,9 +313,19 @@ class EaController extends Controller
     protected static function getPlayerPositions()
     {
         $playerPositions = PlayerPosition::all();
-        $result = [];
+        $result = [
+            'byId'   => [],
+            'byEaId' => [],
+        ];
         foreach ($playerPositions as $position) {
-            $result[$position->id] = (object)[
+            $result['byId'][$position->id] = (object)[
+                'id'          => $position->id,
+                'title'       => $position->title,
+                'short_title' => $position->short_title,
+                'ea_id'       => $position->ea_id,
+            ];
+            $result['byEaId'][$position->ea_id] = (object)[
+                'id'          => $position->id,
                 'title'       => $position->title,
                 'short_title' => $position->short_title,
                 'ea_id'       => $position->ea_id,
