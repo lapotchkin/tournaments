@@ -38,6 +38,18 @@ class PlayerController extends Controller
                 $winners[$winner->player->id]->cups[$winner->place] += 1;
             }
         }
+        usort($winners, function ($a, $b) {
+            if ($a->cups[1] === $b->cups[1] && $a->cups[2] === $b->cups[2] && $a->cups[3] === $b->cups[3]) {
+                return 0;
+            } elseif ($a->cups[1] > $b->cups[1]) {
+                return -1;
+            } elseif ($a->cups[1] === $b->cups[1] && $a->cups[2] > $b->cups[2]) {
+                return -1;
+            } elseif ($a->cups[1] === $b->cups[1] && $a->cups[2] === $b->cups[2] && $a->cups[3] > $b->cups[3]) {
+                return -1;
+            }
+            return 1;
+        });
 
         $platforms = Platform::all();
         $players = [];

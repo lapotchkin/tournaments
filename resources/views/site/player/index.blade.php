@@ -7,24 +7,27 @@
 
     <h3>Зал славы</h3>
     @foreach($winners as $winner)
-        <div class="col-6 col-md-4 col-lg-3 col-xl-2 float-left text-center border border-secondary rounded mb-3" role="alert">
-            <div class="fa-2x">
-                @foreach($winner->cups as $place => $count)
-                    @if($count > 0)
-                        <span class="fa-layers fa-fw">
+        <div class="col-6 col-md-4 col-lg-3 col-xl-2 float-left my-3"
+             role="alert">
+            <div class="text-center bg-light rounded shadow-sm p-3">
+                <div class="fa-2x" style="margin-top: -2.3rem;">
+                    @foreach($winner->cups as $place => $count)
+                        @if($count > 0)
+                            <span class="fa-layers fa-fw">
                         <i class="fas fa-trophy text-{{ TextUtils::winnerClass($place) }}"></i>
                         <span class="fa-layers-text fa-inverse {{ $place !== 2 ? 'text-dark' : '' }}"
                               data-fa-transform="shrink-8 up-2" style="font-weight:900">
                             {{ $count }}
                         </span>
                     </span>
-                    @endif
-                @endforeach
+                        @endif
+                    @endforeach
+                </div>
+                <div>
+                    <a href="{{ route('player', ['playerId' => $winner->player->id]) }}">{{ $winner->player->name }}</a>
+                </div>
+                <div class="small">{{ $winner->player->tag }}</div>
             </div>
-            <div>
-                <a href="{{ route('player', ['playerId' => $winner->player->id]) }}">{{ $winner->player->name }}</a>
-            </div>
-            <div class="small">{{ $winner->player->tag }}</div>
         </div>
         {{--        <div class="float-left row">--}}
         {{--            <div class="col-9">--}}
