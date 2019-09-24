@@ -111,31 +111,37 @@ class GroupPlayoffController extends Controller
             abort(404);
         }
 
-        $lastUpdateDate = GroupTournamentPlayoffPosition::readLastUpdateDate($tournamentId);
+        $toDate = $request->input('toDate');
+
+        $lastUpdateDate = !is_null($toDate)
+            ? $toDate . ' 00:00:00'
+            : GroupTournamentPlayoffPosition::readLastUpdateDate($tournamentId);
+
         $currentPosition = GroupTournamentPlayoffPosition::readPosition($tournamentId);
         $previousPosition = null;
         if (!is_null($lastUpdateDate)) {
-            $previousPosition = GroupTournamentPlayoffPosition::readPosition($tournamentId, $lastUpdateDate->date);
+            $previousPosition = GroupTournamentPlayoffPosition::readPosition($tournamentId, $lastUpdateDate);
         }
 
         $currentLeaders = GroupTournamentPlayoffLeaders::readLeaders($tournamentId);
         $previousLeaders = null;
         if (!is_null($lastUpdateDate)) {
-            $previousLeaders = GroupTournamentPlayoffLeaders::readLeaders($tournamentId, $lastUpdateDate->date);
+            $previousLeaders = GroupTournamentPlayoffLeaders::readLeaders($tournamentId, $lastUpdateDate);
         }
         $leaders = self::_getLeaders($currentLeaders, $previousLeaders);
 
         $currentGoalies = GroupTournamentPlayoffGoalies::readGoalies($tournamentId);
         $previousGoalies = null;
         if (!is_null($lastUpdateDate)) {
-            $previousGoalies = GroupTournamentPlayoffGoalies::readGoalies($tournamentId, $lastUpdateDate->date);
+            $previousGoalies = GroupTournamentPlayoffGoalies::readGoalies($tournamentId, $lastUpdateDate);
         }
         $goalies = self::_getGoalies($currentGoalies, $currentPosition, $previousGoalies, $previousPosition);
 
         return view('site.group.playoff.stats', [
-            'tournament' => $tournament,
-            'leaders'    => $leaders,
-            'goalies'    => $goalies,
+            'tournament'     => $tournament,
+            'leaders'        => $leaders,
+            'goalies'        => $goalies,
+            'lastUpdateDate' => $lastUpdateDate,
         ]);
     }
 

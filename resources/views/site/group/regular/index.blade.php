@@ -8,6 +8,18 @@
     @widget('groupMenu', ['tournament' => $tournament])
     @widget('groupRegularMenu', ['tournament' => $tournament])
 
+    <form method="get" class="form-inline mb-2">
+        <div class="form-group mr-2">
+            <label class="control-label mr-2" for="toDate">Сравнить с датой</label>
+            <input type="text" id="toDate" class="form-control" name="toDate"
+                   value="{{ $lastUpdateDate ? str_replace(' 00:00:00', '', $lastUpdateDate) : '' }}"
+                   readonly>
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Применить</button>
+        <a href="{{ route('group.tournament.regular', ['tournamentId' => $tournament->id]) }}"
+           class="btn btn-warning">Сбросить</a>
+    </form>
+
     <h3>Турнирная таблица</h3>
     <table id="teams" class="teams table table-striped table-sm">
         <thead class="thead-dark"></thead>
@@ -94,6 +106,8 @@
     @parent
     <script>
         $(document).ready(function () {
+            $('#toDate').datepicker(TRNMNT_helpers.getDatePickerSettings());
+
             $('#teams').DataTable({
                 data: {!! json_encode($position) !!},
                 columns: [
@@ -195,7 +209,7 @@
                 'pageLength': 20,
             });
 
-           $('#goalies').DataTable({
+            $('#goalies').DataTable({
                 data: {!! json_encode($goalies) !!},
                 columns: [
                     {'data': 'place', 'title': ''},
@@ -225,13 +239,15 @@
         .teams.dataTable tbody tr:nth-child({{ pow(2, $tournament->playoff_rounds) }}) td {
             border-bottom: 3px red solid !important;
         }
-        .dataTable thead th{
+
+        .dataTable thead th {
             text-align: center;
         }
+
         .dataTable thead th:nth-child(1),
         .dataTable thead th:nth-child(2),
         .dataTable thead th:nth-child(3),
-        .leaders.dataTable thead th:nth-child(4){
+        .leaders.dataTable thead th:nth-child(4) {
             text-align: left;
         }
 
@@ -245,6 +261,7 @@
         .leaders.dataTable tbody td:nth-child(4) {
             text-align: left !important;
         }
+
         .teams.dataTable tbody td:nth-child(3),
         .leaders.dataTable tbody td:nth-child(3) {
             font-weight: bold;

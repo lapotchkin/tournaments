@@ -32,40 +32,43 @@ class GroupRegularController extends Controller
     public function index(Request $request, int $tournamentId)
     {
         /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with(['winners.team'])
-            ->find($tournamentId);
+        $tournament = GroupTournament::with(['winners.team'])->find($tournamentId);
         if (is_null($tournament)) {
             abort(404);
         }
+        $toDate = $request->input('toDate');
 
-        $lastUpdateDate = GroupTournamentPosition::readLastUpdateDate($tournamentId);
+        $lastUpdateDate = !is_null($toDate)
+            ? $toDate . ' 00:00:00'
+            : GroupTournamentPosition::readLastUpdateDate($tournamentId);
 
         $currentPosition = GroupTournamentPosition::readPosition($tournamentId);
         $previousPosition = null;
         if (!is_null($lastUpdateDate)) {
-            $previousPosition = GroupTournamentPosition::readPosition($tournamentId, $lastUpdateDate->date);
+            $previousPosition = GroupTournamentPosition::readPosition($tournamentId, $lastUpdateDate);
         }
         $position = self::_getPosition($currentPosition, $previousPosition);
 
         $currentLeaders = GroupTournamentLeaders::readLeaders($tournamentId);
         $previousLeaders = null;
         if (!is_null($lastUpdateDate)) {
-            $previousLeaders = GroupTournamentLeaders::readLeaders($tournamentId, $lastUpdateDate->date);
+            $previousLeaders = GroupTournamentLeaders::readLeaders($tournamentId, $lastUpdateDate);
         }
         $leaders = self::_getLeaders($currentLeaders, $previousLeaders);
 
         $currentGoalies = GroupTournamentGoalies::readGoalies($tournamentId);
         $previousGoalies = null;
         if (!is_null($lastUpdateDate)) {
-            $previousGoalies = GroupTournamentGoalies::readGoalies($tournamentId, $lastUpdateDate->date);
+            $previousGoalies = GroupTournamentGoalies::readGoalies($tournamentId, $lastUpdateDate);
         }
         $goalies = self::_getGoalies($currentGoalies, $currentPosition, $previousGoalies, $previousPosition);
 
         return view('site.group.regular.index', [
-            'tournament' => $tournament,
-            'position'   => $position,
-            'leaders'    => $leaders,
-            'goalies'    => $goalies,
+            'tournament'     => $tournament,
+            'position'       => $position,
+            'leaders'        => $leaders,
+            'goalies'        => $goalies,
+            'lastUpdateDate' => $lastUpdateDate,
         ]);
     }
 
