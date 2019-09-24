@@ -1,7 +1,6 @@
 window.TRNMNT_sendData = require('./tools/dataSend').default;
 window.TRNMNT_deleteData = require('./tools/dataDelete').default;
 window.TRNMNT_helpers = require('./tools/helpers').default;
-x
 // require('./gameFormModule');
 
 Date.prototype.getShortDate = function (delimiter = '.', inverse = false) {

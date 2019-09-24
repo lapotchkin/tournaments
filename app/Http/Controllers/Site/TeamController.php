@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Requests\StoreRequest;
+use App\Models\App;
 use App\Models\GroupTournament;
 use App\Models\Platform;
 use App\Models\Player;
@@ -82,6 +83,7 @@ class TeamController extends Controller
     }
 
     /**
+     * @param StoreRequest $request
      * @return Factory|View
      */
     public function add(StoreRequest $request)
@@ -90,6 +92,7 @@ class TeamController extends Controller
             'title'     => 'Добавить команду',
             'team'      => null,
             'platforms' => Platform::all(),
+            'apps'      => null,
         ]);
     }
 
@@ -109,6 +112,7 @@ class TeamController extends Controller
             'title'     => 'Изменить даные команды',
             'team'      => $team,
             'platforms' => Platform::all(),
+            'apps'      => App::all(),
         ]);
     }
 }
