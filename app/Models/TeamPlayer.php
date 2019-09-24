@@ -37,10 +37,8 @@ use Illuminate\Support\Carbon;
  */
 class TeamPlayer extends Model
 {
-    use SoftDeletes;
-
     const CREATED_AT = 'createdAt';
-    const DELETED_AT = 'deletedAt';
+    const UPDATED_AT = null;
 
     /**
      * The table associated with the model.
@@ -52,7 +50,7 @@ class TeamPlayer extends Model
     /**
      * @var array
      */
-    protected $fillable = ['isCaptain', 'createdAt', 'deletedAt'];
+    protected $fillable = ['team_id', 'player_id', 'isCaptain'];
 
     /**
      * @return BelongsTo

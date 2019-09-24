@@ -7,15 +7,18 @@ export default function (params) {
 
     $(params.selector).click(function (e) {
         e.preventDefault();
+        const $button = $(this);
+        const id = $button.data('id');
+        const url = id ? params.url + '/' + id : params.url;
 
         if (confirm('Точно удалить?')) {
             $.ajax({
                 type: 'delete',
-                url: params.url,
+                url: url,
                 dataType: 'json',
                 success: function (response) {
                     TRNMNT_helpers.enableButtons();
-                    params.success(response);
+                    params.success(response, $button);
                 },
                 error: TRNMNT_helpers.onErrorAjax
             });

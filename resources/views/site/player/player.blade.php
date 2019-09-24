@@ -16,26 +16,26 @@
         @endauth
     </h2>
 
-    @if(count($player->teamPlayers))
+    @if(count($player->teams))
         <h3>Команды игрока</h3>
         <ul class="fa-ul">
-            @foreach($player->teamPlayers as $teamPlayer)
+            @foreach($player->teams as $team)
                 <li>
                     <span class="fa-li"><i class="fas fa-users"></i></span>
-                    <a href="{{ route('team', ['teamId' => $teamPlayer->team_id]) }}">{{ $teamPlayer->team->name }}</a>
+                    <a href="{{ route('team', ['teamId' => $team->id]) }}">{{ $team->name }}</a>
                 </li>
             @endforeach
         </ul>
     @endif
 
-    @if(count($player->personalTournamentPlayers))
+    @if(count($player->tournaments))
         <h3 class="mt-3">Турниры 1 на 1</h3>
         <ul class="fa-ul">
-            @foreach($player->personalTournamentPlayers as $personalTournamentPlayer)
+            @foreach($player->tournaments as $tournament)
                 <li>
                     <span class="fa-li"><i class="fas fa-hockey-puck"></i></span>
-                    <a href="{{ route('personal.tournament', ['tournamentId' => $personalTournamentPlayer->tournament_id]) }}">{{ $personalTournamentPlayer->tournament->title }}</a>
-                    @foreach($personalTournamentPlayer->tournament->winners as $winner)
+                    <a href="{{ route('personal.tournament', ['tournamentId' => $tournament->id]) }}">{{ $tournament->title }}</a>
+                    @foreach($tournament->winners as $winner)
                         @if($winner->player_id === $player->id)
                             <span class="fa-stack" style="vertical-align: top;">
                                 <i class="fas fa-circle fa-stack-2x"></i>

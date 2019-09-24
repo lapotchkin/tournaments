@@ -9,6 +9,7 @@ use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPlayer;
 use App\Models\PersonalTournamentPlayoff;
 use App\Models\Player;
+use App\Models\Team;
 
 //Group
 Breadcrumbs::for('group', function ($trail) {
@@ -294,4 +295,23 @@ Breadcrumbs::for('player', function ($trail, Player $player) {
 Breadcrumbs::for('player.edit', function ($trail, Player $player) {
     $trail->parent('player', $player);
     $trail->push('Редактировать', route('player.edit', ['playerId' => $player->id]));
+});
+//Teams
+Breadcrumbs::for('teams', function ($trail) {
+    $trail->push('Команды', route('teams'));
+});
+//Teams > New
+Breadcrumbs::for('team.add', function ($trail) {
+    $trail->parent('teams');
+    $trail->push('Добавить команду', route('team.add'));
+});
+//Teams > Team
+Breadcrumbs::for('team', function ($trail, Team $team) {
+    $trail->parent('teams');
+    $trail->push($team->name, route('team', ['teamId' => $team->id]));
+});
+//Teams > Team > Edit
+Breadcrumbs::for('team.edit', function ($trail, Team $team) {
+    $trail->parent('team', $team);
+    $trail->push('Редактировать', route('team.edit', ['teamId' => $team->id]));
 });

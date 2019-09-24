@@ -6,6 +6,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -28,15 +29,17 @@ use Illuminate\Support\Carbon;
  * @property string|null                                                $platform_id ID платфоррмы
  * @property Carbon                                                     $createdAt   Дата создания
  * @property Carbon|null                                                $deletedAt   Дата удаления
- * @property-read Collection|GroupGamePlayoffPlayer[]                   $gamePlayoffPlayers
- * @property-read Collection|GroupGameRegularPlayer[]                   $gameRegularPlayers
+ * @property-read Collection|GroupGamePlayoffPlayer[]                   $groupPlayoffGamesCompetitor
+ * @property-read Collection|GroupGameRegularPlayer[]                   $groupRegularGamesCompetitor
  * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
- * @property-read Collection|PersonalGamePlayoff[]                      $personalPlayoffGames
- * @property-read Collection|PersonalGameRegular[]                      $personalRegularGames
- * @property-read Collection|PersonalTournamentPlayer[]                 $personalTournamentPlayers
- * @property-read Collection|PersonalTournamentPlayoff[]                $personalTournamentPlayoffs
+ * @property-read Collection|PersonalGamePlayoff[]                      $playoffGames
+ * @property-read Collection|PersonalGameRegular[]                      $regularGames
+ * @property-read Collection|PersonalTournamentPlayer[]                 $tournamentsCompetitor
+ * @property-read Collection|PersonalTournamentPlayoff[]                $tournamentPlayoffPairs
  * @property-read Platform|null                                         $platform
- * @property-read Collection|TeamPlayer[]                               $teamPlayers
+ * @property-read Collection|TeamPlayer[]                               $teamsPlayer
+ * @property-read Collection|Team[]                                     $teams
+ * @property-read Collection|PersonalTournament[]                       $tournaments
  * @property-read Collection|PersonalTournamentWinner[]                 $tournamentWins
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|Player newModelQuery()
@@ -91,7 +94,7 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function gamePlayoffPlayers()
+    public function groupPlayoffGamesCompetitor()
     {
         return $this->hasMany('App\Models\GroupGamePlayoffPlayer');
     }
@@ -99,7 +102,7 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function gameRegularPlayers()
+    public function groupRegularGamesCompetitor()
     {
         return $this->hasMany('App\Models\GroupGameRegularPlayer');
     }
@@ -107,7 +110,7 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function personalPlayoffGames()
+    public function playoffGames()
     {
         return $this->hasMany('App\Models\PersonalGamePlayoff')
             ->where('home_player_id', '=', 'id')
@@ -117,7 +120,7 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function personalRegularGames()
+    public function regularGames()
     {
         return $this->hasMany('App\Models\PersonalGameRegular', 'home_player_id')
             ->where('home_player_id', '=', 'id')
@@ -127,7 +130,7 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function personalTournamentPlayoffs()
+    public function tournamentPlayoffPairs()
     {
         return $this->hasMany('App\Models\PersonalTournamentPlayoff', 'player_one_id')
             ->where('player_one_id', '=', 'id')
@@ -137,17 +140,49 @@ class Player extends Authenticatable
     /**
      * @return HasMany
      */
-    public function personalTournamentPlayers()
+    public function tournamentsCompetitor()
     {
         return $this->hasMany('App\Models\PersonalTournamentPlayer');
     }
 
     /**
+     * @return HasManyThrough
+     */
+    public function tournaments()
+    {
+        return $this->hasManyThrough(
+            'App\Models\PersonalTournament',
+            'App\Models\PersonalTournamentPlayer',
+            'player_id',
+            'id',
+            'id',
+            'tournament_id'
+        )
+            ->orderBy('personalTournament.id');
+    }
+
+    /**
      * @return HasMany
      */
-    public function teamPlayers()
+    public function teamsPlayer()
     {
         return $this->hasMany('App\Models\TeamPlayer');
+    }
+
+    /**
+     * @return HasManyThrough
+     */
+    public function teams()
+    {
+        return $this->hasManyThrough(
+            'App\Models\Team',
+            'App\Models\TeamPlayer',
+            'player_id',
+            'id',
+            'id',
+            'team_id'
+        )
+            ->orderBy('team.name');
     }
 
     /**
@@ -184,7 +219,7 @@ class Player extends Authenticatable
      */
     public function getClubId(int $tournamentId)
     {
-        foreach ($this->personalTournamentPlayers as $competitor) {
+        foreach ($this->tournamentsCompetitor as $competitor) {
             if ($competitor->tournament_id === $tournamentId) {
                 return $competitor->club_id;
             }
@@ -198,7 +233,7 @@ class Player extends Authenticatable
      */
     public function getDivision(int $tournamentId)
     {
-        foreach ($this->personalTournamentPlayers as $competitor) {
+        foreach ($this->tournamentsCompetitor as $competitor) {
             if ($competitor->tournament_id === $tournamentId) {
                 return $competitor->division;
             }
