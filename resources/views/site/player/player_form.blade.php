@@ -28,37 +28,37 @@
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
-                    <label for="title">Игровой тэг</label>
+                    <label for="tag">Игровой тэг</label>
                     <input type="text" id="tag" class="form-control" name="tag"
                            value="{{ !is_null($player) ? $player->tag : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
-                    <label for="title">Имя</label>
+                    <label for="name">Имя</label>
                     <input type="text" id="name" class="form-control" name="name"
                            value="{{ !is_null($player) ? $player->name : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
-                    <label for="title">ID Вконтакет</label>
+                    <label for="vk">ID Вконтакет</label>
                     <input type="text" id="vk" class="form-control" name="vk"
                            value="{{ !is_null($player) ? $player->vk : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
-                    <label for="title">Город</label>
+                    <label for="city">Город</label>
                     <input type="text" id="city" class="form-control" name="city"
                            value="{{ !is_null($player) ? $player->city : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
-                    <label for="title">Широта для карты</label>
+                    <label for="lat">Широта для карты</label>
                     <input type="text" id="lat" class="form-control" name="lat"
                            value="{{ !is_null($player) ? $player->lat : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
-                    <label for="title">Долгота для карты</label>
+                    <label for="lon">Долгота для карты</label>
                     <input type="text" id="lon" class="form-control" name="lon"
                            value="{{ !is_null($player) ? $player->lon : '' }}">
                     <div class="invalid-feedback"></div>

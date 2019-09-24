@@ -14,7 +14,7 @@ class TeamController extends Controller
 {
     const TEAM_RULES = [
         'name'        => 'required|string',
-        'short_name'  => 'required|string',
+        'short_name'  => 'required|string|max:3',
         'platform_id' => 'required|string|exists:platform,id',
     ];
 
@@ -88,6 +88,10 @@ class TeamController extends Controller
 
         return $this->renderAjax();
     }
+
+    //public function setTeamId(StoreRequest $request, int $teamId) {
+    //
+    //}
 
     /**
      * @param StoreRequest $request
