@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Http\Requests\StoreRequest;
 use App\Models\GroupTournament;
 use App\Models\Platform;
 use App\Models\Player;
 use App\Models\Team;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\View\View;
 
 /**
  * Class TeamController
@@ -15,6 +18,9 @@ use App\Http\Controllers\Controller;
  */
 class TeamController extends Controller
 {
+    /**
+     * @return Factory|View
+     */
     public function index()
     {
         $winners = [];
@@ -51,6 +57,11 @@ class TeamController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param int     $teamId
+     * @return Factory|View
+     */
     public function team(Request $request, int $teamId)
     {
         $team = Team::with(['players', 'tournaments'])->find($teamId);
@@ -70,13 +81,34 @@ class TeamController extends Controller
         ]);
     }
 
-    public function add()
+    /**
+     * @return Factory|View
+     */
+    public function add(StoreRequest $request)
     {
-
+        return view('site.team.team_form', [
+            'title'     => 'Добавить команду',
+            'team'      => null,
+            'platforms' => Platform::all(),
+        ]);
     }
 
-    public function edit()
+    /**
+     * @param StoreRequest $request
+     * @param int          $teamId
+     * @return Factory|View
+     */
+    public function edit(StoreRequest $request, int $teamId)
     {
+        $team = Team::find($teamId);
+        if (is_null($team)) {
+            abort(404);
+        }
 
+        return view('site.team.team_form', [
+            'title'     => 'Изменить даные команды',
+            'team'      => $team,
+            'platforms' => Platform::all(),
+        ]);
     }
 }
