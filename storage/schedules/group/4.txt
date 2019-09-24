@@ -1,0 +1,28 @@
+1|1|Регулярный чемпионат|1-й тур||HC LOKOMOTIV YAROSLAVL|HC GREAT|
+2|1|Регулярный чемпионат|1-й тур||HCZSP|Red Priora 05|
+3|1|Регулярный чемпионат|1-й тур||HC Virtuoso|Fakel|
+4|1|Регулярный чемпионат|1-й тур||Tayfun|HC Chelyabinsk Eagles|
+5|2|Регулярный чемпионат|2-й тур||HC LOKOMOTIV YAROSLAVL|Tayfun|
+6|2|Регулярный чемпионат|2-й тур||HC GREAT|HCZSP|
+7|2|Регулярный чемпионат|2-й тур||Red Priora 05|HC Virtuoso|
+8|2|Регулярный чемпионат|2-й тур||Fakel|HC Chelyabinsk Eagles|
+9|3|Регулярный чемпионат|3-й тур||Tayfun|Fakel|
+10|3|Регулярный чемпионат|3-й тур||HCZSP|HC LOKOMOTIV YAROSLAVL|
+11|3|Регулярный чемпионат|3-й тур||HC Virtuoso|HC GREAT|
+12|3|Регулярный чемпионат|3-й тур||HC Chelyabinsk Eagles|Red Priora 05|
+13|4|Регулярный чемпионат|4-й тур||HCZSP|Tayfun|
+14|4|Регулярный чемпионат|4-й тур||HC LOKOMOTIV YAROSLAVL|HC Virtuoso|
+15|4|Регулярный чемпионат|4-й тур||HC GREAT|HC Chelyabinsk Eagles|
+16|4|Регулярный чемпионат|4-й тур||Red Priora 05|Fakel|
+17|5|Регулярный чемпионат|5-й тур||Tayfun|Red Priora 05|
+18|5|Регулярный чемпионат|5-й тур||HC Virtuoso|HCZSP|
+19|5|Регулярный чемпионат|5-й тур||HC Chelyabinsk Eagles|HC LOKOMOTIV YAROSLAVL|
+20|5|Регулярный чемпионат|5-й тур||Fakel|HC GREAT|
+21|6|Регулярный чемпионат|6-й тур||HC Virtuoso|Tayfun|
+22|6|Регулярный чемпионат|6-й тур||HCZSP|HC Chelyabinsk Eagles|
+23|6|Регулярный чемпионат|6-й тур||HC LOKOMOTIV YAROSLAVL|Fakel|
+24|6|Регулярный чемпионат|6-й тур||HC GREAT|Red Priora 05|
+25|7|Регулярный чемпионат|7-й тур||Tayfun|HC GREAT|
+26|7|Регулярный чемпионат|7-й тур||HC Chelyabinsk Eagles|HC Virtuoso|
+27|7|Регулярный чемпионат|7-й тур||Fakel|HCZSP|
+28|7|Регулярный чемпионат|7-й тур||Red Priora 05|HC LOKOMOTIV YAROSLAVL|

@@ -1,0 +1,55 @@
+1|1|Регулярный чемпионат|1-й тур||SappyGryphon842|PendantShip1978|
+2|1|Регулярный чемпионат|1-й тур||SatinMaple8802|koshmarny|
+3|1|Регулярный чемпионат|1-й тур||SpringKhan88321|KAZAN116RUS29|
+4|1|Регулярный чемпионат|1-й тур||Toha Mehane|HockeyTa4wer|
+5|1|Регулярный чемпионат|1-й тур||yuriygalkin13|ChillyShelf3049|
+6|2|Регулярный чемпионат|2-й тур||PendantShip1978|SatinMaple8802|
+7|2|Регулярный чемпионат|2-й тур||koshmarny|SpringKhan88321|
+8|2|Регулярный чемпионат|2-й тур||KAZAN116RUS29|Toha Mehane|
+9|2|Регулярный чемпионат|2-й тур||HockeyTa4wer|yuriygalkin13|
+10|2|Регулярный чемпионат|2-й тур||ChillyShelf3049|Artyom3101972|
+11|3|Регулярный чемпионат|3-й тур||SatinMaple8802|SappyGryphon842|
+12|3|Регулярный чемпионат|3-й тур||SpringKhan88321|PendantShip1978|
+13|3|Регулярный чемпионат|3-й тур||Toha Mehane|koshmarny|
+14|3|Регулярный чемпионат|3-й тур||yuriygalkin13|KAZAN116RUS29|
+15|3|Регулярный чемпионат|3-й тур||Artyom3101972|HockeyTa4wer|
+16|4|Регулярный чемпионат|4-й тур||SappyGryphon842|SpringKhan88321|
+17|4|Регулярный чемпионат|4-й тур||PendantShip1978|Toha Mehane|
+18|4|Регулярный чемпионат|4-й тур||koshmarny|yuriygalkin13|
+19|4|Регулярный чемпионат|4-й тур||KAZAN116RUS29|Artyom3101972|
+20|4|Регулярный чемпионат|4-й тур||HockeyTa4wer|ChillyShelf3049|
+21|5|Регулярный чемпионат|5-й тур||SpringKhan88321|SatinMaple8802|
+22|5|Регулярный чемпионат|5-й тур||Toha Mehane|SappyGryphon842|
+23|5|Регулярный чемпионат|5-й тур||yuriygalkin13|PendantShip1978|
+24|5|Регулярный чемпионат|5-й тур||Artyom3101972|koshmarny|
+25|5|Регулярный чемпионат|5-й тур||ChillyShelf3049|KAZAN116RUS29|
+26|6|Регулярный чемпионат|6-й тур||SatinMaple8802|Toha Mehane|
+27|6|Регулярный чемпионат|6-й тур||SappyGryphon842|yuriygalkin13|
+28|6|Регулярный чемпионат|6-й тур||PendantShip1978|Artyom3101972|
+29|6|Регулярный чемпионат|6-й тур||koshmarny|ChillyShelf3049|
+30|6|Регулярный чемпионат|6-й тур||KAZAN116RUS29|HockeyTa4wer|
+31|7|Регулярный чемпионат|7-й тур||Toha Mehane|SpringKhan88321|
+32|7|Регулярный чемпионат|7-й тур||yuriygalkin13|SatinMaple8802|
+33|7|Регулярный чемпионат|7-й тур||Artyom3101972|SappyGryphon842|
+34|7|Регулярный чемпионат|7-й тур||ChillyShelf3049|PendantShip1978|
+35|7|Регулярный чемпионат|7-й тур||HockeyTa4wer|koshmarny|
+36|8|Регулярный чемпионат|8-й тур||SpringKhan88321|yuriygalkin13|
+37|8|Регулярный чемпионат|8-й тур||SatinMaple8802|Artyom3101972|
+38|8|Регулярный чемпионат|8-й тур||SappyGryphon842|ChillyShelf3049|
+39|8|Регулярный чемпионат|8-й тур||PendantShip1978|HockeyTa4wer|
+40|8|Регулярный чемпионат|8-й тур||koshmarny|KAZAN116RUS29|
+41|9|Регулярный чемпионат|9-й тур||yuriygalkin13|Toha Mehane|
+42|9|Регулярный чемпионат|9-й тур||Artyom3101972|SpringKhan88321|
+43|9|Регулярный чемпионат|9-й тур||ChillyShelf3049|SatinMaple8802|
+44|9|Регулярный чемпионат|9-й тур||HockeyTa4wer|SappyGryphon842|
+45|9|Регулярный чемпионат|9-й тур||KAZAN116RUS29|PendantShip1978|
+46|10|Регулярный чемпионат|10-й тур||Toha Mehane|Artyom3101972|
+47|10|Регулярный чемпионат|10-й тур||SpringKhan88321|ChillyShelf3049|
+48|10|Регулярный чемпионат|10-й тур||SatinMaple8802|HockeyTa4wer|
+49|10|Регулярный чемпионат|10-й тур||SappyGryphon842|KAZAN116RUS29|
+50|10|Регулярный чемпионат|10-й тур||PendantShip1978|koshmarny|
+51|11|Регулярный чемпионат|11-й тур||Artyom3101972|yuriygalkin13|
+52|11|Регулярный чемпионат|11-й тур||ChillyShelf3049|Toha Mehane|
+53|11|Регулярный чемпионат|11-й тур||HockeyTa4wer|SpringKhan88321|
+54|11|Регулярный чемпионат|11-й тур||KAZAN116RUS29|SatinMaple8802|
+55|11|Регулярный чемпионат|11-й тур||koshmarny|SappyGryphon842|

@@ -36,6 +36,12 @@
                             <a class="nav-link" href="{{ action('Site\PlayerController@index') }}">Игроки</a>
                         </li>
                         @auth
+                            @if(Auth::user()->isAdmin())
+                                <li>
+                                    <a class="nav-link" target="_blank"
+                                       href="https://www.mlhp.ru/utils.php?room=build_cale">Составить расписание</a>
+                                </li>
+                            @endif
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('logout') }}">
                                     <i class="fas fa-sign-out-alt"></i>

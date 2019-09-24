@@ -1,0 +1,20 @@
+1|1|Регулярный чемпионат|1-й тур||boevik1|BadLuntik228|
+2|1|Регулярный чемпионат|1-й тур||Boychenko10|ArtemZicom|
+3|1|Регулярный чемпионат|1-й тур||ded piter|Church Thrilliah|
+4|1|Регулярный чемпионат|1-й тур||Den Udo|ChillyShelf3049|
+5|2|Регулярный чемпионат|2-й тур||BadLuntik228|Boychenko10|
+6|2|Регулярный чемпионат|2-й тур||ArtemZicom|AntonyBell|
+7|2|Регулярный чемпионат|2-й тур||Church Thrilliah|Den Udo|
+8|2|Регулярный чемпионат|2-й тур||ChillyShelf3049|BUTUZ EV|
+9|3|Регулярный чемпионат|3-й тур||Boychenko10|boevik1|
+10|3|Регулярный чемпионат|3-й тур||AntonyBell|BadLuntik228|
+11|3|Регулярный чемпионат|3-й тур||Den Udo|ded piter|
+12|3|Регулярный чемпионат|3-й тур||BUTUZ EV|Church Thrilliah|
+13|4|Регулярный чемпионат|4-й тур||boevik1|AntonyBell|
+14|4|Регулярный чемпионат|4-й тур||BadLuntik228|ArtemZicom|
+15|4|Регулярный чемпионат|4-й тур||ded piter|BUTUZ EV|
+16|4|Регулярный чемпионат|4-й тур||Church Thrilliah|ChillyShelf3049|
+17|5|Регулярный чемпионат|5-й тур||AntonyBell|Boychenko10|
+18|5|Регулярный чемпионат|5-й тур||ArtemZicom|boevik1|
+19|5|Регулярный чемпионат|5-й тур||BUTUZ EV|Den Udo|
+20|5|Регулярный чемпионат|5-й тур||ChillyShelf3049|ded piter|

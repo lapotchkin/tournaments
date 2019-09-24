@@ -1,0 +1,15 @@
+1|1|Регулярный чемпионат|1-й тур||HC Virtuoso|HC ARMORED TRAIN|
+2|1|Регулярный чемпионат|1-й тур||nonames black sisters|HC RED BEAVERS|
+3|1|Регулярный чемпионат|1-й тур||Mancipium fraternitatis|HC DINAMO|
+4|2|Регулярный чемпионат|2-й тур||HC Virtuoso|Mancipium fraternitatis|
+5|2|Регулярный чемпионат|2-й тур||HC ARMORED TRAIN|nonames black sisters|
+6|2|Регулярный чемпионат|2-й тур||HC RED BEAVERS|HC DINAMO|
+7|3|Регулярный чемпионат|3-й тур||Mancipium fraternitatis|HC RED BEAVERS|
+8|3|Регулярный чемпионат|3-й тур||nonames black sisters|HC Virtuoso|
+9|3|Регулярный чемпионат|3-й тур||HC DINAMO|HC ARMORED TRAIN|
+10|4|Регулярный чемпионат|4-й тур||nonames black sisters|Mancipium fraternitatis|
+11|4|Регулярный чемпионат|4-й тур||HC Virtuoso|HC DINAMO|
+12|4|Регулярный чемпионат|4-й тур||HC ARMORED TRAIN|HC RED BEAVERS|
+13|5|Регулярный чемпионат|5-й тур||Mancipium fraternitatis|HC ARMORED TRAIN|
+14|5|Регулярный чемпионат|5-й тур||HC DINAMO|nonames black sisters|
+15|5|Регулярный чемпионат|5-й тур||HC RED BEAVERS|HC Virtuoso|
