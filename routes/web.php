@@ -297,3 +297,7 @@ Route::put('/ajax/team/{teamId}', 'Ajax\TeamController@addPlayer')
     ->where(['teamId' => '[0-9]+']);
 Route::delete('/ajax/team/{teamId}/{playerId}', 'Ajax\TeamController@deletePlayer')
     ->where(['teamId' => '[0-9]+', 'playerId' => '[0-9]+']);
+Route::post('/ajax/team/{teamId}/app', 'Ajax\TeamController@setTeamId')
+    ->where(['teamId' => '[0-9]+']);
+Route::delete('/ajax/team/{teamId}/app/{appId}', 'Ajax\TeamController@deleteTeamId')
+    ->where(['teamId' => '[0-9]+', 'appId' => '[a-z]+']);

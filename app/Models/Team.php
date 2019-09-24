@@ -32,7 +32,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection|GroupTournamentPlayoff[] $tournamentPlayoffs
  * @property-read Collection|GroupTournamentTeam[]    $teamTournaments
  * @property-read Collection|GroupTournament[]        $tournaments
- * @property-read Collection|AppTeam[]                $appTeams
+ * @property-read Collection|AppTeam[]                $teamApps
  * @property-read Collection|GroupTournamentWinner[]  $tournamentWins
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|Team newModelQuery()
@@ -175,22 +175,22 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function appTeams()
+    public function teamApps()
     {
         return $this->hasMany('App\Models\AppTeam');
     }
 
     /**
      * @param string $appId
-     * @return int
+     * @return int|null
      */
     public function getClubId(string $appId)
     {
-        return $this->appTeams
+        $teamApp = $this->teamApps
             ->where('app_id', '=', $appId)
             ->where('team_id', '=', $this->id)
-            ->first()
-            ->app_team_id;
+            ->first();
+        return is_null($teamApp) ? null : $teamApp->app_team_id;
     }
 
     /**

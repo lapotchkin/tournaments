@@ -52,6 +52,21 @@
             </form>
         </div>
     </div>
+
+    @if($team)
+        <h3>ID команды для игр</h3>
+        @foreach($apps as $app)
+            <form class="app-add form-inline mb-1">
+                <input type="hidden" id="app_id" name="app_id" value="{{ $app->id }}">
+                <div class="form-group">
+                    <label for="app_team_id" class="mr-2" style="width: 6rem;">{{ $app->title }}</label>
+                    <input id="app_team_id" name="app_team_id" type="text" class="form-control mr-3"
+                           value="{{ $team->getClubId($app->id) }}">
+                </div>
+                <button type="submit" class="btn btn-primary" name="player-add-button">Сохранить</button>
+            </form>
+        @endforeach
+    @endif
 @endsection
 
 @section('script')
@@ -74,6 +89,12 @@
                 success: function () {
                     window.location.href = '{{ route('teams') }}';
                 }
+            });
+
+            TRNMNT_sendData({
+                selector: '.app-add',
+                method: 'post',
+                url: '{{ action('Ajax\TeamController@setTeamId', ['teamId' => $team->id])}}',
             });
             @endif
         });

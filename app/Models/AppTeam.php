@@ -25,6 +25,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class AppTeam extends Model
 {
+    const CREATED_AT = null;
+    const UPDATED_AT = null;
+
     /**
      * The table associated with the model.
      *
@@ -35,7 +38,11 @@ class AppTeam extends Model
     /**
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'app_id',
+        'team_id',
+        'app_team_id',
+    ];
 
     /**
      * @return BelongsTo
