@@ -8,6 +8,18 @@
     @widget('personalMenu', ['tournament' => $tournament])
     @widget('personalRegularMenu', ['tournament' => $tournament])
 
+    <form method="get" class="form-inline mb-2">
+        <div class="form-group mr-2">
+            <label class="control-label mr-2" for="toDate">Сравнить с датой</label>
+            <input type="text" id="toDate" class="form-control" name="toDate"
+                   value="{{ $lastUpdateDate ? str_replace(' 00:00:00', '', $lastUpdateDate) : '' }}"
+                   readonly>
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Применить</button>
+        <a href="{{ route('personal.tournament.regular', ['tournamentId' => $tournament->id]) }}"
+           class="btn btn-warning">Сбросить</a>
+    </form>
+
     <h3>Турнирная таблица</h3>
     @foreach($divisions as $division => $position)
         <h4>Группа {{ TextUtils::divisionLetter($division) }}</h4>
@@ -44,6 +56,8 @@
     @parent
     <script>
         $(document).ready(function () {
+            $('#toDate').datepicker(TRNMNT_helpers.getDatePickerSettings());
+
             @foreach($divisions as $division => $position)
             $('#players{{ $division }}').DataTable({
                 data: {!! json_encode($position) !!},

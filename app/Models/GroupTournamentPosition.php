@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\DB;
+use DB;
 
 /**
  * Class GroupTournamentPosition
@@ -14,11 +12,11 @@ class GroupTournamentPosition
 {
     /**
      * @param int $tournamentId
-     * @return Model|Builder|object|null
+     * @return string|null
      */
     public static function readLastUpdateDate(int $tournamentId)
     {
-        return DB::table('groupGameRegular')
+        $result = DB::table('groupGameRegular')
             ->select([
                 DB::raw("DATE_FORMAT(updatedAt, '%Y-%m-%d 00:00:00') as date"),
             ])
@@ -26,6 +24,8 @@ class GroupTournamentPosition
             ->whereNull('deletedAt')
             ->orderByDesc('updatedAt')
             ->first();
+
+        return is_null($result) ? null : $result->date;
     }
 
     /**

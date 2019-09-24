@@ -32,13 +32,16 @@ class PersonalRegularController extends Controller
         if (is_null($tournament)) {
             abort(404);
         }
+        $toDate = $request->input('toDate');
 
-        $lastUpdateDate = PersonalTournamentPosition::readLastUpdateDate($tournamentId);
+        $lastUpdateDate = !is_null($toDate)
+            ? $toDate . ' 00:00:00'
+            : PersonalTournamentPosition::readLastUpdateDate($tournamentId);
 
         $currentPosition = PersonalTournamentPosition::readPosition($tournamentId);
         $previousPosition = null;
         if (!is_null($lastUpdateDate)) {
-            $previousPosition = PersonalTournamentPosition::readPosition($tournamentId, $lastUpdateDate->date);
+            $previousPosition = PersonalTournamentPosition::readPosition($tournamentId, $lastUpdateDate);
         }
         $positions = self::_getPosition($currentPosition, $previousPosition);
 
@@ -48,8 +51,9 @@ class PersonalRegularController extends Controller
         }
 
         return view('site.personal.regular.index', [
-            'tournament' => $tournament,
-            'divisions'  => $divisions,
+            'tournament'     => $tournament,
+            'divisions'      => $divisions,
+            'lastUpdateDate' => $lastUpdateDate,
         ]);
     }
 

@@ -8,6 +8,18 @@
     @widget('groupMenu', ['tournament' => $tournament])
     @widget('groupPlayoffMenu', ['tournament' => $tournament])
 
+    <form method="get" class="form-inline mb-2">
+        <div class="form-group mr-2">
+            <label class="control-label mr-2" for="toDate">Сравнить с датой</label>
+            <input type="text" id="toDate" class="form-control" name="toDate"
+                   value="{{ $lastUpdateDate ? str_replace(' 00:00:00', '', $lastUpdateDate) : '' }}"
+                   readonly>
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Применить</button>
+        <a href="{{ route('group.tournament.playoff', ['tournamentId' => $tournament->id]) }}"
+           class="btn btn-warning">Сбросить</a>
+    </form>
+
     <h3 class="mt-3">Лучшие по очкам</h3>
     <table id="topPoints" class="leaders table table-striped table-sm">
         <thead class="thead-dark"></thead>
@@ -40,6 +52,8 @@
     @parent
     <script>
         $(document).ready(function () {
+            $('#toDate').datepicker(TRNMNT_helpers.getDatePickerSettings());
+
             $('#topPoints').DataTable({
                 data: {!! json_encode($leaders->points) !!},
                 columns: [
