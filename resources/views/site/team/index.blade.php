@@ -1,15 +1,15 @@
 @extends('layouts.site')
 
-@section('title', 'Игроки — ')
+@section('title', 'Команды — ')
 
 @section('content')
-    {{ Breadcrumbs::render('players') }}
+    {{ Breadcrumbs::render('teams') }}
     <h2>
-        Игроки
+        Клманды
         @auth
             @if(Auth::user()->isAdmin())
-                <a class="btn btn-primary" href="{{ route('player.add') }}">
-                    <i class="fas fa-user-plus"></i>
+                <a class="btn btn-primary" href="{{ route('team.add') }}">
+                    <i class="fas fa-users"></i> <i class="fas fa-plus"></i>
                 </a>
             @endif
         @endauth
@@ -34,35 +34,34 @@
                     @endforeach
                 </div>
                 <div>
-                    <a href="{{ route('player', ['playerId' => $winner->player->id]) }}">{{ $winner->player->name }}</a>
+                    <i class="fab fa-{{ $winner->team->platform->icon }} {{ $winner->team->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
+                    <a href="{{ route('team', ['teamId' => $winner->team->id]) }}">{{ $winner->team->name }}</a>
                 </div>
-                <div class="small">{{ $winner->player->tag }}</div>
             </div>
         </div>
     @endforeach
     <div class="clearfix"></div>
 
-    @foreach($players as $data)
+    @foreach($teams as $data)
         <h3 class="mt-3">
             <i class="fab fa-{{ $data->platform->icon }} {{ $data->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
             {{ $data->platform->name }}
         </h3>
         @php
-            $playersInColumnCount = ceil(count($data->players) / 2);
+            $teamsInColumnCount = ceil(count($data->teams) / 2);
         @endphp
         {{--@formatter:off--}}
         <div class="row">
-            @foreach($data->players as $player)
-                @if($loop->index % $playersInColumnCount === 0 )
-                    @if($loop->index % $playersInColumnCount === 0 && !$loop->first)
+            @foreach($data->teams as $team)
+                @if($loop->index % $teamsInColumnCount === 0 )
+                    @if($loop->index % $teamsInColumnCount === 0 && !$loop->first)
                         </div>
                     @endif
                     <div class="col-6">
                 @endif
                 <div>
-                    <i class="fas fa-user"></i>
-                    <a href="{{ route('player', ['playerId' => $player->id]) }}">{{ $player->tag }}</a>
-                    <small>{{ $player->name }}</small>
+                    <i class="fas fa-users"></i>
+                    <a href="{{ route('team', ['teamId' => $team->id]) }}">{{ $team->name }}</a>
                 </div>
                 @if($loop->last)
                     </div>

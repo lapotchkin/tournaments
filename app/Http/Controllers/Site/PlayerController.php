@@ -39,18 +39,7 @@ class PlayerController extends Controller
                 $winners[$winner->player->id]->cups[$winner->place] += 1;
             }
         }
-        usort($winners, function ($a, $b) {
-            if ($a->cups[1] === $b->cups[1] && $a->cups[2] === $b->cups[2] && $a->cups[3] === $b->cups[3]) {
-                return 0;
-            } elseif ($a->cups[1] > $b->cups[1]) {
-                return -1;
-            } elseif ($a->cups[1] === $b->cups[1] && $a->cups[2] > $b->cups[2]) {
-                return -1;
-            } elseif ($a->cups[1] === $b->cups[1] && $a->cups[2] === $b->cups[2] && $a->cups[3] > $b->cups[3]) {
-                return -1;
-            }
-            return 1;
-        });
+        usort($winners, 'self::sortWinners');
 
         $platforms = Platform::all();
         $players = [];
@@ -74,7 +63,7 @@ class PlayerController extends Controller
      */
     public function player(Request $request, int $playerId)
     {
-        $player = Player::with(['teamPlayers.team', 'personalTournamentPlayers.tournament.winners'])->find($playerId);
+        $player = Player::with(['teams', 'tournaments.winners'])->find($playerId);
 
         return view('site.player.player', [
             'player' => $player,

@@ -33,7 +33,10 @@ class PlayerController extends Controller
     {
         $validatedData = $request->validate(self::USER_RULES);
         /** @var Player|null $player */
-        $player = Player::withTrashed()->whereTag($validatedData['tag'])->first();
+        $player = Player::withTrashed()
+            ->whereTag($validatedData['tag'])
+            ->wherePlatformId($validatedData['platform_id'])
+            ->first();
         if (!is_null($player)) {
             //Восстановить пользователя, если его удалили
             if ($player->deletedAt) {

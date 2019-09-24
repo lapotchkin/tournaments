@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
@@ -21,14 +22,16 @@ use Illuminate\Support\Carbon;
  * @property Carbon                                   $createdAt   Дата создания
  * @property Carbon|null                              $deletedAt   Дата удаления
  * @property string|null                              $short_name  Краткое название команды
- * @property-read Collection|GroupGamePlayoffPlayer[] $gamePlayoffPlayers
- * @property-read Collection|GroupGamePlayoff[]       $gamePlayoffs
- * @property-read Collection|GroupGameRegularPlayer[] $gameRegularPlayers
- * @property-read Collection|GroupGameRegular[]       $gameRegulars
+ * @property-read Collection|GroupGamePlayoffPlayer[] $playoffGamesPlayers
+ * @property-read Collection|GroupGamePlayoff[]       $playoffGames
+ * @property-read Collection|GroupGameRegularPlayer[] $regularGamesPlayers
+ * @property-read Collection|GroupGameRegular[]       $regularGames
  * @property-read Platform|null                       $platform
- * @property-read Collection|TeamPlayer[]             $players
+ * @property-read Collection|TeamPlayer[]             $teamPlayers
+ * @property-read Collection|Player[]                 $players
  * @property-read Collection|GroupTournamentPlayoff[] $tournamentPlayoffs
- * @property-read Collection|GroupTournamentTeam[]    $tournamentTeams
+ * @property-read Collection|GroupTournamentTeam[]    $teamTournaments
+ * @property-read Collection|GroupTournament[]        $tournaments
  * @property-read Collection|AppTeam[]                $appTeams
  * @property-read Collection|GroupTournamentWinner[]  $tournamentWins
  * @method static bool|null forceDelete()
@@ -77,7 +80,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function gamePlayoffs()
+    public function playoffGames()
     {
         return $this->hasMany('App\Models\GroupGamePlayoff', 'home_team_id')
             ->where('home_team_id', '=', 'id')
@@ -87,7 +90,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function gamePlayoffPlayers()
+    public function playoffGamesPlayers()
     {
         return $this->hasMany('App\Models\GroupGamePlayoffPlayer');
     }
@@ -95,7 +98,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function gameRegulars()
+    public function regularGames()
     {
         return $this->hasMany('App\Models\GroupGameRegular', 'home_team_id')
             ->where('home_team_id', '=', 'id')
@@ -105,7 +108,7 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function gameRegularPlayers()
+    public function regularGamesPlayers()
     {
         return $this->hasMany('App\Models\GroupGameRegularPlayer');
     }
@@ -123,17 +126,49 @@ class Team extends Model
     /**
      * @return HasMany
      */
-    public function tournamentTeams()
+    public function teamTournaments()
     {
         return $this->hasMany('App\Models\GroupTournamentTeam');
     }
 
     /**
+     * @return HasManyThrough
+     */
+    public function tournaments()
+    {
+        return $this->hasManyThrough(
+            'App\Models\GroupTournament',
+            'App\Models\GroupTournamentTeam',
+            'team_id',
+            'id',
+            'id',
+            'tournament_id'
+        )
+            ->orderBy('groupTournament.id');
+    }
+
+    /**
      * @return HasMany
+     */
+    public function teamPlayers()
+    {
+        return $this->hasMany('App\Models\TeamPlayer');
+    }
+
+    /**
+     * @return HasManyThrough
      */
     public function players()
     {
-        return $this->hasMany('App\Models\TeamPlayer');
+        return $this->hasManyThrough(
+            'App\Models\Player',
+            'App\Models\TeamPlayer',
+            'team_id',
+            'id',
+            'id',
+            'player_id'
+        )
+            ->orderBy('player.name');
     }
 
     /**

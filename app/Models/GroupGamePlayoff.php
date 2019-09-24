@@ -252,7 +252,8 @@ class GroupGamePlayoff extends Model
     /**
      * @return Collection
      */
-    public function getStars() {
+    public function getStars()
+    {
         $stars = new Collection;
         foreach ($this->protocols as $protocol) {
             if ($protocol->star > 0) {

@@ -152,17 +152,6 @@ Route::get('/personal/{tournamentId}/playoff/games/{pairId}/{gameId}/edit', 'Sit
 
 /*
 |--------------------------------------------------------------------------
-| Team
-|--------------------------------------------------------------------------
-*/
-Route::get('/team', 'Site\TeamController@index')
-    ->name('teams');
-Route::get('/team/{teamId}', 'Site\TeamController@team')
-    ->where(['teamId' => '[0-9]+'])
-    ->name('team');
-
-/*
-|--------------------------------------------------------------------------
 | Player
 |--------------------------------------------------------------------------
 */
@@ -176,6 +165,22 @@ Route::get('/player/{playerId}', 'Site\PlayerController@player')
 Route::get('/player/{playerId}/edit', 'Site\PlayerController@edit')
     ->where(['playerId' => '[0-9]+'])
     ->name('player.edit');
+
+/*
+|--------------------------------------------------------------------------
+| Team
+|--------------------------------------------------------------------------
+*/
+Route::get('/team', 'Site\TeamController@index')
+    ->name('teams');
+Route::get('/team/add', 'Site\TeamController@add')
+    ->name('team.add');
+Route::get('/team/{teamId}', 'Site\TeamController@team')
+    ->where(['teamId' => '[0-9]+'])
+    ->name('team');
+Route::get('/team/{teamId}/edit', 'Site\TeamController@edit')
+    ->where(['teamId' => '[0-9]+'])
+    ->name('team.edit');
 
 /*
 |--------------------------------------------------------------------------
@@ -279,3 +284,16 @@ Route::post('/ajax/player/{playerId}', 'Ajax\PlayerController@edit')
     ->where(['playerId' => '[0-9]+']);
 Route::delete('/ajax/player/{playerId}', 'Ajax\PlayerController@delete')
     ->where(['playerId' => '[0-9]+']);
+
+/*
+ * Team
+ */
+Route::put('/ajax/team', 'Ajax\TeamController@create');
+Route::post('/ajax/team/{teamId}', 'Ajax\TeamController@edit')
+    ->where(['teamId' => '[0-9]+']);
+Route::delete('/ajax/team/{teamId}', 'Ajax\TeamController@delete')
+    ->where(['teamId' => '[0-9]+']);
+Route::put('/ajax/team/{teamId}', 'Ajax\TeamController@addPlayer')
+    ->where(['teamId' => '[0-9]+']);
+Route::delete('/ajax/team/{teamId}/{playerId}', 'Ajax\TeamController@deletePlayer')
+    ->where(['teamId' => '[0-9]+', 'playerId' => '[0-9]+']);

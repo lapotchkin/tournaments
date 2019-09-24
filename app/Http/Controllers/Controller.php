@@ -35,4 +35,23 @@ class Controller extends BaseController
             ['Content-Type' => 'application/json']
         );
     }
+
+    /**
+     * @param $a
+     * @param $b
+     * @return int
+     */
+    protected function sortWinners($a, $b)
+    {
+        if ($a->cups[1] === $b->cups[1] && $a->cups[2] === $b->cups[2] && $a->cups[3] === $b->cups[3]) {
+            return 0;
+        } elseif ($a->cups[1] > $b->cups[1]) {
+            return -1;
+        } elseif ($a->cups[1] === $b->cups[1] && $a->cups[2] > $b->cups[2]) {
+            return -1;
+        } elseif ($a->cups[1] === $b->cups[1] && $a->cups[2] === $b->cups[2] && $a->cups[3] > $b->cups[3]) {
+            return -1;
+        }
+        return 1;
+    }
 }
