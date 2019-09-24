@@ -101,8 +101,8 @@
                         method: 'put',
                         url: '{{ action('Ajax\TeamController@addPlayer', ['teamId' => $team->id])}}',
                         success: function (response) {
-                            const $player = $('#player_id');
-                            const playerId = $player.val();
+                            const $select = $('#player_id');
+                            const playerId = $select.val();
                             const $option = $('#player_id option[value=' + playerId + ']');
                             const newPlayerData = getPlayerDataFromOption($option);
                             const $list = $('#team-players');
@@ -119,11 +119,13 @@
                             $list.find('li').each(function (index, element) {
                                 const $element = $(element);
                                 const playerData = getPlayerDataFromLi($element);
-                                if (playerData[1] > newPlayerData[2]) {
+                                if (playerData[1].toLowerCase() > newPlayerData[2].toLowerCase()) {
                                     $element.before($item);
                                     return false;
                                 }
-                            })
+                            });
+                            $select.val('');
+                            $option.remove();
                         }
                     });
 
@@ -131,8 +133,22 @@
                         selector: '.delete-player',
                         url: '{{ action('Ajax\TeamController@addPlayer', ['teamId' => $team->id])}}',
                         success: function (response, $button) {
-                            $button.parent('li').remove();
-                            {{--window.location.href = '{{ route('personal') }}';--}}
+                            const $item = $button.parent('li');
+                            const playerId = $button.data('id');
+                            const removedPlayerData = getPlayerDataFromLi($item);
+                            const $select = $('#player_id');
+                            const $option = $(`<option value="${playerId}">${removedPlayerData[2]} (${removedPlayerData[1]})</option>`);
+                            $select.find('option').each(function (index, element) {
+                                if (index > 0) {
+                                    const $element = $(element);
+                                    const playerData = getPlayerDataFromOption($element);
+                                    if (playerData[1].toLowerCase() > removedPlayerData[2].toLowerCase()) {
+                                        $element.before($option);
+                                        return false;
+                                    }
+                                }
+                            });
+                            $item.remove();
                         }
                     });
                 });

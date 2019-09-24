@@ -12,7 +12,6 @@ export default function (params) {
         const form = $(this);
         const formData = form.serializeArray();
         const request = {};
-        console.log(formData);
         for (let i = 0; i < formData.length; i += 1) {
             if (formData[i].value) {
                 switch (formData[i].value) {

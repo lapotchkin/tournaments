@@ -5,7 +5,7 @@ export default function (params) {
         }
     });
 
-    $(params.selector).click(function (e) {
+    $(document).on('click', params.selector, function (e) {
         e.preventDefault();
         const $button = $(this);
         const id = $button.data('id');
