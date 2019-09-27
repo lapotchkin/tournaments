@@ -182,6 +182,8 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         // Laravel 5 Extended Generators
         Laracasts\Generators\GeneratorsServiceProvider::class,
+        // Intervention Image
+        Intervention\Image\ImageServiceProvider::class,
     ],
 
     /*
@@ -234,6 +236,7 @@ return [
         'View'         => Illuminate\Support\Facades\View::class,
 
         'TextUtils' => App\Utils\TextUtils::class,
+        'Image'     => Intervention\Image\Facades\Image::class,
     ],
 
 ];
