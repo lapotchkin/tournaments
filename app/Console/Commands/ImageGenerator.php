@@ -60,6 +60,7 @@ class ImageGenerator extends Command
 
         $scoreImage = new ScoreImage($game);
         $imagePath = $scoreImage->create();
+        exit;
         if (isset($game->homeTeam)) {
             $text = $game->homeTeam->team->name . ' против ' . $game->awayTeam->team->name;
         } else {
