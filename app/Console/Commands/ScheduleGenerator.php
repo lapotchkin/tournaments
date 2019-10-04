@@ -69,13 +69,13 @@ class ScheduleGenerator extends Command
                 $this->_createPersonalGame(
                     $this->argument('id'),
                     $data,
-                    $this->argument('gamesCount')
+                    (int)$this->argument('gamesCount')
                 );
             } else {
                 $this->_createGroupGame(
                     $this->argument('id'),
                     $data,
-                    $this->argument('gamesCount')
+                    (int)$this->argument('gamesCount')
                 );
             }
         }
