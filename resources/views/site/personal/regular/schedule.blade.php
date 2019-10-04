@@ -17,7 +17,13 @@
             @foreach($games as $game)
                 <div>
                     {{ $loop->iteration }}.
-                    {{ $game->homePlayer->name }} — {{ $game->awayPlayer->name }}
+                    <span class="text-uppercase">{{ $game->homePlayer->getClubId($game->tournament_id) }}</span>
+                    [{{ trim($game->homePlayer->vk) }}|{{ trim($game->homePlayer->name) }}]
+                    {{ $game->homePlayer->tag }}
+                    —
+                    <span class="text-uppercase">{{ $game->awayPlayer->getClubId($game->tournament_id) }}</span>
+                    [{{ trim($game->awayPlayer->vk) }}|{{ trim($game->awayPlayer->name) }}]
+                    {{ $game->awayPlayer->tag }}
                 </div>
             @endforeach
         @endforeach

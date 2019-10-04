@@ -14,12 +14,13 @@
                 <h4>Группа {{ TextUtils::divisionLetter($division) }}</h4>
                 @foreach ($players as $index => $player)
                     <div>
-                        {{ $index + 1 }}. {{ $player->player->tag }}
-                        &#64;{{ $player->player->vk }}
+                        {{ $index + 1 }}.
+                        <span class="text-uppercase">{{ $player->club_id }}</span>
                         @if ($player->club && $player->club->title)
                             ({{ $player->club->title }})
                         @endif
-                        {{ $player->player->name }}
+                        [{{ trim($player->player->vk) }}|{{ trim($player->player->name) }}]
+                        {{ $player->player->tag }}
                     </div>
                 @endforeach
             </div>
