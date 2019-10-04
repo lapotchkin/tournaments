@@ -16,6 +16,13 @@
             Тур {{ $game->round }}
         @endif
     </h3>
+    @if($game && !is_null($game->tournament->vk_group_id))
+        <div class="text-center mb-3">
+            <button type="button" class="btn btn-info" id="share">
+                <i class="fab fa-vk"></i> Выложить результат в ВК
+            </button>
+        </div>
+    @endif
     <form id="game-form">
         <table class="mb-2 w-100">
             <tbody>
@@ -276,6 +283,10 @@
                     'Ajax\GroupController@createPlayoffProtocol',
                      ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
                  );
+                 $shareUrl = action(
+                    'Ajax\GroupController@sharePlayoffResult',
+                    ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                );
              } else {
                 $saveGameUrl = action(
                     'Ajax\GroupController@createPlayoffGame',
@@ -283,6 +294,12 @@
                  );
              }
         } else {
+            if ($game) {
+                $shareUrl = action(
+                    'Ajax\GroupController@shareRegularResult',
+                    ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                );
+            }
             $lastGamesUrl = action('Ajax\EaController@getLastGames') . '?gameId=' . $game->id;
             $saveGameUrl = action(
                 'Ajax\GroupController@editRegularGame',
@@ -317,6 +334,23 @@
                 {!! json_encode($positions) !!},
                 {{ $game && $game->match_id ? $game->match_id : 'null' }}
             );
+
+            @if($game)
+            $('#share').on('click', function () {
+                TRNMNT_helpers.disableButtons();
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'post',
+                    url: '{{ $shareUrl }}',
+                    success: function (response) {
+                        TRNMNT_helpers.showNotification(response.message);
+                        TRNMNT_helpers.enableButtons();
+                    },
+                });
+            });
+            @endif
         });
     </script>
 @endsection

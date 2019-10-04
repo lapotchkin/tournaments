@@ -141,10 +141,10 @@ class GroupTournamentPlayoff extends Model
             'away' => [],
         ];
         foreach ($this->teamOne->players as $player) {
-            $players['home'][] = $player->player->getSafeData();
+            $players['home'][] = $player->getSafeData();
         }
         foreach ($this->teamTwo->players as $player) {
-            $players['away'][] = $player->player->getSafeData();
+            $players['away'][] = $player->getSafeData();
         }
         return $players;
     }

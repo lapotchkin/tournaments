@@ -13,12 +13,14 @@
         "arrilot/laravel-widgets": "^3.13",
         "davejamesmiller/laravel-breadcrumbs": "5.x",
         "fideloper/proxy": "^4.0",
+        "intervention/image": "^2.5",
         "laravel/framework": "5.8.*",
         "laravel/socialite": "^4.1",
         "laravel/telescope": "^2.0",
         "laravel/tinker": "^1.0",
         "predis/predis": "^1.1",
-        "socialiteproviders/vkontakte": "^4.0"
+        "socialiteproviders/vkontakte": "^4.0",
+        "vkcom/vk-php-sdk": "^5.101"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.6",

@@ -243,8 +243,13 @@ Route::post(
     '/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/protocol/{protocolId}',
     'Ajax\GroupController@updatePlayoffProtocol'
 )->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
-
+//EA
 Route::get('/ajax/ea/lastGames', 'Ajax\EaController@getLastGames');
+//VK
+Route::post('/ajax/group/{tournamentId}/regular/{gameId}/share', 'Ajax\GroupController@shareRegularResult')
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::post('/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/share', 'Ajax\GroupController@sharePlayoffResult')
+    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
 
 /*
  * Personal
@@ -274,6 +279,11 @@ Route::post('/ajax/personal/{tournamentId}/playoff/{pairId}', 'Ajax\PersonalCont
 Route::put('/ajax/personal/{tournamentId}/playoff/{pairId}', 'Ajax\PersonalController@createPlayoffGame')
     ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+']);
 Route::post('/ajax/personal/{tournamentId}/playoff/{pairId}/{gameId}', 'Ajax\PersonalController@editPlayoffGame')
+    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
+//VK
+Route::post('/ajax/personal/{tournamentId}/regular/{gameId}/share', 'Ajax\PersonalController@shareRegularResult')
+    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::post('/ajax/personal/{tournamentId}/playoff/{pairId}/{gameId}/share', 'Ajax\PersonalController@sharePlayoffResult')
     ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
 
 /*

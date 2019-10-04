@@ -35,6 +35,7 @@ class StoreGroupTournament extends FormRequest
             'playoff_rounds'   => 'int|min:1|max:4',
             'min_players'      => 'required|int|in:3,6',
             'thirdPlaceSeries' => 'int|in:0,1',
+            'vk_group_id'      => 'int',
         ];
     }
 }

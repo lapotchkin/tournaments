@@ -95,18 +95,19 @@ class TextUtils
     /**
      * @param GroupTournament|PersonalTournament $tournament
      * @param int                                $round
+     * @param bool                               $isText
      * @return string
      */
-    public static function playoffRound($tournament, int $round)
+    public static function playoffRound($tournament, int $round, bool $isText = false)
     {
         $maxCompetitors = pow(2, $tournament->playoff_rounds);
         switch ($maxCompetitors / pow(2, $round)) {
             case 8:
-                return '⅛ финала';
+                return ($isText ? '1/8' : '⅛') . ' финала';
             case 4:
-                return '¼ финала';
+                return ($isText ? '1/4' : '¼') . ' финала';
             case 2:
-                return '½ финала';
+                return ($isText ? '1/2' : '½') . ' финала';
             default:
                 if ($tournament->thirdPlaceSeries && $tournament->playoff_rounds === $round) {
                     return '3-е место';

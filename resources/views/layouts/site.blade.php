@@ -35,6 +35,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ action('Site\PlayerController@index') }}">Игроки</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://www.ea.com/ru-ru/games/nhl/nhl-20/pro-clubs/rankings"
+                               target="_blank">
+                                EA ranking
+                            </a>
+                        </li>
                         @auth
                             @if(Auth::user()->isAdmin())
                                 <li>

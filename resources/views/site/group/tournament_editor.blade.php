@@ -47,6 +47,12 @@
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
+                    <label for="vk_group_id">Группа Турнира в ВК</label>
+                    <input type="text" id="vk_group_id" class="form-control" name="vk_group_id"
+                           value="{{ !is_null($tournament) ? $tournament->vk_group_id : '' }}">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group">
                     <label for="min_players">Минимальное количество игроков в команде</label>
                     <select id="min_players" class="form-control" name="min_players">
                         <option value="">--Не выбрано--</option>

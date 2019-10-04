@@ -2,12 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Utils\ScoreImage;
+use App\Utils\Vk;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use VK\Exceptions\Api\VKApiParamAlbumIdException;
+use VK\Exceptions\Api\VKApiParamHashException;
+use VK\Exceptions\Api\VKApiParamServerException;
+use VK\Exceptions\Api\VKApiWallAddPostException;
+use VK\Exceptions\Api\VKApiWallAdsPostLimitReachedException;
+use VK\Exceptions\Api\VKApiWallAdsPublishedException;
+use VK\Exceptions\Api\VKApiWallLinksForbiddenException;
+use VK\Exceptions\Api\VKApiWallTooManyRecipientsException;
+use VK\Exceptions\VKApiException;
+use VK\Exceptions\VKClientException;
 
 /**
  * Class Controller
@@ -53,5 +65,34 @@ class Controller extends BaseController
             return -1;
         }
         return 1;
+    }
+
+    /**
+     * @param $game
+     * @throws VKApiParamAlbumIdException
+     * @throws VKApiParamHashException
+     * @throws VKApiParamServerException
+     * @throws VKApiWallAddPostException
+     * @throws VKApiWallAdsPostLimitReachedException
+     * @throws VKApiWallAdsPublishedException
+     * @throws VKApiWallLinksForbiddenException
+     * @throws VKApiWallTooManyRecipientsException
+     * @throws VKApiException
+     * @throws VKClientException
+     */
+    protected static function postToVk($game)
+    {
+        if (is_null($game->tournament->vk_group_id)) {
+            return;
+        }
+
+        $scoreImage = new ScoreImage($game);
+        $imagePath = $scoreImage->create();
+        if (isset($game->homeTeam)) {
+            $text = $game->homeTeam->team->name . ' против ' . $game->awayTeam->team->name;
+        } else {
+            $text = $game->homePlayer->name . ' (' . $game->homePlayer->tag . ') ' . mb_strtoupper($game->homePlayer->getClubId($game->tournament->id)) . PHP_EOL . 'против' . PHP_EOL . $game->awayPlayer->name . ' (' . $game->awayPlayer->tag . ') ' . mb_strtoupper($game->awayPlayer->getClubId($game->tournament->id));
+        }
+        Vk::wallPost($imagePath, $game->tournament->vk_group_id, $text);
     }
 }
