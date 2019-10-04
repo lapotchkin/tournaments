@@ -149,8 +149,8 @@ class GroupRegularController extends Controller
         $game = GroupGameRegular::with([
             'protocols.player',
             'protocols.playerPosition',
-            'homeTeam.team.players.player',
-            'awayTeam.team.players.player',
+            'homeTeam.team.players',
+            'awayTeam.team.players',
         ])
             ->find($gameId);
         if (is_null($game) || $game->tournament_id !== $tournamentId) {

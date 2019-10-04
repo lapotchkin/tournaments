@@ -10,12 +10,24 @@ use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPlayer;
 use App\Models\PersonalTournamentPlayoff;
 use App\Models\PersonalTournamentWinner;
+use App\Utils\ScoreImage;
+use App\Utils\Vk;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Validator;
+use VK\Exceptions\Api\VKApiParamAlbumIdException;
+use VK\Exceptions\Api\VKApiParamHashException;
+use VK\Exceptions\Api\VKApiParamServerException;
+use VK\Exceptions\Api\VKApiWallAddPostException;
+use VK\Exceptions\Api\VKApiWallAdsPostLimitReachedException;
+use VK\Exceptions\Api\VKApiWallAdsPublishedException;
+use VK\Exceptions\Api\VKApiWallLinksForbiddenException;
+use VK\Exceptions\Api\VKApiWallTooManyRecipientsException;
+use VK\Exceptions\VKApiException;
+use VK\Exceptions\VKClientException;
 
 /**
  * Class PersonalController
@@ -48,6 +60,7 @@ class PersonalController extends Controller
         $tournament->title = $validatedData['title'];
         $tournament->playoff_rounds = $validatedData['playoff_rounds'];
         $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
+        $tournament->vk_group_id = $validatedData['vk_group_id'];
 
         $tournament->save();
 
@@ -71,6 +84,7 @@ class PersonalController extends Controller
         $tournament->title = $validatedData['title'];
         $tournament->playoff_rounds = $validatedData['playoff_rounds'];
         $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
+        $tournament->vk_group_id = $validatedData['vk_group_id'];
 
         $tournament->save();
 
@@ -343,5 +357,66 @@ class PersonalController extends Controller
         $game->save();
 
         return $this->renderAjax([], 'Протокол игры сохранён');
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $gameId
+     * @return ResponseFactory|Response
+     * @throws VKApiException
+     * @throws VKApiParamAlbumIdException
+     * @throws VKApiParamHashException
+     * @throws VKApiParamServerException
+     * @throws VKApiWallAddPostException
+     * @throws VKApiWallAdsPostLimitReachedException
+     * @throws VKApiWallAdsPublishedException
+     * @throws VKApiWallLinksForbiddenException
+     * @throws VKApiWallTooManyRecipientsException
+     * @throws VKClientException
+     */
+    public function shareRegularResult(StoreRequest $request, int $tournamentId, int $gameId)
+    {
+        /** @var PersonalGameRegular $game */
+        $game = PersonalGameRegular::with(['homePlayer', 'awayPlayer'])
+            ->find($gameId);
+        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        self::postToVk($game);
+
+        return $this->renderAjax([], 'Результат игры опубликован');
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @param int          $tournamentId
+     * @param int          $pairId
+     * @param int          $gameId
+     * @return ResponseFactory|Response
+     * @throws VKApiException
+     * @throws VKApiParamAlbumIdException
+     * @throws VKApiParamHashException
+     * @throws VKApiParamServerException
+     * @throws VKApiWallAddPostException
+     * @throws VKApiWallAdsPostLimitReachedException
+     * @throws VKApiWallAdsPublishedException
+     * @throws VKApiWallLinksForbiddenException
+     * @throws VKApiWallTooManyRecipientsException
+     * @throws VKClientException
+     */
+    public function sharePlayoffResult(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    {
+        /** @var PersonalGamePlayoff $game */
+        $game = PersonalGamePlayoff::with(['homePlayer', 'awayPlayer'])
+            ->find($gameId);
+        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+            abort(404);
+        }
+
+        self::postToVk($game);
+
+        return $this->renderAjax([], 'Результат игры опубликован');
     }
 }

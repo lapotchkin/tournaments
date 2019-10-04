@@ -229,8 +229,8 @@ class GroupPlayoffController extends Controller
         $game = GroupGamePlayoff::with([
             'protocols.player',
             'protocols.playerPosition',
-            'homeTeam.team.players.player',
-            'awayTeam.team.players.player',
+            'homeTeam.team.players',
+            'awayTeam.team.players',
         ])
             ->find($gameId);
         if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {

@@ -10,6 +10,18 @@ use App\Models\Team;
 use DateTime;
 use Exception;
 use Image;
+use TextUtils;
+use VK\Client\VKApiClient;
+use VK\Exceptions\Api\VKApiParamAlbumIdException;
+use VK\Exceptions\Api\VKApiParamHashException;
+use VK\Exceptions\Api\VKApiParamServerException;
+use VK\Exceptions\Api\VKApiWallAddPostException;
+use VK\Exceptions\Api\VKApiWallAdsPostLimitReachedException;
+use VK\Exceptions\Api\VKApiWallAdsPublishedException;
+use VK\Exceptions\Api\VKApiWallLinksForbiddenException;
+use VK\Exceptions\Api\VKApiWallTooManyRecipientsException;
+use VK\Exceptions\VKApiException;
+use VK\Exceptions\VKClientException;
 
 class ScoreImage
 {
@@ -55,20 +67,29 @@ class ScoreImage
     }
 
     /**
+     * @return string
      * @throws Exception
      */
     public function create()
     {
         $this->_makeTournamentTitle();
         $this->_makeHeader();
-        $this->_makeTeamName($this->_game->homeTeam->team);
+        $this->_makeTeamName(
+            isset($this->_game->homeTeam) ? $this->_game->homeTeam->team : $this->_game->homePlayer
+        );
         $this->_makeScoreCircle($this->_game->home_score);
         $this->_makeColon();
-        $this->_makeTeamName($this->_game->awayTeam->team, true);
+        $this->_makeTeamName(
+            isset($this->_game->awayTeam) ? $this->_game->awayTeam->team : $this->_game->awayPlayer,
+            true
+        );
         $this->_makeScoreCircle($this->_game->away_score, true);
+        $this->_makeWinStatus();
         $this->_makeFooter();
 
+        $path = storage_path() . '/' . self::FILE_NAME;
         $this->_img->save(storage_path() . '/' . self::FILE_NAME);
+        return $path;
     }
 
     private function _makeTournamentTitle()
@@ -103,7 +124,9 @@ class ScoreImage
             }
         );
         $this->_img->text(
-            'Тур ' . $this->_game->round,
+            isset($this->_game->playoff_pair_id)
+                ? TextUtils::playoffRound($this->_game->tournament, $this->_game->playoffPair->round, true)
+                : 'Тур ' . $this->_game->round,
             $this->_img->width() / 2,
             self::PADDING + self::NO_STARS_OFFSET,
             function ($font) {
@@ -129,10 +152,10 @@ class ScoreImage
     }
 
     /**
-     * @param Team $team
-     * @param bool $isAway
+     * @param mixed $team
+     * @param bool  $isAway
      */
-    private function _makeTeamName(Team $team, $isAway = false)
+    private function _makeTeamName($team, $isAway = false)
     {
         $spaces = substr_count($team->name, ' ');
         $fontSize = $this->_team['size'] / (!$spaces ? 1 : $spaces * 1.5);
@@ -195,6 +218,30 @@ class ScoreImage
                 $font->file($this->_score['font']);
                 $font->size($this->_score['size']);
                 $font->color(self::CIRCLE_BACKGROUND);
+                $font->align('center');
+                $font->valign('center');
+            }
+        );
+    }
+
+    private function _makeWinStatus()
+    {
+        $text = 'Основное время';
+        if ($this->_game->isOvertime) {
+            $text = 'Овертайм';
+        } elseif ($this->_game->isShootout) {
+            $text = 'Буллиты';
+        } elseif ($this->_game->isTechnicalDefeat) {
+            $text = 'Техническое поражение';
+        }
+        $this->_img->text(
+            $text,
+            $this->_img->width() / 2,
+            $this->_img->height() / 2 + self::PADDING * 1.5 + self::NO_STARS_OFFSET,
+            function ($font) {
+                $font->file($this->_header['font']);
+                $font->size($this->_header['size']);
+                $font->color($this->_header['color']);
                 $font->align('center');
                 $font->valign('center');
             }
