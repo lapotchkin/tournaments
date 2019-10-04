@@ -95,7 +95,7 @@ class ScoreImage
     private function _makeTournamentTitle()
     {
         $this->_img->text(
-            $this->_game->tournament->title,
+            $this->_game->tournament->platform->name . ': ' . $this->_game->tournament->title,
             $this->_img->width() / 2,
             self::PADDING * 2,
             function ($font) {
@@ -113,13 +113,24 @@ class ScoreImage
      */
     private function _makeHeader()
     {
+        switch ($this->_game->tournament->platform_id) {
+            case 'xboxone':
+                $color = [56, 193, 114, 0.7];
+                break;
+            case 'playstation4':
+                $color = [52, 144, 220, 0.7];
+                break;
+            default:
+                $color = [255, 255, 255, 0.7];
+        }
+
         $this->_img->line(
             0,
             60 + self::NO_STARS_OFFSET,
             $this->_img->width(),
             60 + self::NO_STARS_OFFSET,
-            function ($draw) {
-                $draw->color([255, 255, 255, 0.7]);
+            function ($draw) use ($color) {
+                $draw->color($color);
                 $draw->width(100);
             }
         );
