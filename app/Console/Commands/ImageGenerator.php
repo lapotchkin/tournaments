@@ -50,10 +50,10 @@ class ImageGenerator extends Command
      */
     public function handle()
     {
-        //$game = GroupGameRegular::find(446);
+        $game = GroupGameRegular::find(640);
         //$game = GroupGamePlayoff::find(78);
         //$game = PersonalGameRegular::find(350);
-        $game = PersonalGamePlayoff::find(75);
+        //$game = PersonalGamePlayoff::find(75);
         if (is_null($game->tournament->vk_group_id)) {
             $this->info('Tournament without group');
         }
