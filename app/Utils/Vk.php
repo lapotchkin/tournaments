@@ -19,20 +19,14 @@ class Vk
     /**
      * @param string $imagePath
      * @param int    $groupId
-     * @param string $message
-     * @return mixed
+     * @return string
+     * @throws VKApiException
      * @throws VKApiParamAlbumIdException
      * @throws VKApiParamHashException
      * @throws VKApiParamServerException
-     * @throws VKApiWallAddPostException
-     * @throws VKApiWallAdsPostLimitReachedException
-     * @throws VKApiWallAdsPublishedException
-     * @throws VKApiWallLinksForbiddenException
-     * @throws VKApiWallTooManyRecipientsException
-     * @throws VKApiException
      * @throws VKClientException
      */
-    public static function wallPost(string $imagePath, int $groupId, string $message)
+    public static function uploadWallPhoto(string $imagePath, int $groupId)
     {
         $vk = new VKApiClient(env('VK_API_VERSION'));
         $address = $vk->photos()->getWallUploadServer(env('VK_ACCESS_TOKEN'), ['group_id' => $groupId]);
@@ -43,11 +37,31 @@ class Vk
             'photo'    => $photo['photo'],
             'hash'     => $photo['hash'],
         ]);
+
+        return 'photo' . $response_save_photo[0]['owner_id'] . '_' . $response_save_photo[0]['id'];
+    }
+
+    /**
+     * @param string $attachments
+     * @param int    $groupId
+     * @param string $message
+     * @return mixed
+     * @throws VKApiException
+     * @throws VKApiWallAddPostException
+     * @throws VKApiWallAdsPostLimitReachedException
+     * @throws VKApiWallAdsPublishedException
+     * @throws VKApiWallLinksForbiddenException
+     * @throws VKApiWallTooManyRecipientsException
+     * @throws VKClientException
+     */
+    public static function wallPost(string $attachments, int $groupId, string $message)
+    {
+        $vk = new VKApiClient(env('VK_API_VERSION'));
         $post = $vk->wall()->post(env('VK_ACCESS_TOKEN'), [
             'owner_id'    => intval('-' . $groupId),
             'from_group'  => 1,
             'message'     => $message,
-            'attachments' => 'photo' . $response_save_photo[0]['owner_id'] . '_' . $response_save_photo[0]['id'],
+            'attachments' => $attachments,
         ]);
 
         return $post;

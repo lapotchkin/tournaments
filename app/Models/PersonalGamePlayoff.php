@@ -14,18 +14,19 @@ use Illuminate\Support\Carbon;
 /**
  * App\Models\PersonalGamePlayoff
  *
- * @property int                            $id                ID
- * @property int                            $playoff_pair_id   ID пары плейоф
- * @property int                            $home_player_id    ID хозяина
- * @property int                            $away_player_id    ID гостя
- * @property int|null                       $home_score        Забил хозяин
- * @property int|null                       $away_score        Забил гость
- * @property int                            $isOvertime        Овертайм
- * @property int                            $isShootout        Буллиты
- * @property int                            $isTechnicalDefeat Техническое поражение
- * @property string|null                    $playedAt          Дата игры
- * @property Carbon                         $createdAt         Дата создания
- * @property Carbon|null                    $deletedAt         Дата удаления
+ * @property int                            $id                    ID
+ * @property int                            $playoff_pair_id       ID пары плейоф
+ * @property int                            $home_player_id        ID хозяина
+ * @property int                            $away_player_id        ID гостя
+ * @property int|null                       $home_score            Забил хозяин
+ * @property int|null                       $away_score            Забил гость
+ * @property int                            $isOvertime            Овертайм
+ * @property int                            $isShootout            Буллиты
+ * @property int                            $isTechnicalDefeat     Техническое поражение
+ * @property string|null                    $playedAt              Дата игры
+ * @property Carbon                         $createdAt             Дата создания
+ * @property Carbon|null                    $deletedAt             Дата удаления
+ * @property string|null                    $sharedAt              Дата поста в ВК
  * @property-read Player                    $awayPlayer
  * @property-read Player                    $homePlayer
  * @property-read PersonalTournamentPlayoff $playoffPair
@@ -80,6 +81,7 @@ class PersonalGamePlayoff extends Model
         'playedAt',
         'createdAt',
         'deletedAt',
+        'sharedAt',
     ];
 
     /**

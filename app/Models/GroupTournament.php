@@ -106,6 +106,34 @@ class GroupTournament extends Model
     }
 
     /**
+     * @return Collection|GroupGameRegular[]
+     */
+    public function getNotSharedRegularGames()
+    {
+        return $this->hasMany('App\Models\GroupGameRegular', 'tournament_id')
+            ->whereNull('sharedAt')
+            ->whereNotNull('playedAt')
+            ->get();
+    }
+
+    /**
+     * @return Collection|GroupGamePlayoff[]
+     */
+    public function getNotSharedPlayoffGames()
+    {
+        return $this->hasManyThrough(
+            'App\Models\GroupGamePlayoff',
+            'App\Models\GroupTournamentPlayoff',
+            'tournament_id',
+            'playoff_pair_id',
+            'id',
+            'id'
+        )->whereNull('sharedAt')
+            ->whereNotNull('playedAt')
+            ->get();
+    }
+
+    /**
      * @return HasMany
      */
     public function playoff()

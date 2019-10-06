@@ -50,6 +50,7 @@ use Illuminate\Support\Carbon;
  * @property string|null                              $updatedAt             Дата изменения
  * @property Carbon|null                              $deletedAt             Дата удаления
  * @property string|null                              $match_id              ID матча в EASHL
+ * @property string|null                              $sharedAt              Дата поста в ВК
  * @property-read GroupTournamentTeam                 $awayTeam
  * @property-read GroupTournamentTeam                 $homeTeam
  * @property-read Collection|GroupGameRegularPlayer[] $protocols
@@ -168,6 +169,7 @@ class GroupGameRegular extends Model
         'playedAt',
         //'deletedAt',
         'match_id',
+        'sharedAt',
     ];
 
     /**

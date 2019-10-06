@@ -49,6 +49,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null                              $deletedAt             Дата удаления
  * @property string|null                              $updatedAt             Дата редактирования
  * @property string|null                              $match_id              ID матча в EASHL
+ * @property string|null                              $sharedAt              Дата поста в ВК
  * @property-read GroupTournamentTeam                 $homeTeam
  * @property-read GroupTournamentTeam                 $awayTeam
  * @property-read Collection|GroupGamePlayoffPlayer[] $protocols
@@ -161,6 +162,7 @@ class GroupGamePlayoff extends Model
         'isTechnicalDefeat',
         'playedAt',
         'match_id',
+        'sharedAt',
         //'createdAt',
         //'deletedAt',
     ];

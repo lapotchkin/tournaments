@@ -6,10 +6,12 @@ use App\Models\GroupGamePlayoff;
 use App\Models\GroupGameRegular;
 use App\Models\PersonalGamePlayoff;
 use App\Models\PersonalGameRegular;
+use App\Models\Player;
 use App\Models\Team;
 use DateTime;
 use Exception;
 use Image;
+use SebastianBergmann\CodeCoverage\Report\PHP;
 use TextUtils;
 use VK\Client\VKApiClient;
 use VK\Exceptions\Api\VKApiParamAlbumIdException;
@@ -87,8 +89,8 @@ class ScoreImage
         $this->_makeWinStatus();
         $this->_makeFooter();
 
-        $path = storage_path() . '/' . self::FILE_NAME;
-        $this->_img->save(storage_path() . '/' . self::FILE_NAME);
+        $path = storage_path() . '/' . $this->_game->id . self::FILE_NAME;
+        $this->_img->save(storage_path() . '/' . $this->_game->id . self::FILE_NAME);
         return $path;
     }
 
@@ -163,18 +165,25 @@ class ScoreImage
     }
 
     /**
-     * @param mixed $team
-     * @param bool  $isAway
+     * @param Team|Player $entity
+     * @param bool        $isAway
      */
-    private function _makeTeamName($team, $isAway = false)
+    private function _makeTeamName($entity, $isAway = false)
     {
-        $spaces = substr_count($team->name, ' ');
+        $spaces = substr_count($entity->name, ' ');
+        $text = str_replace(' ', "\r\n", $entity->name);
+        if (!isset($entity->tag) && $spaces && strpos($entity->name, ' ') < 5) {
+            $spaces = $spaces - 1;
+            $text = substr_replace($entity->name, "&nbsp;", strpos($entity->name, ' '), 1);
+            $text = str_replace(' ', "\r\n", $text);
+            $text = str_replace('&nbsp;', " ", $text);
+        }
         $fontSize = $this->_team['size'] / (!$spaces ? 1 : $spaces * 1.5);
         $x = $isAway
             ? $this->_img->width() / 2 + self::PADDING
             : $this->_img->width() / 2 - self::PADDING;
         $this->_img->text(
-            str_replace(' ', "\r\n", $team->name),
+            $text,
             $x,
             $this->_img->height() / 2 - self::PADDING * ($spaces ? 6 : 4.8) + self::NO_STARS_OFFSET,
             function ($font) use ($isAway, $fontSize) {

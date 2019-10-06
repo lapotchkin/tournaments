@@ -14,20 +14,21 @@ use Illuminate\Support\Carbon;
 /**
  * App\Models\PersonalGameRegular
  *
- * @property int                     $id                ID
- * @property int                     $tournament_id     ID турнира
- * @property int|null                $round             Круг
- * @property int                     $home_player_id    ID хозяина
- * @property int                     $away_player_id    ID гостя
- * @property int|null                $home_score        Забил хозяин
- * @property int|null                $away_score        Забил гость
- * @property int                     $isOvertime        Овертайм
- * @property int                     $isShootout        Буллиты
- * @property int                     $isTechnicalDefeat Техническое поражение
- * @property string|null             $playedAt          Дата игры
- * @property Carbon                  $createdAt         Дата создания
- * @property string|null             $updatedAt         Дата изменения
- * @property Carbon|null             $deletedAt         Дата удаления
+ * @property int                     $id                    ID
+ * @property int                     $tournament_id         ID турнира
+ * @property int|null                $round                 Круг
+ * @property int                     $home_player_id        ID хозяина
+ * @property int                     $away_player_id        ID гостя
+ * @property int|null                $home_score            Забил хозяин
+ * @property int|null                $away_score            Забил гость
+ * @property int                     $isOvertime            Овертайм
+ * @property int                     $isShootout            Буллиты
+ * @property int                     $isTechnicalDefeat     Техническое поражение
+ * @property string|null             $playedAt              Дата игры
+ * @property Carbon                  $createdAt             Дата создания
+ * @property string|null             $updatedAt             Дата изменения
+ * @property Carbon|null             $deletedAt             Дата удаления
+ * @property string|null             $sharedAt              Дата поста в ВК
  * @property-read Player             $awayPlayer
  * @property-read Player             $homePlayer
  * @property-read PersonalTournament $tournament
@@ -86,6 +87,7 @@ class PersonalGameRegular extends Model
         'playedAt',
         'createdAt',
         'deletedAt',
+        'sharedAt',
     ];
 
     /**
