@@ -1,0 +1,182 @@
+1|1|Регулярный чемпионат|1-й тур||Toha Mehane|BadLuntik228|
+2|1|Регулярный чемпионат|1-й тур||SappyGryphon842|MOLOTILA77|
+3|1|Регулярный чемпионат|1-й тур||Artyom3101972|Logr1nTema|
+4|1|Регулярный чемпионат|1-й тур||PendantShip1978|Den Udo|
+5|1|Регулярный чемпионат|1-й тур||Portvein one|Toivolol365|
+6|1|Регулярный чемпионат|1-й тур||LEXUS|ChillyShelf3049|
+7|1|Регулярный чемпионат|1-й тур||Mikha Martyanov|Pashka76RUS|
+8|2|Регулярный чемпионат|2-й тур||Toha Mehane|Mikha Martyanov|
+9|2|Регулярный чемпионат|2-й тур||BadLuntik228|SappyGryphon842|
+10|2|Регулярный чемпионат|2-й тур||MOLOTILA77|Artyom3101972|
+11|2|Регулярный чемпионат|2-й тур||Logr1nTema|PendantShip1978|
+12|2|Регулярный чемпионат|2-й тур||Den Udo|Portvein one|
+13|2|Регулярный чемпионат|2-й тур||Toivolol365|LEXUS|
+14|2|Регулярный чемпионат|2-й тур||ChillyShelf3049|Pashka76RUS|
+15|3|Регулярный чемпионат|3-й тур||Mikha Martyanov|ChillyShelf3049|
+16|3|Регулярный чемпионат|3-й тур||SappyGryphon842|Toha Mehane|
+17|3|Регулярный чемпионат|3-й тур||Artyom3101972|BadLuntik228|
+18|3|Регулярный чемпионат|3-й тур||PendantShip1978|MOLOTILA77|
+19|3|Регулярный чемпионат|3-й тур||Portvein one|Logr1nTema|
+20|3|Регулярный чемпионат|3-й тур||LEXUS|Den Udo|
+21|3|Регулярный чемпионат|3-й тур||Pashka76RUS|Toivolol365|
+22|4|Регулярный чемпионат|4-й тур||SappyGryphon842|Mikha Martyanov|
+23|4|Регулярный чемпионат|4-й тур||Toha Mehane|Artyom3101972|
+24|4|Регулярный чемпионат|4-й тур||BadLuntik228|PendantShip1978|
+25|4|Регулярный чемпионат|4-й тур||MOLOTILA77|Portvein one|
+26|4|Регулярный чемпионат|4-й тур||Logr1nTema|LEXUS|
+27|4|Регулярный чемпионат|4-й тур||Den Udo|Pashka76RUS|
+28|4|Регулярный чемпионат|4-й тур||Toivolol365|ChillyShelf3049|
+29|5|Регулярный чемпионат|5-й тур||Mikha Martyanov|Toivolol365|
+30|5|Регулярный чемпионат|5-й тур||Artyom3101972|SappyGryphon842|
+31|5|Регулярный чемпионат|5-й тур||PendantShip1978|Toha Mehane|
+32|5|Регулярный чемпионат|5-й тур||Portvein one|BadLuntik228|
+33|5|Регулярный чемпионат|5-й тур||LEXUS|MOLOTILA77|
+34|5|Регулярный чемпионат|5-й тур||Pashka76RUS|Logr1nTema|
+35|5|Регулярный чемпионат|5-й тур||ChillyShelf3049|Den Udo|
+36|6|Регулярный чемпионат|6-й тур||Artyom3101972|Mikha Martyanov|
+37|6|Регулярный чемпионат|6-й тур||SappyGryphon842|PendantShip1978|
+38|6|Регулярный чемпионат|6-й тур||Toha Mehane|Portvein one|
+39|6|Регулярный чемпионат|6-й тур||BadLuntik228|LEXUS|
+40|6|Регулярный чемпионат|6-й тур||MOLOTILA77|Pashka76RUS|
+41|6|Регулярный чемпионат|6-й тур||Logr1nTema|ChillyShelf3049|
+42|6|Регулярный чемпионат|6-й тур||Den Udo|Toivolol365|
+43|7|Регулярный чемпионат|7-й тур||Mikha Martyanov|Den Udo|
+44|7|Регулярный чемпионат|7-й тур||PendantShip1978|Artyom3101972|
+45|7|Регулярный чемпионат|7-й тур||Portvein one|SappyGryphon842|
+46|7|Регулярный чемпионат|7-й тур||LEXUS|Toha Mehane|
+47|7|Регулярный чемпионат|7-й тур||Pashka76RUS|BadLuntik228|
+48|7|Регулярный чемпионат|7-й тур||ChillyShelf3049|MOLOTILA77|
+49|7|Регулярный чемпионат|7-й тур||Toivolol365|Logr1nTema|
+50|8|Регулярный чемпионат|8-й тур||PendantShip1978|Mikha Martyanov|
+51|8|Регулярный чемпионат|8-й тур||Artyom3101972|Portvein one|
+52|8|Регулярный чемпионат|8-й тур||SappyGryphon842|LEXUS|
+53|8|Регулярный чемпионат|8-й тур||Toha Mehane|Pashka76RUS|
+54|8|Регулярный чемпионат|8-й тур||BadLuntik228|ChillyShelf3049|
+55|8|Регулярный чемпионат|8-й тур||MOLOTILA77|Toivolol365|
+56|8|Регулярный чемпионат|8-й тур||Logr1nTema|Den Udo|
+57|9|Регулярный чемпионат|9-й тур||Mikha Martyanov|Logr1nTema|
+58|9|Регулярный чемпионат|9-й тур||Portvein one|PendantShip1978|
+59|9|Регулярный чемпионат|9-й тур||LEXUS|Artyom3101972|
+60|9|Регулярный чемпионат|9-й тур||Pashka76RUS|SappyGryphon842|
+61|9|Регулярный чемпионат|9-й тур||ChillyShelf3049|Toha Mehane|
+62|9|Регулярный чемпионат|9-й тур||Toivolol365|BadLuntik228|
+63|9|Регулярный чемпионат|9-й тур||Den Udo|MOLOTILA77|
+64|10|Регулярный чемпионат|10-й тур||Portvein one|Mikha Martyanov|
+65|10|Регулярный чемпионат|10-й тур||PendantShip1978|LEXUS|
+66|10|Регулярный чемпионат|10-й тур||Artyom3101972|Pashka76RUS|
+67|10|Регулярный чемпионат|10-й тур||SappyGryphon842|ChillyShelf3049|
+68|10|Регулярный чемпионат|10-й тур||Toha Mehane|Toivolol365|
+69|10|Регулярный чемпионат|10-й тур||BadLuntik228|Den Udo|
+70|10|Регулярный чемпионат|10-й тур||MOLOTILA77|Logr1nTema|
+71|11|Регулярный чемпионат|11-й тур||Mikha Martyanov|MOLOTILA77|
+72|11|Регулярный чемпионат|11-й тур||LEXUS|Portvein one|
+73|11|Регулярный чемпионат|11-й тур||Pashka76RUS|PendantShip1978|
+74|11|Регулярный чемпионат|11-й тур||ChillyShelf3049|Artyom3101972|
+75|11|Регулярный чемпионат|11-й тур||Toivolol365|SappyGryphon842|
+76|11|Регулярный чемпионат|11-й тур||Den Udo|Toha Mehane|
+77|11|Регулярный чемпионат|11-й тур||Logr1nTema|BadLuntik228|
+78|12|Регулярный чемпионат|12-й тур||LEXUS|Mikha Martyanov|
+79|12|Регулярный чемпионат|12-й тур||Portvein one|Pashka76RUS|
+80|12|Регулярный чемпионат|12-й тур||PendantShip1978|ChillyShelf3049|
+81|12|Регулярный чемпионат|12-й тур||Artyom3101972|Toivolol365|
+82|12|Регулярный чемпионат|12-й тур||SappyGryphon842|Den Udo|
+83|12|Регулярный чемпионат|12-й тур||Toha Mehane|Logr1nTema|
+84|12|Регулярный чемпионат|12-й тур||BadLuntik228|MOLOTILA77|
+85|13|Регулярный чемпионат|13-й тур||Mikha Martyanov|BadLuntik228|
+86|13|Регулярный чемпионат|13-й тур||Pashka76RUS|LEXUS|
+87|13|Регулярный чемпионат|13-й тур||ChillyShelf3049|Portvein one|
+88|13|Регулярный чемпионат|13-й тур||Toivolol365|PendantShip1978|
+89|13|Регулярный чемпионат|13-й тур||Den Udo|Artyom3101972|
+90|13|Регулярный чемпионат|13-й тур||Logr1nTema|SappyGryphon842|
+91|13|Регулярный чемпионат|13-й тур||MOLOTILA77|Toha Mehane|
+92|14|Регулярный чемпионат|14-й тур||BadLuntik228|Toha Mehane|
+93|14|Регулярный чемпионат|14-й тур||MOLOTILA77|SappyGryphon842|
+94|14|Регулярный чемпионат|14-й тур||Logr1nTema|Artyom3101972|
+95|14|Регулярный чемпионат|14-й тур||Den Udo|PendantShip1978|
+96|14|Регулярный чемпионат|14-й тур||Toivolol365|Portvein one|
+97|14|Регулярный чемпионат|14-й тур||ChillyShelf3049|LEXUS|
+98|14|Регулярный чемпионат|14-й тур||Pashka76RUS|Mikha Martyanov|
+99|15|Регулярный чемпионат|15-й тур||Mikha Martyanov|Toha Mehane|
+100|15|Регулярный чемпионат|15-й тур||SappyGryphon842|BadLuntik228|
+101|15|Регулярный чемпионат|15-й тур||Artyom3101972|MOLOTILA77|
+102|15|Регулярный чемпионат|15-й тур||PendantShip1978|Logr1nTema|
+103|15|Регулярный чемпионат|15-й тур||Portvein one|Den Udo|
+104|15|Регулярный чемпионат|15-й тур||LEXUS|Toivolol365|
+105|15|Регулярный чемпионат|15-й тур||Pashka76RUS|ChillyShelf3049|
+106|16|Регулярный чемпионат|16-й тур||Toha Mehane|SappyGryphon842|
+107|16|Регулярный чемпионат|16-й тур||BadLuntik228|Artyom3101972|
+108|16|Регулярный чемпионат|16-й тур||MOLOTILA77|PendantShip1978|
+109|16|Регулярный чемпионат|16-й тур||Logr1nTema|Portvein one|
+110|16|Регулярный чемпионат|16-й тур||Den Udo|LEXUS|
+111|16|Регулярный чемпионат|16-й тур||Toivolol365|Pashka76RUS|
+112|16|Регулярный чемпионат|16-й тур||ChillyShelf3049|Mikha Martyanov|
+113|17|Регулярный чемпионат|17-й тур||Mikha Martyanov|SappyGryphon842|
+114|17|Регулярный чемпионат|17-й тур||Artyom3101972|Toha Mehane|
+115|17|Регулярный чемпионат|17-й тур||PendantShip1978|BadLuntik228|
+116|17|Регулярный чемпионат|17-й тур||Portvein one|MOLOTILA77|
+117|17|Регулярный чемпионат|17-й тур||LEXUS|Logr1nTema|
+118|17|Регулярный чемпионат|17-й тур||Pashka76RUS|Den Udo|
+119|17|Регулярный чемпионат|17-й тур||ChillyShelf3049|Toivolol365|
+120|18|Регулярный чемпионат|18-й тур||SappyGryphon842|Artyom3101972|
+121|18|Регулярный чемпионат|18-й тур||Toha Mehane|PendantShip1978|
+122|18|Регулярный чемпионат|18-й тур||BadLuntik228|Portvein one|
+123|18|Регулярный чемпионат|18-й тур||MOLOTILA77|LEXUS|
+124|18|Регулярный чемпионат|18-й тур||Logr1nTema|Pashka76RUS|
+125|18|Регулярный чемпионат|18-й тур||Den Udo|ChillyShelf3049|
+126|18|Регулярный чемпионат|18-й тур||Toivolol365|Mikha Martyanov|
+127|19|Регулярный чемпионат|19-й тур||Mikha Martyanov|Artyom3101972|
+128|19|Регулярный чемпионат|19-й тур||PendantShip1978|SappyGryphon842|
+129|19|Регулярный чемпионат|19-й тур||Portvein one|Toha Mehane|
+130|19|Регулярный чемпионат|19-й тур||LEXUS|BadLuntik228|
+131|19|Регулярный чемпионат|19-й тур||Pashka76RUS|MOLOTILA77|
+132|19|Регулярный чемпионат|19-й тур||ChillyShelf3049|Logr1nTema|
+133|19|Регулярный чемпионат|19-й тур||Toivolol365|Den Udo|
+134|20|Регулярный чемпионат|20-й тур||Artyom3101972|PendantShip1978|
+135|20|Регулярный чемпионат|20-й тур||SappyGryphon842|Portvein one|
+136|20|Регулярный чемпионат|20-й тур||Toha Mehane|LEXUS|
+137|20|Регулярный чемпионат|20-й тур||BadLuntik228|Pashka76RUS|
+138|20|Регулярный чемпионат|20-й тур||MOLOTILA77|ChillyShelf3049|
+139|20|Регулярный чемпионат|20-й тур||Logr1nTema|Toivolol365|
+140|20|Регулярный чемпионат|20-й тур||Den Udo|Mikha Martyanov|
+141|21|Регулярный чемпионат|21-й тур||Mikha Martyanov|PendantShip1978|
+142|21|Регулярный чемпионат|21-й тур||Portvein one|Artyom3101972|
+143|21|Регулярный чемпионат|21-й тур||LEXUS|SappyGryphon842|
+144|21|Регулярный чемпионат|21-й тур||Pashka76RUS|Toha Mehane|
+145|21|Регулярный чемпионат|21-й тур||ChillyShelf3049|BadLuntik228|
+146|21|Регулярный чемпионат|21-й тур||Toivolol365|MOLOTILA77|
+147|21|Регулярный чемпионат|21-й тур||Den Udo|Logr1nTema|
+148|22|Регулярный чемпионат|22-й тур||PendantShip1978|Portvein one|
+149|22|Регулярный чемпионат|22-й тур||Artyom3101972|LEXUS|
+150|22|Регулярный чемпионат|22-й тур||SappyGryphon842|Pashka76RUS|
+151|22|Регулярный чемпионат|22-й тур||Toha Mehane|ChillyShelf3049|
+152|22|Регулярный чемпионат|22-й тур||BadLuntik228|Toivolol365|
+153|22|Регулярный чемпионат|22-й тур||MOLOTILA77|Den Udo|
+154|22|Регулярный чемпионат|22-й тур||Logr1nTema|Mikha Martyanov|
+155|23|Регулярный чемпионат|23-й тур||Mikha Martyanov|Portvein one|
+156|23|Регулярный чемпионат|23-й тур||LEXUS|PendantShip1978|
+157|23|Регулярный чемпионат|23-й тур||Pashka76RUS|Artyom3101972|
+158|23|Регулярный чемпионат|23-й тур||ChillyShelf3049|SappyGryphon842|
+159|23|Регулярный чемпионат|23-й тур||Toivolol365|Toha Mehane|
+160|23|Регулярный чемпионат|23-й тур||Den Udo|BadLuntik228|
+161|23|Регулярный чемпионат|23-й тур||Logr1nTema|MOLOTILA77|
+162|24|Регулярный чемпионат|24-й тур||Portvein one|LEXUS|
+163|24|Регулярный чемпионат|24-й тур||PendantShip1978|Pashka76RUS|
+164|24|Регулярный чемпионат|24-й тур||Artyom3101972|ChillyShelf3049|
+165|24|Регулярный чемпионат|24-й тур||SappyGryphon842|Toivolol365|
+166|24|Регулярный чемпионат|24-й тур||Toha Mehane|Den Udo|
+167|24|Регулярный чемпионат|24-й тур||BadLuntik228|Logr1nTema|
+168|24|Регулярный чемпионат|24-й тур||MOLOTILA77|Mikha Martyanov|
+169|25|Регулярный чемпионат|25-й тур||Mikha Martyanov|LEXUS|
+170|25|Регулярный чемпионат|25-й тур||Pashka76RUS|Portvein one|
+171|25|Регулярный чемпионат|25-й тур||ChillyShelf3049|PendantShip1978|
+172|25|Регулярный чемпионат|25-й тур||Toivolol365|Artyom3101972|
+173|25|Регулярный чемпионат|25-й тур||Den Udo|SappyGryphon842|
+174|25|Регулярный чемпионат|25-й тур||Logr1nTema|Toha Mehane|
+175|25|Регулярный чемпионат|25-й тур||MOLOTILA77|BadLuntik228|
+176|26|Регулярный чемпионат|26-й тур||LEXUS|Pashka76RUS|
+177|26|Регулярный чемпионат|26-й тур||Portvein one|ChillyShelf3049|
+178|26|Регулярный чемпионат|26-й тур||PendantShip1978|Toivolol365|
+179|26|Регулярный чемпионат|26-й тур||Artyom3101972|Den Udo|
+180|26|Регулярный чемпионат|26-й тур||SappyGryphon842|Logr1nTema|
+181|26|Регулярный чемпионат|26-й тур||Toha Mehane|MOLOTILA77|
+182|26|Регулярный чемпионат|26-й тур||BadLuntik228|Mikha Martyanov|
