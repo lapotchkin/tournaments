@@ -89,8 +89,8 @@ class ScoreImage
         $this->_makeWinStatus();
         $this->_makeFooter();
 
-        $path = storage_path() . '/' . $this->_game->id . self::FILE_NAME;
-        $this->_img->save(storage_path() . '/' . $this->_game->id . self::FILE_NAME);
+        $path = storage_path() . '/' . self::FILE_NAME;
+        $this->_img->save(storage_path() . '/' . self::FILE_NAME);
         return $path;
     }
 
