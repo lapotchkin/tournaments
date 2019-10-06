@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Utils\ScoreImage;
 use App\Utils\Vk;
+use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Response;
@@ -79,6 +80,7 @@ class Controller extends BaseController
      * @throws VKApiWallTooManyRecipientsException
      * @throws VKApiException
      * @throws VKClientException
+     * @throws Exception
      */
     protected static function postToVk($game)
     {
@@ -88,11 +90,12 @@ class Controller extends BaseController
 
         $scoreImage = new ScoreImage($game);
         $imagePath = $scoreImage->create();
+        $photo = Vk::uploadWallPhoto($imagePath, $game->tournament->vk_group_id);
         if (isset($game->homeTeam)) {
             $text = $game->homeTeam->team->name . ' против ' . $game->awayTeam->team->name;
         } else {
             $text = $game->homePlayer->name . ' (' . $game->homePlayer->tag . ') ' . mb_strtoupper($game->homePlayer->getClubId($game->tournament->id)) . PHP_EOL . 'против' . PHP_EOL . $game->awayPlayer->name . ' (' . $game->awayPlayer->tag . ') ' . mb_strtoupper($game->awayPlayer->getClubId($game->tournament->id));
         }
-        Vk::wallPost($imagePath, $game->tournament->vk_group_id, $text);
+        Vk::wallPost($photo, $game->tournament->vk_group_id, $text);
     }
 }

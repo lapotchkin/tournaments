@@ -115,6 +115,34 @@ class PersonalTournament extends Model
     }
 
     /**
+     * @return Collection|PersonalGameRegular[]
+     */
+    public function getNotSharedRegularGames()
+    {
+        return $this->hasMany('App\Models\PersonalGameRegular', 'tournament_id')
+            ->whereNull('sharedAt')
+            ->whereNotNull('playedAt')
+            ->get();
+    }
+
+    /**
+     * @return Collection|PersonalGamePlayoff[]
+     */
+    public function getNotSharedPlayoffGames()
+    {
+        return $this->hasManyThrough(
+            'App\Models\PersonalGamePlayoff',
+            'App\Models\PersonalTournamentPlayoff',
+            'tournament_id',
+            'playoff_pair_id',
+            'id',
+            'id'
+        )->whereNull('sharedAt')
+            ->whereNotNull('playedAt')
+            ->get();
+    }
+
+    /**
      * @return HasMany
      */
     public function playoff()
