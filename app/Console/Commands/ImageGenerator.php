@@ -69,7 +69,7 @@ class ImageGenerator extends Command
             $this->_processTournament($tournament);
         }
         /** @var PersonalTournament[] $personalTournaments */
-        $personalTournaments = GroupTournament::all();
+        $personalTournaments = PersonalTournament::all();
         foreach ($personalTournaments as $tournament) {
             $this->_processTournament($tournament);
         }

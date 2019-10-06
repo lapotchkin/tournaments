@@ -30,7 +30,7 @@
                         Регулярный чемпионат
                     @endif
                 </div>
-                <div class="h3 mb-1 row">
+                <div class="h4 mb-1 row">
                     <div class="col-9 pl-4">
                         <small>
                             <span class="badge badge-light text-uppercase">
@@ -43,7 +43,7 @@
                         <span class="badge badge-pill badge-dark">{{ $game->home_score }}</span>
                     </div>
                 </div>
-                <div class="h3 mb-1 row">
+                <div class="h4 mb-1 row">
                     <div class="col-9 pl-4">
                         <small>
                             <span class="badge badge-light text-uppercase">
