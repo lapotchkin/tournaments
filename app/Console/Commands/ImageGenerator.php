@@ -130,7 +130,7 @@ class ImageGenerator extends Command
         }
 
         foreach ($pucks as $index => $puck) {
-            $this->line('Puck ' . ($index + 1));
+            $this->line('Pack ' . ($index + 1));
             $photos = [];
             $text = '';
             foreach ($puck as $game) {
@@ -141,7 +141,7 @@ class ImageGenerator extends Command
                 if (isset($game->homeTeam)) {
                     $text .= $game->homeTeam->team->name . ' ' . $game->home_score . ':' . $game->away_score . ' ' . $game->awayTeam->team->name . PHP_EOL;
                 } else {
-                    $text .= $game->homePlayer->name . ' (' . $game->homePlayer->tag . ') ' . mb_strtoupper($game->homePlayer->getClubId($game->tournament->id)) . ' ' . $game->home_score . ':' . $game->away_score . ' ' . $game->awayPlayer->name . ' (' . $game->awayPlayer->tag . ') ' . mb_strtoupper($game->awayPlayer->getClubId($game->tournament->id)) . PHP_EOL;
+                    $text .= $game->homePlayer->name . ' ' . mb_strtoupper($game->homePlayer->getClubId($game->tournament->id)) . ' ' . $game->home_score . ':' . $game->away_score . ' ' . $game->awayPlayer->name . ' ' . mb_strtoupper($game->awayPlayer->getClubId($game->tournament->id)) . PHP_EOL;
                 }
                 $game->sharedAt = date('Y-m-d H:i:s');
                 $game->save();
