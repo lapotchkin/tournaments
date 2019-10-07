@@ -2,18 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Models\GroupGamePlayoff;
-use App\Models\GroupGameRegular;
 use App\Models\GroupTournament;
-use App\Models\PersonalGamePlayoff;
-use App\Models\PersonalGameRegular;
 use App\Models\PersonalTournament;
 use App\Utils\ScoreImage;
 use App\Utils\Vk;
 use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
-use VK\Client\VKApiClient;
 use VK\Exceptions\Api\VKApiParamAlbumIdException;
 use VK\Exceptions\Api\VKApiParamHashException;
 use VK\Exceptions\Api\VKApiParamServerException;
@@ -24,12 +18,11 @@ use VK\Exceptions\Api\VKApiWallLinksForbiddenException;
 use VK\Exceptions\Api\VKApiWallTooManyRecipientsException;
 use VK\Exceptions\VKApiException;
 use VK\Exceptions\VKClientException;
-use VK\OAuth\Scopes\VKOAuthGroupScope;
-use VK\OAuth\Scopes\VKOAuthUserScope;
-use VK\OAuth\VKOAuth;
-use VK\OAuth\VKOAuthDisplay;
-use VK\OAuth\VKOAuthResponseType;
 
+/**
+ * Class ImageGenerator
+ * @package App\Console\Commands
+ */
 class ImageGenerator extends Command
 {
     const PHOTOS_PER_POST = 10;
