@@ -30,6 +30,25 @@ class PersonalTournamentPosition
     }
 
     /**
+     * @param int $tournamentId
+     * @return string|null
+     */
+    public static function readFirstGameDate(int $tournamentId)
+    {
+        $result = DB::table('personalGameRegular')
+            ->select([
+                DB::raw("DATE_FORMAT(playedAt, '%Y-%m-%d 00:00:00') as date"),
+            ])
+            ->where('tournament_id', '=', $tournamentId)
+            ->whereNull('deletedAt')
+            ->orderBy('playedAt')
+            ->whereNotNull('playedAt')
+            ->first();
+
+        return is_null($result) ? null : $result->date;
+    }
+
+    /**
      * @param int         $tournamentId
      * @param string|null $date
      * @return mixed

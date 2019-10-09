@@ -34,13 +34,14 @@ class PersonalRegularController extends Controller
         }
         $toDate = $request->input('toDate');
 
+        $firstPlayedGameDate = PersonalTournamentPosition::readFirstGameDate($tournamentId);
         $lastUpdateDate = !is_null($toDate)
             ? $toDate . ' 00:00:00'
             : PersonalTournamentPosition::readLastUpdateDate($tournamentId);
 
         $currentPosition = PersonalTournamentPosition::readPosition($tournamentId);
         $previousPosition = null;
-        if (!is_null($lastUpdateDate)) {
+        if (!is_null($firstPlayedGameDate) && !is_null($lastUpdateDate) && $lastUpdateDate > $firstPlayedGameDate) {
             $previousPosition = PersonalTournamentPosition::readPosition($tournamentId, $lastUpdateDate);
         }
         $positions = self::_getPosition($currentPosition, $previousPosition);
