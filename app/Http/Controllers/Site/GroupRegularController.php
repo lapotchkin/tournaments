@@ -92,13 +92,19 @@ class GroupRegularController extends Controller
         }
 
         $rounds = [];
+        $divisions = [];
         foreach ($tournament->regularGames as $regularGame) {
-            $rounds[$regularGame->round][$regularGame->homeTeam->division][] = $regularGame;
+            $division = $regularGame->homeTeam->division;
+            if (!in_array($division, $divisions)) {
+                $divisions[] = $division;
+            }
+            $rounds[$regularGame->round][$division][] = $regularGame;
         }
 
         return view('site.group.regular.games', [
             'tournament' => $tournament,
             'rounds'     => $rounds,
+            'divisions'  => $divisions,
         ]);
     }
 
