@@ -76,13 +76,19 @@ class PersonalRegularController extends Controller
         }
 
         $rounds = [];
+        $divisions = [];
         foreach ($tournament->regularGames as $regularGame) {
-            $rounds[$regularGame->round][$regularGame->homePlayer->getDivision($tournamentId)][] = $regularGame;
+            $division = $regularGame->homePlayer->getDivision($tournamentId);
+            if (!in_array($division, $divisions)) {
+                $divisions[] = $division;
+            }
+            $rounds[$regularGame->round][$division][] = $regularGame;
         }
 
         return view('site.personal.regular.games', [
             'tournament' => $tournament,
             'rounds'     => $rounds,
+            'divisions'  => $divisions,
         ]);
     }
 
