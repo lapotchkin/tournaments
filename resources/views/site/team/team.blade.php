@@ -118,15 +118,20 @@
                                     </button>
                                 </li>
                             `);
-                            $list.find('li').each(function (index, element) {
-                                const $element = $(element);
-                                const playerData = getPlayerDataFromLi($element);
-                                console.log(playerData);
-                                if (playerData[0].toLowerCase() > newPlayerData[0].toLowerCase()) {
-                                    $element.before($item);
-                                    return false;
-                                }
-                            });
+                            const $items = $list.find('li');
+                            if ($items.length) {
+                                $list.find('li').each(function (index, element) {
+                                    const $element = $(element);
+                                    const playerData = getPlayerDataFromLi($element);
+                                    console.log(playerData);
+                                    if (playerData[0].toLowerCase() > newPlayerData[0].toLowerCase()) {
+                                        $element.before($item);
+                                        return false;
+                                    }
+                                });
+                            } else {
+                                $list.append($item);
+                            }
                             $select.val('');
                             $option.remove();
                         }
