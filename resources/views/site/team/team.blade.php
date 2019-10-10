@@ -128,9 +128,13 @@
                                         $element.before($item);
                                         return false;
                                     }
+                                    if ($items.length === index + 1) {
+                                        $element.after($item);
+                                        return false;
+                                    }
                                 });
                             } else {
-                                window.location.href = '{{ action('Ajax\TeamController@addPlayer', ['teamId' => $team->id])}}';
+                                window.location.href = '{{ route('team', ['teamId' => $team->id])}}';
                             }
                             $select.val('');
                             $option.remove();
