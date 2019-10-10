@@ -15,15 +15,15 @@ class PersonalTournamentPosition
      * @param int $tournamentId
      * @return string|null
      */
-    public static function readLastUpdateDate(int $tournamentId)
+    public static function readLastGameDate(int $tournamentId)
     {
         $result = DB::table('personalGameRegular')
             ->select([
-                DB::raw("DATE_FORMAT(updatedAt, '%Y-%m-%d 00:00:00') as date"),
+                DB::raw("DATE_FORMAT(playedAt, '%Y-%m-%d 00:00:00') as date"),
             ])
             ->where('tournament_id', '=', $tournamentId)
             ->whereNull('deletedAt')
-            ->orderByDesc('updatedAt')
+            ->orderByDesc('playedAt')
             ->first();
 
         return is_null($result) ? null : $result->date;
@@ -55,7 +55,7 @@ class PersonalTournamentPosition
      */
     public static function readPosition(int $tournamentId, string $date = null)
     {
-        $dateString = is_null($date) ? '' : "and updatedAt < '{$date}'";
+        $dateString = is_null($date) ? '' : "and playedAt <= '{$date}'";
         $position = DB::select("
             select
                 if (

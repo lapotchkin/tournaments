@@ -39,37 +39,37 @@ class GroupRegularController extends Controller
         $toDate = $request->input('toDate');
 
         $firstPlayedGameDate = GroupTournamentPosition::readFirstGameDate($tournamentId);
-        $lastUpdateDate = !is_null($toDate)
+        $dateToCompare = !is_null($toDate)
             ? $toDate . ' 00:00:00'
-            : GroupTournamentPosition::readLastUpdateDate($tournamentId);
+            : GroupTournamentPosition::readLastGameDate($tournamentId);
 
         $currentPosition = GroupTournamentPosition::readPosition($tournamentId);
         $previousPosition = null;
-        if (!is_null($firstPlayedGameDate) && !is_null($lastUpdateDate) && $lastUpdateDate > $firstPlayedGameDate) {
-            $previousPosition = GroupTournamentPosition::readPosition($tournamentId, $lastUpdateDate);
+        if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
+            $previousPosition = GroupTournamentPosition::readPosition($tournamentId, $dateToCompare);
         }
         $position = self::_getPosition($currentPosition, $previousPosition);
 
         $currentLeaders = GroupTournamentLeaders::readLeaders($tournamentId);
         $previousLeaders = null;
-        if (!is_null($firstPlayedGameDate) && !is_null($lastUpdateDate) && $lastUpdateDate > $firstPlayedGameDate) {
-            $previousLeaders = GroupTournamentLeaders::readLeaders($tournamentId, $lastUpdateDate);
+        if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
+            $previousLeaders = GroupTournamentLeaders::readLeaders($tournamentId, $dateToCompare);
         }
         $leaders = self::_getLeaders($currentLeaders, $previousLeaders);
 
         $currentGoalies = GroupTournamentGoalies::readGoalies($tournamentId);
         $previousGoalies = null;
-        if (!is_null($firstPlayedGameDate) && !is_null($lastUpdateDate) && $lastUpdateDate > $firstPlayedGameDate) {
-            $previousGoalies = GroupTournamentGoalies::readGoalies($tournamentId, $lastUpdateDate);
+        if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
+            $previousGoalies = GroupTournamentGoalies::readGoalies($tournamentId, $dateToCompare);
         }
         $goalies = self::_getGoalies($currentGoalies, $currentPosition, $previousGoalies, $previousPosition);
 
         return view('site.group.regular.index', [
-            'tournament'     => $tournament,
-            'position'       => $position,
-            'leaders'        => $leaders,
-            'goalies'        => $goalies,
-            'lastUpdateDate' => $lastUpdateDate,
+            'tournament'    => $tournament,
+            'position'      => $position,
+            'leaders'       => $leaders,
+            'goalies'       => $goalies,
+            'dateToCompare' => $dateToCompare,
         ]);
     }
 
@@ -402,7 +402,7 @@ class GroupRegularController extends Controller
         }
 
         $previousPlaces = [];
-        if (!is_null($previousGoalies)) {
+        if (!is_null($previousGoalies) && !is_null($previousStats)) {
             $previousGames = [];
             foreach ($previousStats as $stat) {
                 $previousGames[$stat->id] = $stat->games;

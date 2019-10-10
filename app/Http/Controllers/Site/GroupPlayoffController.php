@@ -113,27 +113,28 @@ class GroupPlayoffController extends Controller
 
         $toDate = $request->input('toDate');
 
-        $lastUpdateDate = !is_null($toDate)
+        $firstPlayedGameDate = GroupTournamentPlayoffPosition::readFirstGameDate($tournamentId);
+        $dateToCompare = !is_null($toDate)
             ? $toDate . ' 00:00:00'
-            : GroupTournamentPlayoffPosition::readLastUpdateDate($tournamentId);
+            : GroupTournamentPlayoffPosition::readLastGameDate($tournamentId);
 
         $currentPosition = GroupTournamentPlayoffPosition::readPosition($tournamentId);
         $previousPosition = null;
-        if (!is_null($lastUpdateDate)) {
-            $previousPosition = GroupTournamentPlayoffPosition::readPosition($tournamentId, $lastUpdateDate);
+        if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
+            $previousPosition = GroupTournamentPlayoffPosition::readPosition($tournamentId, $dateToCompare);
         }
 
         $currentLeaders = GroupTournamentPlayoffLeaders::readLeaders($tournamentId);
         $previousLeaders = null;
-        if (!is_null($lastUpdateDate)) {
-            $previousLeaders = GroupTournamentPlayoffLeaders::readLeaders($tournamentId, $lastUpdateDate);
+        if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
+            $previousLeaders = GroupTournamentPlayoffLeaders::readLeaders($tournamentId, $dateToCompare);
         }
         $leaders = self::_getLeaders($currentLeaders, $previousLeaders);
 
         $currentGoalies = GroupTournamentPlayoffGoalies::readGoalies($tournamentId);
         $previousGoalies = null;
-        if (!is_null($lastUpdateDate)) {
-            $previousGoalies = GroupTournamentPlayoffGoalies::readGoalies($tournamentId, $lastUpdateDate);
+        if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
+            $previousGoalies = GroupTournamentPlayoffGoalies::readGoalies($tournamentId, $dateToCompare);
         }
         $goalies = self::_getGoalies($currentGoalies, $currentPosition, $previousGoalies, $previousPosition);
 
@@ -141,7 +142,7 @@ class GroupPlayoffController extends Controller
             'tournament'     => $tournament,
             'leaders'        => $leaders,
             'goalies'        => $goalies,
-            'lastUpdateDate' => $lastUpdateDate,
+            'dateToCompare' => $dateToCompare,
         ]);
     }
 
@@ -353,7 +354,7 @@ class GroupPlayoffController extends Controller
         }
 
         $previousPlaces = [];
-        if (!is_null($previousGoalies)) {
+        if (!is_null($previousGoalies) && !is_null($previousStats)) {
             $previousGames = [];
             foreach ($previousStats as $stat) {
                 $previousGames[$stat->id] = $stat->games;

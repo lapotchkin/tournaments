@@ -12,7 +12,7 @@
         <div class="form-group mr-2">
             <label class="control-label mr-2" for="toDate">Сравнить с датой</label>
             <input type="text" id="toDate" class="form-control" name="toDate"
-                   value="{{ $lastUpdateDate ? str_replace(' 00:00:00', '', $lastUpdateDate) : '' }}"
+                   value="{{ $dateToCompare ? str_replace(' 00:00:00', '', $dateToCompare) : '' }}"
                    readonly>
         </div>
         <button type="submit" class="btn btn-primary mr-2">Применить</button>

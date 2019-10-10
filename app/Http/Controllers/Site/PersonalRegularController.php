@@ -35,14 +35,14 @@ class PersonalRegularController extends Controller
         $toDate = $request->input('toDate');
 
         $firstPlayedGameDate = PersonalTournamentPosition::readFirstGameDate($tournamentId);
-        $lastUpdateDate = !is_null($toDate)
+        $dateToCompare = !is_null($toDate)
             ? $toDate . ' 00:00:00'
-            : PersonalTournamentPosition::readLastUpdateDate($tournamentId);
+            : PersonalTournamentPosition::readLastGameDate($tournamentId);
 
         $currentPosition = PersonalTournamentPosition::readPosition($tournamentId);
         $previousPosition = null;
-        if (!is_null($firstPlayedGameDate) && !is_null($lastUpdateDate) && $lastUpdateDate > $firstPlayedGameDate) {
-            $previousPosition = PersonalTournamentPosition::readPosition($tournamentId, $lastUpdateDate);
+        if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
+            $previousPosition = PersonalTournamentPosition::readPosition($tournamentId, $dateToCompare);
         }
         $positions = self::_getPosition($currentPosition, $previousPosition);
 
@@ -52,9 +52,9 @@ class PersonalRegularController extends Controller
         }
 
         return view('site.personal.regular.index', [
-            'tournament'     => $tournament,
-            'divisions'      => $divisions,
-            'lastUpdateDate' => $lastUpdateDate,
+            'tournament'    => $tournament,
+            'divisions'     => $divisions,
+            'dateToCompare' => $dateToCompare,
         ]);
     }
 
@@ -211,8 +211,8 @@ class PersonalRegularController extends Controller
             }
         }
 
-        $cpc = count($currentPosition);
         $currentPlaces = [];
+        $cpc = count($currentPosition);
         for ($i = 0; $i < $cpc; $i += 1) {
             if (!isset($currentPlaces[$currentPosition[$i]->id])) {
                 $currentPlaces[$currentPosition[$i]->division][] = $currentPosition[$i]->id;
@@ -223,11 +223,14 @@ class PersonalRegularController extends Controller
             $player = $currentPosition[$i];
             $goalsDif = $player->goals - $player->goals_against;
 
-            $prevPlace = isset($previousPlaces[$player->division]) && in_array($player->id,
-                $previousPlaces[$player->division])
-                ? (array_search($player->id, $previousPlaces[$player->division]) + 1)
-                - (array_search($player->id, $currentPlaces[$player->division]) + 1)
-                : '—';
+            $prevPlace = '—';
+            if (
+                isset($previousPlaces[$player->division])
+                && in_array($player->id, $previousPlaces[$player->division])
+            ) {
+                $prevPlace = (array_search($player->id, $previousPlaces[$player->division]) + 1)
+                    - (array_search($player->id, $currentPlaces[$player->division]) + 1);
+            }
             $position[] = (object)[
                 'place'                  => array_search($player->id, $currentPlaces[$player->division]) + 1,
                 'prevPlace'              => self::_getPrevPlace($prevPlace),
