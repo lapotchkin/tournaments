@@ -14,17 +14,37 @@ class GroupTournamentPlayoffPosition
      * @param int $tournamentId
      * @return string|null
      */
-    public static function readLastUpdateDate(int $tournamentId)
+    public static function readLastGameDate(int $tournamentId)
     {
         $result =  DB::table('groupGamePlayoff')
             ->select([
-                DB::raw("DATE_FORMAT(updatedAt, '%Y-%m-%d 00:00:00') as date"),
+                DB::raw("DATE_FORMAT(playedAt, '%Y-%m-%d 00:00:00') as date"),
             ])
             ->join('groupTournamentPlayoff', 'groupGamePlayoff.playoff_pair_id', '=', 'groupTournamentPlayoff.id')
             ->where('tournament_id', '=', $tournamentId)
             ->whereNull('groupGamePlayoff.deletedAt')
             ->whereNull('groupTournamentPlayoff.deletedAt')
-            ->orderByDesc('updatedAt')
+            ->orderByDesc('playedAt')
+            ->first();
+
+        return is_null($result) ? null : $result->date;
+    }
+
+    /**
+     * @param int $tournamentId
+     * @return string|null
+     */
+    public static function readFirstGameDate(int $tournamentId)
+    {
+        $result =  DB::table('groupGamePlayoff')
+            ->select([
+                DB::raw("DATE_FORMAT(playedAt, '%Y-%m-%d 00:00:00') as date"),
+            ])
+            ->join('groupTournamentPlayoff', 'groupGamePlayoff.playoff_pair_id', '=', 'groupTournamentPlayoff.id')
+            ->where('tournament_id', '=', $tournamentId)
+            ->whereNull('groupGamePlayoff.deletedAt')
+            ->whereNull('groupTournamentPlayoff.deletedAt')
+            ->orderBy('playedAt')
             ->first();
 
         return is_null($result) ? null : $result->date;
@@ -37,7 +57,7 @@ class GroupTournamentPlayoffPosition
      */
     public static function readPosition(int $tournamentId, string $date = null)
     {
-        $dateString = is_null($date) ? '' : "and updatedAt < '{$date}'";
+        $dateString = is_null($date) ? '' : "and playedAt <= '{$date}'";
         $position = DB::select("
             select
                    t.id as id,

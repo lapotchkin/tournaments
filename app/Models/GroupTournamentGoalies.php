@@ -17,7 +17,7 @@ class GroupTournamentGoalies
      */
     public static function readGoalies(int $tournamentId, string $date = null)
     {
-        $dateString = is_null($date) ? '' : "and gGRp.createdAt < '{$date}'";
+        $dateString = is_null($date) ? '' : "and gGRp.createdAt <= '{$date}'";
         $position = DB::select("
             select
                 p.id,

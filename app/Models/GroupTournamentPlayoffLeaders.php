@@ -17,7 +17,7 @@ class GroupTournamentPlayoffLeaders
      */
     public static function readLeaders(int $tournamentId, string $date = null)
     {
-        $dateString = is_null($date) ? '' : "and gGPp.createdAt < '{$date}'";
+        $dateString = is_null($date) ? '' : "and gGPp.createdAt <= '{$date}'";
         $leaders = DB::select("
             select leaders.*,
                (
