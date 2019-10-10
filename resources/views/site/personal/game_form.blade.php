@@ -28,9 +28,9 @@
             <tbody>
             <tr>
                 <td class="text-right pr-3" style="width:40%;">
-                    <h2>{{ $pair ? $pair->playerOne->name : $game->homePlayer->name }}</h2>
+                    <h2>{{ $pair ? $pair->playerOne->tag : $game->homePlayer->tag }}</h2>
                     <h4>
-                        {{ $pair ? $pair->playerOne->tag : $game->homePlayer->tag }}
+                        {{ $pair ? $pair->playerOne->name : $game->homePlayer->name }}
                         <span class="badge badge-success text-uppercase">
                             {{ $pair ? $pair->playerOne->getClubId($pair->tournament_id) : $game->homePlayer->getClubId($game->tournament_id) }}
                         </span>
@@ -46,12 +46,12 @@
                            name="away_score" value="{{ $game ? $game->away_score : '' }}">
                 </td>
                 <td class="text-left pl-3" style="width:40%;">
-                    <h2>{{ $pair ? $pair->playerTwo->name : $game->awayPlayer->name }}</h2>
+                    <h2>{{ $pair ? $pair->playerTwo->tag : $game->awayPlayer->tag }}</h2>
                     <h4>
                         <span class="badge badge-success text-uppercase">
                             {{ $pair ? $pair->playerTwo->getClubId($pair->tournament_id) : $game->awayPlayer->getClubId($game->tournament_id) }}
                         </span>
-                        {{ $pair ? $pair->playerTwo->tag : $game->awayPlayer->tag }}
+                        {{ $pair ? $pair->playerTwo->name : $game->awayPlayer->name }}
                     </h4>
                 </td>
             </tr>

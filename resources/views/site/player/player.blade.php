@@ -1,12 +1,12 @@
 @extends('layouts.site')
 
-@section('title', $player->name .' (' . $player->tag . ') — ')
+@section('title', $player->tag . ($player->name ? ' (' . $player->name . ')' : '') . ' — ')
 
 @section('content')
     {{ Breadcrumbs::render('player', $player) }}
     <h2>
         <i class="fab fa-{{ $player->platform->icon }} {{ $player->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
-        {{ $player->name }} <small class="text-muted">{{ $player->tag }}</small>
+        {{ $player->tag }} <small class="text-muted">{{ $player->name }}</small>
         @auth
             @if(Auth::user()->isAdmin())
                 <a class="btn btn-primary" href="{{ route('player.edit', ['playerId' => $player->id]) }}">

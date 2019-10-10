@@ -165,8 +165,10 @@
                         @for ($i = 0; $i < $protocol->star; $i++)
                             <i class="fas fa-star text-danger"></i>
                         @endfor
-                    <a href="{{ route('player', ['userID' => $protocol->player_id]) }}">{{ $protocol->player->name }}</a>
-                    <small>{{ $protocol->player->tag }}</small>
+                    <a href="{{ route('player', ['userID' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
+                    @if($protocol->player->name)
+                        <small>{{ $protocol->player->name }}</small>
+                    @endif
                     </span>
                     @if (!$loop->last)
                         &nbsp;&nbsp;&nbsp;
@@ -201,9 +203,11 @@
                     <tr>
                         <td>
                             <strong>
-                                <a href="{{ route('player', ['playerId' => $protocol->player_id]) }}">{{ $protocol->player->name }}</a>
+                                <a href="{{ route('player', ['playerId' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
                             </strong>
-                            <small>{{ $protocol->player->tag }}</small>
+                            @if($protocol->player->name)
+                                <small>{{ $protocol->player->name }}</small>
+                            @endif
                         </td>
                         <td class="text-center">
                             {!! TextUtils::positionBadge($protocol->playerPosition) !!}
@@ -251,9 +255,11 @@
                 <tr>
                     <td>
                         <strong>
-                            <a href="{{ route('player', ['playerId' => $game->homeGoalie->player_id]) }}">{{ $game->homeGoalie->player->name }}</a>
+                            <a href="{{ route('player', ['playerId' => $game->homeGoalie->player_id]) }}">{{ $game->homeGoalie->player->tag }}</a>
                         </strong>
-                        <small>{{ $game->homeGoalie->player->tag }}</small>
+                        @if($game->homeGoalie->player->name)
+                            <small>{{ $game->homeGoalie->player->name }}</small>
+                        @endif
                     </td>
                     <td class="text-center">
                         {!! TextUtils::positionBadge($game->homeGoalie->playerPosition) !!}
@@ -298,9 +304,11 @@
                     <tr>
                         <td>
                             <strong>
-                                <a href="{{ route('player', ['playerId' => $protocol->player_id]) }}">{{ $protocol->player->name }}</a>
+                                <a href="{{ route('player', ['playerId' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
                             </strong>
-                            <small>{{ $protocol->player->tag }}</small>
+                            @if($protocol->player->name)
+                                <small>{{ $protocol->player->name }}</small>
+                            @endif
                         </td>
                         <td class="text-center">
                             {!! TextUtils::positionBadge($protocol->playerPosition) !!}
@@ -348,9 +356,11 @@
                 <tr>
                     <td>
                         <strong>
-                            <a href="{{ route('player', ['playerId' => $game->awayGoalie->player_id]) }}">{{ $game->awayGoalie->player->name }}</a>
+                            <a href="{{ route('player', ['playerId' => $game->awayGoalie->player_id]) }}">{{ $game->awayGoalie->player->tag }}</a>
                         </strong>
-                        <small>{{ $game->awayGoalie->player->tag }}</small>
+                        @if($game->awayGoalie->player->name)
+                            <small>{{ $game->awayGoalie->player->name }}</small>
+                        @endif
                     </td>
                     <td class="text-center">
                         {!! TextUtils::positionBadge($game->awayGoalie->playerPosition) !!}

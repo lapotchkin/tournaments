@@ -169,7 +169,7 @@ class Team extends Model
             'id',
             'player_id'
         )
-            ->orderBy('player.name');
+            ->orderBy('player.tag');
     }
 
     /**

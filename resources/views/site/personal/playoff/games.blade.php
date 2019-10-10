@@ -42,8 +42,8 @@
                                                 @foreach($tournament->tournamentPlayers as $tournamentPlayer)
                                                     <option value="{{ $tournamentPlayer->player_id }}"
                                                         {{ !is_null($pair) && $pair->player_one_id === $tournamentPlayer->player_id ? 'selected' : '' }}>
-                                                        {{ $tournamentPlayer->player->name }}
-                                                        ({{ $tournamentPlayer->player->tag }})
+                                                        {{ $tournamentPlayer->player->tag }}
+                                                        {{ $tournamentPlayer->player->name ? '(' . $tournamentPlayer->player->name . ')' : '' }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -113,8 +113,8 @@
                                                 @foreach($tournament->tournamentPlayers as $tournamentPlayer)
                                                     <option value="{{ $tournamentPlayer->player_id }}"
                                                         {{ !is_null($pair) && $pair->player_two_id === $tournamentPlayer->player_id ? 'selected' : '' }}>
-                                                        {{ $tournamentPlayer->player->name }}
-                                                        ({{ $tournamentPlayer->player->tag }})
+                                                        {{ $tournamentPlayer->player->tag }}
+                                                        {{ $tournamentPlayer->player->name ? '(' . $tournamentPlayer->player->name . ')' : '' }}
                                                     </option>
                                                 @endforeach
                                             </select>

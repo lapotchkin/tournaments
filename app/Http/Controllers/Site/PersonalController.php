@@ -134,7 +134,8 @@ class PersonalController extends Controller
             ->get();
 
         return view('site.personal.player', [
-            'title'            => $tournamentPlayer->player->name . ' (' . $tournamentPlayer->player->tag . ')',
+            'title'            => $tournamentPlayer->player->tag .
+                ($tournamentPlayer->player->name ? ' (' . $tournamentPlayer->player->name . ')' : ''),
             'tournamentPlayer' => $tournamentPlayer,
             'clubs'            => $clubs,
         ]);

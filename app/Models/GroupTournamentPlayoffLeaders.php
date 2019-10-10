@@ -35,7 +35,7 @@ class GroupTournamentPlayoffLeaders
             from
                 (
                     select p.id,
-                           concat('<a href=\"/player/', p.id, '\">', p.name, '</a> <small>', p.tag, '</small>') player,
+                           concat('<a href=\"/player/', p.id, '\">', p.tag, '</a> <small>', p.name, '</small>') player,
                            count(gGPp.id) games,
                            sum(gGPp.goals) goals,
                            sum(gGPp.assists) assists,

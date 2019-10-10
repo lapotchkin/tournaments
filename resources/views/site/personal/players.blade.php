@@ -19,8 +19,8 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    <a href="{{ route('player', ['playerId' => $player->player_id]) }}">{{ $player->player->name }}</a>
-                                    <small>{{ $player->player->tag }}</small>
+                                    <a href="{{ route('player', ['playerId' => $player->player_id]) }}">{{ $player->player->tag }}</a>
+                                    <small>{{ $player->player->name }}</small>
                                     <span
                                         class="badge badge-secondary badge-pill text-uppercase">{{ $player->club_id }}</span>
                                 </td>
@@ -55,7 +55,8 @@
                         <select id="player_id" class="form-control mr-3" name="player_id">
                             <option value="">--Не выбран--</option>
                             @foreach($nonTournamentPlayers as $player)
-                                <option value="{{ $player->id }}">{{ $player->tag }} ({{ $player->name }})</option>
+                                <option
+                                    value="{{ $player->id }}">{{ $player->tag }} {{ $player->name ? '(' .  $player->name . ')' : '' }}</option>
                             @endforeach
                         </select>
                         <div class="invalid-feedback"></div>
@@ -91,17 +92,24 @@
                         method: 'put',
                         url: '{{ action('Ajax\PersonalController@addPlayer', ['tournamentId' => $tournament->id])}}',
                         success: function (response) {
-                            var $division = $('#division');
-                            var division = $division.val();
+                            const $division = $('#division');
+                            const division = $division.val();
                             createDivisionBlock(division);
-                            var $player = $('#player_id');
-                            var playerId = $player.val();
-                            var $option = $('#player_id option[value=' + playerId + ']');
-                            var playerData = $option.text().match(/([\w\s]+)\s\(([А-Яа-яЁё\w\s]+)\)/);
-                            var $tbody = $('#division-' + division).find('tbody');
-                            var $row = $('<tr/>');
+                            const $player = $('#player_id');
+                            const playerId = $player.val();
+                            const $option = $('#player_id option[value=' + playerId + ']');
+                            const playerData = $option.text().split(' (');
+                            const $tbody = $('#division-' + division).find('tbody');
+                            const $row = $('<tr/>');
                             $row.append('<td>' + ($tbody.find('tr').length + 1) + '</td>');
-                            $row.append('<td><a href="{{ action('Site\PersonalController@index') }}/' + playerId + '">' + playerData[2] + '</a> <small>' + playerData[1] + '</small></td>');
+                            $row.append(
+                                '<td>' +
+                                '<a href="{{ action('Site\PlayerController@index') }}/' + playerId + '">'
+                                + playerData[0].trim()
+                                + '</a> '
+                                + (playerData[1] ? '<small>' + playerData[1].replace(')', '') + '</small>' : '')
+                                + '</td>'
+                            );
                             $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ route('personal.tournament', ['tournamentId' => $tournament->id]) }}/player/' + playerId + '"><i class="fas fa-edit"></i></a></td>');
                             $tbody.append($row);
                             $option.remove();
@@ -113,7 +121,7 @@
                     function createDivisionBlock(division) {
                         if ($('#division-' + division).length) return;
 
-                        var letters = 'ABCD';
+                        const letters = 'ABCD';
                         $('.card-deck').append(
                             '<div class="card mb-3" id="division-' + division + '"><h4 class="card-header bg-dark text-light">Группа ' + letters.charAt(division - 1) + '</h4><div class="card-body"><table class="table table-striped table-sm" id="player-table"><tbody></tbody></table></div></div>');
                     }

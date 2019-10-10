@@ -60,8 +60,8 @@ class PersonalTournamentPosition
             select
                 if (
                     pTp.club_id is null,
-                    concat('<a href=\"/player/', p.id ,'\">', p.name, '</a> <small>', p.tag, '</small>'),
-                    concat('<a href=\"/player/', p.id ,'\">', p.name, '</a> <small>', p.tag, '</small> <span class=\"badge badge-pill badge-success text-uppercase\">', pTp.club_id, '</span>')
+                    concat('<a href=\"/player/', p.id ,'\">', p.tag, '</a> <small>', p.name, '</small>'),
+                    concat('<a href=\"/player/', p.id ,'\">', p.tag, '</a> <small>', p.name, '</small> <span class=\"badge badge-pill badge-success text-uppercase\">', pTp.club_id, '</span>')
                 ) as player,
                 p.id as id,
                 pTp.division as division,
