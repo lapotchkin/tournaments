@@ -22,10 +22,10 @@
         <tr>
             <td class="text-right" style="width:40%;">
                 <h2>
-                    <a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->name }}</a>
+                    <a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a>
                 </h2>
                 <h4>
-                    {{ $game->homePlayer->tag }}
+                    {{ $game->homePlayer->name }}
                     <span class="badge badge-success text-uppercase">
                         {{ $game->homePlayer->getClubId($game->playoffPair ? $game->playoffPair->tournament_id : $game->tournament_id) }}
                     </span>
@@ -52,13 +52,13 @@
             </td>
             <td class="text-left" style="width:40%;">
                 <h2>
-                    <a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->name }}</a>
+                    <a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->tag }}</a>
                 </h2>
                 <h4>
                     <span class="badge badge-success text-uppercase">
                         {{ $game->awayPlayer->getClubId($game->playoffPair ? $game->playoffPair->tournament_id : $game->tournament_id) }}
                     </span>
-                    {{ $game->awayPlayer->tag }}
+                    {{ $game->awayPlayer->name }}
                 </h4>
             </td>
         </tr>

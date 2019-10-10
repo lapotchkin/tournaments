@@ -17,7 +17,7 @@ class PlayerController extends Controller
 {
     const USER_RULES = [
         'tag'         => 'required|string',
-        'name'        => 'required|string',
+        'name'        => 'string',
         'vk'          => 'string',
         'city'        => 'string',
         'lat'         => 'numeric',
@@ -69,6 +69,22 @@ class PlayerController extends Controller
         $player = Player::find($playerId);
         if (is_null($player)) {
             abort(404, 'Игрок не найден');
+        }
+
+        if (!isset($validatedData['name'])) {
+            $validatedData['name'] = '';
+        }
+        if (!isset($validatedData['vk'])) {
+            $validatedData['vk'] = null;
+        }
+        if (!isset($validatedData['city'])) {
+            $validatedData['city'] = null;
+        }
+        if (!isset($validatedData['lat'])) {
+            $validatedData['lat'] = null;
+        }
+        if (!isset($validatedData['lon'])) {
+            $validatedData['lon'] = null;
         }
 
         $player->fill($validatedData);

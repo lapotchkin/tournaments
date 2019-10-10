@@ -217,7 +217,7 @@ Breadcrumbs::for('personal.tournament.regular.games', function ($trail, Personal
 Breadcrumbs::for('personal.tournament.regular.game', function ($trail, PersonalGameRegular $game) {
     $trail->parent('personal.tournament.regular.games', $game->tournament);
     $trail->push(
-        'Тур ' . $game->round . ': ' . $game->homePlayer->name . ' (' . $game->homePlayer->tag . ') vs. ' . $game->awayPlayer->name . ' (' . $game->awayPlayer->tag . ')',
+        'Тур ' . $game->round . ': ' . $game->homePlayer->tag . ' vs. ' . $game->awayPlayer->tag,
         route(
             'personal.tournament.regular.game',
             ['tournamentId' => $game->tournament->id, 'gameId' => $game->id]
@@ -246,7 +246,7 @@ Breadcrumbs::for('personal.tournament.playoff.game', function ($trail, PersonalG
     $roundText = TextUtils::playoffRound($game->tournament, $game->playoffPair->round);
     $pairText = strstr($roundText, 'финала') ? ' (пара ' . $game->playoffPair->pair . ')' : '';
     $trail->push(
-        $roundText . $pairText . ': ' . $game->homePlayer->name . ' (' . $game->homePlayer->tag . ') vs. ' . $game->awayPlayer->name . ' (' . $game->awayPlayer->tag . ')',
+        $roundText . $pairText . ': ' . $game->homePlayer->tag . ' vs. ' . $game->awayPlayer->tag,
         route(
             'personal.tournament.playoff.game',
             ['tournamentId' => $game->tournament->id, 'pairId' => $game->playoff_pair_id, 'gameId' => $game->id]
@@ -289,7 +289,7 @@ Breadcrumbs::for('player.add', function ($trail) {
 //Players > Player
 Breadcrumbs::for('player', function ($trail, Player $player) {
     $trail->parent('players');
-    $trail->push($player->name . ' (' . $player->tag . ')', route('player', ['playerId' => $player->id]));
+    $trail->push($player->tag, route('player', ['playerId' => $player->id]));
 });
 //Players > Player > Edit
 Breadcrumbs::for('player.edit', function ($trail, Player $player) {
