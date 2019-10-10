@@ -130,7 +130,7 @@
                                     }
                                 });
                             } else {
-                                $list.append($item);
+                                window.location.href = '{{ action('Ajax\TeamController@addPlayer', ['teamId' => $team->id])}}';
                             }
                             $select.val('');
                             $option.remove();
