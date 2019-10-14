@@ -6,8 +6,10 @@
     {{ Breadcrumbs::render('personal.tournament.player', $tournamentPlayer, $title) }}
     <h2>
         <i class="fab fa-{{ $tournamentPlayer->player->platform->icon }} {{ $tournamentPlayer->player->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
-        {{ $tournamentPlayer->player->name }}
-        <small class="text-muted">{{ $tournamentPlayer->player->tag }}</small>
+        {{ $tournamentPlayer->player->tag }}
+        @if($tournamentPlayer->player->name)
+            <small class="text-muted">{{ $tournamentPlayer->player->name }}</small>
+        @endif
     </h2>
 
     <div class="row">

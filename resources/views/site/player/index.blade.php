@@ -34,9 +34,9 @@
                     @endforeach
                 </div>
                 <div>
-                    <a href="{{ route('player', ['playerId' => $winner->player->id]) }}">{{ $winner->player->name }}</a>
+                    <a href="{{ route('player', ['playerId' => $winner->player->id]) }}">{{ $winner->player->tag }}</a>
                 </div>
-                <div class="small">{{ $winner->player->tag }}</div>
+                <div class="small">{{ $winner->player->name }}</div>
             </div>
         </div>
     @endforeach

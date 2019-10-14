@@ -21,7 +21,7 @@ class GroupTournamentGoalies
         $position = DB::select("
             select
                 p.id,
-                concat('<a href=\"/player/', p.id, '\">', p.name, '</a> <small>', p.tag, '</small>') goalie,
+                concat('<a href=\"/player/', p.id, '\">', p.tag, '</a> <small>', p.name, '</small>') goalie,
                 (
                     select concat('<a href=\"/ team /', t.id, '\">', t.name, '</a> <span class=\"badge badge-success\">', t.short_name, '</span>') name
                     from

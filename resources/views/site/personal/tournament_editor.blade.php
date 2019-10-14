@@ -116,7 +116,7 @@
                                 @if($winner->place === 1 && $winner->player_id === $player->id) selected @endif
                             @endforeach
                         >
-                            {{ $player->tag }} ({{ $player->name }})
+                            {{ $player->tag }} {{ $player->name ? '(' .  $player->name . ')' : '' }}
                         </option>
                     @endforeach
                 </select>
@@ -138,7 +138,7 @@
                                 @if($winner->place === 2 && $winner->player_id === $player->id) selected @endif
                             @endforeach
                         >
-                            {{ $player->tag }} ({{ $player->name }})
+                            {{ $player->tag }} {{ $player->name ? '(' .  $player->name . ')' : '' }}
                         </option>
                     @endforeach
                 </select>
@@ -161,7 +161,7 @@
                                     @if($winner->place === 3 && $winner->player_id === $player->id) selected @endif
                                 @endforeach
                             >
-                                {{ $player->tag }} ({{ $player->name }})
+                                {{ $player->tag }} {{ $player->name ? '(' .  $player->name . ')' : '' }}
                             </option>
                         @endforeach
                     </select>

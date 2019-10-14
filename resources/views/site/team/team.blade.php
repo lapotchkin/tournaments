@@ -22,8 +22,8 @@
             @foreach($team->players as $player)
                 <li>
                     <span class="fa-li"><i class="fas fa-user"></i></span>
-                    <a href="{{ route('player', ['playerId' => $player->id]) }}">{{ $player->name }}</a>
-                    <small>{{ $player->tag }}</small>
+                    <a href="{{ route('player', ['playerId' => $player->id]) }}">{{ $player->tag }}</a>
+                    <small>{{ $player->name }}</small>
                     @auth
                         @if(Auth::user()->isAdmin())
                             <button class="btn btn-danger btn-sm delete-player" data-id="{{ $player->id }}">
@@ -45,7 +45,8 @@
                         <select id="player_id" class="form-control mr-3" name="player_id">
                             <option value="">--Не выбран--</option>
                             @foreach($nonTeamPlayers as $player)
-                                <option value="{{ $player->id }}">{{ $player->tag }} ({{ $player->name }})</option>
+                                <option
+                                    value="{{ $player->id }}">{{ $player->tag }} {{ $player->name ? '(' .  $player->name . ')' : '' }}</option>
                             @endforeach
                         </select>
                         <div class="invalid-feedback"></div>
@@ -105,25 +106,36 @@
                             const playerId = $select.val();
                             const $option = $('#player_id option[value=' + playerId + ']');
                             const newPlayerData = getPlayerDataFromOption($option);
+                            console.log(newPlayerData);
                             const $list = $('#team-players');
                             const $item = $(`
                                 <li>
                                     <span class="fa-li"><i class="fas fa-user"></i></span>
-                                    <a href="{{ route('players') }}/${playerId}">${newPlayerData[2]}</a>
-                                    <small>${newPlayerData[1]}</small>
+                                    <a href="{{ route('players') }}/${playerId}">${newPlayerData[0]}</a>
+                                    <small>${newPlayerData[1] ? newPlayerData[1] : ''}</small>
                                     <button class="btn btn-danger btn-sm delete-player" data-id="${playerId}">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </li>
                             `);
-                            $list.find('li').each(function (index, element) {
-                                const $element = $(element);
-                                const playerData = getPlayerDataFromLi($element);
-                                if (playerData[1].toLowerCase() > newPlayerData[2].toLowerCase()) {
-                                    $element.before($item);
-                                    return false;
-                                }
-                            });
+                            const $items = $list.find('li');
+                            if ($items.length) {
+                                $list.find('li').each(function (index, element) {
+                                    const $element = $(element);
+                                    const playerData = getPlayerDataFromLi($element);
+                                    console.log(playerData);
+                                    if (playerData[0].toLowerCase() > newPlayerData[0].toLowerCase()) {
+                                        $element.before($item);
+                                        return false;
+                                    }
+                                    if ($items.length === index + 1) {
+                                        $element.after($item);
+                                        return false;
+                                    }
+                                });
+                            } else {
+                                window.location.href = '{{ route('team', ['teamId' => $team->id])}}';
+                            }
                             $select.val('');
                             $option.remove();
                         }
@@ -137,12 +149,16 @@
                             const playerId = $button.data('id');
                             const removedPlayerData = getPlayerDataFromLi($item);
                             const $select = $('#player_id');
-                            const $option = $(`<option value="${playerId}">${removedPlayerData[2]} (${removedPlayerData[1]})</option>`);
+                            const option = '<option value="' + playerId + '">'
+                                + removedPlayerData[0]
+                                + (removedPlayerData[1] ? '(' + removedPlayerData[1] + ')' : '')
+                                + '</option>';
+                            const $option = $(option);
                             $select.find('option').each(function (index, element) {
                                 if (index > 0) {
                                     const $element = $(element);
                                     const playerData = getPlayerDataFromOption($element);
-                                    if (playerData[1].toLowerCase() > removedPlayerData[2].toLowerCase()) {
+                                    if (playerData[0].toLowerCase() > removedPlayerData[0].toLowerCase()) {
                                         $element.before($option);
                                         return false;
                                     }
@@ -154,11 +170,22 @@
                 });
 
                 function getPlayerDataFromOption($option) {
-                    return $option.text().match(/([\w\s]+)\s\(([А-Яа-яЁё\w\s]+)\)/);
+                    const playerData = $option.text().split(' (');
+                    for (let i = 0; i < playerData.length; i += 1) {
+                        playerData[i] = playerData[i].trim().replace(')', '');
+                    }
+                    return playerData;
                 }
 
                 function getPlayerDataFromLi($item) {
-                    return $item.html().match(/<a[\s\w=\":\/\-\.]+>([А-Яа-яЁё\w\s]+)<\/a>[\w\s]+<small>([\w\s]+)/);
+                    // const playerData;
+                    const html = $item.html();
+                    const tag = html.match(/<a[\s\w=\":\/\-\.]+>([А-Яа-яЁё\w\s\-\_]+)<\/a>/);
+                    const name = html.match(/<small>([А-Яа-яЁё\w\s]+)/);
+                    return [
+                        tag && tag[1] ? tag[1] : '',
+                        name && name[1] ? name[1] : '',
+                    ];
                 }
             </script>
         @endif

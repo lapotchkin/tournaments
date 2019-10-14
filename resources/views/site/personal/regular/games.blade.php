@@ -12,7 +12,10 @@
         <select id="playersList" class="form-control mt-3 mr-2" name="players">
             <option value="0">Все игроки</option>
             @foreach($tournament->players as $player)
-                <option value="{{ $player->name }}">{{ $player->tag }} ({{ $player->name }})</option>
+                <option value="{{ $player->name }}">
+                    {{ $player->tag }}
+                    {{ $player->name ? '(' . $player->name . ')' : '' }}
+                </option>
             @endforeach
         </select>
         <select id="roundsList" class="form-control mt-3 mr-2" name="rounds">
@@ -75,11 +78,11 @@
                                     <td class="text-right">
                                         @if ($game->home_score > $game->away_score)
                                             <strong><a
-                                                    href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->name }}</a></strong>
+                                                    href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a></strong>
                                         @else
-                                            <a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->name }}</a>
+                                            <a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a>
                                         @endif
-                                        <small>{{ $game->homePlayer->tag }}</small>
+                                        <small>{{ $game->homePlayer->name }}</small>
                                         <span class="badge badge-success text-uppercase">
                                         {{ $game->homePlayer->getClubId($game->tournament_id) }}
                                     </span>
@@ -97,11 +100,11 @@
                                     </span>
                                         @if ($game->home_score < $game->away_score)
                                             <strong><a
-                                                    href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->name }}</a></strong>
+                                                    href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->tag }}</a></strong>
                                         @else
-                                            <a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->name }}</a>
+                                            <a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->tag }}</a>
                                         @endif
-                                        <small>{{ $game->awayPlayer->tag }}</small>
+                                        <small>{{ $game->awayPlayer->name }}</small>
                                     </td>
                                     <td class="text-right">
                                         <a class="btn btn-sm btn-primary"
@@ -158,19 +161,19 @@
                 $('#' + $(this).val()).show();
             });
 
-            @if(count($divisions) > 1)
-                const $divisionsList = $('#divisionsList');
-                $divisionsList.on('change', function () {
-                    const $rows = $('.divisions');
-                    const val = $(this).val();
-                    if (val === '0') {
-                        $rows.show();
-                        return;
-                    }
+                @if(count($divisions) > 1)
+            const $divisionsList = $('#divisionsList');
+            $divisionsList.on('change', function () {
+                const $rows = $('.divisions');
+                const val = $(this).val();
+                if (val === '0') {
+                    $rows.show();
+                    return;
+                }
 
-                    $rows.hide();
-                    $('.' + $(this).val()).show();
-                });
+                $rows.hide();
+                $('.' + $(this).val()).show();
+            });
             @endif
 
             if (window.location.hash) {
