@@ -10,6 +10,7 @@ use App\Models\Player;
 use App\Models\Team;
 use Exception;
 use Illuminate\Console\Command;
+use Storage;
 
 class ScheduleGenerator extends Command
 {
@@ -55,13 +56,14 @@ class ScheduleGenerator extends Command
             throw new Exception("Расписание уже составлено", 65);
         }
 
-        $filePath = storage_path("schedules/{$this->argument('type')}/{$this->argument('id')}.txt");
-        if (!is_readable($filePath)) {
-            throw new Exception("Файл не читается", 72);
-        }
-
-        $lines = file($filePath);
+        $scheduleToImport = Storage::disk('local')
+            ->get("schedules/{$this->argument('type')}/{$this->argument('id')}.txt");
+        $lines = explode("\n", $scheduleToImport);
         foreach ($lines as $line) {
+            if (!$line) {
+                continue;
+            }
+
             $data = explode('|', $line);
             $this->info("Игра {$data[0]}");
 
