@@ -140,7 +140,7 @@ class ScheduleGenerator extends Command
         if (is_null($awayTeam)) {
             throw new Exception("Гость не найден");
         }
-        $this->info("    Гость: {$homeTeam->name}");
+        $this->info("    Гость: {$awayTeam->name}");
 
         $gameOne = new GroupGameRegular([
             'tournament_id' => (int)$id,

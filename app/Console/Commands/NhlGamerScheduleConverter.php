@@ -71,7 +71,7 @@ class NhlGamerScheduleConverter extends Command
             }
 
             $teamsRound[$round][] = $data[0];
-            $string = "{$i}|{$round}|Регулярный чемпионат|{$round}-й тур|{$data[0]}|{$data[2]}|";
+            $string = "{$i}|{$round}|Регулярный чемпионат|{$round}-й тур||{$data[0]}|{$data[2]}|";
             $this->line($string);
             $schedule .= $string . PHP_EOL;
             $i += 1;
