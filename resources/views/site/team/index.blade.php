@@ -5,7 +5,7 @@
 @section('content')
     {{ Breadcrumbs::render('teams') }}
     <h2>
-        Клманды
+        Команды
         @auth
             @if(Auth::user()->isAdmin())
                 <a class="btn btn-primary" href="{{ route('team.add') }}">

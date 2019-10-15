@@ -126,7 +126,19 @@ class EaController extends Controller
                         self::API_PATH[$app] . self::MATCHES_PATH
                     ),
                     [
-                        'query' => [
+                        'headers' => [
+                            'Pragma'          => 'no-cache',
+                            'Accept'          => 'application/json',
+                            'Origin'          => 'https://www.ea.com',
+                            'Cache-Control'   => 'no-cache',
+                            'Accept-Language' => 'en-us',
+                            'Host'            => 'proclubs.ea.com',
+                            'User-Agent'      => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.2 Safari/605.1.15',
+                            'Referer'         => 'https://www.ea.com/ru-ru/games/nhl/nhl-20/pro-clubs/match-history?clubId=48893&platform=ps4',
+                            'Accept-Encoding' => 'gzip, deflate, br',
+                            'Connection'      => 'keep-alive',
+                        ],
+                        'query'   => [
                             'matchType'        => 'club_private',
                             'match_type'       => 'club_private',
                             'matches_returned' => self::MATCHES_PER_REQUEST,
@@ -254,6 +266,7 @@ class EaController extends Controller
      * @param bool  $isWin
      * @param array $positions
      * @return array
+     * @throws Exception
      */
     protected static function getPlayer(array $playerData, Team $team, bool $isWin, array $positions)
     {
@@ -261,6 +274,11 @@ class EaController extends Controller
         $player = Player::where('tag', '=', $playerData['playername'])
             ->where('platform_id', '=', $team->platform_id)
             ->first();
+
+        if (is_null($player)) {
+            throw new Exception("Player {$playerData['playername']} is not in the DB");
+        }
+
         $positionId = is_numeric($playerData['position'])
             ? (int)$playerData['position']
             : $positions['byEaId'][$playerData['position']]->id;
