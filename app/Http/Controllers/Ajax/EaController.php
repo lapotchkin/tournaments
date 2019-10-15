@@ -112,7 +112,7 @@ class EaController extends Controller
             abort(400, 'Не найдена пара или игра');
         }
 
-        //Cache::flush();
+        Cache::flush();
         $responseJSON = Cache::remember(
             $key,
             new DateInterval('PT1H'),
@@ -134,7 +134,7 @@ class EaController extends Controller
                             'Accept-Language' => 'en-us',
                             'Host'            => 'proclubs.ea.com',
                             'User-Agent'      => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.2 Safari/605.1.15',
-                            'Referer'         => 'https://www.ea.com/ru-ru/games/nhl/nhl-20/pro-clubs/match-history?clubId=48893&platform=ps4',
+                            'Referer'         => 'https://www.ea.com/ru-ru/games/nhl/nhl-20/pro-clubs/match-history?clubId=' . $clubId . '&platform=' . $platform,
                             'Accept-Encoding' => 'gzip, deflate, br',
                             'Connection'      => 'keep-alive',
                         ],
