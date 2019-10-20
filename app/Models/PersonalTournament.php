@@ -120,6 +120,8 @@ class PersonalTournament extends Model
     public function getNotSharedRegularGames()
     {
         return $this->hasMany('App\Models\PersonalGameRegular', 'tournament_id')
+            ->whereNotNull('home_score')
+            ->whereNotNull('away_score')
             ->whereNull('sharedAt')
             ->whereNotNull('playedAt')
             ->get();
@@ -137,7 +139,10 @@ class PersonalTournament extends Model
             'playoff_pair_id',
             'id',
             'id'
-        )->whereNull('sharedAt')
+        )
+            ->whereNull('sharedAt')
+            ->whereNotNull('home_score')
+            ->whereNotNull('away_score')
             ->whereNotNull('playedAt')
             ->get();
     }
