@@ -254,7 +254,7 @@ window.TRNMNT_gameFormModule = function () {
     return "<select class=\"form-control\" name=\"position_id\">".concat(positionSelect, "</select>");
   }
   /**
-   * @param playerStar
+   * @param {string} [playerStar]
    * @returns {string}
    * @private
    */
@@ -730,20 +730,17 @@ window.TRNMNT_gameFormModule = function () {
   }
 
   function _concatGameProtocol(game) {
-    console.log(game);
-
     for (var field in game.game) {
       if (_.isInteger(game.game[field])) {
         _gameToSave.game[field] += game.game[field];
-      } else if (field.indexOf('time') !== -1) {
+      } else if (field.indexOf('time') !== -1 && field.indexOf('_powerplay_time') === -1) {
         var seconds = TRNMNT_helpers.convertTimeStringToSeconds(_gameToSave.game[field]);
         var additionalSeconds = TRNMNT_helpers.convertTimeStringToSeconds(game.game[field]);
-        console.log(field, _gameToSave.game[field], game.game[field], seconds, additionalSeconds);
         _gameToSave.game[field] = TRNMNT_helpers.convertSecondsToTimeString(seconds + additionalSeconds);
       }
-
-      _concatPlayers(game.players);
     }
+
+    _concatPlayers(game.players);
 
     _fillGameProtocol(_gameToSave);
   }
@@ -804,9 +801,22 @@ window.TRNMNT_gameFormModule = function () {
           var player = _step5.value;
 
           var existingPlayer = _.find(players[side], {
-            id: 1,
-            'active': true
+            player_id: player.player_id
           });
+
+          if (!existingPlayer) continue;
+
+          for (var key in existingPlayer) {
+            if (key.indexOf('_id') !== -1 || ['isGoalie', 'isWin', 'name', 'position'].indexOf(key) !== -1) {
+              continue;
+            }
+
+            if (key.indexOf('rating_') !== -1) {
+              player[key] = (player[key] + existingPlayer[key]) / 2;
+            } else {
+              player[key] += existingPlayer[key];
+            }
+          }
         }
       } catch (err) {
         _didIteratorError5 = true;
@@ -823,6 +833,8 @@ window.TRNMNT_gameFormModule = function () {
         }
       }
     }
+
+    _fillPlayers(players);
   }
   /**
    * @param positionId

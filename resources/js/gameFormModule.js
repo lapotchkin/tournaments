@@ -164,7 +164,7 @@ window.TRNMNT_gameFormModule = (function () {
     }
 
     /**
-     * @param playerStar
+     * @param {string} [playerStar]
      * @returns {string}
      * @private
      */
@@ -550,18 +550,16 @@ window.TRNMNT_gameFormModule = (function () {
     }
 
     function _concatGameProtocol(game) {
-        console.log(game);
         for (let field in game.game) {
             if (_.isInteger(game.game[field])) {
                 _gameToSave.game[field] += game.game[field];
-            } else if (field.indexOf('time') !== -1) {
+            } else if (field.indexOf('time') !== -1 && field.indexOf('_powerplay_time') === -1) {
                 const seconds = TRNMNT_helpers.convertTimeStringToSeconds(_gameToSave.game[field]);
                 const additionalSeconds = TRNMNT_helpers.convertTimeStringToSeconds(game.game[field]);
-                console.log(field, _gameToSave.game[field], game.game[field], seconds, additionalSeconds);
                 _gameToSave.game[field] = TRNMNT_helpers.convertSecondsToTimeString(seconds + additionalSeconds);
             }
-            _concatPlayers(game.players);
         }
+        _concatPlayers(game.players);
         _fillGameProtocol(_gameToSave);
     }
 
@@ -590,9 +588,22 @@ window.TRNMNT_gameFormModule = (function () {
     function _concatPlayers(players) {
         for (let side in _gameToSave.players) {
             for (let player of _gameToSave.players[side]) {
-                const existingPlayer = _.find(players[side], { id: 1, 'active': true });
+                const existingPlayer = _.find(players[side], {player_id: player.player_id});
+
+                if (!existingPlayer) continue;
+                for (let key in existingPlayer) {
+                    if (key.indexOf('_id') !== -1 || ['isGoalie', 'isWin', 'name', 'position'].indexOf(key) !== -1) {
+                        continue;
+                    }
+                    if (key.indexOf('rating_') !== -1) {
+                        player[key] = (player[key] + existingPlayer[key]) / 2;
+                    } else {
+                        player[key] += existingPlayer[key];
+                    }
+                }
             }
         }
+        _fillPlayers(players);
     }
 
     /**
