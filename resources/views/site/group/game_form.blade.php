@@ -90,7 +90,7 @@
                     <input type="number" id="home_hit" class="form-control text-right" name="home_hit"
                            value="{{ $game ? $game->home_hit : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
                 </td>
-                <th class="text-center">Удары</th>
+                <th class="text-center">Силовые</th>
                 <td colspan="2">
                     <input type="number" id="away_hit" class="form-control text-right" name="away_hit"
                            value="{{ $game ? $game->away_hit : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>

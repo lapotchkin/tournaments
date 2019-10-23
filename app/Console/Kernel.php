@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\EaImporter;
 use App\Console\Commands\ImageGenerator;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -31,6 +32,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command(ImageGenerator::class)
             ->dailyAt('15:00')
+            ->runInBackground();
+        $schedule->command(EaImporter::class)
+            ->hourly()
             ->runInBackground();
     }
 
