@@ -87,7 +87,7 @@
             </tr>
             <tr>
                 <td class="text-right">{{ !is_null($game->home_hit) ? $game->home_hit : '—' }}</td>
-                <th class="text-center">Удары</th>
+                <th class="text-center">Силовые</th>
                 <td class="text-left">{{ !is_null($game->away_hit) ? $game->away_hit : '—' }}</td>
             </tr>
             <tr>

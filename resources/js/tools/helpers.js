@@ -195,5 +195,20 @@ export default {
             autoclose: true,
             language: "ru"
         };
-    }
+    },
+    convertTimeStringToSeconds: function (time) {
+        const tmp = time.split(':');
+        let seconds = 0;
+        for (let i = 0; i < tmp.length; i += 1) {
+            const multiplier = (60 * -(i + 1 - tmp.length));
+            seconds += tmp[i] * (multiplier ? multiplier : 1);
+        }
+        return seconds;
+    },
+    convertSecondsToTimeString: function (seconds) {
+        const date = new Date(seconds * 1000);
+        return (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
+            + ':'
+            + (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+    },
 };

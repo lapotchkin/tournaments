@@ -184,6 +184,8 @@ return [
         Laracasts\Generators\GeneratorsServiceProvider::class,
         // Intervention Image
         Intervention\Image\ImageServiceProvider::class,
+        // Laravel MongoDB
+        Jenssegers\Mongodb\MongodbServiceProvider::class,
     ],
 
     /*

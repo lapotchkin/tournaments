@@ -26,7 +26,8 @@ window.TRNMNT_gameFormModule = (function () {
                 </td>
                 <td>#{away_team}</td>
                 <td class="text-right">
-                    <button type="button" class="btn btn-primary btn-sm">Заполнить</button>
+                    <button type="button" class="result-fill btn btn-primary btn-sm">Заполнить</button>
+                    <button type="button" class="result-concat btn btn-success btn-sm" disabled>Присоединить</button>
                 </td>
             </tr>`,
         player: `
@@ -98,7 +99,7 @@ window.TRNMNT_gameFormModule = (function () {
             for (let player of protocols[side]) {
                 const $tbody = side === 'home' ? _$homePlayers : _$awayPlayers;
                 if (matchId) {
-                    console.log(player);
+                    // console.log(player);
                     $tbody.append(_templates.player.format({
                         tag: player.player_tag,
                         position: _getPlayerBadge(player.position_id, player.position),
@@ -513,11 +514,18 @@ window.TRNMNT_gameFormModule = (function () {
                 home_score: game.home_score,
                 away_score: game.away_score,
             }));
-            $row.find('button').click(function () {
+            $row.find('button.result-fill').click(function () {
+                const $this = $(this);
                 _$resetGame.removeClass('d-none');
-                _$eaGames.find('button').prop('disabled', false);
-                $(this).prop('disabled', true);
+                _$eaGames.find('button.result-fill, button.result-concat').prop('disabled', false);
+                $this.prop('disabled', true);
+                $this.siblings().prop('disabled', true);
                 _fillGameProtocol(response.data[gameId])
+            });
+            $row.find('button.result-concat').click(function () {
+                const $this = $(this);
+                $this.prop('disabled', true);
+                _concatGameProtocol(response.data[gameId])
             });
             $tbody.append($row);
         }
@@ -541,6 +549,22 @@ window.TRNMNT_gameFormModule = (function () {
         _fillPlayers(_gameToSave.players);
     }
 
+    function _concatGameProtocol(game) {
+        console.log(game);
+        for (let field in game.game) {
+            if (_.isInteger(game.game[field])) {
+                _gameToSave.game[field] += game.game[field];
+            } else if (field.indexOf('time') !== -1) {
+                const seconds = TRNMNT_helpers.convertTimeStringToSeconds(_gameToSave.game[field]);
+                const additionalSeconds = TRNMNT_helpers.convertTimeStringToSeconds(game.game[field]);
+                console.log(field, _gameToSave.game[field], game.game[field], seconds, additionalSeconds);
+                _gameToSave.game[field] = TRNMNT_helpers.convertSecondsToTimeString(seconds + additionalSeconds);
+            }
+            _concatPlayers(game.players);
+        }
+        _fillGameProtocol(_gameToSave);
+    }
+
     /**
      * @param players
      * @private
@@ -559,6 +583,14 @@ window.TRNMNT_gameFormModule = (function () {
                     id: player.player_id,
                     stars: _getStarsSelect(),
                 }));
+            }
+        }
+    }
+
+    function _concatPlayers(players) {
+        for (let side in _gameToSave.players) {
+            for (let player of _gameToSave.players[side]) {
+                const existingPlayer = _.find(players[side], { id: 1, 'active': true });
             }
         }
     }
