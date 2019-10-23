@@ -114,7 +114,7 @@ class EaRest
      * @return array
      * @throws Exception
      */
-    public static function parseMatches(array $response, GroupTournament $tournament, Team $homeTeam, Team $awayTeam)
+    public static function parseMatches($response, GroupTournament $tournament, Team $homeTeam, Team $awayTeam)
     {
         $matches = [];
         $homeClubId = (int)$homeTeam->getClubId($tournament->app_id);

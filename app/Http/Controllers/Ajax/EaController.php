@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequest;
+use App\Models\EaGame;
 use App\Models\EaRest;
 use App\Models\GroupGameRegular;
 use App\Models\GroupTournamentPlayoff;
@@ -33,19 +34,16 @@ class EaController extends Controller
 
         $game = null;
         $pair = null;
-        $app = null;
-        $clubId = null;
-        $platform = null;
+        $firstClubId = null;
+        $secondClubId = null;
         if (isset($validatedData['gameId'])) {
             $game = GroupGameRegular::find($validatedData['gameId']);
-            $clubId = $game->homeTeam->team->getClubId($game->tournament->app_id);
-            $platform = $game->tournament->platform_id === 'playstation4' ? 'ps4' : $game->tournament->platform_id;
-            $app = $game->tournament->app_id;
+            $firstClubId = $game->homeTeam->team->getClubId($game->tournament->app_id);
+            $secondClubId = $game->awayTeam->team->getClubId($game->tournament->app_id);
         } elseif (isset($validatedData['pairId'])) {
             $pair = GroupTournamentPlayoff::find($validatedData['pairId']);
-            $clubId = $pair->teamOne->getClubId($pair->tournament->app_id);
-            $platform = $pair->tournament->platform_id === 'playstation4' ? 'ps4' : $pair->tournament->platform_id;
-            $app = $pair->tournament->app_id;
+            $firstClubId = $pair->teamOne->getClubId($pair->tournament->app_id);
+            $secondClubId = $pair->teamTwo->getClubId($pair->tournament->app_id);
         } else {
             abort('404', 'Не указан ID для поиска');
         }
@@ -53,9 +51,12 @@ class EaController extends Controller
             abort(400, 'Не найдена пара или игра');
         }
 
-        $responseJSON = EaRest::readGames($platform, $app, $clubId);
+        $response = EaGame::where('clubs.' . $firstClubId, 'exists', true)
+            ->where('clubs.' . $secondClubId, 'exists', true)
+            ->get();
+
         $matches = EaRest::parseMatches(
-            json_decode($responseJSON, true),
+            $response,
             $pair ? $pair->tournament : $game->tournament,
             $pair ? $pair->teamOne : $game->homeTeam->team,
             $pair ? $pair->teamTwo : $game->awayTeam->team
