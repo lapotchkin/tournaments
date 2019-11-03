@@ -12,7 +12,7 @@
         <select id="playersList" class="form-control mt-3 mr-2" name="players">
             <option value="0">Все игроки</option>
             @foreach($tournament->players as $player)
-                <option value="{{ $player->name }}">
+                <option value="{{ $player->tag }}">
                     {{ $player->tag }}
                     {{ $player->name ? '(' . $player->name . ')' : '' }}
                 </option>

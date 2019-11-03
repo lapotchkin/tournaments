@@ -36,8 +36,8 @@ use VK\Exceptions\VKClientException;
 class PersonalController extends Controller
 {
     const GAME_RULES = [
-        'home_score'        => 'required|int',
-        'away_score'        => 'required|int',
+        'home_score'        => 'int',
+        'away_score'        => 'int',
         'home_shot'         => 'int',
         'isOvertime'        => 'int|min:0|max:1',
         'isShootout'        => 'int|min:0|max:1',
@@ -227,10 +227,19 @@ class PersonalController extends Controller
         }
 
         $validatedData = $request->validate(self::GAME_RULES);
+        if (!isset($validatedData['isOvertime'])) {
+            $validatedData['isOvertime'] = 0;
+        }
+        if (!isset($validatedData['isShootout'])) {
+            $validatedData['isShootout'] = 0;
+        }
+        if (!isset($validatedData['isTechnicalDefeat'])) {
+            $validatedData['isTechnicalDefeat'] = 0;
+        }
         $game->fill($validatedData);
         $game->save();
 
-        return $this->renderAjax([], 'Протокол игры сохранён');
+        return $this->renderAjax($validatedData, 'Протокол игры сохранён');
     }
 
     /**
@@ -353,6 +362,15 @@ class PersonalController extends Controller
         }
 
         $validatedData = $request->validate(self::GAME_RULES);
+        if (!isset($validatedData['isOvertime'])) {
+            $validatedData['isOvertime'] = 0;
+        }
+        if (!isset($validatedData['isShootout'])) {
+            $validatedData['isShootout'] = 0;
+        }
+        if (!isset($validatedData['isTechnicalDefeat'])) {
+            $validatedData['isTechnicalDefeat'] = 0;
+        }
         $game->fill($validatedData);
         $game->save();
 

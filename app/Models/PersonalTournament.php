@@ -111,7 +111,9 @@ class PersonalTournament extends Model
      */
     public function regularGames()
     {
-        return $this->hasMany('App\Models\PersonalGameRegular', 'tournament_id');
+        return $this->hasMany('App\Models\PersonalGameRegular', 'tournament_id')
+            ->orderBy('personalGameRegular.round')
+            ->orderBy('personalGameRegular.id');
     }
 
     /**
