@@ -131,6 +131,10 @@ class GroupGameRegular extends Model
      * @var null|GroupGameRegularPlayer
      */
     public $awayGoalie = null;
+    /**
+     * @var bool
+     */
+    public $gamePlayed = false;
 
     /**
      * @var array

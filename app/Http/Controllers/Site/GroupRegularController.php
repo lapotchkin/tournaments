@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Requests\StoreRequest;
+use App\Models\EaGame;
 use App\Models\GroupGameRegular;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentGoalies;
@@ -99,6 +100,20 @@ class GroupRegularController extends Controller
                 $divisions[] = $division;
             }
             $rounds[$regularGame->round][$division][] = $regularGame;
+
+            if (is_null($regularGame->match_id)) {
+                $regularGame->gamePlayed = EaGame::where(
+                    'clubs.' . $regularGame->homeTeam->team->getClubId($tournament->app_id),
+                    'exists',
+                    true
+                )
+                    ->where(
+                        'clubs.' . $regularGame->awayTeam->team->getClubId($tournament->app_id),
+                        'exists',
+                        true
+                    )
+                    ->exists();
+            }
         }
 
         return view('site.group.regular.games', [
