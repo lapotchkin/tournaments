@@ -21,6 +21,7 @@
                 href="{{ $link }}"
                 class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 text-light border-light border-right {{ $loop->iteration === 1 ? 'active' : '' }} p-1">
                 <div class="text-center">
+                    <i class="fab fa-{{ $game->tournament->platform->icon }}"></i>
                     <strong>{{ $game->tournament->title }}</strong>
                     <span
                         class="badge badge-pill badge-light">{{ $game->tournament->min_players }} на {{ $game->tournament->min_players }}</span>

@@ -21,6 +21,7 @@
                 href="{{ $link }}"
                 class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 text-light border-light border-right {{ $loop->iteration === 1 ? 'active' : '' }} p-1">
                 <div class="text-center">
+                    <i class="fab fa-{{ $game->tournament->platform->icon }}"></i>
                     <strong>{{ $game->tournament->title }}</strong>
                 </div>
                 <div class="text-center text-white-50">
@@ -30,7 +31,7 @@
                         Регулярный чемпионат
                     @endif
                 </div>
-                <div class="h4 mb-1 row">
+                <div class="h5 mb-1 row">
                     <div class="col-9 pl-4">
                         <small>
                             <span class="badge badge-light text-uppercase">
@@ -43,7 +44,7 @@
                         <span class="badge badge-pill badge-dark">{{ $game->home_score }}</span>
                     </div>
                 </div>
-                <div class="h4 mb-1 row">
+                <div class="h5 mb-1 row">
                     <div class="col-9 pl-4">
                         <small>
                             <span class="badge badge-light text-uppercase">
