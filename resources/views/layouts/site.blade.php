@@ -71,16 +71,16 @@
     @show
 
     @section('submenu')
-        @if(strstr(url()->current(), 'group'))
-            <div class="container">
-                @widget('groupGamesCarousel')
-            </div>
-        @endif
-        @if(strstr(url()->current(), 'personal'))
-            <div class="container">
-                @widget('personalGamesCarousel')
-            </div>
-        @endif
+{{--        @if(strstr(url()->current(), 'group'))--}}
+{{--            <div class="container">--}}
+{{--                @widget('groupGamesCarousel')--}}
+{{--            </div>--}}
+{{--        @endif--}}
+{{--        @if(strstr(url()->current(), 'personal'))--}}
+{{--            <div class="container">--}}
+{{--                @widget('personalGamesCarousel')--}}
+{{--            </div>--}}
+{{--        @endif--}}
     @show
 </header>
 
