@@ -170,7 +170,9 @@ class GroupController extends Controller
         $tournament->playoff_rounds = $validatedData['playoff_rounds'];
         $tournament->min_players = $validatedData['min_players'];
         $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
-        $tournament->vk_group_id = $validatedData['vk_group_id'];
+        $tournament->vk_group_id = isset($validatedData['vk_group_id'])
+            ? $validatedData['vk_group_id']
+            : null;
 
         $tournament->save();
 
