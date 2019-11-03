@@ -62,8 +62,13 @@
                             @foreach($games as $game)
                                 <tr class="games {{ !is_null($game->home_score) ? 'table-success' : '' }}">
                                     <td>
-                                    <span
-                                        class="badge badge-pill badge-warning">{{ $game->isOvertime ? 'О' : '' }}</span>
+                                        @auth
+                                            @if(Auth::user()->isAdmin() && is_null($game->home_score) && $game->gamePlayed)
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            @endif
+                                        @endauth
+                                        <span
+                                            class="badge badge-pill badge-warning">{{ $game->isOvertime ? 'О' : '' }}</span>
                                         <span
                                             class="badge badge-pill badge-dark">{{ $game->isShootout ? 'Б' : '' }}</span>
                                         <span
