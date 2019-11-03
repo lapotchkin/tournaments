@@ -4,8 +4,8 @@ window.TRNMNT_helpers = require('./tools/helpers').default;
 // require('./gameFormModule');
 
 Date.prototype.getShortDate = function (delimiter = '.', inverse = false) {
-    const day = this.getDate().toString().length === 1 ? '0' + this.getDate() : this.getDate();
-    const month = (this.getMonth() + 1).toString().length === 1 ? '0' + (this.getMonth() + 1) : (this.getMonth() + 1);
+    const day = _.padStart(this.getDate().toString(), 2, '0');
+    const month = _.padStart((this.getMonth() + 1).toString(), 2, '0');
 
     if (!inverse) return day + delimiter + month + delimiter + this.getFullYear();
 
@@ -17,14 +17,12 @@ Date.prototype.getShortDate = function (delimiter = '.', inverse = false) {
  * @param {String} [delimiter]
  * @returns {String}
  */
-Date.prototype.getFullDate = function (delimiter) {
-    delimiter = delimiter || '.';
-
-    const day = this.getDate().toString().length === 1 ? '0' + this.getDate() : this.getDate();
-    const month = (this.getMonth() + 1).toString().length === 1 ? '0' + (this.getMonth() + 1) : (this.getMonth() + 1);
-    const hour = this.getHours().toString().length === 1 ? '0' + this.getHours() : this.getHours();
-    const minute = this.getMinutes().toString().length === 1 ? '0' + this.getMinutes() : this.getMinutes();
-    // let second = this.getSeconds().toString().length === 1 ? '0' + this.getSeconds() : this.getSeconds();
+Date.prototype.getFullDate = function (delimiter = '.') {
+    const day = _.padStart(this.getDate().toString(), 2, '0');
+    const month = _.padStart((this.getMonth() + 1).toString(), 2, '0');
+    const hour = _.padStart(this.getHours().toString(), 2, '0');
+    const minute = _.padStart(this.getMinutes().toString(), 2, '0');
+    // let second = _.padStart(this.getSeconds().toString(), 2, '0');
 
     return day + delimiter + month + delimiter + this.getFullYear() + ' ' + hour + ':' + minute;
 };
