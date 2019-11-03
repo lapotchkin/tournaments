@@ -31,7 +31,7 @@
                                           <i class="fas fa-circle fa-stack-2x"></i>
                                         <i class="fas fa-trophy fa-stack-1x fa-inverse text-{{ TextUtils::winnerClass($winner->place) }}"></i>
                                         </span>
-                                        {{ $winner->team->name }}
+                                        <a href="{{ route('team', ['teamId' => $winner->team->id]) }}">{{ $winner->team->name }}</a>
                                     @endforeach
                                 </div>
                             @endif
@@ -54,7 +54,12 @@
 @section('script')
     @parent
     <style>
-        .fa-stack { font-size: 0.5rem; }
-        i { vertical-align: middle; }
+        .fa-stack {
+            font-size: 0.5rem;
+        }
+
+        i {
+            vertical-align: middle;
+        }
     </style>
 @endsection
