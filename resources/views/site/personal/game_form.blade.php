@@ -138,7 +138,7 @@
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                     if (response.data.id) {
-                        window.location.href = window.location.href.replace('add', response.data.id) + '/edit';
+                        // window.location.href = window.location.href.replace('add', response.data.id) + '/edit';
                     }
                 },
             });
