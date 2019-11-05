@@ -112,6 +112,7 @@ class GroupRegularController extends Controller
                         'exists',
                         true
                     )
+                    ->where('timestamp', '>', $tournament->startedAt->getTimestamp())
                     ->exists();
             }
         }

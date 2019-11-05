@@ -60,6 +60,12 @@
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
+                    <label for="startedAt">Дата начала турнира</label>
+                    <input type="date" id="startedAt" class="form-control" name="startedAt" readonly
+                           value="{{ !is_null($tournament) ? $tournament->startedAt : '' }}">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group">
                     <label for="vk_group_id">Группа Турнира в ВК</label>
                     <input type="text" id="vk_group_id" class="form-control" name="vk_group_id"
                            value="{{ !is_null($tournament) ? $tournament->vk_group_id : '' }}">
@@ -178,6 +184,8 @@
     @parent
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#startedAt').datepicker(TRNMNT_helpers.getDatePickerSettings());
+
             TRNMNT_sendData({
                 selector: '#tournament-form',
                 method: '{{ is_null($tournament) ? 'put' : 'post' }}',

@@ -36,14 +36,17 @@ class EaController extends Controller
         $pair = null;
         $firstClubId = null;
         $secondClubId = null;
+        $tournament = null;
         if (isset($validatedData['gameId'])) {
             $game = GroupGameRegular::find($validatedData['gameId']);
             $firstClubId = $game->homeTeam->team->getClubId($game->tournament->app_id);
             $secondClubId = $game->awayTeam->team->getClubId($game->tournament->app_id);
+            $tournament = $game->tournament;
         } elseif (isset($validatedData['pairId'])) {
             $pair = GroupTournamentPlayoff::find($validatedData['pairId']);
             $firstClubId = $pair->teamOne->getClubId($pair->tournament->app_id);
             $secondClubId = $pair->teamTwo->getClubId($pair->tournament->app_id);
+            $tournament = $pair->tournament;
         } else {
             abort('404', 'Не указан ID для поиска');
         }
@@ -53,6 +56,7 @@ class EaController extends Controller
 
         $response = EaGame::where('clubs.' . $firstClubId, 'exists', true)
             ->where('clubs.' . $secondClubId, 'exists', true)
+            ->where('timestamp', '>', $tournament->startedAt->getTimestamp())
             ->get();
 
         $matches = EaRest::parseMatches(

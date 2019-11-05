@@ -506,9 +506,11 @@ window.TRNMNT_gameFormModule = (function () {
 
         for (let gameId in response.data) {
             const game = response.data[gameId].game;
-            const date = new Date(game.playedAt);
+            let date = new Date(game.playedAt.replace(' ', 'T'));
+            date.setTime( date.getTime() + date.getTimezoneOffset()*60*1000 );
+            console.log(game.playedAt, date);
             const $row = $(_templates.game.format({
-                date: date.getShortDate(),
+                date: date.getFullDate(),
                 home_team: game.home_team,
                 away_team: game.away_team,
                 home_score: game.home_score,

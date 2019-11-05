@@ -53,6 +53,12 @@
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
+                    <label for="startedAt">Дата начала турнира</label>
+                    <input type="date" id="startedAt" class="form-control" name="startedAt" readonly
+                           value="{{ !is_null($tournament) ? $tournament->startedAt : '' }}">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group">
                     <label for="min_players">Минимальное количество игроков в команде</label>
                     <select id="min_players" class="form-control" name="min_players">
                         <option value="">--Не выбрано--</option>
@@ -178,6 +184,8 @@
     @parent
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#startedAt').datepicker(TRNMNT_helpers.getDatePickerSettings());
+
             TRNMNT_sendData({
                 selector: '#tournament-form',
                 method: '{{ is_null($tournament) ? 'put' : 'post' }}',

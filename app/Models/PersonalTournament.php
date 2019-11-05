@@ -26,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null                                 $deletedAt        Дата удаления
  * @property int                                         $thirdPlaceSeries Серия за третье место
  * @property int                                         $vk_group_id      Группа Турнира в ВК
+ * @property Carbon                                      $startedAt        Дата начала турнира
  * @property-read App                                    $app
  * @property-read League|null                            $league
  * @property-read Collection|PersonalGameRegular[]       $regularGames
@@ -80,6 +81,7 @@ class PersonalTournament extends Model
         'deletedAt',
         'thirdPlaceSeries',
         'vk_group_id',
+        'startedAt',
     ];
 
     /**

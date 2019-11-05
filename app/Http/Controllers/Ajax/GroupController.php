@@ -139,16 +139,7 @@ class GroupController extends Controller
     public function create(StoreGroupTournament $request)
     {
         $validatedData = $request->validated();
-
-        $tournament = new GroupTournament;
-        $tournament->platform_id = $validatedData['platform_id'];
-        $tournament->app_id = $validatedData['app_id'];
-        $tournament->title = $validatedData['title'];
-        $tournament->playoff_rounds = $validatedData['playoff_rounds'];
-        $tournament->min_players = $validatedData['min_players'];
-        $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
-        $tournament->vk_group_id = $validatedData['vk_group_id'];
-
+        $tournament = new GroupTournament($validatedData);
         $tournament->save();
 
         return $this->renderAjax(['id' => $tournament->id]);
@@ -172,6 +163,9 @@ class GroupController extends Controller
         $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
         $tournament->vk_group_id = isset($validatedData['vk_group_id'])
             ? $validatedData['vk_group_id']
+            : null;
+        $tournament->startedAt = isset($validatedData['startedAt'])
+            ? $validatedData['startedAt']
             : null;
 
         $tournament->save();

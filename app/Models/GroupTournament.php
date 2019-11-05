@@ -26,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null                              $deletedAt        Дата удаления
  * @property int                                      $thirdPlaceSeries Серия за третье место
  * @property int                                      $vk_group_id      Группа Турнира в ВК
+ * @property Carbon                                   $startedAt        Дата начала турнира
  * @property-read App                                 $app
  * @property-read Platform                            $platform
  * @property-read Collection|GroupGameRegular[]       $regularGames
@@ -79,6 +80,11 @@ class GroupTournament extends Model
         'deletedAt',
         'thirdPlaceSeries',
         'vk_group_id',
+        'startedAt',
+    ];
+
+    protected $casts = [
+        'startedAt' => 'date',
     ];
 
     /**

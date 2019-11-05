@@ -36,6 +36,7 @@ class StoreGroupTournament extends FormRequest
             'min_players'      => 'required|int|in:3,6',
             'thirdPlaceSeries' => 'int|in:0,1',
             'vk_group_id'      => 'int',
+            'startedAt'        => 'date',
         ];
     }
 }

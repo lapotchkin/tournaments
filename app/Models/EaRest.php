@@ -138,7 +138,7 @@ class EaRest
             $date = new DateTime();
             $date->setTimestamp($match['timestamp']);
             $matches[$matchId] = self::MATCH_DEFAULTS;
-            $matches[$matchId]['game']['playedAt'] = $date->format('Y-m-d');
+            $matches[$matchId]['game']['playedAt'] = $date->format('Y-m-d H:i:s');
             $matches[$matchId]['game']['match_id'] = $matchId;
 
             $date = new DateTime();
