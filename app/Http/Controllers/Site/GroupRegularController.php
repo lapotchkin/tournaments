@@ -78,6 +78,7 @@ class GroupRegularController extends Controller
      * @param Request $request
      * @param int     $tournamentId
      * @return Factory|View
+     * @throws Exception
      */
     public function games(Request $request, int $tournamentId)
     {
@@ -102,7 +103,8 @@ class GroupRegularController extends Controller
             $rounds[$regularGame->round][$division][] = $regularGame;
 
             if (is_null($regularGame->match_id)) {
-                $regularGame->gamePlayed = EaGame::where(
+                $regularGame->gamePlayed = null;
+                $game = EaGame::where(
                     'clubs.' . $regularGame->homeTeam->team->getClubId($tournament->app_id),
                     'exists',
                     true
@@ -113,7 +115,13 @@ class GroupRegularController extends Controller
                         true
                     )
                     ->where('timestamp', '>', $tournament->startedAt->getTimestamp())
-                    ->exists();
+                    ->orderByDesc('timestamp')
+                    ->first();
+                if (!is_null($game)) {
+                    $date = new DateTime();
+                    $date->setTimestamp($game->timestamp);
+                    $regularGame->gamePlayed = $date->format('d.m H:i');
+                }
             }
         }
 

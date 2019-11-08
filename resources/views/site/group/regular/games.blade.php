@@ -79,6 +79,11 @@
                                         @if($game->match_id)
                                             <em class="badge badge-secondary">EA</em>
                                         @endif
+                                        @auth
+                                            @if(Auth::user()->isAdmin() && is_null($game->home_score) && $game->gamePlayed)
+                                                <span class="text-muted">{{ $game->gamePlayed }}</span>
+                                            @endif
+                                        @endauth
                                     </td>
                                     <td class="text-right">
                                         @if ($game->home_score > $game->away_score)
