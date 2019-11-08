@@ -1,13 +1,13 @@
 {
-    "/js/amcharts.js": "/js/amcharts.js?id=4f60ca85818f7c36a049",
-    "/css/app.css": "/css/app.css?id=664e0015cba8d01fa0f0",
-    "/css/brackets.css": "/css/brackets.css?id=537b282343b5ac4d3b48",
-    "/js/app.js": "/js/app.js?id=9b1acdbe29eecc6f6c12",
-    "/js/bootstrap.js": "/js/bootstrap.js?id=b1c445dfd51c1a3c6efd",
-    "/js/gameFormModule.js": "/js/gameFormModule.js?id=832d0ac37118d43e84f2",
-    "/js/playoffModule.js": "/js/playoffModule.js?id=6bc0055369f872bb1307",
-    "/vendors~canvg.js": "/vendors~canvg.js?id=0b0d7b19e4fcd8004c77",
-    "/vendors~pdfmake.js": "/vendors~pdfmake.js?id=b13b93368b85a9f64894",
-    "/vendors~xlsx.js": "/vendors~xlsx.js?id=a6ad1428ed81b0176958",
-    "/xlsx.js": "/xlsx.js?id=41730344aea6751b3f12"
+    "/js/amcharts.js": "/js/amcharts.js",
+    "/css/app.css": "/css/app.css",
+    "/css/brackets.css": "/css/brackets.css",
+    "/js/app.js": "/js/app.js",
+    "/js/bootstrap.js": "/js/bootstrap.js",
+    "/js/gameFormModule.js": "/js/gameFormModule.js",
+    "/js/playoffModule.js": "/js/playoffModule.js",
+    "/vendors~canvg.js": "/vendors~canvg.js",
+    "/vendors~pdfmake.js": "/vendors~pdfmake.js",
+    "/vendors~xlsx.js": "/vendors~xlsx.js",
+    "/xlsx.js": "/xlsx.js"
 }

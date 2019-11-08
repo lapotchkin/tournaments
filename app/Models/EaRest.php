@@ -156,7 +156,7 @@ class EaRest
                     $matches[$matchId]['game']['home_penalty_success'] = (int)$club['ppg'];
                     $date->setTimestamp((int)$club['toa']);
                     $matches[$matchId]['game']['home_attack_time'] = $date->format('i:s');
-                    $matches[$matchId]['game']['away_shot'] = (int)$match['aggregate'][$clubId]['glshots'];
+                    $matches[$matchId]['game']['home_shot'] = (int)$match['aggregate'][$clubId]['skshots'];
                     $matches[$matchId]['game']['home_hit'] = (int)$match['aggregate'][$clubId]['skhits'];
                     $matches[$matchId]['game']['home_faceoff'] = (int)$match['aggregate'][$clubId]['skfow'];
                     $matches[$matchId]['game']['home_shorthanded_goal'] = (int)$match['aggregate'][$clubId]['skshg'];
@@ -171,7 +171,7 @@ class EaRest
                     $matches[$matchId]['game']['away_penalty_success'] = (int)$club['ppg'];
                     $date->setTimestamp((int)$club['toa']);
                     $matches[$matchId]['game']['away_attack_time'] = $date->format('i:s');
-                    $matches[$matchId]['game']['home_shot'] = (int)$match['aggregate'][$clubId]['glshots'];
+                    $matches[$matchId]['game']['away_shot'] = (int)$match['aggregate'][$clubId]['skshots'];
                     $matches[$matchId]['game']['away_hit'] = (int)$match['aggregate'][$clubId]['skhits'];
                     $matches[$matchId]['game']['away_faceoff'] = (int)$match['aggregate'][$clubId]['skfow'];
                     $matches[$matchId]['game']['away_shorthanded_goal'] = (int)$match['aggregate'][$clubId]['skshg'];

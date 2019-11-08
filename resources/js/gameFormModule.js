@@ -548,6 +548,7 @@ window.TRNMNT_gameFormModule = (function () {
             }
             if (_gameToSave.game[field] !== '') $field.prop('readonly', true);
         }
+        console.log(_gameToSave);
         _fillPlayers(_gameToSave.players);
     }
 
