@@ -285,6 +285,10 @@ class GroupController extends Controller
         GroupTournamentTeam::where('tournament_id', $tournamentId)
             ->where('team_id', $teamId)
             ->delete();
+        GroupGameRegular::whereTournamentId($tournamentId)
+            ->where('home_team_id', '=', 2)
+            ->orWhere('away_team_id', '=', 2)
+            ->delete();
 
         return $this->renderAjax();
     }

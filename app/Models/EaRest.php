@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Models;
-
 
 use DateTime;
 use Exception;
