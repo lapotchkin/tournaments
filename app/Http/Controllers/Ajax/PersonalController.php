@@ -207,6 +207,10 @@ class PersonalController extends Controller
         PersonalTournamentPlayer::where('tournament_id', $tournamentId)
             ->where('player_id', $playerId)
             ->delete();
+        PersonalGameRegular::whereTournamentId($tournamentId)
+            ->where('home_player_id', '=', $playerId)
+            ->orWhere('away_player_id', '=', $playerId)
+            ->delete();
 
         return $this->renderAjax();
     }
