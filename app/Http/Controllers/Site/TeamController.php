@@ -8,6 +8,7 @@ use App\Models\GroupTournament;
 use App\Models\Platform;
 use App\Models\Player;
 use App\Models\Team;
+use App\Models\TeamPlayer;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -60,17 +61,18 @@ class TeamController extends Controller
 
     /**
      * @param Request $request
-     * @param int     $teamId
+     * @param Team    $team
      * @return Factory|View
      */
-    public function team(Request $request, int $teamId)
+    public function team(Request $request, Team $team)
     {
-        $team = Team::with(['players', 'tournaments'])->find($teamId);
-
-        $playerIds = [];
-        foreach ($team->teamPlayers as $teamPlayer) {
-            $playerIds[] = $teamPlayer->player_id;
-        }
+        //$team = Team::with(['teamPlayers', 'tournaments'])->find($teamId);
+        $playerIds = $team->teamPlayers->map(function (TeamPlayer $teamPlayer, $key) {
+            return $teamPlayer->player_id;
+        });
+        $teamPlayers = $team->teamPlayers->sortBy(function (TeamPlayer $teamPlayer, $key) {
+            return mb_strtolower($teamPlayer->player->tag);
+        });
         $nonTeamPlayers = Player::whereNotIn('id', $playerIds)
             ->where('platform_id', $team->platform_id)
             ->orderBy('tag')
@@ -78,6 +80,7 @@ class TeamController extends Controller
 
         return view('site.team.team', [
             'team'           => $team,
+            'teamPlayers'    => $teamPlayers,
             'nonTeamPlayers' => $nonTeamPlayers,
         ]);
     }

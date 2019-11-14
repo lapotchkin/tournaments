@@ -22,7 +22,7 @@
         <tr>
             <td class="text-right" style="width:40%;">
                 <h2>
-                    <a href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a>
+                    <a href="{{ route('team', ['team' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a>
                 </h2>
                 <h4>
                     <span class="badge badge-success">
@@ -51,7 +51,7 @@
             </td>
             <td class="text-left" style="width:40%;">
                 <h2>
-                    <a href="{{ route('team', ['teamId' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a>
+                    <a href="{{ route('team', ['team' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a>
                 </h2>
                 <h4>
                     <span class="badge badge-success">

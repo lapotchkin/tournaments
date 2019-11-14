@@ -15,11 +15,12 @@ mix.babelConfig({
  |
  */
 
-mix.js('resources/js/amcharts.js', 'public/js');
-mix.js('resources/js/app.js', 'public/js');
-mix.js('resources/js/bootstrap.js', 'public/js');
-mix.js('resources/js/gameFormModule.js', 'public/js');
-mix.js('resources/js/playoffModule.js', 'public/js');
+mix.js('resources/js/amcharts.js', 'public/js').sourceMaps();
+mix.js('resources/js/app.js', 'public/js').sourceMaps();
+mix.js('resources/js/bootstrap.js', 'public/js').sourceMaps();
+mix.js('resources/js/gameFormModule.js', 'public/js').sourceMaps();
+mix.js('resources/js/playoffModule.js', 'public/js').sourceMaps();
+mix.js('resources/js/teamManagerModule.js', 'public/js').sourceMaps();
 
 mix.sass('resources/sass/app.scss', 'public/css');
 mix.sass('resources/sass/brackets.scss', 'public/css');

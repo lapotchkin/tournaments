@@ -48,6 +48,24 @@ class TeamPlayer extends Model
     protected $table = 'team_player';
 
     /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * @param EloquentBuilder $query
+     * @return EloquentBuilder
+     */
+    protected function setKeysForSaveQuery(EloquentBuilder $query)
+    {
+        $query->where('team_id', '=', $this->getAttribute('team_id'))
+            ->where('player_id', '=', $this->getAttribute('player_id'));
+        return $query;
+    }
+
+    /**
      * @var array
      */
     protected $fillable = ['team_id', 'player_id', 'isCaptain'];

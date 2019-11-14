@@ -22,7 +22,7 @@
             @foreach($player->teams as $team)
                 <li>
                     <span class="fa-li"><i class="fas fa-users"></i></span>
-                    <a href="{{ route('team', ['teamId' => $team->id]) }}">{{ $team->name }}</a>
+                    <a href="{{ route('team', ['team' => $team->id]) }}">{{ $team->name }}</a>
                 </li>
             @endforeach
         </ul>

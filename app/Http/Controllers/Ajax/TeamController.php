@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Http\Requests\StoreRequest;
 use App\Http\Controllers\Controller;
+use App\Models\App;
 use App\Models\AppTeam;
+use App\Models\Player;
 use App\Models\Team;
 use App\Models\TeamPlayer;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class TeamController extends Controller
@@ -20,10 +22,10 @@ class TeamController extends Controller
     ];
 
     /**
-     * @param StoreRequest $request
+     * @param Request $request
      * @return ResponseFactory|Response
      */
-    public function create(StoreRequest $request)
+    public function create(Request $request)
     {
         $validatedData = $request->validate(self::TEAM_RULES);
         /** @var Team|null $team */
@@ -32,7 +34,7 @@ class TeamController extends Controller
             ->wherePlatformId($validatedData['platform_id'])
             ->first();
         if (!is_null($team)) {
-            //Восстановить команду, если его удалили
+            //Восстановить команду, если её удалили
             if ($team->deletedAt) {
                 $team->restore();
                 $team->fill($validatedData);
@@ -52,19 +54,13 @@ class TeamController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $teamId
+     * @param Request $request
+     * @param Team    $team
      * @return ResponseFactory|Response
      */
-    public function edit(StoreRequest $request, int $teamId)
+    public function edit(Request $request, Team $team)
     {
         $validatedData = $request->validate(self::TEAM_RULES);
-        /** @var Team|null $team */
-        $team = Team::find($teamId);
-        if (is_null($team)) {
-            abort(404, 'Команда не найдена');
-        }
-
         $team->fill($validatedData);
         $team->save();
 
@@ -72,41 +68,35 @@ class TeamController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $teamId
+     * @param Request $request
+     * @param Team    $team
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function delete(StoreRequest $request, int $teamId)
+    public function delete(Request $request, Team $team)
     {
-        /** @var Team|null $team */
-        $team = Team::find($teamId);
-        if (is_null($team)) {
-            abort(404, 'Команда не найдена');
-        }
-
         $team->delete();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $teamId
+     * @param Request $request
+     * @param Team    $team
      * @return ResponseFactory|Response
      */
-    public function setTeamId(StoreRequest $request, int $teamId)
+    public function setTeamId(Request $request, Team $team)
     {
         $validatedData = $request->validate([
             'app_id'      => 'required|string|exists:app,id',
             'app_team_id' => 'required|int',
         ]);
         /** @var AppTeam|null $appTeam */
-        $appTeam = AppTeam::where(['app_id' => $validatedData['app_id'], 'team_id' => $teamId])->first();
+        $appTeam = AppTeam::where(['app_id' => $validatedData['app_id'], 'team_id' => $team->id])->first();
         if (!is_null($appTeam)) {
             $appTeam->app_team_id = $validatedData['app_team_id'];
         } else {
-            $validatedData['team_id'] = $teamId;
+            $validatedData['team_id'] = $team->id;
             $appTeam = new AppTeam($validatedData);
         }
 
@@ -116,29 +106,29 @@ class TeamController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $teamId
-     * @param string       $appId
+     * @param Request $request
+     * @param Team    $team
+     * @param App     $app
      * @return ResponseFactory|Response
      */
-    public function deleteTeamId(StoreRequest $request, int $teamId, string $appId)
+    public function deleteTeamId(Request $request, Team $team, App $app)
     {
-        AppTeam::where(['app_id' => $appId, 'team_id' => $teamId])->delete();
+        AppTeam::where(['app_id' => $app->id, 'team_id' => $team->id])->delete();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $teamId
+     * @param Request $request
+     * @param Team    $team
      * @return ResponseFactory|Response
      */
-    public function addPlayer(StoreRequest $request, int $teamId)
+    public function addPlayer(Request $request, Team $team)
     {
         $validatedData = $request->validate([
             'player_id' => 'required|int|exists:player,id',
         ]);
-        $validatedData['team_id'] = $teamId;
+        $validatedData['team_id'] = $team->id;
         $teamPlayer = TeamPlayer::whereTeamId($validatedData['team_id'])
             ->wherePlayerId($validatedData['player_id'])
             ->first();
@@ -154,16 +144,51 @@ class TeamController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $teamId
-     * @param int          $playerId
+     * @param Request $request
+     * @param Team    $team
+     * @param Player  $player
+     * @return ResponseFactory|Response
+     */
+    public function updatePlayer(Request $request, Team $team, Player $player)
+    {
+        $validatedData = $request->validate([
+            'isCaptain' => 'required|int|min:0|max:2',
+        ]);
+
+        $teamPlayer = TeamPlayer::whereTeamId($team->id)
+            ->wherePlayerId($player->id)
+            ->first();
+
+        if (is_null($teamPlayer)) {
+            abort(404);
+        }
+
+        if ($validatedData['isCaptain'] === '1') {
+            foreach ($team->teamPlayers as $player) {
+                if ($player->isCaptain === 1) {
+                    $player->isCaptain = 0;
+                    $player->save();
+                }
+            }
+        }
+
+        $teamPlayer->isCaptain = $validatedData['isCaptain'];
+        $teamPlayer->save();
+
+        return $this->renderAjax();
+    }
+
+    /**
+     * @param Request $request
+     * @param Team    $team
+     * @param Player  $player
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function deletePlayer(StoreRequest $request, int $teamId, int $playerId)
+    public function deletePlayer(Request $request, Team $team, Player $player)
     {
-        TeamPlayer::whereTeamId($teamId)
-            ->wherePlayerId($playerId)
+        TeamPlayer::whereTeamId($team->id)
+            ->wherePlayerId($player->id)
             ->delete();
 
         return $this->renderAjax();

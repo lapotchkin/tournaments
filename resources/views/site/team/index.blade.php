@@ -35,7 +35,7 @@
                 </div>
                 <div>
                     <i class="fab fa-{{ $winner->team->platform->icon }} {{ $winner->team->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
-                    <a href="{{ route('team', ['teamId' => $winner->team->id]) }}">{{ $winner->team->name }}</a>
+                    <a href="{{ route('team', ['team' => $winner->team->id]) }}">{{ $winner->team->name }}</a>
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
                 @endif
                 <div>
                     <i class="fas fa-users"></i>
-                    <a href="{{ route('team', ['teamId' => $team->id]) }}">{{ $team->name }}</a>
+                    <a href="{{ route('team', ['team' => $team->id]) }}">{{ $team->name }}</a>
                 </div>
                 @if($loop->last)
                     </div>

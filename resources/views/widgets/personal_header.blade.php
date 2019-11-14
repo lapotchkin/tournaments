@@ -21,7 +21,7 @@
                 <blockquote class="blockquote alert alert-{{ TextUtils::winnerClass($winner->place) }}">
                     <footer class="blockquote-footer"><i class="fas fa-trophy"></i> {{ $winner->place }} место</footer>
                     <p class="mb-0">
-                        <a href="{{ route('team', ['teamId' => $winner->player_id]) }}">{{ $winner->player->tag }}</a>
+                        <a href="{{ route('team', ['team' => $winner->player_id]) }}">{{ $winner->player->tag }}</a>
                         <small>{{ $winner->player->name }}</small>
                     </p>
                 </blockquote>

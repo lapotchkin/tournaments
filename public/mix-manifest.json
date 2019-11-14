@@ -6,6 +6,7 @@
     "/js/bootstrap.js": "/js/bootstrap.js",
     "/js/gameFormModule.js": "/js/gameFormModule.js",
     "/js/playoffModule.js": "/js/playoffModule.js",
+    "/js/teamManagerModule.js": "/js/teamManagerModule.js",
     "/vendors~canvg.js": "/vendors~canvg.js",
     "/vendors~pdfmake.js": "/vendors~pdfmake.js",
     "/vendors~xlsx.js": "/vendors~xlsx.js",

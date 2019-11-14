@@ -308,10 +308,10 @@ Breadcrumbs::for('team.add', function ($trail) {
 //Teams > Team
 Breadcrumbs::for('team', function ($trail, Team $team) {
     $trail->parent('teams');
-    $trail->push($team->name, route('team', ['teamId' => $team->id]));
+    $trail->push($team->name, route('team', ['team' => $team->id]));
 });
 //Teams > Team > Edit
 Breadcrumbs::for('team.edit', function ($trail, Team $team) {
     $trail->parent('team', $team);
-    $trail->push('Редактировать', route('team.edit', ['teamId' => $team->id]));
+    $trail->push('Редактировать', route('team.edit', ['team' => $team->id]));
 });

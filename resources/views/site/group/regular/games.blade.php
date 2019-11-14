@@ -88,9 +88,9 @@
                                     <td class="text-right">
                                         @if ($game->home_score > $game->away_score)
                                             <strong><a
-                                                    href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a></strong>
+                                                    href="{{ route('team', ['team' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a></strong>
                                         @else
-                                            <a href="{{ route('team', ['teamId' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a>
+                                            <a href="{{ route('team', ['team' => $game->home_team_id]) }}">{{ $game->homeTeam->team->name }}</a>
                                         @endif
                                         <span class="badge badge-success">
                                         {{ $game->homeTeam->team->short_name }}
@@ -109,9 +109,9 @@
                                     </span>
                                         @if ($game->home_score < $game->away_score)
                                             <strong><a
-                                                    href="{{ route('team', ['teamId' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a></strong>
+                                                    href="{{ route('team', ['team' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a></strong>
                                         @else
-                                            <a href="{{ route('team', ['teamId' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a>
+                                            <a href="{{ route('team', ['team' => $game->away_team_id]) }}">{{ $game->awayTeam->team->name }}</a>
                                         @endif
                                     </td>
                                     <td class="text-right">

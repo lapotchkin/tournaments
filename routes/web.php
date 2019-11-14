@@ -174,12 +174,12 @@ Route::get('/player/{playerId}/edit', 'Site\PlayerController@edit')
 Route::get('/team', 'Site\TeamController@index')
     ->name('teams');
 Route::get('/team/add', 'Site\TeamController@add')
+    ->middleware('can:create,App\Models\Team')
     ->name('team.add');
-Route::get('/team/{teamId}', 'Site\TeamController@team')
-    ->where(['teamId' => '[0-9]+'])
+Route::get('/team/{team}', 'Site\TeamController@team')
     ->name('team');
-Route::get('/team/{teamId}/edit', 'Site\TeamController@edit')
-    ->where(['teamId' => '[0-9]+'])
+Route::get('/team/{team}/edit', 'Site\TeamController@edit')
+    ->middleware('can:create,App\Models\Team')
     ->name('team.edit');
 
 /*
@@ -283,7 +283,10 @@ Route::post('/ajax/personal/{tournamentId}/playoff/{pairId}/{gameId}', 'Ajax\Per
 //VK
 Route::post('/ajax/personal/{tournamentId}/regular/{gameId}/share', 'Ajax\PersonalController@shareRegularResult')
     ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
-Route::post('/ajax/personal/{tournamentId}/playoff/{pairId}/{gameId}/share', 'Ajax\PersonalController@sharePlayoffResult')
+Route::post(
+    '/ajax/personal/{tournamentId}/playoff/{pairId}/{gameId}/share',
+    'Ajax\PersonalController@sharePlayoffResult'
+)
     ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
 
 /*
@@ -298,16 +301,19 @@ Route::delete('/ajax/player/{playerId}', 'Ajax\PlayerController@delete')
 /*
  * Team
  */
-Route::put('/ajax/team', 'Ajax\TeamController@create');
-Route::post('/ajax/team/{teamId}', 'Ajax\TeamController@edit')
-    ->where(['teamId' => '[0-9]+']);
-Route::delete('/ajax/team/{teamId}', 'Ajax\TeamController@delete')
-    ->where(['teamId' => '[0-9]+']);
-Route::put('/ajax/team/{teamId}', 'Ajax\TeamController@addPlayer')
-    ->where(['teamId' => '[0-9]+']);
-Route::delete('/ajax/team/{teamId}/{playerId}', 'Ajax\TeamController@deletePlayer')
-    ->where(['teamId' => '[0-9]+', 'playerId' => '[0-9]+']);
-Route::post('/ajax/team/{teamId}/app', 'Ajax\TeamController@setTeamId')
-    ->where(['teamId' => '[0-9]+']);
-Route::delete('/ajax/team/{teamId}/app/{appId}', 'Ajax\TeamController@deleteTeamId')
-    ->where(['teamId' => '[0-9]+', 'appId' => '[a-z]+']);
+Route::put('/ajax/team', 'Ajax\TeamController@create')
+    ->middleware('can:create,App\Models\Team');
+Route::post('/ajax/team/{team}', 'Ajax\TeamController@edit')
+    ->middleware('can:create,App\Models\Team');
+Route::delete('/ajax/team/{team}', 'Ajax\TeamController@delete')
+    ->middleware('can:create,App\Models\Team');;
+Route::put('/ajax/team/{team}', 'Ajax\TeamController@addPlayer')
+    ->middleware('can:update,team');
+Route::post('/ajax/team/{team}/{player}', 'Ajax\TeamController@updatePlayer')
+    ->middleware('can:update,team');
+Route::delete('/ajax/team/{team}/{player}', 'Ajax\TeamController@deletePlayer')
+    ->middleware('can:update,team');
+Route::post('/ajax/team/{team}/app', 'Ajax\TeamController@setTeamId')
+    ->middleware('can:create,App\Models\Team');
+Route::delete('/ajax/team/{team}/app/{app}', 'Ajax\TeamController@deleteTeamId')
+    ->middleware('can:create,App\Models\Team');
