@@ -1,15 +1,17 @@
 window.TRNMNT_playoffModule = (function () {
     let _isInitialized = false;
     let _url = null;
+    let _templates = null;
 
     return {
         init: _init,
     };
 
-    function _init(url) {
+    function _init(url, templates) {
         if (_isInitialized) return;
         _isInitialized = true;
         _url = url;
+        _templates = templates;
 
         TRNMNT_sendData({
             selector: '#player-add',
@@ -24,7 +26,7 @@ window.TRNMNT_playoffModule = (function () {
             success: onSuccessDeletePlayer
         });
 
-        $('.captain-toggle button').on('click', onClickCaptainToggle);
+        $(document).on('click', '.captain-toggle button', onClickCaptainToggle);
     }
 
     function onSuccessAddPlayer(response) {
@@ -33,22 +35,17 @@ window.TRNMNT_playoffModule = (function () {
         const $option = $('#player_id option[value=' + playerId + ']');
         const newPlayerData = getPlayerDataFromOption($option);
         console.log(newPlayerData);
-        const $list = $('#team-players');
-        const $item = $(`
-            <li>
-                <span class="fa-li"><i class="fas fa-user"></i></span>
-                <a href="{{ route('players') }}/${playerId}">${newPlayerData[0]}</a>
-                <small>${newPlayerData[1] ? newPlayerData[1] : ''}</small>
-                <button class="btn btn-danger btn-sm delete-player" data-id="${playerId}">
-                    <i class="fas fa-times"></i>
-                </button>
-            </li>
-        `);
-        const $items = $list.find('li');
+        const $list = $('#team-players tbody');
+        const $item = $(_templates.row.format({
+            id: playerId,
+            tag: newPlayerData[0],
+            name: newPlayerData[1] ? newPlayerData[1] : '',
+        }));
+        const $items = $list.find('tr');
         if ($items.length) {
-            $list.find('li').each(function (index, element) {
+            $items.each(function (index, element) {
                 const $element = $(element);
-                const playerData = getPlayerDataFromLi($element);
+                const playerData = getPlayerDataFromLi($element.closest('tr').find('td').eq(1));
                 console.log(playerData);
                 if (playerData[0].toLowerCase() > newPlayerData[0].toLowerCase()) {
                     $element.before($item);
@@ -69,7 +66,7 @@ window.TRNMNT_playoffModule = (function () {
     function onSuccessDeletePlayer(response, $button) {
         const $item = $button.closest('tr');
         const playerId = $item.data('id');
-        const removedPlayerData = getPlayerDataFromLi($item.find('td:eq(1)'));
+        const removedPlayerData = getPlayerDataFromLi($item.find('td').eq(1));
         const $select = $('#player_id');
         const option = '<option value="' + playerId + '">'
             + removedPlayerData[0]
@@ -126,9 +123,7 @@ window.TRNMNT_playoffModule = (function () {
             url: _url.updatePlayer + '/' + playerId,
             data: 'isCaptain=' + isCaptain,
             processData: false,
-            success: function () {
-                TRNMNT_helpers.enableButtons();
-            },
+            success: TRNMNT_helpers.enableButtons,
             error: TRNMNT_helpers.onErrorAjax,
             context: TRNMNT_helpers
         });

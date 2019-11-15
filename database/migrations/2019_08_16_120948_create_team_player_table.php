@@ -33,7 +33,7 @@ class CreateTeamPlayerTable extends Migration
             $table->primary(['team_id', 'player_id']);
         });
 
-        Schema::table('club', function (Blueprint $table) {
+        Schema::table('team_player', function (Blueprint $table) {
             $table->foreign('team_id')->references('id')->on('team');
             $table->foreign('player_id')->references('id')->on('player');
         });
@@ -46,6 +46,10 @@ class CreateTeamPlayerTable extends Migration
      */
     public function down()
     {
+        if (!Schema::hasTable('team_player')) {
+            return;
+        }
+
         Schema::table('team_player', function (Blueprint $table) {
             $table->dropForeign(['team_id']);
             $table->dropForeign(['player_id']);

@@ -158,12 +158,12 @@ Route::get('/personal/{tournamentId}/playoff/games/{pairId}/{gameId}/edit', 'Sit
 Route::get('/player', 'Site\PlayerController@index')
     ->name('players');
 Route::get('/player/add', 'Site\PlayerController@add')
+    ->middleware('can:create,App\Models\Player')
     ->name('player.add');
-Route::get('/player/{playerId}', 'Site\PlayerController@player')
-    ->where(['playerId' => '[0-9]+'])
+Route::get('/player/{player}', 'Site\PlayerController@player')
     ->name('player');
-Route::get('/player/{playerId}/edit', 'Site\PlayerController@edit')
-    ->where(['playerId' => '[0-9]+'])
+Route::get('/player/{player}/edit', 'Site\PlayerController@edit')
+    ->middleware('can:update,player')
     ->name('player.edit');
 
 /*

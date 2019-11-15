@@ -25,26 +25,44 @@ class TeamPolicy
     }
 
     /**
-     * @param Player $player
+     * @param Player $user
      * @return bool
      */
-    public function create(Player $player)
+    public function create(Player $user)
     {
-        return $player->isAdmin();
+        return $user->isAdmin();
     }
 
     /**
-     * @param Player $player
+     * @param Player $user
      * @param Team   $team
      * @return bool
      */
-    public function update(Player $player, Team $team)
+    public function update(Player $user, Team $team)
     {
-        if ($player->isAdmin()) {
+        if ($user->isAdmin()) {
             return true;
         }
         foreach ($team->teamPlayers as $teamPlayer) {
-            if ($teamPlayer->isCaptain > 0) {
+            if ($user->id === $teamPlayer->player_id && $teamPlayer->isCaptain === 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param Player $user
+     * @param Team   $team
+     * @return bool
+     */
+    public function manage(Player $user, Team $team)
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+        foreach ($team->teamPlayers as $teamPlayer) {
+            if ($user->id === $teamPlayer->player_id && $teamPlayer->isCaptain > 0) {
                 return true;
             }
         }

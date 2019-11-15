@@ -26,7 +26,7 @@
                                     <div class="col-10 form-inline">
                                         <span class="badge badge-pill badge-danger mr-2">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->playerOne && count($pair->games))
-                                            <a href="{{ route('player', ['playerId' => $pair->player_one_id]) }}">
+                                            <a href="{{ route('player', ['player' => $pair->player_one_id]) }}">
                                                 @if ($winner === $pair->player_one_id)
                                                     <strong>{{$pair->playerOne->name }}</strong>
                                                 @else
@@ -97,7 +97,7 @@
                                     <div class="col-10 form-inline">
                                         <span class="badge badge-pill badge-warning mr-2">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->playerTwo && count($pair->games))
-                                            <a href="{{ route('player', ['playerId' => $pair->player_two_id]) }}">
+                                            <a href="{{ route('player', ['player' => $pair->player_two_id]) }}">
                                                 @if ($winner === $pair->player_two_id)
                                                     <strong>{{$pair->playerTwo->name }}</strong>
                                                 @else

@@ -34,7 +34,7 @@
                     @endforeach
                 </div>
                 <div>
-                    <a href="{{ route('player', ['playerId' => $winner->player->id]) }}">{{ $winner->player->tag }}</a>
+                    <a href="{{ route('player', ['player' => $winner->player->id]) }}">{{ $winner->player->tag }}</a>
                 </div>
                 <div class="small">{{ $winner->player->name }}</div>
             </div>
@@ -61,7 +61,7 @@
                 @endif
                 <div>
                     <i class="fas fa-user"></i>
-                    <a href="{{ route('player', ['playerId' => $player->id]) }}">{{ $player->tag }}</a>
+                    <a href="{{ route('player', ['player' => $player->id]) }}">{{ $player->tag }}</a>
                     <small>{{ $player->name }}</small>
                 </div>
                 @if($loop->last)

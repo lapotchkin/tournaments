@@ -289,12 +289,12 @@ Breadcrumbs::for('player.add', function ($trail) {
 //Players > Player
 Breadcrumbs::for('player', function ($trail, Player $player) {
     $trail->parent('players');
-    $trail->push($player->tag, route('player', ['playerId' => $player->id]));
+    $trail->push($player->tag, route('player', ['player' => $player->id]));
 });
 //Players > Player > Edit
 Breadcrumbs::for('player.edit', function ($trail, Player $player) {
     $trail->parent('player', $player);
-    $trail->push('Редактировать', route('player.edit', ['playerId' => $player->id]));
+    $trail->push('Редактировать', route('player.edit', ['player' => $player->id]));
 });
 //Teams
 Breadcrumbs::for('teams', function ($trail) {

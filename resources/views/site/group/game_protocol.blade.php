@@ -165,7 +165,7 @@
                         @for ($i = 0; $i < $protocol->star; $i++)
                             <i class="fas fa-star text-danger"></i>
                         @endfor
-                    <a href="{{ route('player', ['userID' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
+                    <a href="{{ route('player', ['player' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
                     @if($protocol->player->name)
                         <small>{{ $protocol->player->name }}</small>
                     @endif
@@ -203,7 +203,7 @@
                     <tr>
                         <td>
                             <strong>
-                                <a href="{{ route('player', ['playerId' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
+                                <a href="{{ route('player', ['player' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
                             </strong>
                             @if($protocol->player->name)
                                 <small>{{ $protocol->player->name }}</small>
@@ -255,7 +255,7 @@
                 <tr>
                     <td>
                         <strong>
-                            <a href="{{ route('player', ['playerId' => $game->homeGoalie->player_id]) }}">{{ $game->homeGoalie->player->tag }}</a>
+                            <a href="{{ route('player', ['player' => $game->homeGoalie->player_id]) }}">{{ $game->homeGoalie->player->tag }}</a>
                         </strong>
                         @if($game->homeGoalie->player->name)
                             <small>{{ $game->homeGoalie->player->name }}</small>
@@ -304,7 +304,7 @@
                     <tr>
                         <td>
                             <strong>
-                                <a href="{{ route('player', ['playerId' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
+                                <a href="{{ route('player', ['player' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
                             </strong>
                             @if($protocol->player->name)
                                 <small>{{ $protocol->player->name }}</small>
@@ -356,7 +356,7 @@
                 <tr>
                     <td>
                         <strong>
-                            <a href="{{ route('player', ['playerId' => $game->awayGoalie->player_id]) }}">{{ $game->awayGoalie->player->tag }}</a>
+                            <a href="{{ route('player', ['player' => $game->awayGoalie->player_id]) }}">{{ $game->awayGoalie->player->tag }}</a>
                         </strong>
                         @if($game->awayGoalie->player->name)
                             <small>{{ $game->awayGoalie->player->name }}</small>

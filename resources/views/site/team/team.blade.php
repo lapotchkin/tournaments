@@ -7,13 +7,11 @@
     <h2>
         <i class="fab fa-{{ $team->platform->icon }} {{ $team->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
         {{ $team->name }}
-        @auth
-            @if(Auth::user()->isAdmin())
-                <a class="btn btn-primary" href="{{ route('team.edit', ['team' => $team->id]) }}">
-                    <i class="fas fa-edit"></i>
-                </a>
-            @endif
-        @endauth
+        @can('create', 'App\Models\Team')
+            <a class="btn btn-primary" href="{{ route('team.edit', ['team' => $team->id]) }}">
+                <i class="fas fa-edit"></i>
+            </a>
+        @endcan
     </h2>
 
     @if(count($team->players))
@@ -28,41 +26,7 @@
             </thead>
             <tbody>
             @foreach($teamPlayers as $teamPlayer)
-                <tr data-id="{{ $teamPlayer->player->id }}">
-                    <td>
-                        @switch($teamPlayer->isCaptain)
-                            @case(1)<span class="badge badge-success">C</span>@break
-                            @case(2)<span class="badge badge-warning">A</span>@break
-                        @endswitch
-                    </td>
-                    <td>
-                        <a href="{{ route('player', ['playerId' => $teamPlayer->player->id]) }}">{{ $teamPlayer->player->tag }}</a>
-                        <small>{{ $teamPlayer->player->name }}</small>
-                    </td>
-                    <td class="text-right">
-                        @can('create', 'App\Models\Team')
-                            <div class="btn-group mr-2 captain-toggle" role="group" aria-label="First group">
-                                <button type="button" data-captain="1"
-                                        class="btn btn-primary btn-sm {{ $teamPlayer->isCaptain === 1 ? 'active' : '' }}">
-                                    Капитан
-                                </button>
-                                <button type="button" type="button" data-captain="2"
-                                        class="btn btn-primary btn-sm {{ $teamPlayer->isCaptain === 2 ? 'active' : '' }}">
-                                    Заместитель
-                                </button>
-                                <button type="button" type="button" data-captain="0"
-                                        class="btn btn-primary btn-sm {{ $teamPlayer->isCaptain === 0 ? 'active' : '' }}">
-                                    Игрок
-                                </button>
-                            </div>
-                        @endcan
-                        @can('update', $team)
-                            <button class="btn btn-danger btn-sm delete-player" data-id="{{ $teamPlayer->player->id }}">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        @endcan
-                    </td>
-                </tr>
+                @include('partials.team_row')
             @endforeach
             </tbody>
         </table>
@@ -123,21 +87,22 @@
         }
     </style>
 
-    @auth
-        @if(Auth::user()->isAdmin())
-            <script src="{!! mix('/js/teamManagerModule.js') !!}"></script>
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    const url = {
-                        addPlayer: '{{ action('Ajax\TeamController@addPlayer', ['team' => $team->id])}}',
-                        addPlayerRedirect: '{{ route('team', ['team' => $team->id])}}',
-                        updatePlayer: '{{ action('Ajax\TeamController@addPlayer', ['team' => $team->id])}}',
-                        deletePlayer: '{{ action('Ajax\TeamController@addPlayer', ['team' => $team->id])}}',
-                    };
+    @can('update', $team)
+        <script src="{!! mix('/js/teamManagerModule.js') !!}"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                const url = {
+                    addPlayer: '{{ action('Ajax\TeamController@addPlayer', ['team' => $team->id])}}',
+                    addPlayerRedirect: '{{ route('team', ['team' => $team->id])}}',
+                    updatePlayer: '{{ action('Ajax\TeamController@addPlayer', ['team' => $team->id])}}',
+                    deletePlayer: '{{ action('Ajax\TeamController@addPlayer', ['team' => $team->id])}}',
+                };
+                const templates = {
+                    row: `@include('partials.team_row', ['teamPlayer' => null])`
+                };
 
-                    TRNMNT_playoffModule.init(url);
-                });
-            </script>
-        @endif
-    @endauth
+                TRNMNT_playoffModule.init(url, templates);
+            });
+        </script>
+    @endcan
 @endsection

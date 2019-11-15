@@ -19,7 +19,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    <a href="{{ route('player', ['playerId' => $player->player_id]) }}">{{ $player->player->tag }}</a>
+                                    <a href="{{ route('player', ['player' => $player->player_id]) }}">{{ $player->player->tag }}</a>
                                     <small>{{ $player->player->name }}</small>
                                     <span
                                         class="badge badge-secondary badge-pill text-uppercase">{{ $player->club_id }}</span>

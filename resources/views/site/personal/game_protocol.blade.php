@@ -22,7 +22,7 @@
         <tr>
             <td class="text-right" style="width:40%;">
                 <h2>
-                    <a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a>
+                    <a href="{{ route('player', ['player' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a>
                 </h2>
                 <h4>
                     {{ $game->homePlayer->name }}
@@ -52,7 +52,7 @@
             </td>
             <td class="text-left" style="width:40%;">
                 <h2>
-                    <a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->tag }}</a>
+                    <a href="{{ route('player', ['player' => $game->away_player_id]) }}">{{ $game->awayPlayer->tag }}</a>
                 </h2>
                 <h4>
                     <span class="badge badge-success text-uppercase">

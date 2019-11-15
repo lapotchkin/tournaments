@@ -78,9 +78,9 @@
                                     <td class="text-right">
                                         @if ($game->home_score > $game->away_score)
                                             <strong><a
-                                                    href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a></strong>
+                                                    href="{{ route('player', ['player' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a></strong>
                                         @else
-                                            <a href="{{ route('player', ['playerId' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a>
+                                            <a href="{{ route('player', ['player' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a>
                                         @endif
                                         <small>{{ $game->homePlayer->name }}</small>
                                         <span class="badge badge-success text-uppercase">
@@ -100,9 +100,9 @@
                                     </span>
                                         @if ($game->home_score < $game->away_score)
                                             <strong><a
-                                                    href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->tag }}</a></strong>
+                                                    href="{{ route('player', ['player' => $game->away_player_id]) }}">{{ $game->awayPlayer->tag }}</a></strong>
                                         @else
-                                            <a href="{{ route('player', ['playerId' => $game->away_player_id]) }}">{{ $game->awayPlayer->tag }}</a>
+                                            <a href="{{ route('player', ['player' => $game->away_player_id]) }}">{{ $game->awayPlayer->tag }}</a>
                                         @endif
                                         <small>{{ $game->awayPlayer->name }}</small>
                                     </td>

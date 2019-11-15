@@ -7,7 +7,9 @@ use App\Models\App;
 use App\Models\AppTeam;
 use App\Models\Player;
 use App\Models\Team;
+use App\Models\TeamManagement;
 use App\Models\TeamPlayer;
+use Auth;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
@@ -15,6 +17,12 @@ use Illuminate\Http\Response;
 
 class TeamController extends Controller
 {
+    const ADD_TO_TEAM = 1;
+    const DELETE_FROM_TEAM = 2;
+    const SET_AS_CAPTAIN = 3;
+    const SET_AS_ASSISTANT = 4;
+    const SET_AS_PLAYER = 5;
+
     const TEAM_RULES = [
         'name'        => 'required|string',
         'short_name'  => 'required|string|max:3',
@@ -139,6 +147,7 @@ class TeamController extends Controller
         $teamPlayer = new TeamPlayer($validatedData);
         $teamPlayer->fill($validatedData);
         $teamPlayer->save();
+        $this->_createAction($teamPlayer->team_id, $teamPlayer->player_id, self::ADD_TO_TEAM);
 
         return $this->renderAjax();
     }
@@ -168,12 +177,14 @@ class TeamController extends Controller
                 if ($player->isCaptain === 1) {
                     $player->isCaptain = 0;
                     $player->save();
+                    $this->_createAction($player->team_id, $player->player_id, self::SET_AS_PLAYER);
                 }
             }
         }
 
         $teamPlayer->isCaptain = $validatedData['isCaptain'];
         $teamPlayer->save();
+        $this->_createAction($teamPlayer->team_id, $teamPlayer->player_id, $this->_getActionId($teamPlayer->isCaptain));
 
         return $this->renderAjax();
     }
@@ -190,7 +201,40 @@ class TeamController extends Controller
         TeamPlayer::whereTeamId($team->id)
             ->wherePlayerId($player->id)
             ->delete();
+        $this->_createAction($team->id, $player->id, self::DELETE_FROM_TEAM);
 
         return $this->renderAjax();
+    }
+
+    /**
+     * @param int $teamId
+     * @param int $playerId
+     * @param int $actionId
+     */
+    private function _createAction(int $teamId, int $playerId, int $actionId)
+    {
+        $action = new TeamManagement([
+            'team_id'    => $teamId,
+            'manager_id' => Auth::id(),
+            'player_id'  => $playerId,
+            'action_id'  => $actionId,
+        ]);
+        $action->save();
+    }
+
+    /**
+     * @param int $isCaptain
+     * @return int
+     */
+    private function _getActionId(int $isCaptain)
+    {
+        switch ($isCaptain) {
+            case 1:
+                return self::SET_AS_CAPTAIN;
+            case 2:
+                return self::SET_AS_ASSISTANT;
+            default:
+                return self::SET_AS_PLAYER;
+        }
     }
 }

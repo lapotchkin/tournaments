@@ -31,7 +31,7 @@
                                             <i class="fas fa-circle fa-stack-2x"></i>
                                             <i class="fas fa-trophy fa-stack-1x fa-inverse text-{{ TextUtils::winnerClass($winner->place) }}"></i>
                                         </span>
-                                        <a href="{{ route('player', ['playerId' => $winner->player->id ]) }}">{{ $winner->player->tag }}</a>
+                                        <a href="{{ route('player', ['player' => $winner->player->id ]) }}">{{ $winner->player->tag }}</a>
                                         <small>{{ $winner->player->name }}</small>
                                     @endforeach
                                 </div>

@@ -25,7 +25,7 @@
                                     <div class="col-10">
                                         <span class="badge badge-pill badge-danger">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->playerOne && $pair->playerOne->name)
-                                            <a href="{{ route('player', ['playerId' => $pair->player_one_id]) }}">
+                                            <a href="{{ route('player', ['player' => $pair->player_one_id]) }}">
                                                 @if ($winner === $pair->player_one_id)
                                                     <strong>{{$pair->playerOne->name }}</strong>
                                                 @else
@@ -72,7 +72,7 @@
                                     <div class="col-10">
                                         <span class="badge badge-pill badge-warning">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->playerTwo && $pair->playerTwo->name)
-                                            <a href="{{ route('player', ['playerId' => $pair->player_two_id]) }}">
+                                            <a href="{{ route('player', ['player' => $pair->player_two_id]) }}">
                                                 @if ($winner === $pair->player_two_id)
                                                     <strong>{{$pair->playerTwo->name }}</strong>
                                                 @else

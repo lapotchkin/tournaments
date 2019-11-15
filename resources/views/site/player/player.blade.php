@@ -9,7 +9,7 @@
         {{ $player->tag }} <small class="text-muted">{{ $player->name }}</small>
         @auth
             @if(Auth::user()->isAdmin())
-                <a class="btn btn-primary" href="{{ route('player.edit', ['playerId' => $player->id]) }}">
+                <a class="btn btn-primary" href="{{ route('player.edit', ['player' => $player->id]) }}">
                     <i class="fas fa-edit"></i>
                 </a>
             @endif
