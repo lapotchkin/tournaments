@@ -3,6 +3,7 @@
 
 namespace App\Utils;
 
+use App\Http\Controllers\Ajax\TeamController;
 use App\Models\GroupTournament;
 use App\Models\PersonalTournament;
 
@@ -63,7 +64,7 @@ class TextUtils
     }
 
     /**
-     * @param $positionId
+     * @param $position
      * @return string
      */
     public static function positionBadge($position)
@@ -147,5 +148,27 @@ class TextUtils
         }
 
         return '';
+    }
+
+    /**
+     * @param $action
+     * @return string
+     */
+    public static function transferClass($action)
+    {
+        switch ($action) {
+            case TeamController::ADD_TO_TEAM:
+                return 'success';
+            case TeamController::DELETE_FROM_TEAM:
+                return 'danger';
+            case TeamController::SET_AS_CAPTAIN:
+                return 'info';
+            case TeamController::SET_AS_ASSISTANT:
+                return 'warning';
+            case TeamController::SET_AS_PLAYER:
+                return 'secondary';
+        }
+
+        return 'secondary';
     }
 }

@@ -58,13 +58,12 @@ class PlayerController extends Controller
 
     /**
      * @param Request $request
-     * @param int     $playerId
+     * @param Player  $player
      * @return Factory|View
      */
-    public function player(Request $request, int $playerId)
+    public function player(Request $request, Player $player)
     {
-        $player = Player::with(['teams', 'tournaments.winners'])->find($playerId);
-
+        $player->load(['teams', 'tournaments.winners']);
         return view('site.player.player', [
             'player' => $player,
         ]);
@@ -85,16 +84,11 @@ class PlayerController extends Controller
 
     /**
      * @param StoreRequest $request
-     * @param int          $playerId
+     * @param Player       $player
      * @return Factory|View
      */
-    public function edit(StoreRequest $request, int $playerId)
+    public function edit(StoreRequest $request, Player $player)
     {
-        $player = Player::find($playerId);
-        if (is_null($player)) {
-            abort(404);
-        }
-
         return view('site.player.player_form', [
             'title'     => 'Изменить даные игрока',
             'player'    => $player,

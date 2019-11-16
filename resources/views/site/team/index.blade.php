@@ -6,13 +6,11 @@
     {{ Breadcrumbs::render('teams') }}
     <h2>
         Команды
-        @auth
-            @if(Auth::user()->isAdmin())
-                <a class="btn btn-primary" href="{{ route('team.add') }}">
-                    <i class="fas fa-users"></i> <i class="fas fa-plus"></i>
-                </a>
-            @endif
-        @endauth
+        @can('create', 'App\Models\Team')
+            <a class="btn btn-primary" href="{{ route('team.add') }}">
+                <i class="fas fa-users"></i> <i class="fas fa-plus"></i>
+            </a>
+        @endcan
     </h2>
 
     <h3>Зал славы</h3>

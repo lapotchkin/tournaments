@@ -32,10 +32,13 @@
                             <a class="nav-link" href="{{ route('home') }}">Турниры</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ action('Site\TeamController@index') }}">Команды</a>
+                            <a class="nav-link" href="{{ route('teams') }}">Команды</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ action('Site\PlayerController@index') }}">Игроки</a>
+                            <a class="nav-link" href="{{ route('tracker') }}">Трансферы</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('players') }}">Игроки</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="https://www.ea.com/ru-ru/games/nhl/nhl-20/pro-clubs/rankings"
@@ -71,16 +74,16 @@
     @show
 
     @section('submenu')
-{{--        @if(strstr(url()->current(), 'group'))--}}
-{{--            <div class="container">--}}
-{{--                @widget('groupGamesCarousel')--}}
-{{--            </div>--}}
-{{--        @endif--}}
-{{--        @if(strstr(url()->current(), 'personal'))--}}
-{{--            <div class="container">--}}
-{{--                @widget('personalGamesCarousel')--}}
-{{--            </div>--}}
-{{--        @endif--}}
+        {{--        @if(strstr(url()->current(), 'group'))--}}
+        {{--            <div class="container">--}}
+        {{--                @widget('groupGamesCarousel')--}}
+        {{--            </div>--}}
+        {{--        @endif--}}
+        {{--        @if(strstr(url()->current(), 'personal'))--}}
+        {{--            <div class="container">--}}
+        {{--                @widget('personalGamesCarousel')--}}
+        {{--            </div>--}}
+        {{--        @endif--}}
     @show
 </header>
 

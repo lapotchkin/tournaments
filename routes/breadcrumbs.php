@@ -315,3 +315,8 @@ Breadcrumbs::for('team.edit', function ($trail, Team $team) {
     $trail->parent('team', $team);
     $trail->push('Редактировать', route('team.edit', ['team' => $team->id]));
 });
+
+//Teams > Tracker
+Breadcrumbs::for('tracker', function ($trail) {
+    $trail->push('Трансферы', route('tracker'));
+});
