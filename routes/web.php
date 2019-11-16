@@ -301,10 +301,10 @@ Route::post(
  * Player
  */
 Route::put('/ajax/player', 'Ajax\PlayerController@create');
-Route::post('/ajax/player/{playerId}', 'Ajax\PlayerController@edit')
-    ->where(['playerId' => '[0-9]+']);
-Route::delete('/ajax/player/{playerId}', 'Ajax\PlayerController@delete')
-    ->where(['playerId' => '[0-9]+']);
+Route::post('/ajax/player/{player}', 'Ajax\PlayerController@edit')
+    ->middleware('can:update,player');
+Route::delete('/ajax/player/{player}', 'Ajax\PlayerController@delete')
+    ->middleware('can:create,App\Models\Player');
 
 /*
  * Team

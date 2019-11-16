@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Ajax;
 
 use App\Http\Requests\StoreRequest;
 use App\Models\Player;
+use App\Models\TeamManagement;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use App\Http\Controllers\Controller;
@@ -59,18 +60,12 @@ class PlayerController extends Controller
 
     /**
      * @param StoreRequest $request
-     * @param int          $playerId
+     * @param Player       $player
      * @return ResponseFactory|Response
      */
-    public function edit(StoreRequest $request, int $playerId)
+    public function edit(StoreRequest $request, Player $player)
     {
         $validatedData = $request->validate(self::USER_RULES);
-        /** @var Player|null $player */
-        $player = Player::find($playerId);
-        if (is_null($player)) {
-            abort(404, 'Игрок не найден');
-        }
-
         if (!isset($validatedData['name'])) {
             $validatedData['name'] = '';
         }
@@ -95,18 +90,15 @@ class PlayerController extends Controller
 
     /**
      * @param StoreRequest $request
-     * @param int          $playerId
+     * @param Player       $player
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function delete(StoreRequest $request, int $playerId)
+    public function delete(StoreRequest $request, Player $player)
     {
-        /** @var Player|null $player */
-        $player = Player::find($playerId);
-        if (is_null($player)) {
-            abort(404, 'Игрок не найден');
-        }
-
+        TeamManagement::where('manager_id', '=', $player->id)
+            ->orWhere('player_id', '=', $player->id)
+            ->delete();
         $player->delete();
 
         return $this->renderAjax();

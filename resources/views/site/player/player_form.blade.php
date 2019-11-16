@@ -85,7 +85,7 @@
             TRNMNT_sendData({
                 selector: '#player-form',
                 method: '{{ is_null($player) ? 'put' : 'post' }}',
-                url: '{{ is_null($player) ? action('Ajax\PlayerController@create') : action('Ajax\PlayerController@edit', ['playerId' => $player->id])}}',
+                url: '{{ is_null($player) ? action('Ajax\PlayerController@create') : action('Ajax\PlayerController@edit', ['player' => $player->id])}}',
                 success: function (response) {
                     window.location.href = '{{ route('players') }}/' + response.data.id;
                 }
@@ -94,7 +94,7 @@
             @if (!is_null($player))
             TRNMNT_deleteData({
                 selector: '#player-delete-button',
-                url: '{{ action('Ajax\PlayerController@delete', ['playerId' => $player->id])}}',
+                url: '{{ action('Ajax\PlayerController@delete', ['player' => $player->id])}}',
                 success: function () {
                     window.location.href = '{{ route('players') }}';
                 }
