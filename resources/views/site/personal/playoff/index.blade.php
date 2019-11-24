@@ -24,12 +24,12 @@
                                 <div class="row">
                                     <div class="col-10">
                                         <span class="badge badge-pill badge-danger">&nbsp;</span>
-                                        @if (!is_null($pair) && $pair->playerOne && $pair->playerOne->name)
+                                        @if (!is_null($pair) && $pair->playerOne && $pair->playerOne->tag)
                                             <a href="{{ route('player', ['player' => $pair->player_one_id]) }}">
                                                 @if ($winner === $pair->player_one_id)
-                                                    <strong>{{$pair->playerOne->name }}</strong>
+                                                    <strong>{{$pair->playerOne->tag }}</strong>
                                                 @else
-                                                    {{$pair->playerOne->name }}
+                                                    {{$pair->playerOne->tag }}
                                                 @endif
                                             </a>
                                             <span class="badge badge-success text-uppercase">
@@ -71,12 +71,12 @@
                                 <div class="row">
                                     <div class="col-10">
                                         <span class="badge badge-pill badge-warning">&nbsp;</span>
-                                        @if (!is_null($pair) && $pair->playerTwo && $pair->playerTwo->name)
+                                        @if (!is_null($pair) && $pair->playerTwo && $pair->playerTwo->tag)
                                             <a href="{{ route('player', ['player' => $pair->player_two_id]) }}">
                                                 @if ($winner === $pair->player_two_id)
-                                                    <strong>{{$pair->playerTwo->name }}</strong>
+                                                    <strong>{{$pair->playerTwo->tag }}</strong>
                                                 @else
-                                                    {{ $pair->playerTwo->name }}
+                                                    {{ $pair->playerTwo->tag }}
                                                 @endif
                                             </a>
                                             <span class="badge badge-success text-uppercase">
