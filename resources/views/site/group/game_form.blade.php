@@ -186,13 +186,13 @@
                     <td colspan="2">
                         <input type="time" id="home_powerplay_time" class="form-control text-right"
                                name="home_powerplay_time"
-                               value="{{ !is_null($game->home_powerplay_time) ? TextUtils::protocolTime($game->home_powerplay_time) : '' }}">
+                               value="{{ $game && !is_null($game->home_powerplay_time) ? TextUtils::protocolTime($game->home_powerplay_time) : '' }}">
                     </td>
                     <th class="text-center">Минут в большинстве</th>
                     <td colspan="2">
                         <input type="time" id="away_powerplay_time" class="form-control text-right"
                                name="away_powerplay_time"
-                               value="{{ !is_null($game->away_powerplay_time) ? TextUtils::protocolTime($game->away_powerplay_time) : '' }}">
+                               value="{{ $game && !is_null($game->away_powerplay_time) ? TextUtils::protocolTime($game->away_powerplay_time) : '' }}">
                     </td>
                     <td></td>
                 </tr>
