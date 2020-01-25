@@ -24,6 +24,9 @@
         </div>
     @endif
     <form id="game-form">
+        @if(!Auth::user()->isAdmin())
+            <input type="hidden" id="redirectToProtocol" name="redirectToProtocol" value="true">
+        @endif
         <table class="mb-2 w-100">
             <tbody>
             <tr>
@@ -186,13 +189,13 @@
                     <td colspan="2">
                         <input type="time" id="home_powerplay_time" class="form-control text-right"
                                name="home_powerplay_time"
-                               value="{{ !is_null($game->home_powerplay_time) ? TextUtils::protocolTime($game->home_powerplay_time) : '' }}">
+                               value="{{ $game && !is_null($game->home_powerplay_time) ? TextUtils::protocolTime($game->home_powerplay_time) : '' }}">
                     </td>
                     <th class="text-center">Минут в большинстве</th>
                     <td colspan="2">
                         <input type="time" id="away_powerplay_time" class="form-control text-right"
                                name="away_powerplay_time"
-                               value="{{ !is_null($game->away_powerplay_time) ? TextUtils::protocolTime($game->away_powerplay_time) : '' }}">
+                               value="{{ $game && !is_null($game->away_powerplay_time) ? TextUtils::protocolTime($game->away_powerplay_time) : '' }}">
                     </td>
                     <td></td>
                 </tr>
@@ -273,45 +276,45 @@
             if ($game) {
                 $saveGameUrl = action(
                     'Ajax\GroupController@editPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                     ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id, 'groupGamePlayoff' => $game->id]
                  );
                  $resetGameUrl = action(
                     'Ajax\GroupController@resetPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                     ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id, 'groupGamePlayoff' => $game->id]
                  );
                  $protocolUrl = action(
                     'Ajax\GroupController@createPlayoffProtocol',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                     ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id, 'groupGamePlayoff' => $game->id]
                  );
                  $shareUrl = action(
                     'Ajax\GroupController@sharePlayoffResult',
-                    ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                    ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id, 'groupGamePlayoff' => $game->id]
                 );
              } else {
                 $saveGameUrl = action(
                     'Ajax\GroupController@createPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id]
+                     ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id]
                  );
              }
         } else {
             if ($game) {
                 $shareUrl = action(
                     'Ajax\GroupController@shareRegularResult',
-                    ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                    ['groupTournament' => $game->tournament_id, 'groupGameRegular' => $game->id]
                 );
             }
             $lastGamesUrl = action('Ajax\EaController@getLastGames') . '?gameId=' . $game->id;
             $saveGameUrl = action(
                 'Ajax\GroupController@editRegularGame',
-                ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                ['groupTournament' => $game->tournament_id, 'groupGameRegular' => $game->id]
             );
             $resetGameUrl = action(
                 'Ajax\GroupController@resetRegularGame',
-                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                 ['groupTournament' => $game->tournament_id, 'groupGameRegular' => $game->id]
              );
              $protocolUrl = action(
                 'Ajax\GroupController@createRegularProtocol',
-                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                 ['groupTournament' => $game->tournament_id, 'groupGameRegular' => $game->id]
              );
         }
     @endphp

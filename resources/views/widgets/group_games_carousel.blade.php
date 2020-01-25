@@ -12,9 +12,9 @@
             @endif
             @php
                 if ($game->playoff_pair_id) {
-                    $link = route('group.tournament.playoff.game', ['tournamentId' => $game->tournament->id, 'pairId' => $game->playoff_pair_id, 'gameId' => $game->id]);
+                    $link = route('group.tournament.playoff.game', ['groupTournament' => $game->tournament->id, 'groupTournamentPlayoff' => $game->playoff_pair_id, 'groupGamePlayoff' => $game->id]);
                 } else {
-                    $link = route('group.tournament.regular.game', ['tournamentId' => $game->tournament->id, 'gameId' => $game->id]);
+                    $link = route('group.tournament.regular.game', ['groupTournament' => $game->tournament->id, 'groupGameRegular' => $game->id]);
                 }
             @endphp
             <a

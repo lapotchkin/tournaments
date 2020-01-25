@@ -52,21 +52,19 @@
                                 <th class="text-left">Гости</th>
                                 <th style="width: 8em;"></th>
                                 @auth
-                                    @if(Auth::user()->isAdmin())
-                                        <th style="width: 2em;"></th>
-                                    @endif
+                                    <th style="width: 2em;"></th>
                                 @endauth
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($games as $game)
-                                <tr class="games {{ !is_null($game->home_score) ? 'table-success' : '' }}">
+                                <tr class="games {{ !is_null($game->home_score) ? TextUtils::gameClass($game->isConfirmed) : '' }}">
                                     <td>
-                                        @auth
-                                            @if(Auth::user()->isAdmin() && is_null($game->home_score) && $game->gamePlayed)
+                                        @can('update', $game)
+                                            @if(is_null($game->home_score) && $game->gamePlayed)
                                                 <i class="fas fa-exclamation-triangle"></i>
                                             @endif
-                                        @endauth
+                                        @endcan
                                         <span
                                             class="badge badge-pill badge-warning">{{ $game->isOvertime ? 'О' : '' }}</span>
                                         <span
@@ -79,11 +77,11 @@
                                         @if($game->match_id)
                                             <em class="badge badge-secondary">EA</em>
                                         @endif
-                                        @auth
-                                            @if(Auth::user()->isAdmin() && is_null($game->home_score) && $game->gamePlayed)
+                                        @can('update', $game)
+                                            @if(is_null($game->home_score) && $game->gamePlayed)
                                                 <span class="text-muted">{{ $game->gamePlayed }}</span>
                                             @endif
-                                        @endauth
+                                        @endcan
                                     </td>
                                     <td class="text-right">
                                         @if ($game->home_score > $game->away_score)
@@ -116,17 +114,17 @@
                                     </td>
                                     <td class="text-right">
                                         <a class="btn btn-sm btn-primary"
-                                           href="{{ route('group.tournament.regular.game', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}">
+                                           href="{{ route('group.tournament.regular.game', ['groupTournament' => $tournament->id, 'groupGameRegular' => $game->id]) }}">
                                             <i class="fas fa-gamepad"></i> протокол
                                         </a>
                                     </td>
                                     @auth
-                                        @if(Auth::user()->isAdmin())
-                                            <td class="text-right">
-                                                <a href="{{ route('group.tournament.regular.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
+                                        <td class="text-right">
+                                            @can('update', $game)
+                                                <a href="{{ route('group.tournament.regular.game.edit', ['groupTournament' => $tournament->id, 'groupGameRegular' => $game->id]) }}"
                                                    class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
-                                            </td>
-                                        @endif
+                                            @endcan
+                                        </td>
                                     @endauth
                                 </tr>
                             @endforeach

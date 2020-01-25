@@ -11,6 +11,7 @@ use App\Models\GroupTournamentPlayoff;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 /**
@@ -20,12 +21,11 @@ use Illuminate\Http\Response;
 class EaController extends Controller
 {
     /**
-     * @param StoreRequest $request
+     * @param Request $request
      * @return ResponseFactory|Response
-     * @throws GuzzleException
      * @throws Exception
      */
-    public function getLastGames(StoreRequest $request)
+    public function getLastGames(Request $request)
     {
         $validatedData = $request->validate([
             'gameId' => 'sometimes|required|int',
@@ -57,6 +57,7 @@ class EaController extends Controller
         $response = EaGame::where('clubs.' . $firstClubId, 'exists', true)
             ->where('clubs.' . $secondClubId, 'exists', true)
             ->where('timestamp', '>', $tournament->startedAt->getTimestamp())
+            ->orderBy('timestamp')
             ->get();
 
         $matches = EaRest::parseMatches(

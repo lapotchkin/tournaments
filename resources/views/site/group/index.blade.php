@@ -6,13 +6,11 @@
     {{ Breadcrumbs::render('group') }}
     <h2>
         Командные турниры
-        @auth
-            @if(Auth::user()->isAdmin())
-                <a class="btn btn-primary" href="{{ route('group.new') }}">
-                    <i class="fas fa-plus"></i> <i class="fas fa-users"></i>
-                </a>
-            @endif
-        @endauth
+        @can('create', 'App\Models\GroupTournament')
+            <a class="btn btn-primary" href="{{ route('group.new') }}">
+                <i class="fas fa-plus"></i> <i class="fas fa-users"></i>
+            </a>
+        @endcan
     </h2>
     @foreach($apps as $app)
         @if(count($app->groupTournaments))
@@ -35,7 +33,7 @@
                                     @endforeach
                                 </div>
                             @endif
-                            <a href="{{ route('group.tournament', ['tournamentId' => $tournament->id]) }}">
+                            <a href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}">
                                 {{ $tournament->title }}
                             </a>
                             <span class="badge badge-pill badge-secondary">

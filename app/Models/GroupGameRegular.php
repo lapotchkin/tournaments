@@ -47,13 +47,16 @@ use Illuminate\Support\Carbon;
  * @property int                                      $isTechnicalDefeat     Техническое поражение
  * @property Carbon                                   $createdAt             Дата создания
  * @property string|null                              $playedAt              Дата игры
- * @property string|null                              $updatedAt             Дата изменения
+ * @property Carbon|null                              $updatedAt             Дата изменения
  * @property Carbon|null                              $deletedAt             Дата удаления
  * @property string|null                              $match_id              ID матча в EASHL
- * @property string|null                              $sharedAt              Дата поста в ВК
+ * @property string|null                              $sharedAt
+ * @property int                                      $isConfirmed           Результат подтверждён
+ * @property int|null                                 $added_by          ID подтвердившей команды
  * @property-read GroupTournamentTeam                 $awayTeam
  * @property-read GroupTournamentTeam                 $homeTeam
  * @property-read Collection|GroupGameRegularPlayer[] $protocols
+ * @property-read int|null                            $protocols_count
  * @property-read GroupTournament                     $tournament
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|GroupGameRegular newModelQuery()
@@ -73,6 +76,7 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|GroupGameRegular whereAwayShorthandedGoal($value)
  * @method static EloquentBuilder|GroupGameRegular whereAwayShot($value)
  * @method static EloquentBuilder|GroupGameRegular whereAwayTeamId($value)
+ * @method static EloquentBuilder|GroupGameRegular whereConfirmedBy($value)
  * @method static EloquentBuilder|GroupGameRegular whereCreatedAt($value)
  * @method static EloquentBuilder|GroupGameRegular whereDeletedAt($value)
  * @method static EloquentBuilder|GroupGameRegular whereHomeAttackTime($value)
@@ -88,12 +92,14 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|GroupGameRegular whereHomeShot($value)
  * @method static EloquentBuilder|GroupGameRegular whereHomeTeamId($value)
  * @method static EloquentBuilder|GroupGameRegular whereId($value)
+ * @method static EloquentBuilder|GroupGameRegular whereIsConfirmed($value)
  * @method static EloquentBuilder|GroupGameRegular whereIsOvertime($value)
  * @method static EloquentBuilder|GroupGameRegular whereIsShootout($value)
  * @method static EloquentBuilder|GroupGameRegular whereIsTechnicalDefeat($value)
  * @method static EloquentBuilder|GroupGameRegular whereMatchId($value)
  * @method static EloquentBuilder|GroupGameRegular wherePlayedAt($value)
  * @method static EloquentBuilder|GroupGameRegular whereRound($value)
+ * @method static EloquentBuilder|GroupGameRegular whereSharedAt($value)
  * @method static EloquentBuilder|GroupGameRegular whereTournamentId($value)
  * @method static EloquentBuilder|GroupGameRegular whereUpdatedAt($value)
  * @method static QueryBuilder|GroupGameRegular withTrashed()
@@ -174,6 +180,8 @@ class GroupGameRegular extends Model
         //'deletedAt',
         'match_id',
         'sharedAt',
+        'isConfirmed',
+        'added_by',
     ];
 
     /**

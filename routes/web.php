@@ -34,58 +34,58 @@ Route::get('/logout', 'Auth\SocialController@logout')->name('logout');
 Route::get('/group', 'Site\GroupController@index')
     ->name('group');
 Route::get('/group/new', 'Site\GroupController@new')
+    ->middleware('can:create,App\Models\GroupTournament')
     ->name('group.new');
-Route::get('/group/{tournamentId}', 'Site\GroupController@teams')
-    ->where(['tournamentId' => '[0-9]+'])
+Route::get('/group/{groupTournament}', 'Site\GroupController@teams')
     ->name('group.tournament');
-Route::get('/group/{tournamentId}/edit', 'Site\GroupController@edit')
-    ->where(['tournamentId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/edit', 'Site\GroupController@edit')
+    ->middleware('can:create,App\Models\GroupTournament')
     ->name('group.tournament.edit');
-Route::get('/group/{tournamentId}/team/{teamId}', 'Site\GroupController@team')
-    ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/team/{team}', 'Site\GroupController@team')
+    ->middleware('can:create,App\Models\GroupTournament')
     ->name('group.tournament.team');
 /*
  * Regular
  */
-Route::get('/group/{tournamentId}/regular', 'Site\GroupRegularController@index')
-    ->where(['tournamentId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/regular', 'Site\GroupRegularController@index')
     ->name('group.tournament.regular');
-Route::get('/group/{tournamentId}/regular/games', 'Site\GroupRegularController@games')
-    ->where(['tournamentId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/regular/games', 'Site\GroupRegularController@games')
     ->name('group.tournament.regular.games');
-Route::get('/group/{tournamentId}/regular/games/{gameId}', 'Site\GroupRegularController@game')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/regular/games/{groupGameRegular}', 'Site\GroupRegularController@game')
     ->name('group.tournament.regular.game');
-Route::get('/group/{tournamentId}/regular/games/{gameId}/edit', 'Site\GroupRegularController@gameEdit')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/regular/games/{groupGameRegular}/edit', 'Site\GroupRegularController@gameEdit')
+    ->middleware('can:update,groupGameRegular')
     ->name('group.tournament.regular.game.edit');
-Route::get('/group/{tournamentId}/regular/schedule', 'Site\GroupRegularController@schedule')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/regular/schedule', 'Site\GroupRegularController@schedule')
     ->name('group.tournament.regular.schedule');
 /*
  * Playoff
  */
-Route::get('/group/{tournamentId}/playoff', 'Site\GroupPlayoffController@index')
-    ->where(['tournamentId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/playoff', 'Site\GroupPlayoffController@index')
     ->name('group.tournament.playoff');
-Route::get('/group/{tournamentId}/playoff/stats', 'Site\GroupPlayoffController@stats')
-    ->where(['tournamentId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/playoff/stats', 'Site\GroupPlayoffController@stats')
     ->name('group.tournament.playoff.stats');
-Route::get('/group/{tournamentId}/playoff/games', 'Site\GroupPlayoffController@games')
-    ->where(['tournamentId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/playoff/games', 'Site\GroupPlayoffController@games')
     ->name('group.tournament.playoff.games');
-Route::get('/group/{tournamentId}/playoff/games/{pairId}/add', 'Site\GroupPlayoffController@gameAdd')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+'])
+Route::get(
+    '/group/{groupTournament}/playoff/games/{groupTournamentPlayoff}/add',
+    'Site\GroupPlayoffController@gameAdd'
+)
+    ->middleware('can:update,groupTournamentPlayoff')
     ->name('group.tournament.playoff.game.add');
-Route::get('/group/{tournamentId}/playoff/games/{pairId}/{gameId}', 'Site\GroupPlayoffController@game')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+'])
-    ->name('group.tournament.playoff.game');
-Route::get('/group/{tournamentId}/playoff/games/{pairId}/{gameId}/edit', 'Site\GroupPlayoffController@gameEdit')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+'])
+Route::get(
+    '/group/{groupTournament}/playoff/games/{groupTournamentPlayoff}/{groupGamePlayoff}',
+    'Site\GroupPlayoffController@game'
+)->name('group.tournament.playoff.game');
+Route::get(
+    '/group/{groupTournament}/playoff/games/{groupTournamentPlayoff}/{groupGamePlayoff}/edit',
+    'Site\GroupPlayoffController@gameEdit'
+)
+    ->middleware('can:update,groupTournamentPlayoff')
     ->name('group.tournament.playoff.game.edit');
 
-Route::get('/group/{tournamentId}/copypaste', 'Site\GroupController@teams')
-    ->where(['tournamentId' => '[0-9]+'])
+Route::get('/group/{groupTournament}/copypaste', 'Site\GroupController@teams')
+    ->middleware('can:create,App\Models\GroupTournament')
     ->name('group.tournament.copypaste');
 
 /*
@@ -184,7 +184,7 @@ Route::get('/team/{team}/edit', 'Site\TeamController@edit')
 
 /*
 |--------------------------------------------------------------------------
-| Team
+| Tracker
 |--------------------------------------------------------------------------
 */
 Route::get('/tracker', 'Site\TrackerController@index')
@@ -198,66 +198,86 @@ Route::get('/tracker', 'Site\TrackerController@index')
 /*
  * Group
  */
-Route::put('/ajax/group', 'Ajax\GroupController@create');
-Route::post('/ajax/group/{tournamentId}', 'Ajax\GroupController@edit')
-    ->where(['tournamentId' => '[0-9]+']);
-Route::delete('/ajax/group/{tournamentId}', 'Ajax\GroupController@delete')
-    ->where(['tournamentId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/winner', 'Ajax\GroupController@setWinner')
-    ->where(['tournamentId' => '[0-9]+']);
+Route::put('/ajax/group', 'Ajax\GroupController@create')
+    ->middleware('can:create,App\Models\GroupTournament');
+Route::post('/ajax/group/{groupTournament}', 'Ajax\GroupController@edit')
+    ->middleware('can:create,App\Models\GroupTournament');
+Route::delete('/ajax/group/{groupTournament}', 'Ajax\GroupController@delete')
+    ->middleware('can:create,App\Models\GroupTournament');
+Route::post('/ajax/group/{groupTournament}/winner', 'Ajax\GroupController@setWinner')
+    ->middleware('can:create,App\Models\GroupTournament');
 
-Route::put('/ajax/group/{tournamentId}/team', 'Ajax\GroupController@addTeam')
-    ->where(['tournamentId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/team/{teamId}', 'Ajax\GroupController@editTeam')
-    ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+']);
-Route::delete('/ajax/group/{tournamentId}/team/{teamId}', 'Ajax\GroupController@deleteTeam')
-    ->where(['tournamentId' => '[0-9]+', 'teamId' => '[0-9]+']);
+Route::put('/ajax/group/{groupTournament}/team', 'Ajax\GroupController@addTeam')
+    ->middleware('can:create,App\Models\GroupTournament');
+Route::post('/ajax/group/{groupTournament}/team/{team}', 'Ajax\GroupController@editTeam')
+    ->middleware('can:create,App\Models\GroupTournament');
+Route::delete('/ajax/group/{groupTournament}/team/{team}', 'Ajax\GroupController@deleteTeam')
+    ->middleware('can:create,App\Models\GroupTournament');
 //Regular
-Route::post('/ajax/group/{tournamentId}/regular/{gameId}', 'Ajax\GroupController@editRegularGame')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/regular/{gameId}/reset', 'Ajax\GroupController@resetRegularGame')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
-Route::put('/ajax/group/{tournamentId}/regular/{gameId}/protocol', 'Ajax\GroupController@createRegularProtocol')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
-Route::delete(
-    '/ajax/group/{tournamentId}/regular/{gameId}/protocol/{protocolId}',
-    'Ajax\GroupController@deleteRegularProtocol'
-)->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
-Route::post(
-    '/ajax/group/{tournamentId}/regular/{gameId}/protocol/{protocolId}',
-    'Ajax\GroupController@updateRegularProtocol'
-)->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
-//Playoff
-Route::put('/ajax/group/{tournamentId}/playoff', 'Ajax\GroupController@createPair')
-    ->where(['tournamentId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/playoff/{pairId}', 'Ajax\GroupController@updatePair')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+']);
-Route::put('/ajax/group/{tournamentId}/playoff/{pairId}', 'Ajax\GroupController@createPlayoffGame')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}', 'Ajax\GroupController@editPlayoffGame')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/reset', 'Ajax\GroupController@resetPlayoffGame')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::post('/ajax/group/{groupTournament}/regular/{groupGameRegular}', 'Ajax\GroupController@editRegularGame')
+    ->middleware('can:update,groupGameRegular');
+Route::post('/ajax/group/{groupTournament}/regular/{groupGameRegular}/reset', 'Ajax\GroupController@resetRegularGame')
+    ->middleware('can:update,groupGameRegular');
 Route::put(
-    '/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/protocol',
+    '/ajax/group/{groupTournament}/regular/{groupGameRegular}/protocol',
+    'Ajax\GroupController@createRegularProtocol'
+)
+    ->middleware('can:update,groupGameRegular');
+Route::delete(
+    '/ajax/group/{groupTournament}/regular/{groupGameRegular}/protocol/{groupGameRegular_player}',
+    'Ajax\GroupController@deleteRegularProtocol'
+)
+    ->middleware('can:update,groupGameRegular');
+Route::post(
+    '/ajax/group/{groupTournament}/regular/{groupGameRegular}/protocol/{groupGameRegular_player}',
+    'Ajax\GroupController@updateRegularProtocol'
+)
+    ->middleware('can:update,groupGameRegular');
+//Playoff
+Route::put('/ajax/group/{groupTournament}/playoff', 'Ajax\GroupController@createPair')
+    ->middleware('can:create,App\Models\GroupTournament');
+Route::post('/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}', 'Ajax\GroupController@updatePair')
+    ->middleware('can:create,App\Models\GroupTournament');
+Route::put('/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}', 'Ajax\GroupController@createPlayoffGame')
+    ->middleware('can:update,groupTournamentPlayoff');
+Route::post(
+    '/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}/{groupGamePlayoff}',
+    'Ajax\GroupController@editPlayoffGame'
+)
+    ->middleware('can:update,groupTournamentPlayoff');
+Route::post(
+    '/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}/{groupGamePlayoff}/reset',
+    'Ajax\GroupController@resetPlayoffGame'
+)
+    ->middleware('can:update,groupTournamentPlayoff');
+Route::put(
+    '/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}/{groupGamePlayoff}/protocol',
     'Ajax\GroupController@createPlayoffProtocol'
 )
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+    ->middleware('can:update,groupTournamentPlayoff');
 Route::delete(
-    '/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/protocol/{protocolId}',
+    '/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}/{groupGamePlayoff}/protocol/{groupGamePlayoff_player}',
     'Ajax\GroupController@deletePlayoffProtocol'
-)->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
+)
+    ->middleware('can:update,groupTournamentPlayoff');
 Route::post(
-    '/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/protocol/{protocolId}',
+    '/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}/{groupGamePlayoff}/protocol/{groupGamePlayoff_player}',
     'Ajax\GroupController@updatePlayoffProtocol'
-)->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+', 'protocolId' => '[0-9]+']);
+)
+    ->middleware('can:update,groupTournamentPlayoff');
 //EA
 Route::get('/ajax/ea/lastGames', 'Ajax\EaController@getLastGames');
 //VK
-Route::post('/ajax/group/{tournamentId}/regular/{gameId}/share', 'Ajax\GroupController@shareRegularResult')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
-Route::post('/ajax/group/{tournamentId}/playoff/{pairId}/{gameId}/share', 'Ajax\GroupController@sharePlayoffResult')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::post(
+    '/ajax/group/{groupTournament}/regular/{groupGameRegular}/share',
+    'Ajax\GroupController@shareRegularResult'
+)
+    ->middleware('can:create,App\Models\GroupTournament');
+Route::post(
+    '/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}/{groupGamePlayoff}/share',
+    'Ajax\GroupController@sharePlayoffResult'
+)
+    ->middleware('can:create,App\Models\GroupTournament');
 
 /*
  * Personal

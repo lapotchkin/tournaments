@@ -189,7 +189,7 @@
             TRNMNT_sendData({
                 selector: '#tournament-form',
                 method: '{{ is_null($tournament) ? 'put' : 'post' }}',
-                url: '{{ is_null($tournament) ? action('Ajax\GroupController@create') : action('Ajax\GroupController@edit', ['tournamentId' => $tournament->id])}}',
+                url: '{{ is_null($tournament) ? action('Ajax\GroupController@create') : action('Ajax\GroupController@edit', ['groupTournament' => $tournament->id])}}',
                 success: function (response) {
                     window.location.href = '{{ route('group') }}/' + response.data.id;
                 }
@@ -198,7 +198,7 @@
             @if (!is_null($tournament))
             TRNMNT_deleteData({
                 selector: '#tournament-delete-button',
-                url: '{{ action('Ajax\GroupController@delete', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\GroupController@delete', ['groupTournament' => $tournament->id])}}',
                 success: function () {
                     window.location.href = '{{ route('group') }}';
                 }
@@ -207,7 +207,7 @@
             TRNMNT_sendData({
                 selector: '#first_place-form',
                 method: 'post',
-                url: '{{ action('Ajax\GroupController@setWinner', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\GroupController@setWinner', ['groupTournament' => $tournament->id])}}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                 },
@@ -216,7 +216,7 @@
             TRNMNT_sendData({
                 selector: '#second_place-form',
                 method: 'post',
-                url: '{{ action('Ajax\GroupController@setWinner', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\GroupController@setWinner', ['groupTournament' => $tournament->id])}}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                 },
@@ -226,7 +226,7 @@
             TRNMNT_sendData({
                 selector: '#third_place-form',
                 method: 'post',
-                url: '{{ action('Ajax\GroupController@setWinner', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\GroupController@setWinner', ['groupTournament' => $tournament->id])}}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                 },

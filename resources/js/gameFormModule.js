@@ -422,10 +422,19 @@ window.TRNMNT_gameFormModule = (function () {
      * @private
      */
     function _onSuccessSubmitGame(response) {
+        const redirect = $('#redirectToProtocol').val() === 'true';
+
         if (response.data.id) {
-            window.location.href = window.location.href.replace('add', response.data.id) + '/edit';
+            const url = window.location.href.replace('add', response.data.id);
+            window.location.href = redirect ? url : url + '/edit';
             return;
         }
+
+        if (redirect) {
+            window.location.href = window.location.href.replace('/edit', '');
+            return;
+        }
+
         TRNMNT_helpers.enableButtons();
         TRNMNT_helpers.showNotification(response.message);
 
@@ -507,7 +516,7 @@ window.TRNMNT_gameFormModule = (function () {
         for (let gameId in response.data) {
             const game = response.data[gameId].game;
             let date = new Date(game.playedAt.replace(' ', 'T'));
-            date.setTime( date.getTime() + date.getTimezoneOffset()*60*1000 );
+            date.setTime(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
             console.log(game.playedAt, date);
             const $row = $(_templates.game.format({
                 date: date.getFullDate(),

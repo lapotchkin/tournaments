@@ -3,7 +3,7 @@
         @if (Route::currentRouteName() === 'group.tournament')
             <a class="nav-link active" href="#">Команды</a>
         @else
-            <a class="nav-link" href="{{ route('group.tournament', ['tournamentId' => $tournament->id]) }}">
+            <a class="nav-link" href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}">
                 Команды
             </a>
         @endif
@@ -13,7 +13,7 @@
             <a class="nav-link active" href="#">Чемпионат</a>
         @else
             <a class="nav-link"
-               href="{{ route('group.tournament.regular', ['tournamentId' => $tournament->id]) }}">
+               href="{{ route('group.tournament.regular', ['groupTournament' => $tournament->id]) }}">
                 Чемпионат
             </a>
         @endif
@@ -23,23 +23,21 @@
             <a class="nav-link active" href="#">Плэйофф</a>
         @else
             <a class="nav-link"
-               href="{{ route('group.tournament.playoff', ['tournamentId' => $tournament->id]) }}">
+               href="{{ route('group.tournament.playoff', ['groupTournament' => $tournament->id]) }}">
                 Плэйофф
             </a>
         @endif
     </li>
-    @auth
-        @if(Auth::user()->isAdmin())
-            <li class="nav-item">
-                @if (Route::currentRouteName() === 'group.tournament.copypaste')
-                    <a class="nav-link active" href="#">Данные для ВК</a>
-                @else
-                    <a class="nav-link"
-                       href="{{ route('group.tournament.copypaste', ['tournamentId' => $tournament->id]) }}">
-                        Данные для ВК
-                    </a>
-                @endif
-            </li>
-        @endif
-    @endauth
+    @can('create', 'App\Models\GroupTournament')
+        <li class="nav-item">
+            @if (Route::currentRouteName() === 'group.tournament.copypaste')
+                <a class="nav-link active" href="#">Данные для ВК</a>
+            @else
+                <a class="nav-link"
+                   href="{{ route('group.tournament.copypaste', ['groupTournament' => $tournament->id]) }}">
+                    Данные для ВК
+                </a>
+            @endif
+        </li>
+    @endcan
 </ul>

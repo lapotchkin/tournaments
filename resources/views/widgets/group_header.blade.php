@@ -4,13 +4,11 @@
     <span class="badge badge-pill badge-secondary">
         {{ $tournament->min_players }} на {{ $tournament->min_players }}
     </span>
-    @auth
-        @if(Auth::user()->isAdmin())
-            <a class="btn btn-primary" href="{{ route('group.tournament.edit', ['tournamentId' => $tournament->id]) }}">
-                <i class="fas fa-edit"></i>
-            </a>
-        @endif
-    @endauth
+    @can('create', 'App\Models\GroupTournament')
+        <a class="btn btn-primary" href="{{ route('group.tournament.edit', ['groupTournament' => $tournament->id]) }}">
+            <i class="fas fa-edit"></i>
+        </a>
+    @endcan
 </h2>
 <p>Создан: {{ (new \DateTime($tournament->createdAt))->format('d.m.Y') }}</p>
 @if(count($tournament->winners))

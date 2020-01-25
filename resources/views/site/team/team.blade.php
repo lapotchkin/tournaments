@@ -57,7 +57,7 @@
             @foreach($team->tournaments as $tournament)
                 <li>
                     <span class="fa-li"><i class="fas fa-hockey-puck"></i></span>
-                    <a href="{{ route('group.tournament', ['tournamentId' => $tournament->id]) }}">{{ $tournament->title }}</a>
+                    <a href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}">{{ $tournament->title }}</a>
                     <span class="badge badge-secondary badge-pill">
                         {{ $tournament->min_players }} на {{ $tournament->min_players }}
                     </span>
