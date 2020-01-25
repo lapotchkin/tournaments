@@ -38,10 +38,10 @@
                                         @else
                                             <select class="form-control form-control-sm" name="team_one_id">
                                                 <option value="">--</option>
-                                                @foreach($tournament->teamTournaments as $tournamentTeam)
-                                                    <option value="{{ $teamTournament->team_id }}"
-                                                        {{ !is_null($pair) && $pair->team_one_id === $teamTournament->team_id ? 'selected' : '' }}>
-                                                        {{ $teamTournament->team->name }}
+                                                @foreach($tournament->tournamentTeams as $tournamentTeam)
+                                                    <option value="{{ $tournamentTeam->team_id }}"
+                                                        {{ !is_null($pair) && $pair->team_one_id === $tournamentTeam->team_id ? 'selected' : '' }}>
+                                                        {{ $tournamentTeam->team->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -105,10 +105,10 @@
                                         @else
                                             <select class="form-control form-control-sm" name="team_two_id">
                                                 <option value="">--</option>
-                                                @foreach($tournament->teamTournaments as $teamTournament)
-                                                    <option value="{{ $teamTournament->team_id }}"
-                                                        {{ !is_null($pair) && $pair->team_two_id === $teamTournament->team_id ? 'selected' : '' }}>
-                                                        {{ $teamTournament->team->name }}
+                                                @foreach($tournament->tournamentTeams as $tournamentTeam)
+                                                    <option value="{{ $tournamentTeam->team_id }}"
+                                                        {{ !is_null($pair) && $pair->team_two_id === $tournamentTeam->team_id ? 'selected' : '' }}>
+                                                        {{ $tournamentTeam->team->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
