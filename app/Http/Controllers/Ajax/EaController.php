@@ -57,6 +57,7 @@ class EaController extends Controller
         $response = EaGame::where('clubs.' . $firstClubId, 'exists', true)
             ->where('clubs.' . $secondClubId, 'exists', true)
             ->where('timestamp', '>', $tournament->startedAt->getTimestamp())
+            ->orderBy('timestamp')
             ->get();
 
         $matches = EaRest::parseMatches(

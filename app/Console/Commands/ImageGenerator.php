@@ -127,6 +127,7 @@ class ImageGenerator extends Command
             $photos = [];
             $text = '';
             foreach ($puck as $game) {
+                sleep(1);
                 $this->line($game->id);
                 $scoreImage = new ScoreImage($game);
                 $imagePath = $scoreImage->create();
