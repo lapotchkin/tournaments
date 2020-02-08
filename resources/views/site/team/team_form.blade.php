@@ -76,7 +76,7 @@
             TRNMNT_sendData({
                 selector: '#team-form',
                 method: '{{ is_null($team) ? 'put' : 'post' }}',
-                url: '{{ is_null($team) ? action('Ajax\TeamController@create') : action('Ajax\TeamController@edit', ['teamId' => $team->id])}}',
+                url: '{{ is_null($team) ? action('Ajax\TeamController@create') : action('Ajax\TeamController@edit', ['team' => $team->id])}}',
                 success: function (response) {
                     window.location.href = '{{ route('teams') }}/' + response.data.id + '/edit';
                 }
@@ -85,7 +85,7 @@
             @if (!is_null($team))
             TRNMNT_deleteData({
                 selector: '#team-delete-button',
-                url: '{{ action('Ajax\TeamController@delete', ['teamId' => $team->id])}}',
+                url: '{{ action('Ajax\TeamController@delete', ['team' => $team->id])}}',
                 success: function () {
                     window.location.href = '{{ route('teams') }}';
                 }
@@ -94,7 +94,7 @@
             TRNMNT_sendData({
                 selector: '.app-add',
                 method: 'post',
-                url: '{{ action('Ajax\TeamController@setTeamId', ['teamId' => $team->id])}}',
+                url: '{{ action('Ajax\TeamController@setTeamId', ['team' => $team->id])}}',
             });
             @endif
         });

@@ -187,7 +187,7 @@ class ScheduleGenerator extends Command
             $gameOne->round = (int)$data[1];
         } else {
             $this->info("   Создание игры 1");
-            $gameOne = new PersonalGameRegular([
+            $gameOne = new GroupGameRegular([
                 'tournament_id'  => (int)$id,
                 'round'          => (int)$data[1],
                 'home_player_id' => $homeTeam->id,
@@ -202,7 +202,7 @@ class ScheduleGenerator extends Command
                 $gameTwo->round = (int)$data[1];
             } else {
                 $this->info("   Создание игры 2");
-                $gameTwo = new PersonalGameRegular([
+                $gameTwo = new GroupGameRegular([
                     'tournament_id'  => (int)$id,
                     'round'          => (int)$data[1],
                     'away_player_id' => $homeTeam->id,
