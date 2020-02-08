@@ -190,8 +190,8 @@ class ScheduleGenerator extends Command
             $gameOne = new GroupGameRegular([
                 'tournament_id'  => (int)$id,
                 'round'          => (int)$data[1],
-                'home_player_id' => $homeTeam->id,
-                'away_player_id' => $awayTeam->id,
+                'home_team_id' => $homeTeam->id,
+                'away_team_id' => $awayTeam->id,
             ]);
         }
         $gameOne->save();
@@ -205,8 +205,8 @@ class ScheduleGenerator extends Command
                 $gameTwo = new GroupGameRegular([
                     'tournament_id'  => (int)$id,
                     'round'          => (int)$data[1],
-                    'away_player_id' => $homeTeam->id,
-                    'home_player_id' => $awayTeam->id,
+                    'away_team_id' => $homeTeam->id,
+                    'home_team_id' => $awayTeam->id,
                 ]);
             }
             $gameTwo->save();
