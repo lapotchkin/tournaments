@@ -485,7 +485,7 @@ class GroupRegularController extends Controller
             if ($goalie->games / $currentGames[$goalie->team_id] >= 0.25) {
                 $goalies[] = $goalie;
             }
-            $goaliesAll[] = $goalie;
+            $goaliesAll[] = clone $goalie;
         }
 
         array_multisort(
