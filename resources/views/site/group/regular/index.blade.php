@@ -257,9 +257,9 @@
                     {'data': 'goal_against_per_game', 'title': 'ГОЛ/И'},
                     {'data': 'shootouts', 'title': 'СУХ'},
                 ],
-                'ordering': false,
+                'ordering': true,
                 'paging': false,
-                'searching': false,
+                'searching': true,
                 'info': false,
                 'pageLength': -1,
             });
