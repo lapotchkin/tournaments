@@ -100,6 +100,14 @@
         <thead class="thead-dark"></thead>
         <tbody></tbody>
     </table>
+
+    <h3 class="mt-3">
+        Все вратари турнира
+    </h3>
+    <table id="goaliesAll" class="leaders table table-striped table-sm">
+        <thead class="thead-dark"></thead>
+        <tbody></tbody>
+    </table>
 @endsection
 
 @section('script')
@@ -211,6 +219,30 @@
 
             $('#goalies').DataTable({
                 data: {!! json_encode($goalies) !!},
+                columns: [
+                    {'data': 'place', 'title': ''},
+                    {'data': 'prevPlace', 'title': ''},
+                    {'data': 'goalie', 'title': 'Вратарь'},
+                    {'data': 'team', 'title': 'Команда'},
+                    {'data': 'games', 'title': 'И'},
+                    {'data': 'wins', 'title': 'ПОБ'},
+                    {'data': 'loses', 'title': 'ПОР'},
+                    {'data': 'shot_against', 'title': 'БРОС'},
+                    {'data': 'saves', 'title': 'ОТБ'},
+                    {'data': 'goal_against', 'title': 'Голы'},
+                    {'data': 'saves_percent', 'title': 'КН'},
+                    {'data': 'goal_against_per_game', 'title': 'ГОЛ/И'},
+                    {'data': 'shootouts', 'title': 'СУХ'},
+                ],
+                'ordering': false,
+                'paging': false,
+                'searching': false,
+                'info': false,
+                'pageLength': -1,
+            });
+
+            $('#goaliesAll').DataTable({
+                data: {!! json_encode($goaliesAll) !!},
                 columns: [
                     {'data': 'place', 'title': ''},
                     {'data': 'prevPlace', 'title': ''},
