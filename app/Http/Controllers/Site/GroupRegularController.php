@@ -512,6 +512,13 @@ class GroupRegularController extends Controller
             $place += 1;
         }
 
+        $placeAll = 1;
+        foreach ($goaliesAll as $goalie) {
+            $goalie->place = $placeAll;
+            $goalie->prevPlace = $placeAll;
+            $placeAll += 1;
+        }
+
         return [
             'top' => $goalies,
             'all' => $goaliesAll,
