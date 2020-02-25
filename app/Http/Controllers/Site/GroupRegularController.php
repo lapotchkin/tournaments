@@ -20,6 +20,7 @@ use Illuminate\View\View;
 
 /**
  * Class GroupRegularController
+ *
  * @package App\Http\Controllers\Site
  */
 class GroupRegularController extends Controller
@@ -27,6 +28,7 @@ class GroupRegularController extends Controller
     /**
      * @param Request $request
      * @param int     $tournamentId
+     *
      * @return Factory|View
      * @throws Exception
      */
@@ -69,7 +71,8 @@ class GroupRegularController extends Controller
             'tournament'    => $tournament,
             'position'      => $position,
             'leaders'       => $leaders,
-            'goalies'       => $goalies,
+            'goalies'       => $goalies['top'],
+            'goaliesAll'    => $goalies['all'],
             'dateToCompare' => $dateToCompare,
         ]);
     }
@@ -77,6 +80,7 @@ class GroupRegularController extends Controller
     /**
      * @param Request $request
      * @param int     $tournamentId
+     *
      * @return Factory|View
      * @throws Exception
      */
@@ -114,7 +118,7 @@ class GroupRegularController extends Controller
                         'exists',
                         true
                     )
-                    ->where('timestamp', '>', $tournament->startedAt->getTimestamp())
+                    ->where('timestamp', '>', $tournament->startedAt ? $tournament->startedAt->getTimestamp() : 0)
                     ->orderByDesc('timestamp')
                     ->first();
                 if (!is_null($game)) {
@@ -136,6 +140,7 @@ class GroupRegularController extends Controller
      * @param Request $request
      * @param int     $tournamentId
      * @param int     $gameId
+     *
      * @return Factory|View
      */
     public function game(Request $request, int $tournamentId, int $gameId)
@@ -172,6 +177,7 @@ class GroupRegularController extends Controller
      * @param StoreRequest $request
      * @param int          $tournamentId
      * @param int          $gameId
+     *
      * @return Factory|View
      */
     public function gameEdit(StoreRequest $request, int $tournamentId, int $gameId)
@@ -216,6 +222,7 @@ class GroupRegularController extends Controller
     /**
      * @param Request $request
      * @param int     $tournamentId
+     *
      * @return Factory|View
      */
     public function schedule(Request $request, int $tournamentId)
@@ -252,6 +259,7 @@ class GroupRegularController extends Controller
 
     /**
      * @param $prevPlace
+     *
      * @return string
      */
     private static function _getPrevPlace($prevPlace)
@@ -270,6 +278,7 @@ class GroupRegularController extends Controller
     /**
      * @param array      $currentPosition
      * @param array|null $previousPosition
+     *
      * @return array
      * @throws Exception
      */
@@ -350,6 +359,7 @@ class GroupRegularController extends Controller
     /**
      * @param array      $currentLeaders
      * @param array|null $previousLeaders
+     *
      * @return object
      */
     private static function _getLeaders(array $currentLeaders, array $previousLeaders = null)
@@ -412,6 +422,7 @@ class GroupRegularController extends Controller
      * @param array|null $previousGoalies
      * @param array      $currentStats
      * @param            $previousStats
+     *
      * @return array
      */
     private static function _getGoalies(
@@ -419,7 +430,8 @@ class GroupRegularController extends Controller
         $currentStats,
         array $previousGoalies = null,
         $previousStats = null
-    ) {
+    )
+    {
         $currentGames = [];
         foreach ($currentStats as $stat) {
             $currentGames[$stat->id] = $stat->games;
@@ -460,11 +472,8 @@ class GroupRegularController extends Controller
         }
 
         $goalies = [];
+        $goaliesAll = [];
         foreach ($currentGoalies as $goalie) {
-            if ($goalie->games / $currentGames[$goalie->team_id] <= 0.25) {
-                continue;
-            }
-            $goalies[] = $goalie;
             $goalie->loses = $goalie->games - $goalie->wins;
             $goalie->saves = $goalie->shot_against - $goalie->goal_against;
             $goalie->saves_percent = round(
@@ -472,6 +481,11 @@ class GroupRegularController extends Controller
                 3
             );
             $goalie->goal_against_per_game = round($goalie->goal_against / $goalie->games, 2);
+
+            if ($goalie->games / $currentGames[$goalie->team_id] >= 0.25) {
+                $goalies[] = $goalie;
+            }
+            $goaliesAll[] = $goalie;
         }
 
         array_multisort(
@@ -483,6 +497,11 @@ class GroupRegularController extends Controller
             SORT_DESC,
             $goalies
         );
+        array_multisort(
+            array_column($goaliesAll, 'tag'),
+            SORT_ASC,
+            $goaliesAll
+        );
         $place = 1;
         foreach ($goalies as $goalie) {
             $prevPlace = isset($previousPlaces[$goalie->id])
@@ -493,6 +512,9 @@ class GroupRegularController extends Controller
             $place += 1;
         }
 
-        return $goalies;
+        return [
+            'top' => $goalies,
+            'all' => $goaliesAll,
+        ];
     }
 }

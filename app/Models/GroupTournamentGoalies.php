@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Class GroupTournamentGoalies
+ *
  * @package App\Models
  */
 class GroupTournamentGoalies
@@ -13,6 +14,7 @@ class GroupTournamentGoalies
     /**
      * @param int         $tournamentId
      * @param string|null $date
+     *
      * @return array
      */
     public static function readGoalies(int $tournamentId, string $date = null)
@@ -21,9 +23,10 @@ class GroupTournamentGoalies
         $position = DB::select("
             select
                 p.id,
+                p.tag,
                 concat('<a href=\"/player/', p.id, '\">', p.tag, '</a> <small>', p.name, '</small>') goalie,
                 (
-                    select concat('<a href=\"/ team /', t.id, '\">', t.name, '</a> <span class=\"badge badge-success\">', t.short_name, '</span>') name
+                    select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge badge-success\">', t.short_name, '</span>') name
                     from
                         groupGameRegular_player gGRp2
                             inner join groupGameRegular gGP2 on gGRp2.game_id = gGP2.id and gGP2.tournament_id = ?
