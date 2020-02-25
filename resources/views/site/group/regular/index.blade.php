@@ -245,7 +245,6 @@
                 data: {!! json_encode($goaliesAll) !!},
                 columns: [
                     {'data': 'place', 'title': ''},
-                    {'data': 'prevPlace', 'title': ''},
                     {'data': 'goalie', 'title': 'Вратарь'},
                     {'data': 'team', 'title': 'Команда'},
                     {'data': 'games', 'title': 'И'},
