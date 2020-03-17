@@ -184,7 +184,7 @@ class ScheduleGenerator extends Command
         }
         $this->info("    Гость: {$awayTeam->name}");
 
-        if ($gameOne = $this->_searchGame((int)$id, $homeTeam->id, $awayTeam->id, $round)) {
+        if ($gameOne = $this->_searchGame((int)$id, $homeTeam->id, $awayTeam->id, $round, false)) {
             $this->info("    Обновление игры 1");
             $gameOne->round = (int)$data[1];
         } else {
@@ -199,7 +199,7 @@ class ScheduleGenerator extends Command
         $gameOne->save();
 
         if ($gamesCount === 2) {
-            if ($gameTwo = $this->_searchGame((int)$id, $awayTeam->id, $homeTeam->id, $round)) {
+            if ($gameTwo = $this->_searchGame((int)$id, $awayTeam->id, $homeTeam->id, $round, false)) {
                 $this->info("    Обновление игры 2");
                 $gameTwo->round = (int)$data[1];
             } else {
