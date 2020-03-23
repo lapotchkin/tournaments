@@ -36,7 +36,28 @@ class GroupTournamentLeaders
                            count(gGRp.id) games,
                            sum(gGRp.goals) goals,
                            sum(gGRp.assists) assists,
-                           sum(gGRp.assists + gGRp.goals) points
+                           sum(gGRp.assists + gGRp.goals) points,
+                           sum(gGRp.power_play_goals) power_play_goals,
+                           sum(gGRp.shorthanded_goals) shorthanded_goals,
+                           sum(gGRp.game_winning_goals) game_winning_goals,
+                           sum(gGRp.shots) shots,
+                           round(sum(gGRp.goals) / sum(gGRp.shots) * 100) shots_percent,
+                           sum(gGRp.plus_minus) plus_minus,
+                           round(sum(gGRp.faceoff_win) / (sum(gGRp.faceoff_win) + sum(gGRp.faceoff_lose)) * 100) faceoff_win_percent,
+                           count(if(gGRp.star = 1, 1, 0)) first_star,
+                           sum(gGRp.blocks) blocks,
+                           round(sum(gGRp.blocks) / count(gGRp.id), 2) blocks_per_game,
+                           sum(gGRp.takeaways) takeaways,
+                           round(sum(gGRp.takeaways) / count(gGRp.id), 2) takeaways_per_game,
+                           sum(gGRp.giveaways) giveaways,
+                           round(sum(gGRp.giveaways) / count(gGRp.id), 2) giveaways_per_game,
+                           sum(gGRp.hits) hits,
+                           round(sum(gGRp.hits) / count(gGRp.id), 2) hits_per_game,
+                           sum(gGRp.penalty_minutes) penalty_minutes,
+                           round(sum(gGRp.penalty_minutes) / count(gGRp.id), 2) penalty_minutes_per_game,
+                           round(avg(gGRp.rating_offense)) rating_offense,
+                           round(avg(gGRp.rating_defense)) rating_defense,
+                           round(avg(gGRp.rating_teamplay)) rating_teamplay
                     from
                         groupTournament gT
                             inner join groupGameRegular gGR on gT.id = gGR.tournament_id and gGR.deletedAt is null
