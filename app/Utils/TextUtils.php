@@ -121,7 +121,7 @@ class TextUtils
      * @param int $isConfirmed
      * @return string
      */
-    public static function gameClass(int $isConfirmed)
+    public static function gameClass(int $isConfirmed = null)
     {
         switch ($isConfirmed) {
             case (1):

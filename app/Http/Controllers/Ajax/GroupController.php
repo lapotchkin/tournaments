@@ -302,11 +302,11 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupGameRegular  $groupGameRegular
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
+     *
      * @return ResponseFactory|Response
-     * @throws ValidationException
      */
     public function editRegularGame(
         Request $request,

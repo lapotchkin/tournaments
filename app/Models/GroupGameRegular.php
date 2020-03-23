@@ -52,7 +52,7 @@ use Illuminate\Support\Carbon;
  * @property string|null                              $match_id              ID матча в EASHL
  * @property string|null                              $sharedAt
  * @property int                                      $isConfirmed           Результат подтверждён
- * @property int|null                                 $added_by          ID подтвердившей команды
+ * @property int|null                                 $added_by              ID внёсшей команды
  * @property-read GroupTournamentTeam                 $awayTeam
  * @property-read GroupTournamentTeam                 $homeTeam
  * @property-read Collection|GroupGameRegularPlayer[] $protocols
@@ -110,9 +110,9 @@ class GroupGameRegular extends Model
 {
     use SoftDeletes;
 
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
-    const DELETED_AT = 'deletedAt';
+    public const CREATED_AT = 'createdAt';
+    public const UPDATED_AT = 'updatedAt';
+    public const DELETED_AT = 'deletedAt';
 
     /**
      * The table associated with the model.
@@ -258,7 +258,7 @@ class GroupGameRegular extends Model
      */
     public function getStars()
     {
-        $stars = new Collection;
+        $stars = new Collection();
         foreach ($this->protocols as $protocol) {
             if ($protocol->star > 0) {
                 $stars->push($protocol);
