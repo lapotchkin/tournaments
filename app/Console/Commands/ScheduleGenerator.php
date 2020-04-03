@@ -40,6 +40,7 @@ class ScheduleGenerator extends Command
 
     /**
      * Execute the console command.
+     *
      * @throws Exception
      */
     public function handle()
@@ -97,6 +98,7 @@ class ScheduleGenerator extends Command
      * @param     $data
      * @param int $gamesCount
      * @param int $round
+     *
      * @throws Exception
      */
     private function _createPersonalGame($id, $data, $gamesCount = 2, $round = 1)
@@ -113,49 +115,51 @@ class ScheduleGenerator extends Command
         }
         $this->info("    Гость: {$awayPLayer->tag} ({$awayPLayer->name})");
 
-        if ($gameOne = $this->_searchGame($homePLayer->id, $awayPLayer->id, $round)) {
-            $this->info("   Обновление игры 1");
-            $gameOne->round = (int)$data[1];
-        } else {
-            $this->info("   Создание игры 1");
-            $gameOne = new PersonalGameRegular([
-                'tournament_id'  => (int)$id,
-                'round'          => (int)$data[1],
-                'home_player_id' => $homePLayer->id,
-                'away_player_id' => $awayPLayer->id,
-            ]);
-        }
+//        if ($gameOne = $this->_searchGame((int)$id, $homePLayer->id, $awayPLayer->id, $round)) {
+//            $this->info("   Обновление игры 1");
+//            $gameOne->round = (int)$data[1];
+//        } else {
+        $this->info("   Создание игры 1");
+        $gameOne = new PersonalGameRegular([
+            'tournament_id'  => (int)$id,
+            'round'          => (int)$data[1],
+            'home_player_id' => $homePLayer->id,
+            'away_player_id' => $awayPLayer->id,
+        ]);
+//        }
         $gameOne->save();
 
         if ($gamesCount === 2) {
-            if ($gameTwo = $this->_searchGame($awayPLayer->id, $homePLayer->id, $round)) {
-                $this->info("   Обновление игры 2");
-                $gameTwo->round = (int)$data[1];
-            } else {
-                $this->info("   Создание игры 2");
-                $gameTwo = new PersonalGameRegular([
-                    'tournament_id'  => (int)$id,
-                    'round'          => (int)$data[1],
-                    'away_player_id' => $homePLayer->id,
-                    'home_player_id' => $awayPLayer->id,
-                ]);
-            }
+//            if ($gameTwo = $this->_searchGame((int)$id, $awayPLayer->id, $homePLayer->id, $round)) {
+//                $this->info("   Обновление игры 2");
+//                $gameTwo->round = (int)$data[1];
+//            } else {
+            $this->info("   Создание игры 2");
+            $gameTwo = new PersonalGameRegular([
+                'tournament_id'  => (int)$id,
+                'round'          => (int)$data[1],
+                'away_player_id' => $homePLayer->id,
+                'home_player_id' => $awayPLayer->id,
+            ]);
+//            }
             $gameTwo->save();
         }
     }
 
     /**
+     * @param int  $tournamentId
      * @param int  $firstId
      * @param int  $secondId
      * @param int  $round
      * @param bool $isPersonal
+     *
      * @return PersonalGameRegular|GroupGameRegular|null
      */
-    private function _searchGame(int $firstId, int $secondId, int $round, bool $isPersonal = true)
+    private function _searchGame(int $tournamentId, int $firstId, int $secondId, int $round, bool $isPersonal = true)
     {
         $games = $isPersonal
-            ? PersonalGameRegular::whereHomePlayerId($firstId)->whereAwayPlayerId($secondId)
-            : GroupGameRegular::whereHomeTeamId($firstId)->whereAwayTeamId($secondId);
+            ? PersonalGameRegular::whereTournamentId($tournamentId)->whereHomePlayerId($firstId)->whereAwayPlayerId($secondId)
+            : GroupGameRegular::whereTournamentId($tournamentId)->whereHomeTeamId($firstId)->whereAwayTeamId($secondId);
         $game = $games->limit(1)->offset($round - 1)->first();
 
         return $game;
@@ -166,6 +170,7 @@ class ScheduleGenerator extends Command
      * @param     $data
      * @param int $gamesCount
      * @param int $round
+     *
      * @throws Exception
      */
     private function _createGroupGame($id, $data, $gamesCount = 2, $round = 1)
@@ -182,33 +187,33 @@ class ScheduleGenerator extends Command
         }
         $this->info("    Гость: {$awayTeam->name}");
 
-        if ($gameOne = $this->_searchGame($homeTeam->id, $awayTeam->id, $round)) {
-            $this->info("   Обновление игры 1");
-            $gameOne->round = (int)$data[1];
-        } else {
-            $this->info("   Создание игры 1");
-            $gameOne = new PersonalGameRegular([
-                'tournament_id'  => (int)$id,
-                'round'          => (int)$data[1],
-                'home_player_id' => $homeTeam->id,
-                'away_player_id' => $awayTeam->id,
-            ]);
-        }
+//        if ($gameOne = $this->_searchGame((int)$id, $homeTeam->id, $awayTeam->id, $round, false)) {
+//            $this->info("    Обновление игры 1");
+//            $gameOne->round = (int)$data[1];
+//        } else {
+        $this->info("    Создание игры 1");
+        $gameOne = new GroupGameRegular([
+            'tournament_id' => (int)$id,
+            'round'         => (int)$data[1],
+            'home_team_id'  => $homeTeam->id,
+            'away_team_id'  => $awayTeam->id,
+        ]);
+//        }
         $gameOne->save();
 
         if ($gamesCount === 2) {
-            if ($gameTwo = $this->_searchGame($awayTeam->id, $homeTeam->id, $round)) {
-                $this->info("   Обновление игры 2");
-                $gameTwo->round = (int)$data[1];
-            } else {
-                $this->info("   Создание игры 2");
-                $gameTwo = new PersonalGameRegular([
-                    'tournament_id'  => (int)$id,
-                    'round'          => (int)$data[1],
-                    'away_player_id' => $homeTeam->id,
-                    'home_player_id' => $awayTeam->id,
-                ]);
-            }
+//            if ($gameTwo = $this->_searchGame((int)$id, $awayTeam->id, $homeTeam->id, $round, false)) {
+//                $this->info("    Обновление игры 2");
+//                $gameTwo->round = (int)$data[1];
+//            } else {
+            $this->info("    Создание игры 2");
+            $gameTwo = new GroupGameRegular([
+                'tournament_id' => (int)$id,
+                'round'         => (int)$data[1],
+                'away_team_id'  => $homeTeam->id,
+                'home_team_id'  => $awayTeam->id,
+            ]);
+//            }
             $gameTwo->save();
         }
     }

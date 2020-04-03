@@ -232,8 +232,8 @@ class GroupTournamentPosition
             group by t.id
             order by
                 points desc,
-                (if(w.wins > 0, w.wins, 0) + if(wot.wins > 0, wot.wins, 0) + if(wso.wins > 0, wso.wins, 0)) desc,
                 w.wins desc,
+                (if(w.wins > 0, w.wins, 0) + if(wot.wins > 0, wot.wins, 0) + if(wso.wins > 0, wso.wins, 0)) desc,
                 (home_stats.goals_for + away_stats.goals_for - home_stats.goals_against - away_stats.goals_against) desc,
                 (home_stats.goals_for + away_stats.goals_for) desc,
                 l.lose

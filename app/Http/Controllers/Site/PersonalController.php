@@ -87,7 +87,8 @@ class PersonalController extends Controller
         }
         foreach ($divisions as &$division) {
             usort($division, function ($a, $b) {
-                return strcmp(mb_strtolower($a->name), mb_strtolower($b->name));
+                return strcmp(mb_strtolower($a->player->tag), mb_strtolower($b->player->tag));
+//                return strcmp(mb_strtolower($a->createdAt), mb_strtolower($b->createdAt));
             });
         }
         unset($division);

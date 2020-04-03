@@ -64,7 +64,8 @@ class GroupRegularController extends Controller
             'tournament'    => $groupTournament,
             'position'      => $position,
             'leaders'       => $leaders,
-            'goalies'       => $goalies,
+            'goalies'       => $goalies['top'],
+            'goaliesAll'    => $goalies['all'],
             'dateToCompare' => $dateToCompare,
         ]);
     }
@@ -206,7 +207,7 @@ class GroupRegularController extends Controller
      */
     public function schedule(Request $request, GroupTournament $groupTournament)
     {
-        $groupTournament->loda([
+        $groupTournament->load([
             'regularGames.homeTeam.team',
             'regularGames.awayTeam.team',
             'winners.team',
@@ -440,11 +441,8 @@ class GroupRegularController extends Controller
         }
 
         $goalies = [];
+        $goaliesAll = [];
         foreach ($currentGoalies as $goalie) {
-            if ($goalie->games / $currentGames[$goalie->team_id] <= 0.25) {
-                continue;
-            }
-            $goalies[] = $goalie;
             $goalie->loses = $goalie->games - $goalie->wins;
             $goalie->saves = $goalie->shot_against - $goalie->goal_against;
             $goalie->saves_percent = round(
@@ -452,6 +450,11 @@ class GroupRegularController extends Controller
                 3
             );
             $goalie->goal_against_per_game = round($goalie->goal_against / $goalie->games, 2);
+
+            if ($goalie->games / $currentGames[$goalie->team_id] >= 0.25) {
+                $goalies[] = $goalie;
+            }
+            $goaliesAll[] = clone $goalie;
         }
 
         array_multisort(
@@ -463,6 +466,11 @@ class GroupRegularController extends Controller
             SORT_DESC,
             $goalies
         );
+        array_multisort(
+            array_column($goaliesAll, 'tag'),
+            SORT_ASC,
+            $goaliesAll
+        );
         $place = 1;
         foreach ($goalies as $goalie) {
             $prevPlace = isset($previousPlaces[$goalie->id])
@@ -473,6 +481,16 @@ class GroupRegularController extends Controller
             $place += 1;
         }
 
-        return $goalies;
+        $placeAll = 1;
+        foreach ($goaliesAll as $goalieAll) {
+            $goalieAll->place = $placeAll;
+            $goalieAll->prevPlace = '';
+            $placeAll += 1;
+        }
+
+        return [
+            'top' => $goalies,
+            'all' => $goaliesAll,
+        ];
     }
 }

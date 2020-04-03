@@ -92,11 +92,53 @@
         <tbody></tbody>
     </table>
 
+    <h3 class="mt-3">Расширенные показатели по игрокам</h3>
+    <table id="players" class="table table-striped table-sm">
+        <thead class="thead-dark"></thead>
+        <tbody></tbody>
+    </table>
+    <table class="table table-sm">
+        <tbody>
+        <tr>
+            <td>И — сыграно матчей</td>
+            <td>П — голевые передачи</td>
+            <td>+/- — плюс/минус</td>
+            <td>ПотИ — потерь шайбы за игру</td>
+        </tr>
+        <tr>
+            <td>О — очки</td>
+            <td>ГвБ — Голы в большинстве</td>
+            <td>Вб% — процент выигранных вбрасываний</td>
+            <td>СП — силовые приёмы</td>
+        </tr>
+        <tr>
+            <td>Г — голы</td>
+            <td>ГвМ — голы в меньшинстве</td>
+            <td>Бл — заблокировано бросков за игру</td>
+            <td>СПИ — силовых приёмов за игру</td>
+        </tr>
+        <tr>
+            <td>Б% — процент реализации бросков</td>
+            <td>ПГ — победные голы</td>
+            <td>ОтбИ — отборов шайбы за игру</td>
+            <td>ШМ — Штрафные минуты</td>
+        </tr>
+        </tbody>
+    </table>
+
     <h3 class="mt-3">
         Вратари<br>
         <small class="text-muted">В таблице только вратари, сыгравшие не менее 25% от общего числа игр команды</small>
     </h3>
     <table id="goalies" class="leaders table table-striped table-sm">
+        <thead class="thead-dark"></thead>
+        <tbody></tbody>
+    </table>
+
+    <h3 class="mt-3">
+        Все вратари турнира
+    </h3>
+    <table id="goaliesAll" class="leaders table table-striped table-sm">
         <thead class="thead-dark"></thead>
         <tbody></tbody>
     </table>
@@ -209,6 +251,37 @@
                 'pageLength': 20,
             });
 
+            $('#players').DataTable({
+                data: {!! json_encode($leaders->assists) !!},
+                columns: [
+                    {data: 'player', title: 'Игрок'},
+                    {data: 'team', title: 'Команда'},
+                    {data: 'games', title: 'И'},
+                    {data: 'points', title: 'О'},
+                    {data: 'goals', title: 'Г'},
+                    // {data: 'shots', title: 'Б'},
+                    {data: 'shots_percent', title: 'Б%'},
+                    {data: 'assists', title: 'П'},
+                    {data: 'power_play_goals', title: 'ГвБ'},
+                    {data: 'shorthanded_goals', title: 'ГвМ'},
+                    {data: 'game_winning_goals', title: 'ПГ'},
+                    {data: 'plus_minus', title: '+/-'},
+                    {data: 'faceoff_win_percent', title: 'Вб%'},
+                    {data: 'blocks_per_game', title: 'БлИ'},
+                    {data: 'takeaways_per_game', title: 'ОтбИ'},
+                    {data: 'giveaways_per_game', title: 'ПотИ'},
+                    {data: 'hits', title: 'СП'},
+                    {data: 'hits_per_game', title: 'СПИ'},
+                    {data: 'penalty_minutes', title: 'ШМ'},
+                    {data: 'penalty_minutes_per_game', title: 'ШМИ'},
+                    // {data: 'rating_offense', title: 'НАП'},
+                    // {data: 'rating_defense', title: 'ЗАЩ'},
+                    // {data: 'rating_teamplay', title: 'КОМ'},
+                ],
+                'ordering': true,
+                'pageLength': 20,
+            });
+
             $('#goalies').DataTable({
                 data: {!! json_encode($goalies) !!},
                 columns: [
@@ -229,6 +302,29 @@
                 'ordering': false,
                 'paging': false,
                 'searching': false,
+                'info': false,
+                'pageLength': -1,
+            });
+
+            $('#goaliesAll').DataTable({
+                data: {!! json_encode($goaliesAll) !!},
+                columns: [
+                    {'data': 'place', 'title': ''},
+                    {'data': 'goalie', 'title': 'Вратарь'},
+                    {'data': 'team', 'title': 'Команда'},
+                    {'data': 'games', 'title': 'И'},
+                    {'data': 'wins', 'title': 'ПОБ'},
+                    {'data': 'loses', 'title': 'ПОР'},
+                    {'data': 'shot_against', 'title': 'БРОС'},
+                    {'data': 'saves', 'title': 'ОТБ'},
+                    {'data': 'goal_against', 'title': 'Голы'},
+                    {'data': 'saves_percent', 'title': 'КН'},
+                    {'data': 'goal_against_per_game', 'title': 'ГОЛ/И'},
+                    {'data': 'shootouts', 'title': 'СУХ'},
+                ],
+                'ordering': true,
+                'paging': false,
+                'searching': true,
                 'info': false,
                 'pageLength': -1,
             });
@@ -265,6 +361,11 @@
         .teams.dataTable tbody td:nth-child(3),
         .leaders.dataTable tbody td:nth-child(3) {
             font-weight: bold;
+        }
+
+        #players.dataTable tbody td:nth-child(1),
+        #players.dataTable tbody td:nth-child(2) {
+            text-align: left !important;
         }
     </style>
 @endsection

@@ -39,7 +39,28 @@ class GroupTournamentPlayoffLeaders
                            count(gGPp.id) games,
                            sum(gGPp.goals) goals,
                            sum(gGPp.assists) assists,
-                           sum(gGPp.assists + gGPp.goals) points
+                           sum(gGPp.assists + gGPp.goals) points,
+                           sum(gGPp.power_play_goals) power_play_goals,
+                           sum(gGPp.shorthanded_goals) shorthanded_goals,
+                           sum(gGPp.game_winning_goals) game_winning_goals,
+                           sum(gGPp.shots) shots,
+                           round(sum(gGPp.goals) / sum(gGPp.shots) * 100) shots_percent,
+                           sum(gGPp.plus_minus) plus_minus,
+                           round(sum(gGPp.faceoff_win) / (sum(gGPp.faceoff_win) + sum(gGPp.faceoff_lose)) * 100) faceoff_win_percent,
+                           count(if(gGPp.star = 1, 1, 0)) first_star,
+                           sum(gGPp.blocks) blocks,
+                           round(sum(gGPp.blocks) / count(gGPp.id), 2) blocks_per_game,
+                           sum(gGPp.takeaways) takeaways,
+                           round(sum(gGPp.takeaways) / count(gGPp.id), 2) takeaways_per_game,
+                           sum(gGPp.giveaways) giveaways,
+                           round(sum(gGPp.giveaways) / count(gGPp.id), 2) giveaways_per_game,
+                           sum(gGPp.hits) hits,
+                           round(sum(gGPp.hits) / count(gGPp.id), 2) hits_per_game,
+                           sum(gGPp.penalty_minutes) penalty_minutes,
+                           round(sum(gGPp.penalty_minutes) / count(gGPp.id), 2) penalty_minutes_per_game,
+                           round(avg(gGPp.rating_offense)) rating_offense,
+                           round(avg(gGPp.rating_defense)) rating_defense,
+                           round(avg(gGPp.rating_teamplay)) rating_teamplay
                     from
                         groupTournament gT
                             inner join groupTournamentPlayoff gTP on gT.id = gTP.tournament_id
