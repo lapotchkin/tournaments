@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
@@ -266,5 +267,23 @@ class GroupGameRegular extends Model
         }
         $stars = $stars->sortBy('star');
         return $stars;
+    }
+
+    public function getTeamId()
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $teamIds = Auth::user()->getTeamIds();
+        if (in_array($this->home_team_id, $teamIds)) {
+            return $this->home_team_id;
+        }
+
+        if (in_array($this->away_team_id, $teamIds)) {
+            return $this->away_team_id;
+        }
+
+        return null;
     }
 }

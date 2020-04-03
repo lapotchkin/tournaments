@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\GroupTournamentPlayoff;
+use App\Models\GroupGamePlayoff;
 use App\Models\Player;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class GroupTournamentPlayoffPolicy
+class GroupGamePlayoffPolicy
 {
     use HandlesAuthorization;
 
@@ -21,22 +21,22 @@ class GroupTournamentPlayoffPolicy
     }
 
     /**
-     * @param Player                 $user
-     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param Player           $user
+     * @param GroupGamePlayoff $groupGamePlayoff
      *
      * @return bool
      */
-    public function update(Player $user, GroupTournamentPlayoff $groupTournamentPlayoff)
+    public function update(Player $user, GroupGamePlayoff $groupGamePlayoff)
     {
         if ($user->isAdmin()) {
             return true;
         }
-        foreach ($groupTournamentPlayoff->teamOne->teamPlayers as $teamPlayer) {
+        foreach ($groupGamePlayoff->homeTeam->team->teamPlayers as $teamPlayer) {
             if ($user->id === $teamPlayer->player_id && $teamPlayer->isCaptain > 0) {
                 return true;
             }
         }
-        foreach ($groupTournamentPlayoff->teamTwo->teamPlayers as $teamPlayer) {
+        foreach ($groupGamePlayoff->awayTeam->team->teamPlayers as $teamPlayer) {
             if ($user->id === $teamPlayer->player_id && $teamPlayer->isCaptain > 0) {
                 return true;
             }

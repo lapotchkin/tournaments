@@ -34,6 +34,7 @@ use VK\Exceptions\VKClientException;
 
 /**
  * Class GroupController
+ *
  * @package App\Http\Controllers\Ajax
  */
 class GroupController extends Controller
@@ -134,7 +135,8 @@ class GroupController extends Controller
     ];
 
     /**
-     * @param  StoreGroupTournament  $request
+     * @param StoreGroupTournament $request
+     *
      * @return ResponseFactory|Response
      */
     public function create(StoreGroupTournament $request)
@@ -147,8 +149,9 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  StoreGroupTournament  $request
-     * @param  GroupTournament  $groupTournament
+     * @param StoreGroupTournament $request
+     * @param GroupTournament      $groupTournament
+     *
      * @return ResponseFactory|Response
      */
     public function edit(StoreGroupTournament $request, GroupTournament $groupTournament)
@@ -174,8 +177,9 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -187,8 +191,9 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -204,14 +209,14 @@ class GroupController extends Controller
             ->where('place', $validatedData['place'])
             ->first();
 
-        $message = $validatedData['place'].' место сохранено';
+        $message = $validatedData['place'] . ' место сохранено';
         if (is_null($winner)) {
             $validatedData['tournament_id'] = $groupTournament->id;
             $winner = new GroupTournamentWinner($validatedData);
             $winner->save();
         } elseif ($validatedData['team_id'] === '0') {
             $winner->delete();
-            $message = $validatedData['place'].' место удалено';
+            $message = $validatedData['place'] . ' место удалено';
         } else {
             $winner->fill($validatedData);
             $winner->save();
@@ -221,8 +226,9 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     *
      * @return ResponseFactory|Response
      */
     public function addTeam(Request $request, GroupTournament $groupTournament)
@@ -261,9 +267,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  Team  $team
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     * @param Team            $team
+     *
      * @return ResponseFactory|Response
      */
     public function editTeam(Request $request, GroupTournament $groupTournament, Team $team)
@@ -282,9 +289,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  Team  $team
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     * @param Team            $team
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -312,7 +320,8 @@ class GroupController extends Controller
         Request $request,
         GroupTournament $groupTournament,
         GroupGameRegular $groupGameRegular
-    ) {
+    )
+    {
         $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
@@ -331,7 +340,7 @@ class GroupController extends Controller
             if ($value === '') {
                 $groupGameRegular->{$field} = null;
             } elseif (strstr($field, '_time')) {
-                $groupGameRegular->{$field} = '00:'.$value;
+                $groupGameRegular->{$field} = '00:' . $value;
             } else {
                 $groupGameRegular->{$field} = $value;
             }
@@ -339,8 +348,7 @@ class GroupController extends Controller
         if (Auth::user()->isAdmin()) {
             $groupGameRegular->isConfirmed = 1;
         } else {
-            $teamId = self::_getTeamId($groupGameRegular);
-            $groupGameRegular->added_by = $teamId ? $teamId : null;
+            $groupGameRegular->added_by = $groupGameRegular->getTeamId();
         }
         $groupGameRegular->save();
 
@@ -366,9 +374,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupGameRegular  $groupGameRegular
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -376,7 +385,8 @@ class GroupController extends Controller
         Request $request,
         GroupTournament $groupTournament,
         GroupGameRegular $groupGameRegular
-    ) {
+    )
+    {
         $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
@@ -394,16 +404,18 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupGameRegular  $groupGameRegular
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
+     *
      * @return ResponseFactory|Response
      */
     public function createRegularProtocol(
         Request $request,
         GroupTournament $groupTournament,
         GroupGameRegular $groupGameRegular
-    ) {
+    )
+    {
         $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
@@ -418,10 +430,11 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupGameRegular  $groupGameRegular
-     * @param  GroupGameRegularPlayer  $groupGameRegular_player
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupGameRegular       $groupGameRegular
+     * @param GroupGameRegularPlayer $groupGameRegular_player
+     *
      * @return ResponseFactory|Response
      */
     public function updateRegularProtocol(
@@ -429,7 +442,8 @@ class GroupController extends Controller
         GroupTournament $groupTournament,
         GroupGameRegular $groupGameRegular,
         GroupGameRegularPlayer $groupGameRegular_player
-    ) {
+    )
+    {
         $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
@@ -443,10 +457,11 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupGameRegular  $groupGameRegular
-     * @param  GroupGameRegularPlayer  $groupGameRegular_player
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupGameRegular       $groupGameRegular
+     * @param GroupGameRegularPlayer $groupGameRegular_player
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -455,7 +470,8 @@ class GroupController extends Controller
         GroupTournament $groupTournament,
         GroupGameRegular $groupGameRegular,
         GroupGameRegularPlayer $groupGameRegular_player
-    ) {
+    )
+    {
         $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
@@ -467,8 +483,9 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
@@ -505,9 +522,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupTournamentPlayoff  $groupTournamentPlayoff
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
@@ -515,7 +533,8 @@ class GroupController extends Controller
         Request $request,
         GroupTournament $groupTournament,
         GroupTournamentPlayoff $groupTournamentPlayoff
-    ) {
+    )
+    {
         if ($groupTournamentPlayoff->tournament_id !== $groupTournament->id) {
             abort(404);
         }
@@ -539,9 +558,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupTournamentPlayoff  $groupTournamentPlayoff
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
@@ -549,7 +569,8 @@ class GroupController extends Controller
         Request $request,
         GroupTournament $groupTournament,
         GroupTournamentPlayoff $groupTournamentPlayoff
-    ) {
+    )
+    {
         if ($groupTournamentPlayoff->tournament_id !== $groupTournament->id) {
             abort(404);
         }
@@ -568,7 +589,7 @@ class GroupController extends Controller
             if ($value === '') {
                 $groupGamePlayoff->{$field} = null;
             } elseif (strstr($field, '_time')) {
-                $groupGamePlayoff->{$field} = '00:'.$value;
+                $groupGamePlayoff->{$field} = '00:' . $value;
             } else {
                 $groupGamePlayoff->{$field} = $value;
             }
@@ -601,10 +622,11 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupTournamentPlayoff  $groupTournamentPlayoff
-     * @param  GroupGamePlayoff  $groupGamePlayoff
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
@@ -613,7 +635,8 @@ class GroupController extends Controller
         GroupTournament $groupTournament,
         GroupTournamentPlayoff $groupTournamentPlayoff,
         GroupGamePlayoff $groupGamePlayoff
-    ) {
+    )
+    {
         $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if (
             $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
@@ -635,7 +658,7 @@ class GroupController extends Controller
             if ($value === '') {
                 $groupGamePlayoff->{$field} = null;
             } elseif (strstr($field, '_time')) {
-                $groupGamePlayoff->{$field} = '00:'.$value;
+                $groupGamePlayoff->{$field} = '00:' . $value;
             } else {
                 $groupGamePlayoff->{$field} = $value;
             }
@@ -664,10 +687,11 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupTournamentPlayoff  $groupTournamentPlayoff
-     * @param  GroupGamePlayoff  $groupGamePlayoff
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -676,7 +700,8 @@ class GroupController extends Controller
         GroupTournament $groupTournament,
         GroupTournamentPlayoff $groupTournamentPlayoff,
         GroupGamePlayoff $groupGamePlayoff
-    ) {
+    )
+    {
         $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if (
             $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
@@ -695,10 +720,11 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupTournamentPlayoff  $groupTournamentPlayoff
-     * @param  GroupGamePlayoff  $groupGamePlayoff
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return ResponseFactory|Response
      */
     public function createPlayoffProtocol(
@@ -706,7 +732,8 @@ class GroupController extends Controller
         GroupTournament $groupTournament,
         GroupTournamentPlayoff $groupTournamentPlayoff,
         GroupGamePlayoff $groupGamePlayoff
-    ) {
+    )
+    {
         $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if (
             $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
@@ -724,11 +751,12 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupTournamentPlayoff  $groupTournamentPlayoff
-     * @param  GroupGamePlayoff  $groupGamePlayoff
-     * @param  GroupGamePlayoffPlayer  $groupGamePlayoff_player
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     * @param GroupGamePlayoffPlayer $groupGamePlayoff_player
+     *
      * @return ResponseFactory|Response
      */
     public function updatePlayoffProtocol(
@@ -737,7 +765,8 @@ class GroupController extends Controller
         GroupTournamentPlayoff $groupTournamentPlayoff,
         GroupGamePlayoff $groupGamePlayoff,
         GroupGamePlayoffPlayer $groupGamePlayoff_player
-    ) {
+    )
+    {
         $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if (
             $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
@@ -754,11 +783,12 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupTournamentPlayoff  $groupTournamentPlayoff
-     * @param  GroupGamePlayoff  $groupGamePlayoff
-     * @param  GroupGamePlayoffPlayer  $groupGamePlayoff_player
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     * @param GroupGamePlayoffPlayer $groupGamePlayoff_player
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -768,7 +798,8 @@ class GroupController extends Controller
         GroupTournamentPlayoff $groupTournamentPlayoff,
         GroupGamePlayoff $groupGamePlayoff,
         GroupGamePlayoffPlayer $groupGamePlayoff_player
-    ) {
+    )
+    {
         $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if (
             $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
@@ -783,9 +814,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupGameRegular  $groupGameRegular
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
+     *
      * @return ResponseFactory|Response
      * @throws VKApiException
      * @throws VKApiParamAlbumIdException
@@ -802,7 +834,8 @@ class GroupController extends Controller
         Request $request,
         GroupTournament $groupTournament,
         GroupGameRegular $groupGameRegular
-    ) {
+    )
+    {
         $groupGameRegular->load(['homeTeam.team', 'awayTeam.team']);
         if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
@@ -814,10 +847,11 @@ class GroupController extends Controller
     }
 
     /**
-     * @param  Request  $request
-     * @param  GroupTournament  $groupTournament
-     * @param  GroupTournamentPlayoff  $groupTournamentPlayoff
-     * @param  GroupGamePlayoff  $groupGamePlayoff
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return ResponseFactory|Response
      * @throws VKApiException
      * @throws VKApiParamAlbumIdException
@@ -835,7 +869,8 @@ class GroupController extends Controller
         GroupTournament $groupTournament,
         GroupTournamentPlayoff $groupTournamentPlayoff,
         GroupGamePlayoff $groupGamePlayoff
-    ) {
+    )
+    {
         $groupGamePlayoff->load(['homeTeam.team', 'awayTeam.team']);
         if (
             $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
@@ -850,26 +885,48 @@ class GroupController extends Controller
     }
 
     /**
-     * @param $game
-     * @return mixed
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
      */
-    private static function _getTeamId($game)
+    public function confirmRegularResult(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupGameRegular $groupGameRegular
+    )
     {
-        $teamPayers = Auth::user()->teamsPlayer;
-        $index = $teamPayers->search(
-            function ($item, $key) use ($game) {
-                if ($item->team_id === $game->home_team_id) {
-                    return $game->home_team_id;
-                }
-                if ($item->team_id === $game->away_team_id) {
-                    return $game->away_team_id;
-                }
-                return false;
-            }
-        );
-        /** @var TeamPlayer $teamPlayer */
-        $teamPlayer = $teamPayers->splice($index, 1)->first();
+        $groupGameRegular->isConfirmed = 1;
+        $groupGameRegular->save();
 
-        return $teamPlayer->team_id;
+        return $this->renderAjax([], 'Результат игры подтверждены');
+    }
+
+    /**
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
+     * @return ResponseFactory|Response
+     */
+    public function confirmPlayoffResult(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff
+    )
+    {
+        $groupGamePlayoff->load(['homeTeam.team', 'awayTeam.team']);
+        if (
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
+        ) {
+            abort(404);
+        }
+
+        $groupGamePlayoff->isConfirmed = 1;
+        $groupGamePlayoff->save();
+
+        return $this->renderAjax([], 'Результат игры подтверждены');
     }
 }

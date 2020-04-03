@@ -166,7 +166,7 @@ class Player extends Authenticatable
      */
     public function teamsPlayer()
     {
-        return $this->hasMany('App\Models\TeamPlayer');
+        return $this->hasMany('App\Models\TeamPlayer', 'player_id', 'id');
     }
 
     /**
@@ -215,6 +215,7 @@ class Player extends Authenticatable
 
     /**
      * @param int $tournamentId
+     *
      * @return string|null
      */
     public function getClubId(int $tournamentId)
@@ -229,6 +230,7 @@ class Player extends Authenticatable
 
     /**
      * @param int $tournamentId
+     *
      * @return string|null
      */
     public function getDivision(int $tournamentId)
@@ -239,5 +241,18 @@ class Player extends Authenticatable
             }
         }
         return null;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getTeamIds()
+    {
+        $teamIds = [];
+        foreach ($this->teamsPlayer as $teamPlayer) {
+            $teamIds[] = $teamPlayer->team_id;
+        }
+
+        return $teamIds;
     }
 }

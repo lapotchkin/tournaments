@@ -9,6 +9,7 @@ use App\Models\GroupTournamentGoalies;
 use App\Models\GroupTournamentLeaders;
 use App\Models\GroupTournamentPosition;
 use App\Models\PlayerPosition;
+use Auth;
 use DateInterval;
 use DateTime;
 use Exception;
