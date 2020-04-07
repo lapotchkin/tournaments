@@ -118,6 +118,20 @@ class TextUtils
     }
 
     /**
+     * @param int $isConfirmed
+     * @return string
+     */
+    public static function gameClass(int $isConfirmed = null)
+    {
+        switch ($isConfirmed) {
+            case (1):
+                return 'table-success';
+            default:
+                return 'table-danger';
+        }
+    }
+
+    /**
      * @param int $place
      * @return string
      */

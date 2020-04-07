@@ -26,7 +26,7 @@
                                     @auth
                                         @if(Auth::user()->isAdmin())
                                             <a class="btn btn-primary btn-sm"
-                                               href="{{ route('group.tournament.team', ['tournamentId' => $tournament->id, 'teamId' => $team->id]) }}">
+                                               href="{{ route('group.tournament.team', ['groupTournament' => $tournament->id, 'team' => $team->id]) }}">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         @endif
@@ -44,78 +44,74 @@
         @endforeach
     </div>
 
-    @auth
-        @if(Auth::user()->isAdmin())
-            <form id="team-add">
-                <div class="form-inline">
-                    <div class="input-group">
-                        <label for="team_id" class="mr-2">Команда</label>
-                        <select id="team_id" class="form-control mr-3" name="team_id">
-                            <option value="">--Не выбрана--</option>
-                            @foreach($nonTournamentTeams as $team)
-                                <option value="{{ $team->id }}">{{ $team->name }}</option>
-                            @endforeach
-                        </select>
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    <div class="input-group">
-                        <label for="division" class="mr-2">Группа</label>
-                        <select id="division" class="form-control mr-3" name="division">
-                            <option value="">--Не выбрана--</option>
-                            @foreach([1, 2, 3, 4] as $divisionId)
-                                <option value="{{ $divisionId }}">
-                                    {{ TextUtils::divisionLetter($divisionId) }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    <button type="submit" class="btn btn-primary" name="team-add-button">Добавить</button>
+    @can('create', 'App\Models\GroupTournament')
+        <form id="team-add">
+            <div class="form-inline">
+                <div class="input-group">
+                    <label for="team_id" class="mr-2">Команда</label>
+                    <select id="team_id" class="form-control mr-3" name="team_id">
+                        <option value="">--Не выбрана--</option>
+                        @foreach($nonTournamentTeams as $team)
+                            <option value="{{ $team->id }}">{{ $team->name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="invalid-feedback"></div>
                 </div>
-            </form>
-        @endif
-    @endauth
+                <div class="input-group">
+                    <label for="division" class="mr-2">Группа</label>
+                    <select id="division" class="form-control mr-3" name="division">
+                        <option value="">--Не выбрана--</option>
+                        @foreach([1, 2, 3, 4] as $divisionId)
+                            <option value="{{ $divisionId }}">
+                                {{ TextUtils::divisionLetter($divisionId) }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="invalid-feedback"></div>
+                </div>
+                <button type="submit" class="btn btn-primary" name="team-add-button">Добавить</button>
+            </div>
+        </form>
+    @endcan
 @endsection
 
 @section('script')
     @parent
-    @auth
-        @if(Auth::user()->isAdmin())
-            <script type="text/javascript">
-                $(document).ready(function () {
+    @can('create', 'App\Models\GroupTournament')
+        <script type="text/javascript">
+            $(document).ready(function () {
 
-                    TRNMNT_sendData({
-                        selector: '#team-add',
-                        method: 'put',
-                        url: '{{ action('Ajax\GroupController@addTeam', ['tournamentId' => $tournament->id])}}',
-                        success: function (response) {
-                            var $division = $('#division');
-                            var division = $division.val();
-                            createDivisionBlock(division);
-                            var $team = $('#team_id');
-                            var teamId = $team.val();
-                            var $option = $('#team_id option[value=' + teamId + ']');
-                            var $tbody = $('#division-' + division).find('tbody');
-                            var $row = $('<tr/>');
-                            $row.append('<td>' + ($tbody.find('tr').length + 1) + '</td>');
-                            $row.append('<td><a href="{{ action('Site\TeamController@index') }}/' + teamId + '">' + $option.text() + '</a></td>');
-                            $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ route('group.tournament', ['tournamentId' => $tournament->id]) }}/team/' + teamId + '"><i class="fas fa-edit"></i></a></td>');
-                            $tbody.append($row);
-                            $option.remove();
-                            $team.val('');
-                            $division.val('');
-                        }
-                    });
-
-                    function createDivisionBlock(division) {
-                        if ($('#division-' + division).length) return;
-
-                        var letters = 'ABCD';
-                        $('.card-deck').append(
-                            '<div class="card mb-3" id="division-' + division + '"><h4 class="card-header bg-dark text-light">Группа ' + letters.charAt(division - 1) + '</h4><div class="card-body"><table class="table table-striped table-sm" id="team-table"><tbody></tbody></table></div></div>');
+                TRNMNT_sendData({
+                    selector: '#team-add',
+                    method: 'put',
+                    url: '{{ action('Ajax\GroupController@addTeam', ['groupTournament' => $tournament->id])}}',
+                    success: function (response) {
+                        var $division = $('#division');
+                        var division = $division.val();
+                        createDivisionBlock(division);
+                        var $team = $('#team_id');
+                        var teamId = $team.val();
+                        var $option = $('#team_id option[value=' + teamId + ']');
+                        var $tbody = $('#division-' + division).find('tbody');
+                        var $row = $('<tr/>');
+                        $row.append('<td>' + ($tbody.find('tr').length + 1) + '</td>');
+                        $row.append('<td><a href="{{ action('Site\TeamController@index') }}/' + teamId + '">' + $option.text() + '</a></td>');
+                        $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}/team/' + teamId + '"><i class="fas fa-edit"></i></a></td>');
+                        $tbody.append($row);
+                        $option.remove();
+                        $team.val('');
+                        $division.val('');
                     }
                 });
-            </script>
-        @endif
-    @endauth
+
+                function createDivisionBlock(division) {
+                    if ($('#division-' + division).length) return;
+
+                    var letters = 'ABCD';
+                    $('.card-deck').append(
+                        '<div class="card mb-3" id="division-' + division + '"><h4 class="card-header bg-dark text-light">Группа ' + letters.charAt(division - 1) + '</h4><div class="card-body"><table class="table table-striped table-sm" id="team-table"><tbody></tbody></table></div></div>');
+                }
+            });
+        </script>
+    @endcan
 @endsection

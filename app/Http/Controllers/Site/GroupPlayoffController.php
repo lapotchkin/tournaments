@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Http\Requests\StoreRequest;
 use App\Models\GroupGamePlayoff;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentPlayoff;
@@ -10,7 +9,6 @@ use App\Models\GroupTournamentPlayoffGoalies;
 use App\Models\GroupTournamentPlayoffLeaders;
 use App\Models\GroupTournamentPlayoffPosition;
 use App\Models\PlayerPosition;
-use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -24,177 +22,170 @@ use TextUtils;
 class GroupPlayoffController extends Controller
 {
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
      * @return Factory|View
      */
-    public function index(Request $request, int $tournamentId)
+    public function index(Request $request, GroupTournament $groupTournament)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with(['playoff.teamOne', 'playoff.teamTwo', 'winners.team'])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
+        $groupTournament->load(['playoff.teamOne', 'playoff.teamTwo', 'winners.team']);
         $bracket = [];
-        $maxTeams = pow(2, $tournament->playoff_rounds + $tournament->thirdPlaceSeries);
-        for ($i = 1; $i <= $tournament->playoff_rounds + $tournament->thirdPlaceSeries; $i += 1) {
-            for ($j = 1; $j <= $maxTeams / pow(2, $i + $tournament->thirdPlaceSeries); $j += 1) {
+        $maxTeams = pow(2, $groupTournament->playoff_rounds + $groupTournament->thirdPlaceSeries);
+        for ($i = 1; $i <= $groupTournament->playoff_rounds + $groupTournament->thirdPlaceSeries; $i += 1) {
+            for ($j = 1; $j <= $maxTeams / pow(2, $i + $groupTournament->thirdPlaceSeries); $j += 1) {
                 $bracket[$i][$j] = null;
             }
         }
-        if ($tournament->thirdPlaceSeries) {
-            $bracket[$tournament->playoff_rounds + $tournament->thirdPlaceSeries][1] = null;
+        if ($groupTournament->thirdPlaceSeries) {
+            $bracket[$groupTournament->playoff_rounds + $groupTournament->thirdPlaceSeries][1] = null;
         }
-        foreach ($tournament->playoff as $playoff) {
+        foreach ($groupTournament->playoff as $playoff) {
             $bracket[$playoff->round][$playoff->pair] = $playoff;
         }
 
         return view('site.group.playoff.index', [
-            'tournament' => $tournament,
+            'tournament' => $groupTournament,
             'bracket'    => $bracket,
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
-     * @param int     $pairId
-     * @param int     $gameId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
      * @return Factory|View
      */
-    public function game(Request $request, int $tournamentId, int $pairId, int $gameId)
-    {
-        /** @var GroupGamePlayoff $game */
-        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+    public function game(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff
+    ) {
+        $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if (
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
+        ) {
             abort(404);
         }
 
-        foreach ($game->protocols as $protocol) {
-            if ($protocol->team_id === $game->home_team_id) {
-                $game->homeProtocols[] = $protocol;
+        foreach ($groupGamePlayoff->protocols as $protocol) {
+            if ($protocol->team_id === $groupGamePlayoff->home_team_id) {
+                $groupGamePlayoff->homeProtocols[] = $protocol;
                 if ($protocol->isGoalie) {
-                    $game->homeGoalie = $protocol;
+                    $groupGamePlayoff->homeGoalie = $protocol;
                 }
             } else {
-                $game->awayProtocols[] = $protocol;
+                $groupGamePlayoff->awayProtocols[] = $protocol;
                 if ($protocol->isGoalie) {
-                    $game->awayGoalie = $protocol;
+                    $groupGamePlayoff->awayGoalie = $protocol;
                 }
             }
         }
 
-        $roundText = TextUtils::playoffRound($game->playoffPair->tournament, $game->playoffPair->round);
-        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $game->playoffPair->pair . ')' : '';
+        $roundText = TextUtils::playoffRound(
+            $groupGamePlayoff->playoffPair->tournament,
+            $groupGamePlayoff->playoffPair->round
+        );
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $groupGamePlayoff->playoffPair->pair . ')' : '';
         return view('site.group.game_protocol', [
-            'title' => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' : ' . $roundText . $pairText,
-            'game'  => $game,
-            'stars' => $game->getStars(),
+            'title' => $groupGamePlayoff->homeTeam->team->name
+                . ' vs. ' . $groupGamePlayoff->awayTeam->team->name . ' : ' . $roundText . $pairText,
+            'game'  => $groupGamePlayoff,
+            'stars' => $groupGamePlayoff->getStars(),
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
      * @return Factory|View
-     * @throws Exception
      */
-    public function stats(Request $request, int $tournamentId)
+    public function stats(Request $request, GroupTournament $groupTournament)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with(['winners.team'])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
+        $groupTournament->load(['winners.team']);
         $toDate = $request->input('toDate');
 
-        $firstPlayedGameDate = GroupTournamentPlayoffPosition::readFirstGameDate($tournamentId);
+        $firstPlayedGameDate = GroupTournamentPlayoffPosition::readFirstGameDate($groupTournament->id);
         $dateToCompare = !is_null($toDate)
             ? $toDate . ' 00:00:00'
-            : GroupTournamentPlayoffPosition::readLastGameDate($tournamentId);
+            : GroupTournamentPlayoffPosition::readLastGameDate($groupTournament->id);
 
-        $currentPosition = GroupTournamentPlayoffPosition::readPosition($tournamentId);
+        $currentPosition = GroupTournamentPlayoffPosition::readPosition($groupTournament->id);
         $previousPosition = null;
         if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
-            $previousPosition = GroupTournamentPlayoffPosition::readPosition($tournamentId, $dateToCompare);
+            $previousPosition = GroupTournamentPlayoffPosition::readPosition($groupTournament->id, $dateToCompare);
         }
 
-        $currentLeaders = GroupTournamentPlayoffLeaders::readLeaders($tournamentId);
+        $currentLeaders = GroupTournamentPlayoffLeaders::readLeaders($groupTournament->id);
         $previousLeaders = null;
         if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
-            $previousLeaders = GroupTournamentPlayoffLeaders::readLeaders($tournamentId, $dateToCompare);
+            $previousLeaders = GroupTournamentPlayoffLeaders::readLeaders($groupTournament->id, $dateToCompare);
         }
         $leaders = self::_getLeaders($currentLeaders, $previousLeaders);
 
-        $currentGoalies = GroupTournamentPlayoffGoalies::readGoalies($tournamentId);
+        $currentGoalies = GroupTournamentPlayoffGoalies::readGoalies($groupTournament->id);
         $previousGoalies = null;
         if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
-            $previousGoalies = GroupTournamentPlayoffGoalies::readGoalies($tournamentId, $dateToCompare);
+            $previousGoalies = GroupTournamentPlayoffGoalies::readGoalies($groupTournament->id, $dateToCompare);
         }
         $goalies = self::_getGoalies($currentGoalies, $currentPosition, $previousGoalies, $previousPosition);
 
         return view('site.group.playoff.stats', [
-            'tournament'     => $tournament,
-            'leaders'        => $leaders,
-            'goalies'        => $goalies,
+            'tournament'    => $groupTournament,
+            'leaders'       => $leaders,
+            'goalies'       => $goalies,
             'dateToCompare' => $dateToCompare,
         ]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     *
      * @return Factory|View
      */
-    public function games(StoreRequest $request, int $tournamentId)
+    public function games(Request $request, GroupTournament $groupTournament)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with(['playoff.teamOne', 'playoff.teamTwo', 'winners.team'])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
+        $groupTournament->load(['playoff.teamOne', 'playoff.teamTwo', 'winners.team']);
         $bracket = [];
-        $maxTeams = pow(2, $tournament->playoff_rounds + $tournament->thirdPlaceSeries);
-        for ($i = 1; $i <= $tournament->playoff_rounds + $tournament->thirdPlaceSeries; $i += 1) {
-            for ($j = 1; $j <= $maxTeams / pow(2, $i + $tournament->thirdPlaceSeries); $j += 1) {
+        $maxTeams = pow(2, $groupTournament->playoff_rounds + $groupTournament->thirdPlaceSeries);
+        for ($i = 1; $i <= $groupTournament->playoff_rounds + $groupTournament->thirdPlaceSeries; $i += 1) {
+            for ($j = 1; $j <= $maxTeams / pow(2, $i + $groupTournament->thirdPlaceSeries); $j += 1) {
                 $bracket[$i][$j] = null;
             }
         }
-        if ($tournament->thirdPlaceSeries) {
-            $bracket[$tournament->playoff_rounds + $tournament->thirdPlaceSeries][1] = null;
+        if ($groupTournament->thirdPlaceSeries) {
+            $bracket[$groupTournament->playoff_rounds + $groupTournament->thirdPlaceSeries][1] = null;
         }
-        foreach ($tournament->playoff as $playoff) {
+        foreach ($groupTournament->playoff as $playoff) {
             $bracket[$playoff->round][$playoff->pair] = $playoff;
         }
 
         return view('site.group.playoff.games', [
-            'tournament' => $tournament,
+            'tournament' => $groupTournament,
             'bracket'    => $bracket,
         ]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     *
      * @return Factory|View
      */
-    public function gameAdd(StoreRequest $request, int $tournamentId, int $pairId)
-    {
-        /** @var GroupTournamentPlayoff $pair */
-        $pair = GroupTournamentPlayoff::find($pairId);
-        if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
+    public function gameAdd(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff
+    ) {
+        if ($groupTournamentPlayoff->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
-        $view = !$pair->team_one_id || !$pair->team_two_id
+        $view = !$groupTournamentPlayoff->team_one_id || !$groupTournamentPlayoff->team_two_id
             ? 'site.group.playoff.incomplete_pair_protocol'
             : 'site.group.game_form';
 
@@ -205,11 +196,11 @@ class GroupPlayoffController extends Controller
             $positions[] = $position->getSafePosition();
         }
 
-        $roundText = TextUtils::playoffRound($pair->tournament, $pair->round);
-        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $pair->pair . ')' : '';
+        $roundText = TextUtils::playoffRound($groupTournamentPlayoff->tournament, $groupTournamentPlayoff->round);
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $groupTournamentPlayoff->pair . ')' : '';
         return view($view, [
             'title'     => $roundText . $pairText,
-            'pair'      => $pair,
+            'pair'      => $groupTournamentPlayoff,
             'game'      => null,
             'protocols' => [],
             'players'   => null,
@@ -218,40 +209,49 @@ class GroupPlayoffController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return Factory|View
      */
-    public function gameEdit(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
-    {
-        /** @var GroupGamePlayoff $game */
-        $game = GroupGamePlayoff::with([
+    public function gameEdit(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff
+    ) {
+        $groupGamePlayoff->load([
             'protocols.player',
             'protocols.playerPosition',
             'homeTeam.team.players',
             'awayTeam.team.players',
-        ])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+        ]);
+        if (
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
+        ) {
             abort(404);
         }
 
-        $protocols = $game->getSafeProtocols();
-        $players = $game->getSafePlayersData();
+        $protocols = $groupGamePlayoff->getSafeProtocols();
+        $players = $groupGamePlayoff->getSafePlayersData();
         $positionsRaw = PlayerPosition::all();
         $positions = [];
         foreach ($positionsRaw as $position) {
             $positions[] = $position->getSafePosition();
         }
 
-        $roundText = TextUtils::playoffRound($game->playoffPair->tournament, $game->playoffPair->round);
-        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $game->playoffPair->pair . ')' : '';
+        $roundText = TextUtils::playoffRound(
+            $groupGamePlayoff->playoffPair->tournament,
+            $groupGamePlayoff->playoffPair->round
+        );
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $groupGamePlayoff->playoffPair->pair . ')' : '';
         return view('site.group.game_form', [
             'title'     => $roundText . $pairText,
-            'pair'      => $game->playoffPair,
-            'game'      => $game,
+            'pair'      => $groupGamePlayoff->playoffPair,
+            'game'      => $groupGamePlayoff,
             'protocols' => $protocols,
             'players'   => $players,
             'positions' => $positions,

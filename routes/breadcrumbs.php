@@ -25,7 +25,7 @@ Breadcrumbs::for('group.tournament', function ($trail, $tournament) {
     $trail->parent('group');
     $trail->push(
         '<i class="fab fa-' . $tournament->platform->icon . '"></i> ' . $tournament->title,
-        route('group.tournament', ['tournamentId' => $tournament->id])
+        route('group.tournament', ['groupTournament' => $tournament->id])
     );
 });
 //Group > Tournament > Editor
@@ -33,7 +33,7 @@ Breadcrumbs::for('group.tournament.edit', function ($trail, $tournament) {
     $trail->parent('group.tournament', $tournament);
     $trail->push(
         'Редактировать турнир',
-        route('group.tournament.edit', ['tournamentId' => $tournament->id])
+        route('group.tournament.edit', ['groupTournament' => $tournament->id])
     );
 });
 //Group > Tournament > Team
@@ -43,7 +43,7 @@ Breadcrumbs::for('group.tournament.team', function ($trail, $tournamentTeam, $ti
         $title,
         route(
             'group.tournament.team',
-            ['tournamentId' => $tournamentTeam->tournament->id, 'teamId' => $tournamentTeam->team_id]
+            ['groupTournament' => $tournamentTeam->tournament->id, 'team' => $tournamentTeam->team_id]
         )
     );
 });
@@ -52,7 +52,7 @@ Breadcrumbs::for('group.tournament.copypaste', function ($trail, $tournament) {
     $trail->parent('group.tournament', $tournament);
     $trail->push(
         'Данные для ВК',
-        route('group.tournament.copypaste', ['tournamentId' => $tournament->id])
+        route('group.tournament.copypaste', ['groupTournament' => $tournament->id])
     );
 });
 //Group > Tournament > Regular
@@ -60,7 +60,7 @@ Breadcrumbs::for('group.tournament.regular', function ($trail, $tournament) {
     $trail->parent('group.tournament', $tournament);
     $trail->push(
         'Чемпионат',
-        route('group.tournament.regular', ['tournamentId' => $tournament->id])
+        route('group.tournament.regular', ['groupTournament' => $tournament->id])
     );
 });
 //Group > Tournament > Regular > Games
@@ -68,7 +68,7 @@ Breadcrumbs::for('group.tournament.regular.games', function ($trail, $tournament
     $trail->parent('group.tournament.regular', $tournament);
     $trail->push(
         'Расписание',
-        route('group.tournament.regular.games', ['tournamentId' => $tournament->id])
+        route('group.tournament.regular.games', ['groupTournament' => $tournament->id])
     );
 });
 //Group > Tournament > Regular > Games > Game
@@ -78,7 +78,7 @@ Breadcrumbs::for('group.tournament.regular.game', function ($trail, $game) {
         'Тур ' . $game->round . ': ' . $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name,
         route(
             'group.tournament.regular.game',
-            ['tournamentId' => $game->tournament->id, 'gameId' => $game->id]
+            ['groupTournament' => $game->tournament->id, 'groupGameRegular' => $game->id]
         )
     );
 });
@@ -87,7 +87,7 @@ Breadcrumbs::for('group.tournament.regular.schedule', function ($trail, $tournam
     $trail->parent('group.tournament.regular', $tournament);
     $trail->push(
         'Расписание ВК',
-        route('group.tournament.regular.schedule', ['tournamentId' => $tournament->id])
+        route('group.tournament.regular.schedule', ['groupTournament' => $tournament->id])
     );
 });
 //Group > Tournament > Playoff
@@ -95,7 +95,7 @@ Breadcrumbs::for('group.tournament.playoff', function ($trail, $tournament) {
     $trail->parent('group.tournament', $tournament);
     $trail->push(
         'Плей-офф',
-        route('group.tournament.playoff', ['tournamentId' => $tournament->id])
+        route('group.tournament.playoff', ['groupTournament' => $tournament->id])
     );
 });
 //Group > Tournament > Playoff > Stats
@@ -103,7 +103,7 @@ Breadcrumbs::for('group.tournament.playoff.stats', function ($trail, $tournament
     $trail->parent('group.tournament', $tournament);
     $trail->push(
         'Статистика',
-        route('group.tournament.playoff.stats', ['tournamentId' => $tournament->id])
+        route('group.tournament.playoff.stats', ['groupTournament' => $tournament->id])
     );
 });
 //Group > Tournament > Playoff > Game
@@ -115,7 +115,7 @@ Breadcrumbs::for('group.tournament.playoff.game', function ($trail, GroupGamePla
         $roundText . $pairText . ': ' . $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name,
         route(
             'group.tournament.playoff.game',
-            ['tournamentId' => $game->tournament->id, 'pairId' => $game->playoff_pair_id, 'gameId' => $game->id]
+            ['groupTournament' => $game->tournament->id, 'groupTournamentPlayoff' => $game->playoff_pair_id, 'groupGamePlayoff' => $game->id]
         )
     );
 });
@@ -124,10 +124,7 @@ Breadcrumbs::for('group.tournament.playoff.games', function ($trail, $tournament
     $trail->parent('group.tournament.playoff', $tournament);
     $trail->push(
         'Расписание',
-        route(
-            'group.tournament.playoff.games',
-            ['tournamentId' => $tournament->id]
-        )
+        route('group.tournament.playoff.games', ['groupTournament' => $tournament->id])
     );
 });
 //Group > Tournament > Playoff > Games > New Game
@@ -139,7 +136,7 @@ Breadcrumbs::for('group.tournament.playoff.game.add', function ($trail, GroupTou
         $roundText . $pairText,
         route(
             'group.tournament.playoff.game.add',
-            ['tournamentId' => $pair->tournament->id, 'pairId' => $pair->id]
+            ['groupTournament' => $pair->tournament->id, 'groupTournamentPlayoff' => $pair->id]
         )
     );
 });

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
@@ -42,19 +43,21 @@ use Illuminate\Support\Carbon;
  * @property string|null                              $away_powerplay_time   Гости время в большинстве
  * @property int|null                                 $home_shorthanded_goal Хозяева голы в меньшинстве
  * @property int|null                                 $away_shorthanded_goal Гости голы в меньшинстве
- * @property int                                      $isOvertime            Овертайм
  * @property int                                      $isTechnicalDefeat     Техническое поражение
  * @property string|null                              $playedAt              Дата игры
  * @property Carbon                                   $createdAt             Дата создания
  * @property Carbon|null                              $deletedAt             Дата удаления
- * @property string|null                              $updatedAt             Дата редактирования
+ * @property Carbon|null                              $updatedAt             Дата редактирования
  * @property string|null                              $match_id              ID матча в EASHL
- * @property string|null                              $sharedAt              Дата поста в ВК
- * @property-read GroupTournamentTeam                 $homeTeam
+ * @property int                                      $isOvertime            Игра завершилась в овертайме
+ * @property string|null                              $sharedAt
+ * @property int                                      $isConfirmed           Результат подтверждён
+ * @property int|null                                 $added_by          ID подтвердившей команды
  * @property-read GroupTournamentTeam                 $awayTeam
- * @property-read Collection|GroupGamePlayoffPlayer[] $protocols
+ * @property-read GroupTournamentTeam                 $homeTeam
  * @property-read GroupTournamentPlayoff              $playoffPair
- * @property-read GroupTournament                     $tournament
+ * @property-read Collection|GroupGamePlayoffPlayer[] $protocols
+ * @property-read int|null                            $protocols_count
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|GroupGamePlayoff newModelQuery()
  * @method static EloquentBuilder|GroupGamePlayoff newQuery()
@@ -73,6 +76,7 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|GroupGamePlayoff whereAwayShorthandedGoal($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereAwayShot($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereAwayTeamId($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereConfirmedBy($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereCreatedAt($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereDeletedAt($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereHomeAttackTime($value)
@@ -88,10 +92,13 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|GroupGamePlayoff whereHomeShot($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereHomeTeamId($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereId($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereIsConfirmed($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereIsOvertime($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereIsTechnicalDefeat($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereMatchId($value)
  * @method static EloquentBuilder|GroupGamePlayoff wherePlayedAt($value)
  * @method static EloquentBuilder|GroupGamePlayoff wherePlayoffPairId($value)
+ * @method static EloquentBuilder|GroupGamePlayoff whereSharedAt($value)
  * @method static EloquentBuilder|GroupGamePlayoff whereUpdatedAt($value)
  * @method static QueryBuilder|GroupGamePlayoff withTrashed()
  * @method static QueryBuilder|GroupGamePlayoff withoutTrashed()
@@ -165,6 +172,8 @@ class GroupGamePlayoff extends Model
         'sharedAt',
         //'createdAt',
         //'deletedAt',
+        'isConfirmed',
+        'added_by',
     ];
 
     /**
@@ -264,5 +273,23 @@ class GroupGamePlayoff extends Model
         }
         $stars = $stars->sortBy('star');
         return $stars;
+    }
+
+    public function getTeamId()
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $teamIds = Auth::user()->getTeamIds();
+        if (in_array($this->home_team_id, $teamIds)) {
+            return $this->home_team_id;
+        }
+
+        if (in_array($this->away_team_id, $teamIds)) {
+            return $this->away_team_id;
+        }
+
+        return null;
     }
 }

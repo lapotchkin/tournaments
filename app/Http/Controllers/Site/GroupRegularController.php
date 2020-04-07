@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Http\Requests\StoreRequest;
 use App\Models\EaGame;
 use App\Models\GroupGameRegular;
 use App\Models\GroupTournament;
@@ -10,6 +9,7 @@ use App\Models\GroupTournamentGoalies;
 use App\Models\GroupTournamentLeaders;
 use App\Models\GroupTournamentPosition;
 use App\Models\PlayerPosition;
+use Auth;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -26,49 +26,45 @@ use Illuminate\View\View;
 class GroupRegularController extends Controller
 {
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
      *
      * @return Factory|View
      * @throws Exception
      */
-    public function index(Request $request, int $tournamentId)
+    public function index(Request $request, GroupTournament $groupTournament)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with(['winners.team'])->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
+        $groupTournament->load(['winners.team']);
         $toDate = $request->input('toDate');
 
-        $firstPlayedGameDate = GroupTournamentPosition::readFirstGameDate($tournamentId);
+        $firstPlayedGameDate = GroupTournamentPosition::readFirstGameDate($groupTournament->id);
         $dateToCompare = !is_null($toDate)
             ? $toDate . ' 00:00:00'
-            : GroupTournamentPosition::readLastGameDate($tournamentId);
+            : GroupTournamentPosition::readLastGameDate($groupTournament->id);
 
-        $currentPosition = GroupTournamentPosition::readPosition($tournamentId);
+        $currentPosition = GroupTournamentPosition::readPosition($groupTournament->id);
         $previousPosition = null;
         if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
-            $previousPosition = GroupTournamentPosition::readPosition($tournamentId, $dateToCompare);
+            $previousPosition = GroupTournamentPosition::readPosition($groupTournament->id, $dateToCompare);
         }
         $position = self::_getPosition($currentPosition, $previousPosition);
 
-        $currentLeaders = GroupTournamentLeaders::readLeaders($tournamentId);
+        $currentLeaders = GroupTournamentLeaders::readLeaders($groupTournament->id);
         $previousLeaders = null;
         if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
-            $previousLeaders = GroupTournamentLeaders::readLeaders($tournamentId, $dateToCompare);
+            $previousLeaders = GroupTournamentLeaders::readLeaders($groupTournament->id, $dateToCompare);
         }
         $leaders = self::_getLeaders($currentLeaders, $previousLeaders);
 
-        $currentGoalies = GroupTournamentGoalies::readGoalies($tournamentId);
+        $currentGoalies = GroupTournamentGoalies::readGoalies($groupTournament->id);
         $previousGoalies = null;
         if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
-            $previousGoalies = GroupTournamentGoalies::readGoalies($tournamentId, $dateToCompare);
+            $previousGoalies = GroupTournamentGoalies::readGoalies($groupTournament->id, $dateToCompare);
         }
         $goalies = self::_getGoalies($currentGoalies, $currentPosition, $previousGoalies, $previousPosition);
 
         return view('site.group.regular.index', [
-            'tournament'    => $tournament,
+            'tournament'    => $groupTournament,
             'position'      => $position,
             'leaders'       => $leaders,
             'goalies'       => $goalies['top'],
@@ -78,28 +74,18 @@ class GroupRegularController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
      *
      * @return Factory|View
      * @throws Exception
      */
-    public function games(Request $request, int $tournamentId)
+    public function games(Request $request, GroupTournament $groupTournament)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with([
-            'regularGames.homeTeam.team',
-            'regularGames.awayTeam.team',
-            'winners.team',
-        ])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
+        $groupTournament->load(['regularGames.homeTeam.team', 'regularGames.awayTeam.team', 'winners.team']);
         $rounds = [];
         $divisions = [];
-        foreach ($tournament->regularGames as $regularGame) {
+        foreach ($groupTournament->regularGames as $regularGame) {
             $division = $regularGame->homeTeam->division;
             if (!in_array($division, $divisions)) {
                 $divisions[] = $division;
@@ -109,16 +95,20 @@ class GroupRegularController extends Controller
             if (is_null($regularGame->match_id)) {
                 $regularGame->gamePlayed = null;
                 $game = EaGame::where(
-                    'clubs.' . $regularGame->homeTeam->team->getClubId($tournament->app_id),
+                    'clubs.' . $regularGame->homeTeam->team->getClubId($groupTournament->app_id),
                     'exists',
                     true
                 )
                     ->where(
-                        'clubs.' . $regularGame->awayTeam->team->getClubId($tournament->app_id),
+                        'clubs.' . $regularGame->awayTeam->team->getClubId($groupTournament->app_id),
                         'exists',
                         true
                     )
-                    ->where('timestamp', '>', $tournament->startedAt ? $tournament->startedAt->getTimestamp() : 0)
+                    ->where(
+                        'timestamp',
+                        '>',
+                        $groupTournament->startedAt ? $groupTournament->startedAt->getTimestamp() : 0
+                    )
                     ->orderByDesc('timestamp')
                     ->first();
                 if (!is_null($game)) {
@@ -130,79 +120,80 @@ class GroupRegularController extends Controller
         }
 
         return view('site.group.regular.games', [
-            'tournament' => $tournament,
+            'tournament' => $groupTournament,
             'rounds'     => $rounds,
             'divisions'  => $divisions,
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
-     * @param int     $gameId
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
      *
      * @return Factory|View
      */
-    public function game(Request $request, int $tournamentId, int $gameId)
+    public function game(Request $request, GroupTournament $groupTournament, GroupGameRegular $groupGameRegular)
     {
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
-        foreach ($game->protocols as $protocol) {
-            if ($protocol->team_id === $game->home_team_id) {
-                $game->homeProtocols[] = $protocol;
+        foreach ($groupGameRegular->protocols as $protocol) {
+            if ($protocol->team_id === $groupGameRegular->home_team_id) {
+                $groupGameRegular->homeProtocols[] = $protocol;
                 if ($protocol->isGoalie) {
-                    $game->homeGoalie = $protocol;
+                    $groupGameRegular->homeGoalie = $protocol;
                 }
             } else {
-                $game->awayProtocols[] = $protocol;
+                $groupGameRegular->awayProtocols[] = $protocol;
                 if ($protocol->isGoalie) {
-                    $game->awayGoalie = $protocol;
+                    $groupGameRegular->awayGoalie = $protocol;
                 }
             }
         }
 
         return view('site.group.game_protocol', [
-            'title' => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' (Тур ' . $game->round . ')',
-            'game'  => $game,
-            'stars' => $game->getStars(),
+            'title' => $groupGameRegular->homeTeam->team->name
+                . ' vs. ' . $groupGameRegular->awayTeam->team->name . ' (Тур ' . $groupGameRegular->round . ')',
+            'game'  => $groupGameRegular,
+            'stars' => $groupGameRegular->getStars(),
         ]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $gameId
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
      *
      * @return Factory|View
      */
-    public function gameEdit(StoreRequest $request, int $tournamentId, int $gameId)
+    public function gameEdit(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupGameRegular $groupGameRegular
+    )
     {
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with([
+        $groupGameRegular->load([
             'protocols.player',
             'protocols.playerPosition',
             'homeTeam.team.players',
             'awayTeam.team.players',
-        ])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        ]);
+        if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
-        foreach ($game->protocols as $protocol) {
-            if ($protocol->team_id === $game->home_team_id) {
-                $game->homeProtocols[] = $protocol;
+        foreach ($groupGameRegular->protocols as $protocol) {
+            if ($protocol->team_id === $groupGameRegular->home_team_id) {
+                $groupGameRegular->homeProtocols[] = $protocol;
             } else {
-                $game->awayProtocols[] = $protocol;
+                $groupGameRegular->awayProtocols[] = $protocol;
             }
         }
-        $protocols = $game->getSafeProtocols();
-        $players = $game->getSafePlayersData();
+        $protocols = $groupGameRegular->getSafeProtocols();
+        $players = $groupGameRegular->getSafePlayersData();
         $positionsRaw = PlayerPosition::all();
         $positions = [];
         foreach ($positionsRaw as $position) {
@@ -210,9 +201,10 @@ class GroupRegularController extends Controller
         }
 
         return view('site.group.game_form', [
-            'title'     => $game->homeTeam->team->name . ' vs. ' . $game->awayTeam->team->name . ' (Тур ' . $game->round . ')',
+            'title'     => $groupGameRegular->homeTeam->team->name
+                . ' vs. ' . $groupGameRegular->awayTeam->team->name . ' (Тур ' . $groupGameRegular->round . ')',
             'pair'      => null,
-            'game'      => $game,
+            'game'      => $groupGameRegular,
             'protocols' => $protocols,
             'players'   => $players,
             'positions' => $positions,
@@ -220,31 +212,25 @@ class GroupRegularController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
      *
      * @return Factory|View
      */
-    public function schedule(Request $request, int $tournamentId)
+    public function schedule(Request $request, GroupTournament $groupTournament)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with([
+        $groupTournament->load([
             'regularGames.homeTeam.team',
             'regularGames.awayTeam.team',
             'winners.team',
-        ])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
+        ]);
         $rounds = [];
-        foreach ($tournament->regularGames as $index => $regularGame) {
+        foreach ($groupTournament->regularGames as $index => $regularGame) {
             if (
                 $index > 0
                 && (
-                    $tournament->regularGames[$index - 1]->home_team_id === $tournament->regularGames[$index]->away_team_id
-                    && $tournament->regularGames[$index - 1]->away_team_id === $tournament->regularGames[$index]->home_team_id
+                    $groupTournament->regularGames[$index - 1]->home_team_id === $groupTournament->regularGames[$index]->away_team_id
+                    && $groupTournament->regularGames[$index - 1]->away_team_id === $groupTournament->regularGames[$index]->home_team_id
                 )
             ) {
                 $rounds[$regularGame->round][$regularGame->homeTeam->division][] = $regularGame;
@@ -252,7 +238,7 @@ class GroupRegularController extends Controller
         }
 
         return view('site.group.regular.schedule', [
-            'tournament' => $tournament,
+            'tournament' => $groupTournament,
             'rounds'     => $rounds,
         ]);
     }

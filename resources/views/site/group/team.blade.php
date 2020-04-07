@@ -41,17 +41,17 @@
             TRNMNT_sendData({
                 selector: '#team-edit',
                 method: 'post',
-                url: '{{ action('Ajax\GroupController@editTeam', ['tournamentId' => $tournamentTeam->tournament_id, 'teamId' => $tournamentTeam->team_id])}}',
+                url: '{{ action('Ajax\GroupController@editTeam', ['groupTournament' => $tournamentTeam->tournament_id, 'team' => $tournamentTeam->team_id])}}',
                 success: function (response) {
-                    window.location.href = '{{ route('group.tournament', ['tournamentId' => $tournamentTeam->tournament_id]) }}';
+                    window.location.href = '{{ route('group.tournament', ['groupTournament' => $tournamentTeam->tournament_id]) }}';
                 }
             });
 
             TRNMNT_deleteData({
                 selector: '#team-delete-button',
-                url: '{{ action('Ajax\GroupController@deleteTeam', ['tournamentId' => $tournamentTeam->tournament_id, 'teamId' => $tournamentTeam->team_id])}}',
+                url: '{{ action('Ajax\GroupController@deleteTeam', ['groupTournament' => $tournamentTeam->tournament_id, 'team' => $tournamentTeam->team_id])}}',
                 success: function () {
-                    window.location.href = '{{ route('group.tournament', ['tournamentId' => $tournamentTeam->tournament_id]) }}';
+                    window.location.href = '{{ route('group.tournament', ['groupTournament' => $tournamentTeam->tournament_id]) }}';
                 }
             });
         });

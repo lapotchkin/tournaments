@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TeamPlayer;
 use App\Utils\ScoreImage;
 use App\Utils\Vk;
+use Auth;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -24,6 +26,7 @@ use VK\Exceptions\VKClientException;
 
 /**
  * Class Controller
+ *
  * @package App\Http\Controllers
  */
 class Controller extends BaseController
@@ -32,8 +35,10 @@ class Controller extends BaseController
 
     /**
      * Построить AJAX-ответ
+     *
      * @param array  $data    Данные ответа
      * @param string $message Текст сообщения ответа
+     *
      * @return ResponseFactory|Response
      */
     protected function renderAjax(array $data = [], $message = '')
@@ -52,6 +57,7 @@ class Controller extends BaseController
     /**
      * @param $a
      * @param $b
+     *
      * @return int
      */
     protected function sortWinners($a, $b)
@@ -70,6 +76,7 @@ class Controller extends BaseController
 
     /**
      * @param $game
+     *
      * @throws VKApiParamAlbumIdException
      * @throws VKApiParamHashException
      * @throws VKApiParamServerException

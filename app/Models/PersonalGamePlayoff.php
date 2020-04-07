@@ -14,23 +14,25 @@ use Illuminate\Support\Carbon;
 /**
  * App\Models\PersonalGamePlayoff
  *
- * @property int                            $id                    ID
- * @property int                            $playoff_pair_id       ID пары плейоф
- * @property int                            $home_player_id        ID хозяина
- * @property int                            $away_player_id        ID гостя
- * @property int|null                       $home_score            Забил хозяин
- * @property int|null                       $away_score            Забил гость
- * @property int                            $isOvertime            Овертайм
- * @property int                            $isShootout            Буллиты
- * @property int                            $isTechnicalDefeat     Техническое поражение
- * @property string|null                    $playedAt              Дата игры
- * @property Carbon                         $createdAt             Дата создания
- * @property Carbon|null                    $deletedAt             Дата удаления
- * @property string|null                    $sharedAt              Дата поста в ВК
+ * @property int                            $id                ID
+ * @property int                            $playoff_pair_id   ID пары плейоф
+ * @property int                            $home_player_id    ID хозяина
+ * @property int                            $away_player_id    ID гостя
+ * @property int|null                       $home_score        Забил хозяин
+ * @property int|null                       $away_score        Забил гость
+ * @property int                            $isTechnicalDefeat Техническое поражение
+ * @property string|null                    $playedAt          Дата игры
+ * @property Carbon                         $createdAt         Дата создания
+ * @property Carbon|null                    $deletedAt         Дата удаления
+ * @property int                            $isOvertime        Игра завершилась в овертайме
+ * @property int                            $isShootout        Игра завершилась по буллитам
+ * @property Carbon|null                    $updatedAt
+ * @property string|null                    $sharedAt
+ * @property int                            $isConfirmed       Результат подтверждён
+ * @property int|null                       $added_by      ID подтвердившего игрока
  * @property-read Player                    $awayPlayer
  * @property-read Player                    $homePlayer
  * @property-read PersonalTournamentPlayoff $playoffPair
- * @property-read PersonalTournament        $tournament
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|PersonalGamePlayoff newModelQuery()
  * @method static EloquentBuilder|PersonalGamePlayoff newQuery()
@@ -39,14 +41,20 @@ use Illuminate\Support\Carbon;
  * @method static bool|null restore()
  * @method static EloquentBuilder|PersonalGamePlayoff whereAwayPlayerId($value)
  * @method static EloquentBuilder|PersonalGamePlayoff whereAwayScore($value)
+ * @method static EloquentBuilder|PersonalGamePlayoff whereConfirmedBy($value)
  * @method static EloquentBuilder|PersonalGamePlayoff whereCreatedAt($value)
  * @method static EloquentBuilder|PersonalGamePlayoff whereDeletedAt($value)
  * @method static EloquentBuilder|PersonalGamePlayoff whereHomePlayerId($value)
  * @method static EloquentBuilder|PersonalGamePlayoff whereHomeScore($value)
  * @method static EloquentBuilder|PersonalGamePlayoff whereId($value)
+ * @method static EloquentBuilder|PersonalGamePlayoff whereIsConfirmed($value)
+ * @method static EloquentBuilder|PersonalGamePlayoff whereIsOvertime($value)
+ * @method static EloquentBuilder|PersonalGamePlayoff whereIsShootout($value)
  * @method static EloquentBuilder|PersonalGamePlayoff whereIsTechnicalDefeat($value)
  * @method static EloquentBuilder|PersonalGamePlayoff wherePlayedAt($value)
  * @method static EloquentBuilder|PersonalGamePlayoff wherePlayoffPairId($value)
+ * @method static EloquentBuilder|PersonalGamePlayoff whereSharedAt($value)
+ * @method static EloquentBuilder|PersonalGamePlayoff whereUpdatedAt($value)
  * @method static QueryBuilder|PersonalGamePlayoff withTrashed()
  * @method static QueryBuilder|PersonalGamePlayoff withoutTrashed()
  * @mixin Eloquent
@@ -82,6 +90,8 @@ class PersonalGamePlayoff extends Model
         'createdAt',
         'deletedAt',
         'sharedAt',
+        'isConfirmed',
+        'added_by',
     ];
 
     /**

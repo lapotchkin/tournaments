@@ -38,10 +38,10 @@
                                         @else
                                             <select class="form-control form-control-sm" name="team_one_id">
                                                 <option value="">--</option>
-                                                @foreach($tournament->tournamentTeams as $tournamentTeam)
-                                                    <option value="{{ $tournamentTeam->team_id }}"
-                                                        {{ !is_null($pair) && $pair->team_one_id === $tournamentTeam->team_id ? 'selected' : '' }}>
-                                                        {{ $tournamentTeam->team->name }}
+                                                @foreach($tournament->teams as $team)
+                                                    <option value="{{ $team->id }}"
+                                                        {{ !is_null($pair) && $pair->team_one_id === $team->id ? 'selected' : '' }}>
+                                                        {{ $team->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -67,17 +67,17 @@
                                     <div class="col-10 text-center">
                                         @if(!is_null($pair))
                                             @foreach($pair->games as $game)
-                                                <a href="{{ route('group.tournament.playoff.game.edit', ['tournamentId' => $tournament->id, 'pairId' => $pair->id, 'gameId' => $game->id]) }}"
+                                                <a href="{{ route('group.tournament.playoff.game.edit', ['groupTournament' => $tournament, 'groupTournamentPlayoff' => $pair, 'groupGamePlayoff' => $game]) }}"
                                                    class="btn btn-sm {{ $game->home_score > $game->away_score ? 'btn-danger' : 'btn-warning' }}">
                                                     {{ $game->home_score }}:{{ $game->away_score }}
                                                 </a>
                                             @endforeach
-                                            <a href="{{ route('group.tournament.playoff.game.add', ['tournamentId' => $tournament->id, 'pairId' => $pair->id]) }}"
+                                            <a href="{{ route('group.tournament.playoff.game.add', ['groupTournament' => $tournament->id, 'groupTournamentPlayoff' => $pair->id]) }}"
                                                class="btn btn-sm btn-success">
                                                 <i class="fas fa-plus"></i>
                                             </a>
                                         @else
-                                            <a href="{{ route('group.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}"
+                                            <a href="{{ route('group.tournament.playoff.games', ['groupTournament' => $tournament->id]) }}"
                                                class="btn btn-sm btn-success addGame" style="display:none;">
                                                 <i class="fas fa-plus"></i>
                                             </a>
@@ -105,10 +105,10 @@
                                         @else
                                             <select class="form-control form-control-sm" name="team_two_id">
                                                 <option value="">--</option>
-                                                @foreach($tournament->tournamentTeams as $tournamentTeam)
-                                                    <option value="{{ $tournamentTeam->team_id }}"
-                                                        {{ !is_null($pair) && $pair->team_two_id === $tournamentTeam->team_id ? 'selected' : '' }}>
-                                                        {{ $tournamentTeam->team->name }}
+                                                @foreach($tournament->teams as $team)
+                                                    <option value="{{ $team->id }}"
+                                                        {{ !is_null($pair) && $pair->team_two_id === $team->id ? 'selected' : '' }}>
+                                                        {{ $team->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -146,7 +146,7 @@
     <script>
         $(document).ready(function () {
             TRNMNT_playoffModule.init({
-                createPair: '{{ action('Ajax\GroupController@createPair', ['tournamentId' => $tournament->id]) }}'
+                createPair: '{{ action('Ajax\GroupController@createPair', ['groupTournament' => $tournament->id]) }}'
             });
         });
     </script>

@@ -11,7 +11,7 @@
     <div class="tournament-bracket tournament-bracket--rounded pb-5">
         @foreach ($bracket as $round => $pairs)
             <div
-                class="tournament-bracket__round {{ $tournament->thirdPlaceSeries ? TextUtils::playoffClass($loop->iteration, count($bracket)) : '' }}">
+                    class="tournament-bracket__round {{ $tournament->thirdPlaceSeries ? TextUtils::playoffClass($loop->iteration, count($bracket)) : '' }}">
                 <h4>{{ TextUtils::playoffRound($tournament, $round) }}</h4>
                 <ul class="tournament-bracket__list">
                     @foreach ($pairs as $pair)
@@ -57,13 +57,18 @@
                                     <div class="col-12 text-center">
                                         @if(!is_null($pair))
                                             @foreach($pair->games as $game)
-                                                <a href="{{ route('group.tournament.playoff.game', ['tournamentId' => $tournament->id, 'pairId' => $pair->id, 'gameId' => $game->id]) }}"
+                                                <a href="{{ route('group.tournament.playoff.game', ['groupTournament' => $tournament, 'groupTournamentPlayoff' => $pair, 'groupGamePlayoff' => $game]) }}"
                                                    class="btn btn-sm {{ $game->home_score > $game->away_score ? 'btn-danger' : 'btn-warning' }}">
                                                     {{ $game->home_score }}:{{ $game->away_score }}
                                                 </a>
                                             @endforeach
                                         @endif
-                                        &nbsp;
+                                        @can('update', $pair)
+                                            <a href="{{ route('group.tournament.playoff.game.add', ['groupTournament' => $tournament, 'groupTournamentPlayoff' => $pair]) }}"
+                                               class="btn btn-sm btn-success">
+                                                <i class="fas fa-plus"></i>
+                                            </a>
+                                        @endcan
                                     </div>
                                 </div>
                                 <div class="row">

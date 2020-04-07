@@ -24,25 +24,39 @@
         </div>
     @endif
     <form id="game-form">
+        @if(!Auth::user()->isAdmin())
+            <input type="hidden" id="redirectToProtocol" name="redirectToProtocol" value="true">
+        @endif
         <table class="mb-2 w-100">
             <tbody>
             <tr>
-                <td class="text-right pr-3" style="width:40%;">
+                <td class="text-right pr-3 w-50">
                     <h2>{{ $pair ? $pair->teamOne->name : $game->homeTeam->team->name }}</h2>
                 </td>
-                <td class="text-right" style="width:4rem;">
-                    <input type="text" id="home_score" class="form-control form-control-lg text-center"
-                           name="home_score" value="{{ $game ? $game->home_score : '' }}"
-                        {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <td class="text-center" style="width:1rem;"><h2>:</h2></td>
-                <td class="text-left" style="width:4rem;">
-                    <input type="text" id="away_score" class="form-control form-control-lg text-center"
-                           name="away_score" value="{{ $game ? $game->away_score : '' }}"
-                        {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <td class="text-left pl-3" style="width:40%;">
+                <td style="width:1rem;"></td>
+                <td class="text-left pl-3 w-50">
                     <h2>{{ $pair ? $pair->teamTwo->name : $game->awayTeam->team->name }}</h2>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">
+                    <input
+                            style="width: 6rem;"
+                            type="number"
+                            id="home_score"
+                            class="form-control form-control-lg text-center float-right"
+                            name="home_score"
+                            value="{{ $game ? $game->home_score : '' }}">
+                </td>
+                <td class="text-center"><h2>:</h2></td>
+                <td class="text-left">
+                    <input
+                            style="width: 6rem;"
+                            type="number"
+                            id="away_score"
+                            class="form-control form-control-lg text-center float-left"
+                            name="away_score"
+                            value="{{ $game ? $game->away_score : '' }}">
                 </td>
             </tr>
             </tbody>
@@ -69,154 +83,147 @@
                    value="{{ $game ? $game->playedAt : '' }}"
                    readonly>
         </div>
-        <table class="mt-3" style="width: 100%">
-            <tbody>
-            <tr>
-                <td class="w-25"></td>
-                <td colspan="2">
-                    <input type="number" id="home_shot" class="form-control text-right" name="home_shot"
-                           value="{{ $game ? $game->home_shot : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <th class="text-center w-25">Всего бросков</th>
-                <td colspan="2">
-                    <input type="number" id="away_shot" class="form-control text-right" name="away_shot"
-                           value="{{ $game ? $game->away_shot : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <td class="w-25"></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td colspan="2">
-                    <input type="number" id="home_hit" class="form-control text-right" name="home_hit"
-                           value="{{ $game ? $game->home_hit : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <th class="text-center">Силовые</th>
-                <td colspan="2">
-                    <input type="number" id="away_hit" class="form-control text-right" name="away_hit"
-                           value="{{ $game ? $game->away_hit : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td colspan="2">
-                    <input type="text" id="home_attack_time" class="form-control text-right" name="home_attack_time"
-                           value="{{ $game && !is_null($game->home_attack_time) ? TextUtils::protocolTime($game->home_attack_time) : '' }}"
-                        {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <th class="text-center">Время в атаке</th>
-                <td colspan="2">
-                    <input type="text" id="away_attack_time" class="form-control text-right" name="away_attack_time"
-                           value="{{ $game && !is_null($game->away_attack_time) ? TextUtils::protocolTime($game->away_attack_time) : '' }}"
-                        {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td colspan="2">
-                    <input type="text" id="home_pass_percent" class="form-control text-right" name="home_pass_percent"
-                           value="{{ $game && !is_null($game->home_pass_percent) ? str_replace('.', ',', $game->home_pass_percent): '' }}">
-                </td>
-                <th class="text-center">Пас</th>
-                <td colspan="2">
-                    <input type="text" id="away_pass_percent" class="form-control text-right" name="away_pass_percent"
-                           value="{{ $game && !is_null($game->away_pass_percent) ? str_replace('.', ',', $game->away_pass_percent): '' }}">
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td colspan="2">
-                    <input type="number" id="home_faceoff" class="form-control text-right" name="home_faceoff"
-                           value="{{ $game ? $game->home_faceoff : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <th class="text-center">Выигранные вбрасывания</th>
-                <td colspan="2">
-                    <input type="number" id="away_faceoff" class="form-control text-right" name="away_faceoff"
-                           value="{{ $game ? $game->away_faceoff : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
-                </td>
-                <td></td>
-            </tr>
-            @if (($pair && $pair->tournament->min_players === 6) || ($game && $game->tournament->min_players === 6))
-                <tr>
-                    <td></td>
-                    <td colspan="2">
-                        <input type="time" id="home_penalty_time" class="form-control text-right"
-                               name="home_penalty_time"
-                               value="{{ $game && !is_null($game->home_penalty_time) ? TextUtils::protocolTime($game->home_penalty_time) : '' }}"
-                            {{ $game && $game->match_id ? 'readonly' : '' }}>
-                    </td>
-                    <th class="text-center">Штрафные минуты</th>
-                    <td colspan="2">
-                        <input type="time" id="away_penalty_time" class="form-control text-right"
-                               name="away_penalty_time"
-                               value="{{ $game && !is_null($game->away_penalty_time) ? TextUtils::protocolTime($game->away_penalty_time) : '' }}"
-                            {{ $game && $game->match_id ? 'readonly' : '' }}>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="number" id="home_penalty_success" class="form-control text-right"
-                               name="home_penalty_success" {{ $game && $game->match_id ? 'readonly' : '' }}
-                               value="{{ $game ? $game->home_penalty_success : '' }}">
-                    </td>
-                    <td>
-                        <input type="number" id="home_penalty_total" class="form-control text-right"
-                               name="home_penalty_total" {{ $game && $game->match_id ? 'readonly' : '' }}
-                               value="{{ $game ? $game->home_penalty_total : '' }}">
-                    </td>
-                    <th class="text-center">Реализация большинства</th>
-                    <td>
-                        <input type="number" id="away_penalty_success" class="form-control text-right"
-                               name="away_penalty_success" {{ $game && $game->match_id ? 'readonly' : '' }}
-                               value="{{ $game ? $game->away_penalty_success : '' }}">
-                    </td>
-                    <td>
-                        <input type="number" id="away_penalty_total" class="form-control text-right"
-                               name="away_penalty_total" {{ $game && $game->match_id ? 'readonly' : '' }}
-                               value="{{ $game ? $game->away_penalty_total : '' }}">
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td colspan="2">
-                        <input type="time" id="home_powerplay_time" class="form-control text-right"
-                               name="home_powerplay_time"
-                               value="{{ $game && !is_null($game->home_powerplay_time) ? TextUtils::protocolTime($game->home_powerplay_time) : '' }}">
-                    </td>
-                    <th class="text-center">Минут в большинстве</th>
-                    <td colspan="2">
-                        <input type="time" id="away_powerplay_time" class="form-control text-right"
-                               name="away_powerplay_time"
-                               value="{{ $game && !is_null($game->away_powerplay_time) ? TextUtils::protocolTime($game->away_powerplay_time) : '' }}">
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td colspan="2">
-                        <input type="time" id="home_shorthanded_goal" class="form-control text-right"
-                               name="home_shorthanded_goal" {{ $game && $game->match_id ? 'readonly' : '' }}
-                               value="{{ $game ? $game->home_shorthanded_goal : '' }}">
-                    </td>
-                    <th class="text-center">Голы в меньшинстве</th>
-                    <td colspan="2">
-                        <input type="time" id="away_shorthanded_goal" class="form-control text-right"
-                               name="away_shorthanded_goal" {{ $game && $game->match_id ? 'readonly' : '' }}
-                               value="{{ $game ? $game->away_shorthanded_goal : '' }}">
-                    </td>
-                    <td></td>
-                </tr>
-            @endif
-            </tbody>
-        </table>
-        <div class="text-center mt-2">
-            <input type="submit" class="btn btn-primary" value="Сохранить">
+
+        <div class="row mt-3">
+            <div class="col-1 col-md-2 col-xl-3"></div>
+            <div class="col">
+                <input type="number" id="home_shot" class="form-control text-right" name="home_shot"
+                       value="{{ $game ? $game->home_shot : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
+            </div>
+            <div class="col-3 text-center"><strong>Всего бросков</strong></div>
+            <div class="col">
+                <input type="number" id="away_shot" class="form-control text-right" name="away_shot"
+                       value="{{ $game ? $game->away_shot : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
+            </div>
+            <div class="col-1 col-md-2 col-xl-3"></div>
         </div>
+        <div class="row mt-1">
+            <div class="col-1 col-md-2 col-xl-3"></div>
+            <div class="col">
+                <input type="number" id="home_hit" class="form-control text-right" name="home_hit"
+                       value="{{ $game ? $game->home_hit : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
+            </div>
+            <div class="col-3 text-center"><strong>Силовые</strong></div>
+            <div class="col">
+                <input type="number" id="away_hit" class="form-control text-right" name="away_hit"
+                       value="{{ $game ? $game->away_hit : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
+            </div>
+            <div class="col-1 col-md-2 col-xl-3"></div>
+        </div>
+        <div class="row mt-1">
+            <div class="col-1 col-md-2 col-xl-3"></div>
+            <div class="col">
+                <input type="text" id="home_attack_time" class="form-control text-right" name="home_attack_time"
+                       value="{{ $game && !is_null($game->home_attack_time) ? TextUtils::protocolTime($game->home_attack_time) : '' }}"
+                        {{ $game && $game->match_id ? 'readonly' : '' }}>
+            </div>
+            <div class="col-3 text-center"><strong>Время в атаке</strong></div>
+            <div class="col">
+                <input type="text" id="away_attack_time" class="form-control text-right" name="away_attack_time"
+                       value="{{ $game && !is_null($game->away_attack_time) ? TextUtils::protocolTime($game->away_attack_time) : '' }}"
+                        {{ $game && $game->match_id ? 'readonly' : '' }}>
+            </div>
+            <div class="col-1 col-md-2 col-xl-3"></div>
+        </div>
+        <div class="row mt-1">
+            <div class="col-1 col-md-2 col-xl-3"></div>
+            <div class="col">
+                <input type="text" id="home_pass_percent" class="form-control text-right" name="home_pass_percent"
+                       value="{{ $game && !is_null($game->home_pass_percent) ? str_replace('.', ',', $game->home_pass_percent): '' }}">
+            </div>
+            <div class="col-3 text-center"><strong>Пас</strong></div>
+            <div class="col">
+                <input type="text" id="away_pass_percent" class="form-control text-right" name="away_pass_percent"
+                       value="{{ $game && !is_null($game->away_pass_percent) ? str_replace('.', ',', $game->away_pass_percent): '' }}">
+            </div>
+            <div class="col-1 col-md-2 col-xl-3"></div>
+        </div>
+        <div class="row mt-1">
+            <div class="col-1 col-md-2 col-xl-3"></div>
+            <div class="col">
+                <input type="number" id="home_faceoff" class="form-control text-right" name="home_faceoff"
+                       value="{{ $game ? $game->home_faceoff : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
+            </div>
+            <div class="col-3 text-center"><strong>Выигранные вбрасывания</strong></div>
+            <div class="col">
+                <input type="number" id="away_faceoff" class="form-control text-right" name="away_faceoff"
+                       value="{{ $game ? $game->away_faceoff : '' }}" {{ $game && $game->match_id ? 'readonly' : '' }}>
+            </div>
+            <div class="col-1 col-md-2 col-xl-3"></div>
+        </div>
+        @if (($pair && $pair->tournament->min_players === 6) || ($game && $game->tournament->min_players === 6))
+            <div class="row mt-1">
+                <div class="col-1 col-md-2 col-xl-3"></div>
+                <div class="col">
+                    <input type="time" id="home_penalty_time" class="form-control text-right"
+                           name="home_penalty_time"
+                           value="{{ $game && !is_null($game->home_penalty_time) ? TextUtils::protocolTime($game->home_penalty_time) : '' }}"
+                            {{ $game && $game->match_id ? 'readonly' : '' }}>
+                </div>
+                <div class="col-3 text-center"><strong>Штрафные минуты</strong></div>
+                <div class="col">
+                    <input type="time" id="away_penalty_time" class="form-control text-right"
+                           name="away_penalty_time"
+                           value="{{ $game && !is_null($game->away_penalty_time) ? TextUtils::protocolTime($game->away_penalty_time) : '' }}"
+                            {{ $game && $game->match_id ? 'readonly' : '' }}>
+                </div>
+                <div class="col-1 col-md-2 col-xl-3"></div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-1 col-md-2 col-xl-3"></div>
+                <div class="col">
+                    <input type="number" id="home_penalty_success" class="form-control text-right float-left w-50"
+                           name="home_penalty_success" {{ $game && $game->match_id ? 'readonly' : '' }}
+                           value="{{ $game ? $game->home_penalty_success : '' }}">
+                    <input type="number" id="home_penalty_total" class="form-control text-right w-50"
+                           name="home_penalty_total" {{ $game && $game->match_id ? 'readonly' : '' }}
+                           value="{{ $game ? $game->home_penalty_total : '' }}">
+                </div>
+                <div class="col-3 text-center"><strong>Реализация большинства</strong></div>
+                <div class="col">
+                    <input type="number" id="away_penalty_success" class="form-control text-right float-left w-50"
+                           name="away_penalty_success" {{ $game && $game->match_id ? 'readonly' : '' }}
+                           value="{{ $game ? $game->away_penalty_success : '' }}">
+                    <input type="number" id="away_penalty_total" class="form-control text-right w-50"
+                           name="away_penalty_total" {{ $game && $game->match_id ? 'readonly' : '' }}
+                           value="{{ $game ? $game->away_penalty_total : '' }}">
+                </div>
+                <div class="col-1 col-md-2 col-xl-3"></div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-1 col-md-2 col-xl-3"></div>
+                <div class="col">
+                    <input type="time" id="home_powerplay_time" class="form-control text-right"
+                           name="home_powerplay_time"
+                           value="{{ $game && !is_null($game->home_powerplay_time) ? TextUtils::protocolTime($game->home_powerplay_time) : '' }}">
+                </div>
+                <div class="col-3 text-center"><strong>Минут в большинстве</strong></div>
+                <div class="col">
+                    <input type="time" id="away_powerplay_time" class="form-control text-right"
+                           name="away_powerplay_time"
+                           value="{{ $game && !is_null($game->away_powerplay_time) ? TextUtils::protocolTime($game->away_powerplay_time) : '' }}">
+                </div>
+                <div class="col-1 col-md-2 col-xl-3"></div>
+            </div>
+                <div class="row mt-1">
+                    <div class="col-1 col-md-2 col-xl-3"></div>
+                    <div class="col">
+                    <input type="time" id="home_shorthanded_goal" class="form-control text-right"
+                           name="home_shorthanded_goal" {{ $game && $game->match_id ? 'readonly' : '' }}
+                           value="{{ $game ? $game->home_shorthanded_goal : '' }}">
+                    </div>
+                    <div class="col-3 text-center"><strong>Голы в меньшинстве</strong></div>
+                    <div class="col">
+                    <input type="time" id="away_shorthanded_goal" class="form-control text-right"
+                           name="away_shorthanded_goal" {{ $game && $game->match_id ? 'readonly' : '' }}
+                           value="{{ $game ? $game->away_shorthanded_goal : '' }}">
+                    </div>
+                    <div class="col-1 col-md-2 col-xl-3"></div>
+                </div>
+            @endif
+            <div class="text-center mt-2">
+                <input type="submit" class="btn btn-primary" value="Сохранить">
+            </div>
     </form>
 
     <h3 class="mt-3">Статистика игроков</h3>
@@ -273,45 +280,45 @@
             if ($game) {
                 $saveGameUrl = action(
                     'Ajax\GroupController@editPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                     ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id, 'groupGamePlayoff' => $game->id]
                  );
                  $resetGameUrl = action(
                     'Ajax\GroupController@resetPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                     ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id, 'groupGamePlayoff' => $game->id]
                  );
                  $protocolUrl = action(
                     'Ajax\GroupController@createPlayoffProtocol',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                     ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id, 'groupGamePlayoff' => $game->id]
                  );
                  $shareUrl = action(
                     'Ajax\GroupController@sharePlayoffResult',
-                    ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                    ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id, 'groupGamePlayoff' => $game->id]
                 );
              } else {
                 $saveGameUrl = action(
                     'Ajax\GroupController@createPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id]
+                     ['groupTournament' => $pair->tournament_id, 'groupTournamentPlayoff' => $pair->id]
                  );
              }
         } else {
             if ($game) {
                 $shareUrl = action(
                     'Ajax\GroupController@shareRegularResult',
-                    ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                    ['groupTournament' => $game->tournament_id, 'groupGameRegular' => $game->id]
                 );
             }
             $lastGamesUrl = action('Ajax\EaController@getLastGames') . '?gameId=' . $game->id;
             $saveGameUrl = action(
                 'Ajax\GroupController@editRegularGame',
-                ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                ['groupTournament' => $game->tournament_id, 'groupGameRegular' => $game->id]
             );
             $resetGameUrl = action(
                 'Ajax\GroupController@resetRegularGame',
-                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                 ['groupTournament' => $game->tournament_id, 'groupGameRegular' => $game->id]
              );
              $protocolUrl = action(
                 'Ajax\GroupController@createRegularProtocol',
-                 ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                 ['groupTournament' => $game->tournament_id, 'groupGameRegular' => $game->id]
              );
         }
     @endphp
@@ -329,10 +336,10 @@
                     protocol: '{{ $protocolUrl }}'
                     @endif
                 },
-                {!! json_encode($protocols) !!},
-                {!! json_encode($players) !!},
-                {!! json_encode($positions) !!},
-                {{ $game && $game->match_id ? $game->match_id : 'null' }}
+                    {!! json_encode($protocols) !!},
+                    {!! json_encode($players) !!},
+                    {!! json_encode($positions) !!},
+                    {{ $game && $game->match_id ? $game->match_id : 'null' }}
             );
 
             @if($game)

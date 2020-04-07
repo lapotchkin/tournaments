@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -36,10 +36,8 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         $this->mapApiRoutes();
-
         $this->mapWebRoutes();
-
-        //
+        $this->mapAjaxRoutes();
     }
 
     /**
@@ -52,8 +50,24 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web/common.php'));
+
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web/group.php'));
+
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web/personal.php'));
+
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web/player.php'));
+
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web/team.php'));
     }
 
     /**
@@ -66,8 +80,30 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         Route::prefix('api')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/api.php'));
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * @return void
+     */
+    protected function mapAjaxRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/ajax/group.php'));
+
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/ajax/personal.php'));
+
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/ajax/player.php'));
+
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/ajax/team.php'));
     }
 }

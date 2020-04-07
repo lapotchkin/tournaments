@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Ajax;
 
 use App\Http\Requests\StoreGroupTournament;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreRequest;
 use App\Models\GroupGamePlayoff;
 use App\Models\GroupGamePlayoffPlayer;
 use App\Models\GroupGameRegular;
@@ -13,10 +12,12 @@ use App\Models\GroupTournament;
 use App\Models\GroupTournamentPlayoff;
 use App\Models\GroupTournamentTeam;
 use App\Models\GroupTournamentWinner;
-use App\Models\PersonalGamePlayoff;
-use App\Models\PersonalGameRegular;
+use App\Models\Team;
+use App\Models\TeamPlayer;
+use Auth;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Validator;
@@ -33,6 +34,7 @@ use VK\Exceptions\VKClientException;
 
 /**
  * Class GroupController
+ *
  * @package App\Http\Controllers\Ajax
  */
 class GroupController extends Controller
@@ -134,6 +136,7 @@ class GroupController extends Controller
 
     /**
      * @param StoreGroupTournament $request
+     *
      * @return ResponseFactory|Response
      */
     public function create(StoreGroupTournament $request)
@@ -147,64 +150,68 @@ class GroupController extends Controller
 
     /**
      * @param StoreGroupTournament $request
-     * @param int                  $tournamentId
+     * @param GroupTournament      $groupTournament
+     *
      * @return ResponseFactory|Response
      */
-    public function edit(StoreGroupTournament $request, int $tournamentId)
+    public function edit(StoreGroupTournament $request, GroupTournament $groupTournament)
     {
         $validatedData = $request->validated();
 
-        $tournament = GroupTournament::find($tournamentId);
-        $tournament->platform_id = $validatedData['platform_id'];
-        $tournament->app_id = $validatedData['app_id'];
-        $tournament->title = $validatedData['title'];
-        $tournament->playoff_rounds = $validatedData['playoff_rounds'];
-        $tournament->min_players = $validatedData['min_players'];
-        $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
-        $tournament->vk_group_id = isset($validatedData['vk_group_id'])
+        $groupTournament->platform_id = $validatedData['platform_id'];
+        $groupTournament->app_id = $validatedData['app_id'];
+        $groupTournament->title = $validatedData['title'];
+        $groupTournament->playoff_rounds = $validatedData['playoff_rounds'];
+        $groupTournament->min_players = $validatedData['min_players'];
+        $groupTournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
+        $groupTournament->vk_group_id = isset($validatedData['vk_group_id'])
             ? $validatedData['vk_group_id']
             : null;
-        $tournament->startedAt = isset($validatedData['startedAt'])
+        $groupTournament->startedAt = isset($validatedData['startedAt'])
             ? $validatedData['startedAt']
             : null;
 
-        $tournament->save();
+        $groupTournament->save();
 
-        return $this->renderAjax(['id' => $tournament->id]);
+        return $this->renderAjax(['id' => $groupTournament->id]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function delete(StoreRequest $request, int $tournamentId)
+    public function delete(Request $request, GroupTournament $groupTournament)
     {
-        $tournament = GroupTournament::find($tournamentId);
-        $tournament->delete();
+        $groupTournament->delete();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     *
      * @return ResponseFactory|Response
+     * @throws Exception
      */
-    public function setWinner(StoreRequest $request, int $tournamentId)
+    public function setWinner(Request $request, GroupTournament $groupTournament)
     {
-        $validatedData = $request->validate([
-            'team_id' => 'required|int|min:0',
-            'place'   => 'required|int|min:1|max:3',
-        ]);
-        $winner = GroupTournamentWinner::where('tournament_id', $tournamentId)
+        $validatedData = $request->validate(
+            [
+                'team_id' => 'required|int|min:0',
+                'place'   => 'required|int|min:1|max:3',
+            ]
+        );
+        $winner = GroupTournamentWinner::where('tournament_id', $groupTournament->id)
             ->where('place', $validatedData['place'])
             ->first();
 
         $message = $validatedData['place'] . ' место сохранено';
         if (is_null($winner)) {
-            $validatedData['tournament_id'] = $tournamentId;
+            $validatedData['tournament_id'] = $groupTournament->id;
             $winner = new GroupTournamentWinner($validatedData);
             $winner->save();
         } elseif ($validatedData['team_id'] === '0') {
@@ -219,93 +226,104 @@ class GroupController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     *
      * @return ResponseFactory|Response
      */
-    public function addTeam(StoreRequest $request, int $tournamentId)
+    public function addTeam(Request $request, GroupTournament $groupTournament)
     {
-        $validatedData = $request->validate([
-            'team_id'  => 'required|int|exists:team,id',
-            'division' => 'required|int|min:1|max:26',
-        ]);
+        $validatedData = $request->validate(
+            [
+                'team_id'  => 'required|int|exists:team,id',
+                'division' => 'required|int|min:1|max:26',
+            ]
+        );
 
         $tournamentTeam = GroupTournamentTeam::withTrashed()
-            ->where('tournament_id', $tournamentId)
+            ->where('tournament_id', $groupTournament->id)
             ->where('team_id', $validatedData['team_id'])
             ->first();
 
         if (is_null($tournamentTeam)) {
             $tournamentTeam = new GroupTournamentTeam;
-            $tournamentTeam->tournament_id = $tournamentId;
+            $tournamentTeam->tournament_id = $groupTournament->id;
             $tournamentTeam->team_id = $validatedData['team_id'];
             $tournamentTeam->division = $validatedData['division'];
             $tournamentTeam->save();
         } else {
             GroupTournamentTeam::withTrashed()
-                ->where('tournament_id', $tournamentId)
+                ->where('tournament_id', $groupTournament->id)
                 ->where('team_id', $validatedData['team_id'])
-                ->update([
-                    'division'  => $validatedData['division'],
-                    'deletedAt' => null,
-                ]);
+                ->update(
+                    [
+                        'division'  => $validatedData['division'],
+                        'deletedAt' => null,
+                    ]
+                );
         }
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $teamId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     * @param Team            $team
+     *
      * @return ResponseFactory|Response
      */
-    public function editTeam(StoreRequest $request, int $tournamentId, int $teamId)
+    public function editTeam(Request $request, GroupTournament $groupTournament, Team $team)
     {
-        $validatedData = $request->validate([
-            'division' => 'required|int|min:1|max:26',
-        ]);
+        $validatedData = $request->validate(
+            [
+                'division' => 'required|int|min:1|max:26',
+            ]
+        );
 
-        GroupTournamentTeam::where('tournament_id', $tournamentId)
-            ->where('team_id', $teamId)
+        GroupTournamentTeam::where('tournament_id', $groupTournament->id)
+            ->where('team_id', $team->id)
             ->update(['division' => $validatedData['division']]);
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $teamId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     * @param Team            $team
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function deleteTeam(StoreRequest $request, int $tournamentId, int $teamId)
+    public function deleteTeam(Request $request, GroupTournament $groupTournament, Team $team)
     {
-        GroupTournamentTeam::where('tournament_id', $tournamentId)
-            ->where('team_id', $teamId)
+        GroupTournamentTeam::where('tournament_id', $groupTournament->id)
+            ->where('team_id', $team->id)
             ->delete();
-        GroupGameRegular::whereTournamentId($tournamentId)
-            ->where('home_team_id', '=', $teamId)
-            ->orWhere('away_team_id', '=', $teamId)
+        GroupGameRegular::whereTournamentId($groupTournament->id)
+            ->where('home_team_id', '=', $team->id)
+            ->orWhere('away_team_id', '=', $team->id)
             ->delete();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $gameId
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
+     *
      * @return ResponseFactory|Response
-     * @throws ValidationException
      */
-    public function editRegularGame(StoreRequest $request, int $tournamentId, int $gameId)
+    public function editRegularGame(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupGameRegular $groupGameRegular
+    )
     {
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
@@ -313,27 +331,32 @@ class GroupController extends Controller
         $validator = Validator::make($input, self::GAME_RULES);
         $validatedData = $validator->validate();
 
-        $attributes = $game->attributesToArray();
+        $attributes = $groupGameRegular->attributesToArray();
         foreach ($validatedData['game'] as $field => $value) {
             if (!array_key_exists($field, $attributes)) {
                 continue;
             }
 
             if ($value === '') {
-                $game->{$field} = null;
+                $groupGameRegular->{$field} = null;
             } elseif (strstr($field, '_time')) {
-                $game->{$field} = '00:' . $value;
+                $groupGameRegular->{$field} = '00:' . $value;
             } else {
-                $game->{$field} = $value;
+                $groupGameRegular->{$field} = $value;
             }
         }
-        $game->save();
+        if (Auth::user()->isAdmin()) {
+            $groupGameRegular->isConfirmed = 1;
+        } else {
+            $groupGameRegular->added_by = $groupGameRegular->getTeamId();
+        }
+        $groupGameRegular->save();
 
         if (isset($input['players'])) {
             foreach ($input['players'] as $side => $players) {
                 foreach ($players as $playerData) {
-                    $playerData['game_id'] = $gameId;
-                    $player = GroupGameRegularPlayer::where('game_id', '=', $gameId)
+                    $playerData['game_id'] = $groupGameRegular->id;
+                    $player = GroupGameRegularPlayer::where('game_id', '=', $groupGameRegular->id)
                         ->where('team_id', '=', $playerData['team_id'])
                         ->where('player_id', '=', $playerData['player_id'])
                         ->first();
@@ -351,26 +374,29 @@ class GroupController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $gameId
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function resetRegularGame(StoreRequest $request, int $tournamentId, int $gameId)
+    public function resetRegularGame(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupGameRegular $groupGameRegular
+    )
     {
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
         $emptyGame = self::GAME_EMPTY;
         $emptyGame['isShootout'] = 0;
-        $game->fill($emptyGame);
-        $game->save();
-        foreach ($game->protocols as $protocol) {
+        $groupGameRegular->fill($emptyGame);
+        $groupGameRegular->save();
+        foreach ($groupGameRegular->protocols as $protocol) {
             $protocol->delete();
         }
 
@@ -378,15 +404,20 @@ class GroupController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
+     *
      * @return ResponseFactory|Response
      */
-    public function createRegularProtocol(StoreRequest $request, int $tournamentId, int $gameId)
+    public function createRegularProtocol(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupGameRegular $groupGameRegular
+    )
     {
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
@@ -398,58 +429,68 @@ class GroupController extends Controller
         return $this->renderAjax(['id' => $protocol->id]);
     }
 
-    public function updateRegularProtocol(StoreRequest $request, int $tournamentId, int $gameId, int $protocolId)
+    /**
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupGameRegular       $groupGameRegular
+     * @param GroupGameRegularPlayer $groupGameRegular_player
+     *
+     * @return ResponseFactory|Response
+     */
+    public function updateRegularProtocol(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupGameRegular $groupGameRegular,
+        GroupGameRegularPlayer $groupGameRegular_player
+    )
     {
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        $protocol = GroupGameRegularPlayer::find($protocolId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId || is_null($protocol)) {
+        $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
         $input = json_decode($request->getContent(), true);
-        $protocol->fill($input);
-        $protocol->save();
+        $groupGameRegular_player->fill($input);
+        $groupGameRegular_player->save();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $protocolId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupGameRegular       $groupGameRegular
+     * @param GroupGameRegularPlayer $groupGameRegular_player
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function deleteRegularProtocol(StoreRequest $request, int $tournamentId, int $gameId, int $protocolId)
+    public function deleteRegularProtocol(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupGameRegular $groupGameRegular,
+        GroupGameRegularPlayer $groupGameRegular_player
+    )
     {
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        $protocol = GroupGameRegularPlayer::find($protocolId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId || is_null($protocol)) {
+        $groupGameRegular->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
-        $protocol->delete();
+        $groupGameRegular_player->delete();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
-    public function createPair(StoreRequest $request, int $tournamentId)
+    public function createPair(Request $request, GroupTournament $groupTournament)
     {
-        /** @var GroupTournament $game */
-        $tournament = GroupTournament::find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
         $input = json_decode($request->getContent(), true);
         $rules = [
             'round'       => 'required|int',
@@ -459,38 +500,42 @@ class GroupController extends Controller
         ];
         $validator = Validator::make($input, $rules);
         $validatedData = $validator->validate();
-        $validatedData['tournament_id'] = $tournamentId;
+        $validatedData['tournament_id'] = $groupTournament->id;
 
         if (!isset($validatedData['team_one_id']) && !isset($validatedData['team_two_id'])) {
             abort(400, 'Не передан ни один ID команды');
         }
 
-        /** @var GroupTournamentPlayoff $pair */
-        $pair = GroupTournamentPlayoff::where('tournament_id', '=', $tournamentId)
+        /** @var GroupTournamentPlayoff $groupTournamentPlayoff */
+        $groupTournamentPlayoff = GroupTournamentPlayoff::where('tournament_id', '=', $groupTournament->id)
             ->where('round', '=', $validatedData['round'])
             ->where('pair', '=', $validatedData['pair'])
             ->first();
 
-        if (is_null($pair)) {
+        if (is_null($groupTournamentPlayoff)) {
             $pair = new GroupTournamentPlayoff;
         }
-        $pair->fill($validatedData);
-        $pair->save();
+        $groupTournamentPlayoff->fill($validatedData);
+        $groupTournamentPlayoff->save();
 
-        return $this->renderAjax(['id' => $pair->id], 'Пара создана');
+        return $this->renderAjax(['id' => $groupTournamentPlayoff->id], 'Пара создана');
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     *
      * @return ResponseFactory|Response
+     * @throws ValidationException
      */
-    public function updatePair(StoreRequest $request, int $tournamentId, int $pairId)
+    public function updatePair(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff
+    )
     {
-        /** @var GroupTournamentPlayoff $pair */
-        $pair = GroupTournamentPlayoff::find($pairId);
-        if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
+        if ($groupTournamentPlayoff->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
@@ -506,24 +551,27 @@ class GroupController extends Controller
             abort(400, 'Не передан ни один ID команды');
         }
 
-        $pair->fill($validatedData);
-        $pair->save();
+        $groupTournamentPlayoff->fill($validatedData);
+        $groupTournamentPlayoff->save();
 
         return $this->renderAjax([], 'Пара обновлена');
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
-    public function createPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId)
+    public function createPlayoffGame(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff
+    )
     {
-        /** @var GroupTournamentPlayoff $pair */
-        $pair = GroupTournamentPlayoff::find($pairId);
-        if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
+        if ($groupTournamentPlayoff->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
@@ -531,32 +579,32 @@ class GroupController extends Controller
         $validator = Validator::make($input, self::GAME_RULES);
         $validatedData = $validator->validate();
 
-        $game = new GroupGamePlayoff;
-        $attributes = $game->getFillable();
+        $groupGamePlayoff = new GroupGamePlayoff;
+        $attributes = $groupGamePlayoff->getFillable();
         foreach ($validatedData['game'] as $field => $value) {
             if (!in_array($field, $attributes)) {
                 continue;
             }
 
             if ($value === '') {
-                $game->{$field} = null;
+                $groupGamePlayoff->{$field} = null;
             } elseif (strstr($field, '_time')) {
-                $game->{$field} = '00:' . $value;
+                $groupGamePlayoff->{$field} = '00:' . $value;
             } else {
-                $game->{$field} = $value;
+                $groupGamePlayoff->{$field} = $value;
             }
         }
-        $game->playoff_pair_id = $pairId;
-        $game->home_team_id = $pair->team_one_id;
-        $game->away_team_id = $pair->team_two_id;
+        $groupGamePlayoff->playoff_pair_id = $groupTournamentPlayoff->id;
+        $groupGamePlayoff->home_team_id = $groupTournamentPlayoff->team_one_id;
+        $groupGamePlayoff->away_team_id = $groupTournamentPlayoff->team_two_id;
 
-        $game->save();
+        $groupGamePlayoff->save();
 
         if (isset($input['players'])) {
             foreach ($input['players'] as $side => $players) {
                 foreach ($players as $playerData) {
-                    $playerData['game_id'] = $game->id;
-                    $player = GroupGamePlayoffPlayer::where('game_id', '=', $game->id)
+                    $playerData['game_id'] = $groupGamePlayoff->id;
+                    $player = GroupGamePlayoffPlayer::where('game_id', '=', $groupGamePlayoff->id)
                         ->where('team_id', '=', $playerData['team_id'])
                         ->where('player_id', '=', $playerData['player_id'])
                         ->first();
@@ -570,23 +618,30 @@ class GroupController extends Controller
             }
         }
 
-        return $this->renderAjax(['id' => $game->id], 'Игра добавлена');
+        return $this->renderAjax(['id' => $groupGamePlayoff->id], 'Игра добавлена');
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
-    public function editPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    public function editPlayoffGame(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff
+    )
     {
-        /** @var GroupGamePlayoff $game */
-        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+        $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if (
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
+        ) {
             abort(404);
         }
 
@@ -594,27 +649,27 @@ class GroupController extends Controller
         $validator = Validator::make($input, self::GAME_RULES);
         $validatedData = $validator->validate();
 
-        $attributes = $game->getFillable();
+        $attributes = $groupGamePlayoff->getFillable();
         foreach ($validatedData['game'] as $field => $value) {
             if (!in_array($field, $attributes)) {
                 continue;
             }
 
             if ($value === '') {
-                $game->{$field} = null;
+                $groupGamePlayoff->{$field} = null;
             } elseif (strstr($field, '_time')) {
-                $game->{$field} = '00:' . $value;
+                $groupGamePlayoff->{$field} = '00:' . $value;
             } else {
-                $game->{$field} = $value;
+                $groupGamePlayoff->{$field} = $value;
             }
         }
-        $game->save();
+        $groupGamePlayoff->save();
 
         if (isset($input['players'])) {
             foreach ($input['players'] as $side => $players) {
                 foreach ($players as $playerData) {
-                    $playerData['game_id'] = $gameId;
-                    $player = GroupGamePlayoffPlayer::where('game_id', '=', $gameId)
+                    $playerData['game_id'] = $groupGamePlayoff->id;
+                    $player = GroupGamePlayoffPlayer::where('game_id', '=', $groupGamePlayoff->id)
                         ->where('team_id', '=', $playerData['team_id'])
                         ->where('player_id', '=', $playerData['player_id'])
                         ->first();
@@ -632,25 +687,32 @@ class GroupController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function resetPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    public function resetPlayoffGame(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff
+    )
     {
-        /** @var GroupGamePlayoff $game */
-        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+        $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if (
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
+        ) {
             abort(404);
         }
 
-        $game->fill(self::GAME_EMPTY);
-        $game->save();
-        foreach ($game->protocols as $protocol) {
+        $groupGamePlayoff->fill(self::GAME_EMPTY);
+        $groupGamePlayoff->save();
+        foreach ($groupGamePlayoff->protocols as $protocol) {
             $protocol->delete();
         }
 
@@ -658,102 +720,104 @@ class GroupController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return ResponseFactory|Response
      */
-    public function createPlayoffProtocol(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    public function createPlayoffProtocol(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff
+    )
     {
-        /** @var GroupGamePlayoff $game */
-        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
-            abort(404);
-        }
-
-        $input = json_decode($request->getContent(), true);
-        $protocol = new GroupGamePlayoffPlayer;
-        $protocol->fill($input);
-        $protocol->save();
-
-        return $this->renderAjax(['id' => $protocol->id]);
-    }
-
-    /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
-     * @param int          $protocolId
-     * @return ResponseFactory|Response
-     */
-    public function updatePlayoffProtocol(
-        StoreRequest $request,
-        int $tournamentId,
-        int $pairId,
-        int $gameId,
-        int $protocolId
-    ) {
-        /** @var GroupGamePlayoff $game */
-        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        $protocol = GroupGamePlayoffPlayer::find($protocolId);
+        $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if (
-            is_null($game)
-            || $game->playoff_pair_id !== $pairId
-            || $game->playoffPair->tournament_id !== $tournamentId
-            || is_null($protocol)
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
         ) {
             abort(404);
         }
 
         $input = json_decode($request->getContent(), true);
-        $protocol->fill($input);
-        $protocol->save();
+        $groupGamePlayoff_player = new GroupGamePlayoffPlayer;
+        $groupGamePlayoff_player->fill($input);
+        $groupGamePlayoff_player->save();
+
+        return $this->renderAjax(['id' => $groupGamePlayoff_player->id]);
+    }
+
+    /**
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     * @param GroupGamePlayoffPlayer $groupGamePlayoff_player
+     *
+     * @return ResponseFactory|Response
+     */
+    public function updatePlayoffProtocol(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff,
+        GroupGamePlayoffPlayer $groupGamePlayoff_player
+    )
+    {
+        $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
+        if (
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
+        ) {
+            abort(404);
+        }
+
+        $input = json_decode($request->getContent(), true);
+        $groupGamePlayoff_player->fill($input);
+        $groupGamePlayoff_player->save();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
-     * @param int          $protocolId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     * @param GroupGamePlayoffPlayer $groupGamePlayoff_player
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
     public function deletePlayoffProtocol(
-        StoreRequest $request,
-        int $tournamentId,
-        int $pairId,
-        int $gameId,
-        int $protocolId
-    ) {
-        /** @var GroupGamePlayoff $game */
-        $game = GroupGamePlayoff::with(['protocols.player', 'homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        $protocol = GroupGamePlayoffPlayer::find($protocolId);
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff,
+        GroupGamePlayoffPlayer $groupGamePlayoff_player
+    )
+    {
+        $groupGamePlayoff->load(['protocols.player', 'homeTeam.team', 'awayTeam.team']);
         if (
-            is_null($game)
-            || $game->playoff_pair_id !== $pairId
-            || $game->playoffPair->tournament_id !== $tournamentId
-            || is_null($protocol)
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
         ) {
             abort(404);
         }
 
-        $protocol->delete();
+        $groupGamePlayoff_player->delete();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $gameId
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
+     *
      * @return ResponseFactory|Response
      * @throws VKApiException
      * @throws VKApiParamAlbumIdException
@@ -766,25 +830,28 @@ class GroupController extends Controller
      * @throws VKApiWallTooManyRecipientsException
      * @throws VKClientException
      */
-    public function shareRegularResult(StoreRequest $request, int $tournamentId, int $gameId)
+    public function shareRegularResult(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupGameRegular $groupGameRegular
+    )
     {
-        /** @var GroupGameRegular $game */
-        $game = GroupGameRegular::with(['homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        $groupGameRegular->load(['homeTeam.team', 'awayTeam.team']);
+        if ($groupGameRegular->tournament_id !== $groupTournament->id) {
             abort(404);
         }
 
-        self::postToVk($game);
+        self::postToVk($groupGameRegular);
 
         return $this->renderAjax([], 'Результат игры опубликован');
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return ResponseFactory|Response
      * @throws VKApiException
      * @throws VKApiParamAlbumIdException
@@ -797,17 +864,69 @@ class GroupController extends Controller
      * @throws VKApiWallTooManyRecipientsException
      * @throws VKClientException
      */
-    public function sharePlayoffResult(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    public function sharePlayoffResult(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff
+    )
     {
-        /** @var GroupGamePlayoff $game */
-        $game = GroupGamePlayoff::with(['homeTeam.team', 'awayTeam.team'])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+        $groupGamePlayoff->load(['homeTeam.team', 'awayTeam.team']);
+        if (
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
+        ) {
             abort(404);
         }
 
-        self::postToVk($game);
+        self::postToVk($groupGamePlayoff);
 
         return $this->renderAjax([], 'Результат игры опубликован');
+    }
+
+    /**
+     * @param Request          $request
+     * @param GroupTournament  $groupTournament
+     * @param GroupGameRegular $groupGameRegular
+     */
+    public function confirmRegularResult(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupGameRegular $groupGameRegular
+    )
+    {
+        $groupGameRegular->isConfirmed = 1;
+        $groupGameRegular->save();
+
+        return $this->renderAjax([], 'Результат игры подтверждены');
+    }
+
+    /**
+     * @param Request                $request
+     * @param GroupTournament        $groupTournament
+     * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     * @param GroupGamePlayoff       $groupGamePlayoff
+     *
+     * @return ResponseFactory|Response
+     */
+    public function confirmPlayoffResult(
+        Request $request,
+        GroupTournament $groupTournament,
+        GroupTournamentPlayoff $groupTournamentPlayoff,
+        GroupGamePlayoff $groupGamePlayoff
+    )
+    {
+        $groupGamePlayoff->load(['homeTeam.team', 'awayTeam.team']);
+        if (
+            $groupGamePlayoff->playoff_pair_id !== $groupTournamentPlayoff->id
+            || $groupGamePlayoff->playoffPair->tournament_id !== $groupTournament->id
+        ) {
+            abort(404);
+        }
+
+        $groupGamePlayoff->isConfirmed = 1;
+        $groupGamePlayoff->save();
+
+        return $this->renderAjax([], 'Результат игры подтверждены');
     }
 }

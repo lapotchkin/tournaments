@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Http\Requests\StoreRequest;
 use App\Models\App;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentTeam;
@@ -34,10 +33,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
+     * @param Request $request
      * @return Factory|View
      */
-    public function new(StoreRequest $request)
+    public function new(Request $request)
     {
         return view('site.group.tournament_editor', [
             'title'      => 'Новый турнир',
@@ -48,43 +47,31 @@ class GroupController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
      * @return Factory|View
      */
-    public function edit(StoreRequest $request, int $tournamentId)
+    public function edit(Request $request, GroupTournament $groupTournament)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
         return view('site.group.tournament_editor', [
-            'title'      => $tournament->title . ': Редактировать турнир',
+            'title'      => $groupTournament->title . ': Редактировать турнир',
             'platforms'  => Platform::all(),
             'apps'       => App::all(),
-            'tournament' => $tournament,
+            'tournament' => $groupTournament,
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
      * @return Factory|View
      */
-    public function teams(Request $request, int $tournamentId)
+    public function teams(Request $request, GroupTournament $groupTournament)
     {
-        /** @var GroupTournament $tournament */
-        $tournament = GroupTournament::with(['tournamentTeams', 'tournamentTeams.team', 'winners.team'])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
+        $groupTournament->load(['tournamentTeams', 'tournamentTeams.team', 'winners.team']);
         $divisions = [];
         $teamIds = [];
-        foreach ($tournament->tournamentTeams as $tournamentTeam) {
+        foreach ($groupTournament->tournamentTeams as $tournamentTeam) {
             $teamIds[] = $tournamentTeam->team_id;
             $divisions[$tournamentTeam->division][] = $tournamentTeam->team;
         }
@@ -98,33 +85,33 @@ class GroupController extends Controller
 
         if (strstr($request->path(), 'copypaste')) {
             return view('site.group.copypaste', [
-                'tournament' => $tournament,
+                'tournament' => $groupTournament,
                 'divisions'  => $divisions,
             ]);
         }
 
         $nonTournamentTeams = Team::whereNotIn('id', $teamIds)
-            ->where('platform_id', $tournament->platform_id)
+            ->where('platform_id', $groupTournament->platform_id)
             ->get();
 
         return view('site.group.teams', [
-            'tournament'         => $tournament,
+            'tournament'         => $groupTournament,
             'divisions'          => $divisions,
             'nonTournamentTeams' => $nonTournamentTeams,
         ]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $teamId
+     * @param Request         $request
+     * @param GroupTournament $groupTournament
+     * @param Team            $team
      * @return Factory|View
      */
-    public function team(StoreRequest $request, int $tournamentId, int $teamId)
+    public function team(Request $request, GroupTournament $groupTournament, Team $team)
     {
         /** @var GroupTournamentTeam $tournamentTeam */
-        $tournamentTeam = GroupTournamentTeam::where('tournament_id', $tournamentId)
-            ->where('team_id', $teamId)
+        $tournamentTeam = GroupTournamentTeam::where('tournament_id', $groupTournament->id)
+            ->where('team_id', $team->id)
             ->first();
 
         if (is_null($tournamentTeam)) {

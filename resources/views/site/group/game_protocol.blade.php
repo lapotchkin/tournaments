@@ -9,13 +9,32 @@
         {{ Breadcrumbs::render('group.tournament.playoff.game', $game) }}
     @endif
 
-    <h4 class="text-center">
-        @if ($game->playoffPair)
-            {{ TextUtils::playoffRound($game->tournament, $game->playoffPair->round) }}
-        @else
-            Тур {{ $game->round }}
-        @endif
-    </h4>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <h4 class="text-center">
+                @if ($game->playoffPair)
+                    {{ TextUtils::playoffRound($game->tournament, $game->playoffPair->round) }}
+                @else
+                    Тур {{ $game->round }}
+                @endif
+            </h4>
+        </div>
+        <div class="col text-right">
+            @can('update', $game)
+                @if (isset($game->tournament_id))
+                    <a class="btn btn-success btn-sm" href="{{ route('group.tournament.regular.game.edit', ['groupTournament' => $tournament, 'groupGameRegular' => $game]) }}">
+                        <i class="fa fa-edit"></i> Редактировать протокол
+                    </a>
+                @else
+                    <a class="btn btn-success btn-sm"
+                       href="{{ route('group.tournament.playoff.game.edit', ['groupTournament' => $game->tournament, 'groupTournamentPlayoff' => $game->playoffPair, 'groupGamePlayoff' => $game]) }}">
+                        <i class="fa fa-edit"></i> Редактировать протокол
+                    </a>
+                @endif
+            @endcan
+        </div>
+    </div>
 
     <table class="w-100">
         <tbody>
@@ -167,8 +186,8 @@
                         @endfor
                     <a href="{{ route('player', ['player' => $protocol->player_id]) }}">{{ $protocol->player->tag }}</a>
                     @if($protocol->player->name)
-                        <small>{{ $protocol->player->name }}</small>
-                    @endif
+                            <small>{{ $protocol->player->name }}</small>
+                        @endif
                     </span>
                     @if (!$loop->last)
                         &nbsp;&nbsp;&nbsp;

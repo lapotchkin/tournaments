@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
@@ -47,13 +48,16 @@ use Illuminate\Support\Carbon;
  * @property int                                      $isTechnicalDefeat     Техническое поражение
  * @property Carbon                                   $createdAt             Дата создания
  * @property string|null                              $playedAt              Дата игры
- * @property string|null                              $updatedAt             Дата изменения
+ * @property Carbon|null                              $updatedAt             Дата изменения
  * @property Carbon|null                              $deletedAt             Дата удаления
  * @property string|null                              $match_id              ID матча в EASHL
- * @property string|null                              $sharedAt              Дата поста в ВК
+ * @property string|null                              $sharedAt
+ * @property int                                      $isConfirmed           Результат подтверждён
+ * @property int|null                                 $added_by              ID внёсшей команды
  * @property-read GroupTournamentTeam                 $awayTeam
  * @property-read GroupTournamentTeam                 $homeTeam
  * @property-read Collection|GroupGameRegularPlayer[] $protocols
+ * @property-read int|null                            $protocols_count
  * @property-read GroupTournament                     $tournament
  * @method static bool|null forceDelete()
  * @method static EloquentBuilder|GroupGameRegular newModelQuery()
@@ -73,6 +77,7 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|GroupGameRegular whereAwayShorthandedGoal($value)
  * @method static EloquentBuilder|GroupGameRegular whereAwayShot($value)
  * @method static EloquentBuilder|GroupGameRegular whereAwayTeamId($value)
+ * @method static EloquentBuilder|GroupGameRegular whereConfirmedBy($value)
  * @method static EloquentBuilder|GroupGameRegular whereCreatedAt($value)
  * @method static EloquentBuilder|GroupGameRegular whereDeletedAt($value)
  * @method static EloquentBuilder|GroupGameRegular whereHomeAttackTime($value)
@@ -88,12 +93,14 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|GroupGameRegular whereHomeShot($value)
  * @method static EloquentBuilder|GroupGameRegular whereHomeTeamId($value)
  * @method static EloquentBuilder|GroupGameRegular whereId($value)
+ * @method static EloquentBuilder|GroupGameRegular whereIsConfirmed($value)
  * @method static EloquentBuilder|GroupGameRegular whereIsOvertime($value)
  * @method static EloquentBuilder|GroupGameRegular whereIsShootout($value)
  * @method static EloquentBuilder|GroupGameRegular whereIsTechnicalDefeat($value)
  * @method static EloquentBuilder|GroupGameRegular whereMatchId($value)
  * @method static EloquentBuilder|GroupGameRegular wherePlayedAt($value)
  * @method static EloquentBuilder|GroupGameRegular whereRound($value)
+ * @method static EloquentBuilder|GroupGameRegular whereSharedAt($value)
  * @method static EloquentBuilder|GroupGameRegular whereTournamentId($value)
  * @method static EloquentBuilder|GroupGameRegular whereUpdatedAt($value)
  * @method static QueryBuilder|GroupGameRegular withTrashed()
@@ -104,9 +111,9 @@ class GroupGameRegular extends Model
 {
     use SoftDeletes;
 
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
-    const DELETED_AT = 'deletedAt';
+    public const CREATED_AT = 'createdAt';
+    public const UPDATED_AT = 'updatedAt';
+    public const DELETED_AT = 'deletedAt';
 
     /**
      * The table associated with the model.
@@ -174,6 +181,8 @@ class GroupGameRegular extends Model
         //'deletedAt',
         'match_id',
         'sharedAt',
+        'isConfirmed',
+        'added_by',
     ];
 
     /**
@@ -250,7 +259,7 @@ class GroupGameRegular extends Model
      */
     public function getStars()
     {
-        $stars = new Collection;
+        $stars = new Collection();
         foreach ($this->protocols as $protocol) {
             if ($protocol->star > 0) {
                 $stars->push($protocol);
@@ -258,5 +267,23 @@ class GroupGameRegular extends Model
         }
         $stars = $stars->sortBy('star');
         return $stars;
+    }
+
+    public function getTeamId()
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $teamIds = Auth::user()->getTeamIds();
+        if (in_array($this->home_team_id, $teamIds)) {
+            return $this->home_team_id;
+        }
+
+        if (in_array($this->away_team_id, $teamIds)) {
+            return $this->away_team_id;
+        }
+
+        return null;
     }
 }

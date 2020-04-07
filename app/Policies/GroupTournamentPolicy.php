@@ -5,7 +5,7 @@ namespace App\Policies;
 use App\Models\Player;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class TeamManagementPolicy
+class GroupTournamentPolicy
 {
     use HandlesAuthorization;
 
@@ -17,5 +17,14 @@ class TeamManagementPolicy
     public function __construct()
     {
         //
+    }
+
+    /**
+     * @param Player $user
+     * @return bool
+     */
+    public function create(Player $user)
+    {
+        return $user->isAdmin();
     }
 }

@@ -14,21 +14,23 @@ use Illuminate\Support\Carbon;
 /**
  * App\Models\PersonalGameRegular
  *
- * @property int                     $id                    ID
- * @property int                     $tournament_id         ID турнира
- * @property int|null                $round                 Круг
- * @property int                     $home_player_id        ID хозяина
- * @property int                     $away_player_id        ID гостя
- * @property int|null                $home_score            Забил хозяин
- * @property int|null                $away_score            Забил гость
- * @property int                     $isOvertime            Овертайм
- * @property int                     $isShootout            Буллиты
- * @property int                     $isTechnicalDefeat     Техническое поражение
- * @property string|null             $playedAt              Дата игры
- * @property Carbon                  $createdAt             Дата создания
- * @property string|null             $updatedAt             Дата изменения
- * @property Carbon|null             $deletedAt             Дата удаления
- * @property string|null             $sharedAt              Дата поста в ВК
+ * @property int                     $id                ID
+ * @property int                     $tournament_id     ID турнира
+ * @property int|null                $round             Круг
+ * @property int                     $home_player_id    ID хозяина
+ * @property int                     $away_player_id    ID гостя
+ * @property int|null                $home_score        Забил хозяин
+ * @property int|null                $away_score        Забил гость
+ * @property int                     $isOvertime        Овертайм
+ * @property int                     $isShootout        Буллиты
+ * @property int                     $isTechnicalDefeat Техническое поражение
+ * @property string|null             $playedAt          Дата игры
+ * @property Carbon                  $createdAt         Дата создания
+ * @property Carbon|null             $updatedAt         Дата изменения
+ * @property Carbon|null             $deletedAt         Дата удаления
+ * @property string|null             $sharedAt
+ * @property int                     $isConfirmed       Результат подтверждён
+ * @property int|null                $added_by      ID подтвердившего игрока
  * @property-read Player             $awayPlayer
  * @property-read Player             $homePlayer
  * @property-read PersonalTournament $tournament
@@ -40,16 +42,19 @@ use Illuminate\Support\Carbon;
  * @method static bool|null restore()
  * @method static EloquentBuilder|PersonalGameRegular whereAwayPlayerId($value)
  * @method static EloquentBuilder|PersonalGameRegular whereAwayScore($value)
+ * @method static EloquentBuilder|PersonalGameRegular whereConfirmedBy($value)
  * @method static EloquentBuilder|PersonalGameRegular whereCreatedAt($value)
  * @method static EloquentBuilder|PersonalGameRegular whereDeletedAt($value)
  * @method static EloquentBuilder|PersonalGameRegular whereHomePlayerId($value)
  * @method static EloquentBuilder|PersonalGameRegular whereHomeScore($value)
  * @method static EloquentBuilder|PersonalGameRegular whereId($value)
+ * @method static EloquentBuilder|PersonalGameRegular whereIsConfirmed($value)
  * @method static EloquentBuilder|PersonalGameRegular whereIsOvertime($value)
  * @method static EloquentBuilder|PersonalGameRegular whereIsShootout($value)
  * @method static EloquentBuilder|PersonalGameRegular whereIsTechnicalDefeat($value)
  * @method static EloquentBuilder|PersonalGameRegular wherePlayedAt($value)
  * @method static EloquentBuilder|PersonalGameRegular whereRound($value)
+ * @method static EloquentBuilder|PersonalGameRegular whereSharedAt($value)
  * @method static EloquentBuilder|PersonalGameRegular whereTournamentId($value)
  * @method static EloquentBuilder|PersonalGameRegular whereUpdatedAt($value)
  * @method static QueryBuilder|PersonalGameRegular withTrashed()
@@ -88,6 +93,8 @@ class PersonalGameRegular extends Model
         'createdAt',
         'deletedAt',
         'sharedAt',
+        'isConfirmed',
+        'added_by',
     ];
 
     /**

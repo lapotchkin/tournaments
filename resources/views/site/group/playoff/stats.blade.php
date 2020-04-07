@@ -16,7 +16,7 @@
                    readonly>
         </div>
         <button type="submit" class="btn btn-primary mr-2">Применить</button>
-        <a href="{{ route('group.tournament.playoff', ['tournamentId' => $tournament->id]) }}"
+        <a href="{{ route('group.tournament.playoff', ['groupTournament' => $tournament->id]) }}"
            class="btn btn-warning">Сбросить</a>
     </form>
 

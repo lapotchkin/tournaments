@@ -3,7 +3,7 @@
         @if (Route::currentRouteName() === 'group.tournament.playoff')
             <a class="nav-link active" href="#">Сетка</a>
         @else
-            <a class="nav-link" href="{{ route('group.tournament.playoff', ['tournamentId' => $tournament->id]) }}">
+            <a class="nav-link" href="{{ route('group.tournament.playoff', ['groupTournament' => $tournament->id]) }}">
                 Сетка
             </a>
         @endif
@@ -13,23 +13,21 @@
             <a class="nav-link active" href="#">Статистика</a>
         @else
             <a class="nav-link"
-               href="{{ route('group.tournament.playoff.stats', ['tournamentId' => $tournament->id]) }}">
+               href="{{ route('group.tournament.playoff.stats', ['groupTournament' => $tournament->id]) }}">
                 Статистика
             </a>
         @endif
     </li>
-    @auth
-        @if(Auth::user()->isAdmin())
-            <li class="nav-item">
-                @if (Route::currentRouteName() === 'group.tournament.playoff.games')
-                    <a class="nav-link active" href="#">Расписание</a>
-                @else
-                    <a class="nav-link"
-                       href="{{ route('group.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}">
-                        Расписание
-                    </a>
-                @endif
-            </li>
-        @endif
-    @endauth
+    @can('create', 'App\Models\GroupTournament')
+        <li class="nav-item">
+            @if (Route::currentRouteName() === 'group.tournament.playoff.games')
+                <a class="nav-link active" href="#">Расписание</a>
+            @else
+                <a class="nav-link"
+                   href="{{ route('group.tournament.playoff.games', ['groupTournament' => $tournament->id]) }}">
+                    Расписание
+                </a>
+            @endif
+        </li>
+    @endcan
 </ul>
