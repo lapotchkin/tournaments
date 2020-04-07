@@ -72,5 +72,5 @@ Route::get(
     '/group/{groupTournament}/playoff/games/{groupTournamentPlayoff}/{groupGamePlayoff}/edit',
     'Site\GroupPlayoffController@gameEdit'
 )
-    ->middleware('can:update,groupTournamentPlayoff')
+    ->middleware('can:update,groupGamePlayoff')
     ->name('group.tournament.playoff.game.edit');

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Http\Requests\StoreRequest;
 use App\Models\GroupGamePlayoff;
 use App\Models\GroupTournament;
 use App\Models\GroupTournamentPlayoff;
@@ -10,7 +9,6 @@ use App\Models\GroupTournamentPlayoffGoalies;
 use App\Models\GroupTournamentPlayoffLeaders;
 use App\Models\GroupTournamentPlayoffPosition;
 use App\Models\PlayerPosition;
-use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -143,11 +141,12 @@ class GroupPlayoffController extends Controller
     }
 
     /**
-     * @param StoreRequest    $request
+     * @param Request         $request
      * @param GroupTournament $groupTournament
+     *
      * @return Factory|View
      */
-    public function games(StoreRequest $request, GroupTournament $groupTournament)
+    public function games(Request $request, GroupTournament $groupTournament)
     {
         $groupTournament->load(['playoff.teamOne', 'playoff.teamTwo', 'winners.team']);
         $bracket = [];
@@ -171,13 +170,14 @@ class GroupPlayoffController extends Controller
     }
 
     /**
-     * @param StoreRequest           $request
+     * @param Request                $request
      * @param GroupTournament        $groupTournament
      * @param GroupTournamentPlayoff $groupTournamentPlayoff
+     *
      * @return Factory|View
      */
     public function gameAdd(
-        StoreRequest $request,
+        Request $request,
         GroupTournament $groupTournament,
         GroupTournamentPlayoff $groupTournamentPlayoff
     ) {
@@ -209,14 +209,15 @@ class GroupPlayoffController extends Controller
     }
 
     /**
-     * @param StoreRequest           $request
+     * @param Request                $request
      * @param GroupTournament        $groupTournament
      * @param GroupTournamentPlayoff $groupTournamentPlayoff
      * @param GroupGamePlayoff       $groupGamePlayoff
+     *
      * @return Factory|View
      */
     public function gameEdit(
-        StoreRequest $request,
+        Request $request,
         GroupTournament $groupTournament,
         GroupTournamentPlayoff $groupTournamentPlayoff,
         GroupGamePlayoff $groupGamePlayoff

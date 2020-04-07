@@ -20,6 +20,7 @@ use Illuminate\View\View;
 
 /**
  * Class GroupRegularController
+ *
  * @package App\Http\Controllers\Site
  */
 class GroupRegularController extends Controller
@@ -27,6 +28,7 @@ class GroupRegularController extends Controller
     /**
      * @param Request         $request
      * @param GroupTournament $groupTournament
+     *
      * @return Factory|View
      * @throws Exception
      */
@@ -74,6 +76,7 @@ class GroupRegularController extends Controller
     /**
      * @param Request         $request
      * @param GroupTournament $groupTournament
+     *
      * @return Factory|View
      * @throws Exception
      */
@@ -101,7 +104,11 @@ class GroupRegularController extends Controller
                         'exists',
                         true
                     )
-                    ->where('timestamp', '>', $groupTournament->startedAt->getTimestamp())
+                    ->where(
+                        'timestamp',
+                        '>',
+                        $groupTournament->startedAt ? $groupTournament->startedAt->getTimestamp() : 0
+                    )
                     ->orderByDesc('timestamp')
                     ->first();
                 if (!is_null($game)) {
@@ -123,6 +130,7 @@ class GroupRegularController extends Controller
      * @param Request          $request
      * @param GroupTournament  $groupTournament
      * @param GroupGameRegular $groupGameRegular
+     *
      * @return Factory|View
      */
     public function game(Request $request, GroupTournament $groupTournament, GroupGameRegular $groupGameRegular)
@@ -158,13 +166,15 @@ class GroupRegularController extends Controller
      * @param Request          $request
      * @param GroupTournament  $groupTournament
      * @param GroupGameRegular $groupGameRegular
+     *
      * @return Factory|View
      */
     public function gameEdit(
         Request $request,
         GroupTournament $groupTournament,
         GroupGameRegular $groupGameRegular
-    ) {
+    )
+    {
         $groupGameRegular->load([
             'protocols.player',
             'protocols.playerPosition',
@@ -204,6 +214,7 @@ class GroupRegularController extends Controller
     /**
      * @param Request         $request
      * @param GroupTournament $groupTournament
+     *
      * @return Factory|View
      */
     public function schedule(Request $request, GroupTournament $groupTournament)
@@ -234,6 +245,7 @@ class GroupRegularController extends Controller
 
     /**
      * @param $prevPlace
+     *
      * @return string
      */
     private static function _getPrevPlace($prevPlace)
@@ -252,6 +264,7 @@ class GroupRegularController extends Controller
     /**
      * @param array      $currentPosition
      * @param array|null $previousPosition
+     *
      * @return array
      * @throws Exception
      */
@@ -332,6 +345,7 @@ class GroupRegularController extends Controller
     /**
      * @param array      $currentLeaders
      * @param array|null $previousLeaders
+     *
      * @return object
      */
     private static function _getLeaders(array $currentLeaders, array $previousLeaders = null)
@@ -394,6 +408,7 @@ class GroupRegularController extends Controller
      * @param array|null $previousGoalies
      * @param array      $currentStats
      * @param            $previousStats
+     *
      * @return array
      */
     private static function _getGoalies(
@@ -401,7 +416,8 @@ class GroupRegularController extends Controller
         $currentStats,
         array $previousGoalies = null,
         $previousStats = null
-    ) {
+    )
+    {
         $currentGames = [];
         foreach ($currentStats as $stat) {
             $currentGames[$stat->id] = $stat->games;

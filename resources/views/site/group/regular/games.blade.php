@@ -121,7 +121,7 @@
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                 @endif
-                                                <a href="{{ route('group.tournament.regular.game.edit', ['groupTournament' => $tournament->id, 'groupGameRegular' => $game->id]) }}"
+                                                <a href="{{ route('group.tournament.regular.game.edit', ['groupTournament' => $tournament, 'groupGameRegular' => $game]) }}"
                                                    class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
                                             @endcan
                                         </td>
