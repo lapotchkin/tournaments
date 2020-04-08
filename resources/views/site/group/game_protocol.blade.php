@@ -23,7 +23,7 @@
         <div class="col text-right">
             @can('update', $game)
                 @if (isset($game->tournament_id))
-                    <a class="btn btn-success btn-sm" href="{{ route('group.tournament.regular.game.edit', ['groupTournament' => $tournament, 'groupGameRegular' => $game]) }}">
+                    <a class="btn btn-success btn-sm" href="{{ route('group.tournament.regular.game.edit', ['groupTournament' => $game->tournament, 'groupGameRegular' => $game]) }}">
                         <i class="fa fa-edit"></i> Редактировать протокол
                     </a>
                 @else
