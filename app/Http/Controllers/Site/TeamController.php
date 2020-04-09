@@ -9,13 +9,18 @@ use App\Models\Platform;
 use App\Models\Player;
 use App\Models\Team;
 use App\Models\TeamPlayer;
+use App\Models\TeamStats;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use phpDocumentor\Reflection\Types\Self_;
+use stdClass;
 
 /**
  * Class TeamController
+ *
  * @package App\Http\Controllers\Site
  */
 class TeamController extends Controller
@@ -62,6 +67,7 @@ class TeamController extends Controller
     /**
      * @param Request $request
      * @param Team    $team
+     *
      * @return Factory|View
      */
     public function team(Request $request, Team $team)
@@ -77,16 +83,22 @@ class TeamController extends Controller
             ->where('platform_id', $team->platform_id)
             ->orderBy('tag')
             ->get();
+        $statsData = TeamStats::readStats($team->id);
+        $scoreDynamics = TeamStats::readScoreDynamics($team->id);
+        $stats = self::getStats($statsData[0]);
 
         return view('site.team.team', [
             'team'           => $team,
             'teamPlayers'    => $teamPlayers,
             'nonTeamPlayers' => $nonTeamPlayers,
+            'stats'          => $stats,
+            'scoreDynamics'  => $scoreDynamics,
         ]);
     }
 
     /**
      * @param StoreRequest $request
+     *
      * @return Factory|View
      */
     public function add(StoreRequest $request)
@@ -102,6 +114,7 @@ class TeamController extends Controller
     /**
      * @param StoreRequest $request
      * @param int          $teamId
+     *
      * @return Factory|View
      */
     public function edit(StoreRequest $request, int $teamId)
@@ -117,5 +130,37 @@ class TeamController extends Controller
             'platforms' => Platform::all(),
             'apps'      => App::all(),
         ]);
+    }
+
+    /**
+     * @param array $statsData
+     *
+     * @return array
+     */
+    private static function getStats(stdClass $statsData)
+    {
+        $stats = [
+            'games'        => (int)$statsData->games,
+            'gamesResults' => [
+                ['category' => 'Победы', 'value' => (int)$statsData->wins, 'color' => '#519E1E'],
+                ['category' => 'Победы в ОТ', 'value' => (int)$statsData->wins_ot, 'color' => '#A0CA84'],
+                ['category' => 'Поражения', 'value' => (int)$statsData->lose, 'color' => '#FF5016'],
+                ['category' => 'Поражения в ОТ', 'value' => (int)$statsData->lose_ot, 'color' => '#FFB600'],
+            ],
+            'faceoff' => [
+                ['category' => 'Выиграно', 'value' => (int)$statsData->faceoff, 'color' => '#519E1E'],
+                ['category' => 'Проиграно', 'value' => 100 - (int)$statsData->faceoff, 'color' => '#FF5016'],
+            ],
+            'penaltyFor' => [
+                ['category' => 'Реализовано', 'value' => (int)$statsData->penalty_for_success, 'color' => '#519E1E'],
+                ['category' => 'Не реализовано', 'value' => (int)$statsData->penalty_for - (int)$statsData->penalty_for_success, 'color' => '#FF5016'],
+            ],
+            'penaltyAgainst' => [
+                ['category' => 'Нейтрализовано', 'value' => (int)$statsData->penalty_against - (int)$statsData->penalty_against_success, 'color' => '#519E1E'],
+                ['category' => 'Не нейтрализовано', 'value' => (int)$statsData->penalty_against_success, 'color' => '#FF5016'],
+            ],
+        ];
+
+        return $stats;
     }
 }
