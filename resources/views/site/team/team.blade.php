@@ -14,65 +14,71 @@
         @endcan
     </h2>
 
-    @if(count($team->players))
-        <h3>Игроки команды</h3>
-        <table id="team-players" class="table table-striped table-sm">
-            <thead class="thead-dark">
-            <tr>
-                <th style="width: 2rem;"></th>
-                <th>Игрок</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($teamPlayers as $teamPlayer)
-                @include('partials.team_row')
-            @endforeach
-            </tbody>
-        </table>
-    @endif
+    <div class="row">
+        <div class="col-12 col-lg">
+            @if(count($team->players))
+                <h3>Игроки команды</h3>
+                <table id="team-players" class="table table-striped table-sm">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th style="width: 2rem;"></th>
+                        <th>Игрок</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($teamPlayers as $teamPlayer)
+                        @include('partials.team_row')
+                    @endforeach
+                    </tbody>
+                </table>
+            @endif
 
-    @can('update', $team)
-        <form id="player-add">
-            <div class="form-inline">
-                <div class="input-group">
-                    <label for="player_id" class="mr-2">Игрок</label>
-                    <select id="player_id" class="form-control mr-3" name="player_id">
-                        <option value="">--Не выбран--</option>
-                        @foreach($nonTeamPlayers as $player)
-                            <option
-                                    value="{{ $player->id }}">{{ $player->tag }} {{ $player->name ? '(' .  $player->name . ')' : '' }}</option>
-                        @endforeach
-                    </select>
-                    <div class="invalid-feedback"></div>
-                </div>
-                <button type="submit" class="btn btn-primary" name="player-add-button">Добавить</button>
-            </div>
-        </form>
-    @endcan
+            @can('update', $team)
+                <form id="player-add">
+                    <div class="form-inline">
+                        <div class="input-group">
+                            <label for="player_id" class="mr-2">Игрок</label>
+                            <select id="player_id" class="form-control mr-3" name="player_id">
+                                <option value="">--Не выбран--</option>
+                                @foreach($nonTeamPlayers as $player)
+                                    <option
+                                            value="{{ $player->id }}">{{ $player->tag }} {{ $player->name ? '(' .  $player->name . ')' : '' }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="player-add-button">Добавить</button>
+                    </div>
+                </form>
+            @endcan
+        </div>
 
-    @if($team->tournaments->count())
-        <h3 class="mt-3">Командные турниры</h3>
-        <ul class="fa-ul">
-            @foreach($team->tournaments as $tournament)
-                <li>
-                    <span class="fa-li"><i class="fas fa-hockey-puck"></i></span>
-                    <a href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}">{{ $tournament->title }}</a>
-                    <span class="badge badge-secondary badge-pill">
+        @if($team->tournaments->count())
+            <div class="col-12 col-lg-4 col-xl-5">
+                <h3 class="mt-3">Командные турниры</h3>
+                <ul class="fa-ul">
+                    @foreach($team->tournaments as $tournament)
+                        <li>
+                            <span class="fa-li"><i class="fas fa-hockey-puck"></i></span>
+                            <a href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}">{{ $tournament->title }}</a>
+                            <span class="badge badge-secondary badge-pill">
                         {{ $tournament->min_players }} на {{ $tournament->min_players }}
                     </span>
-                    @foreach($tournament->winners as $winner)
-                        @if($winner->team_id === $team->id)
-                            <span class="fa-stack" style="vertical-align: top;">
+                            @foreach($tournament->winners as $winner)
+                                @if($winner->team_id === $team->id)
+                                    <span class="fa-stack" style="vertical-align: top;">
                                 <i class="fas fa-circle fa-stack-2x"></i>
                                 <i class="fas fa-trophy fa-stack-1x fa-inverse text-{{ TextUtils::winnerClass($winner->place) }}"></i>
                             </span>
-                        @endif
+                                @endif
+                            @endforeach
+                        </li>
                     @endforeach
-                </li>
-            @endforeach
-        </ul>
-    @endif
+                </ul>
+            </div>
+        @endif
+    </div>
 
     <h3 class="mt-3">Статистика команды</h3>
     <div class="row mt-3">
@@ -125,9 +131,9 @@
             makePie({
                 element: "gamesResults",
                 data: {!! json_encode($stats['gamesResults'], JSON_UNESCAPED_UNICODE) !!},
-                title: "Результаты регулярных игр",
+                title: "Результаты игр",
                 showLabel: true,
-                legendTextFormat:  "{value.value}",
+                legendTextFormat: "{value.value}",
             });
             makePie({
                 element: "faceoff",
@@ -150,7 +156,7 @@
             scoreDynamicsChart.data = {!! json_encode($scoreDynamics, JSON_UNESCAPED_UNICODE) !!};
             // Create axes
             let categoryAxis = scoreDynamicsChart.xAxes.push(new am4charts.CategoryAxis());
-            categoryAxis.dataFields.category = "game_id";
+            categoryAxis.dataFields.category = "index";
             categoryAxis.title.text = "Игры";
             categoryAxis.renderer.labels.template.disabled = true;
             let valueAxis = scoreDynamicsChart.yAxes.push(new am4charts.ValueAxis());
@@ -163,7 +169,7 @@
             // series2.stroke = am4core.color("#CDA2AB");
             series2.strokeWidth = 3;
             series2.dataFields.valueY = "shots";
-            series2.dataFields.categoryX = "game_id";
+            series2.dataFields.categoryX = "index";
             series2.fillOpacity = 0.6;
             series2.strokeWidth = 2;
             // series2.stacked = true;
@@ -174,7 +180,7 @@
             // series1.stroke = am4core.color("#CDA2AB");
             series1.strokeWidth = 3;
             series1.dataFields.valueY = "goals_for";
-            series1.dataFields.categoryX = "game_id";
+            series1.dataFields.categoryX = "index";
             series1.fillOpacity = 0.6;
             series1.strokeWidth = 2;
             // series1.stacked = true;

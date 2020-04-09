@@ -84,8 +84,13 @@ class TeamController extends Controller
             ->orderBy('tag')
             ->get();
         $statsData = TeamStats::readStats($team->id);
-        $scoreDynamics = TeamStats::readScoreDynamics($team->id);
         $stats = self::getStats($statsData[0]);
+        $scoreDynamics = TeamStats::readScoreDynamics($team->id);
+        $i = 1;
+        foreach ($scoreDynamics as $stat) {
+            $stat->index = $i;
+            $i += 1;
+        }
 
         return view('site.team.team', [
             'team'           => $team,
