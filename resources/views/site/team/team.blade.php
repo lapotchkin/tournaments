@@ -41,7 +41,7 @@
                         <option value="">--Не выбран--</option>
                         @foreach($nonTeamPlayers as $player)
                             <option
-                                value="{{ $player->id }}">{{ $player->tag }} {{ $player->name ? '(' .  $player->name . ')' : '' }}</option>
+                                    value="{{ $player->id }}">{{ $player->tag }} {{ $player->name ? '(' .  $player->name . ')' : '' }}</option>
                         @endforeach
                     </select>
                     <div class="invalid-feedback"></div>
@@ -73,6 +73,19 @@
             @endforeach
         </ul>
     @endif
+
+    <h3 class="mt-3">Статистика команды</h3>
+    <div class="row mt-3">
+        <div id="gamesResults" class="col-6" style="height: 20rem;"></div>
+        <div id="faceoff" class="col-6" style="height: 20rem;"></div>
+    </div>
+    <div class="row mt-3">
+        <div id="penaltyFor" class="col-6" style="height: 20rem;"></div>
+        <div id="penaltyAgainst" class="col-6" style="height: 20rem;"></div>
+    </div>
+    <div class="row">
+        <div id="scoreDynamics" class="col" style="height: 20rem;"></div>
+    </div>
 @endsection
 
 @section('script')
@@ -105,4 +118,107 @@
             });
         </script>
     @endcan
+
+    <script src="{!! mix('/js/amcharts.js') !!}"></script>
+    <script type="text/javascript">
+        am4core.ready(function () {
+            makePie({
+                element: "gamesResults",
+                data: {!! json_encode($stats['gamesResults'], JSON_UNESCAPED_UNICODE) !!},
+                title: "Результаты регулярных игр",
+                showLabel: true,
+                legendTextFormat:  "{value.value}",
+            });
+            makePie({
+                element: "faceoff",
+                data: {!! json_encode($stats['faceoff'], JSON_UNESCAPED_UNICODE) !!},
+                title: "Вбрасывания",
+            });
+            makePie({
+                element: "penaltyFor",
+                data: {!! json_encode($stats['penaltyFor'], JSON_UNESCAPED_UNICODE) !!},
+                title: "Реализация большинства",
+            });
+            makePie({
+                element: "penaltyAgainst",
+                data: {!! json_encode($stats['penaltyAgainst'], JSON_UNESCAPED_UNICODE) !!},
+                title: "Нейтрализация меньшинства",
+            });
+
+            //Score
+            let scoreDynamicsChart = am4core.create("scoreDynamics", am4charts.XYChart);
+            scoreDynamicsChart.data = {!! json_encode($scoreDynamics, JSON_UNESCAPED_UNICODE) !!};
+            // Create axes
+            let categoryAxis = scoreDynamicsChart.xAxes.push(new am4charts.CategoryAxis());
+            categoryAxis.dataFields.category = "game_id";
+            categoryAxis.title.text = "Игры";
+            categoryAxis.renderer.labels.template.disabled = true;
+            let valueAxis = scoreDynamicsChart.yAxes.push(new am4charts.ValueAxis());
+            valueAxis.title.text = "Количество";
+            // Add cursor
+            scoreDynamicsChart.cursor = new am4charts.XYCursor();
+
+            var series2 = scoreDynamicsChart.series.push(new am4charts.LineSeries());
+            series2.name = "Броски по воротам";
+            // series2.stroke = am4core.color("#CDA2AB");
+            series2.strokeWidth = 3;
+            series2.dataFields.valueY = "shots";
+            series2.dataFields.categoryX = "game_id";
+            series2.fillOpacity = 0.6;
+            series2.strokeWidth = 2;
+            // series2.stacked = true;
+            series2.tooltipText = "Броски: [bold]{valueY}[/]";
+
+            var series1 = scoreDynamicsChart.series.push(new am4charts.LineSeries());
+            series1.name = "Забитые голы";
+            // series1.stroke = am4core.color("#CDA2AB");
+            series1.strokeWidth = 3;
+            series1.dataFields.valueY = "goals_for";
+            series1.dataFields.categoryX = "game_id";
+            series1.fillOpacity = 0.6;
+            series1.strokeWidth = 2;
+            // series1.stacked = true;
+            series1.tooltipText = "Голы: [bold]{valueY}[/]";
+
+            let scoreDynamicsChartTitle = scoreDynamicsChart.titles.create();
+            scoreDynamicsChartTitle.text = "Динамика бросков и забитых голов";
+            scoreDynamicsChartTitle.fontSize = 19;
+        });
+
+        function makePie(params) {
+            const chart = am4core.create(params.element, am4charts.PieChart);
+            chart.data = params.data;
+            const pieSeries = chart.series.push(new am4charts.PieSeries());
+            pieSeries.dataFields.value = "value";
+            pieSeries.dataFields.category = "category";
+            pieSeries.slices.template.stroke = am4core.color("#fff");
+            pieSeries.slices.template.strokeWidth = 2;
+            pieSeries.labels.template.disabled = true;
+            // pieSeries.ticks.template.disabled = true;
+            pieSeries.slices.template.propertyFields.fill = "color";
+
+            chart.legend = new am4charts.Legend();
+            // gamesResultsChart.legend.fontSize = 10;
+            if (params.legendTextFormat) {
+                pieSeries.legendSettings.valueText = params.legendTextFormat;
+            }
+            chart.legend.valueLabels.template.align = "right";
+            chart.legend.valueLabels.template.textAlign = "end";
+            chart.legend.itemContainers.template.paddingTop = 0;
+            chart.legend.itemContainers.template.paddingBottom = 4;
+
+            if (params.showLabel) {
+                chart.innerRadius = am4core.percent(35);
+                let label = pieSeries.createChild(am4core.Label);
+                label.horizontalCenter = "middle";
+                label.verticalCenter = "middle";
+                label.fontSize = 40;
+                label.text = "{values.value.sum}";
+            }
+
+            let title = chart.titles.create();
+            title.text = params.title;
+            title.fontSize = 19;
+        }
+    </script>
 @endsection
