@@ -205,7 +205,7 @@ class TeamStats
 
     public static function readScoreDynamics(int $teamId)
     {
-        $stats = DB::select("
+        $statsRegular = DB::select("
             select gGR.id game_id,
                    if(gGR.home_team_id = t.id, gGR.home_score, gGR.away_score) goals_for,
                    if(gGR.home_team_id = t.id, gGR.away_score, gGR.home_score) goals_against,
@@ -213,7 +213,8 @@ class TeamStats
                        gGR.home_team_id = t.id, 
                        if (gGR.home_shot is null, gGR.home_score, gGR.home_shot),
                        if (gGR.away_shot is null, gGR.away_score, gGR.away_shot)
-                    ) shots
+                    ) shots,
+                   gGR.createdAt
             from team t
                      inner join groupGameRegular gGR
                                 on (t.id = gGR.away_team_id or t.id = gGR.home_team_id)
@@ -221,8 +222,38 @@ class TeamStats
                                        and gGR.home_score is not null
                                        and gGR.deletedAt is null
             where t.id = ?
-              and t.deletedAt is null;
+              and t.deletedAt is null
+            order by gGR.createdAt;
         ", [$teamId]);
+        $statsPlayoff = DB::select("
+            select gGP.id game_id,
+                   if(gGP.home_team_id = t.id, gGP.home_score, gGP.away_score) goals_for,
+                   if(gGP.home_team_id = t.id, gGP.away_score, gGP.home_score) goals_against,
+                   if(
+                       gGP.home_team_id = t.id, 
+                       if (gGP.home_shot is null, gGP.home_score, gGP.home_shot),
+                       if (gGP.away_shot is null, gGP.away_score, gGP.away_shot)
+                    ) shots,
+                   gGP.createdAt
+            from team t
+                     inner join groupGamePlayoff gGP
+                                on (t.id = gGP.away_team_id or t.id = gGP.home_team_id)
+                                       and gGP.away_score is not null
+                                       and gGP.home_score is not null
+                                       and gGP.deletedAt is null
+            where t.id = ?
+              and t.deletedAt is null
+            order by gGP.createdAt;
+        ", [$teamId]);
+
+        $stats = array_merge($statsRegular, $statsPlayoff);
+
+        usort($stats, function ($a, $b) {
+            if ($a->createdAt === $b->createdAt) {
+                return 0;
+            }
+            return ($a->createdAt < $b->createdAt) ? -1 : 1;
+        });
 
         return $stats;
     }
