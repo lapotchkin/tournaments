@@ -513,7 +513,7 @@ class GroupController extends Controller
             ->first();
 
         if (is_null($groupTournamentPlayoff)) {
-            $pair = new GroupTournamentPlayoff;
+            $groupTournamentPlayoff = new GroupTournamentPlayoff;
         }
         $groupTournamentPlayoff->fill($validatedData);
         $groupTournamentPlayoff->save();
