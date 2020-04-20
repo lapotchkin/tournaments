@@ -6,6 +6,7 @@ use App\Http\Requests\StoreRequest;
 use App\Models\PersonalTournament;
 use App\Models\Platform;
 use App\Models\Player;
+use App\Models\PlayerStats;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,6 +14,7 @@ use Illuminate\View\View;
 
 /**
  * Class PlayerController
+ *
  * @package App\Http\Controllers\Site
  */
 class PlayerController extends Controller
@@ -59,18 +61,23 @@ class PlayerController extends Controller
     /**
      * @param Request $request
      * @param Player  $player
+     *
      * @return Factory|View
      */
     public function player(Request $request, Player $player)
     {
         $player->load(['teams', 'tournaments.winners']);
+        $groupStats = PlayerStats::readPlayerGroupStats($player->id);
+
         return view('site.player.player', [
-            'player' => $player,
+            'player'     => $player,
+            'groupStats' => $groupStats,
         ]);
     }
 
     /**
      * @param StoreRequest $request
+     *
      * @return Factory|View
      */
     public function add(StoreRequest $request)
@@ -85,6 +92,7 @@ class PlayerController extends Controller
     /**
      * @param StoreRequest $request
      * @param Player       $player
+     *
      * @return Factory|View
      */
     public function edit(StoreRequest $request, Player $player)

@@ -60,4 +60,11 @@
             vertical-align: middle;
         }
     </style>
+
+    <script src="{!! mix('/js/amcharts.js') !!}"></script>
+    <script type="text/javascript">
+        am4core.ready(function () {
+
+        });
+    </script>
 @endsection
