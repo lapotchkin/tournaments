@@ -31,11 +31,7 @@ class PlayerController extends Controller
                 if (!isset($winners[$winner->player->id])) {
                     $winners[$winner->player->id] = (object)[
                         'player' => $winner->player,
-                        'cups'   => [
-                            1 => 0,
-                            2 => 0,
-                            3 => 0,
-                        ],
+                        'cups'   => [1 => 0, 2 => 0, 3 => 0],
                     ];
                 }
                 $winners[$winner->player->id]->cups[$winner->place] += 1;
@@ -66,12 +62,16 @@ class PlayerController extends Controller
      */
     public function player(Request $request, Player $player)
     {
-        $player->load(['teams', 'tournaments.winners']);
-        $groupStats = PlayerStats::readPlayerGroupStats($player->id);
+        $player->load(['tournaments.winners']);
+        $teamStats = PlayerStats::readPlayerTeamStats($player->id);
+
+        foreach ($teamStats->teams as $team) {
+            $team->isActive = in_array($team->id, $player->getTeamIds());
+        }
 
         return view('site.player.player', [
-            'player'     => $player,
-            'groupStats' => $groupStats,
+            'player'    => $player,
+            'teamStats' => $teamStats,
         ]);
     }
 

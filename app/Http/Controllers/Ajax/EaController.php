@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreRequest;
 use App\Models\EaGame;
 use App\Models\EaRest;
 use App\Models\GroupGameRegular;

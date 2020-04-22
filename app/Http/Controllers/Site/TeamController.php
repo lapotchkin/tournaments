@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Http\Requests\StoreRequest;
 use App\Models\App;
 use App\Models\GroupTournament;
 use App\Models\Platform;
@@ -13,9 +12,7 @@ use App\Models\TeamStats;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Collection;
 use Illuminate\View\View;
-use phpDocumentor\Reflection\Types\Self_;
 use stdClass;
 
 /**
@@ -37,11 +34,7 @@ class TeamController extends Controller
                 if (!isset($winners[$winner->team->id])) {
                     $winners[$winner->team->id] = (object)[
                         'team' => $winner->team,
-                        'cups' => [
-                            1 => 0,
-                            2 => 0,
-                            3 => 0,
-                        ],
+                        'cups' => [1 => 0, 2 => 0, 3 => 0],
                     ];
                 }
                 $winners[$winner->team->id]->cups[$winner->place] += 1;
@@ -102,11 +95,11 @@ class TeamController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
+     * @param Request $request
      *
      * @return Factory|View
      */
-    public function add(StoreRequest $request)
+    public function add(Request $request)
     {
         return view('site.team.team_form', [
             'title'     => 'Добавить команду',
@@ -117,12 +110,12 @@ class TeamController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $teamId
+     * @param Request $request
+     * @param int     $teamId
      *
      * @return Factory|View
      */
-    public function edit(StoreRequest $request, int $teamId)
+    public function edit(Request $request, int $teamId)
     {
         $team = Team::find($teamId);
         if (is_null($team)) {
@@ -138,25 +131,25 @@ class TeamController extends Controller
     }
 
     /**
-     * @param array $statsData
+     * @param stdClass $statsData
      *
      * @return array
      */
     private static function getStats(stdClass $statsData)
     {
         $stats = [
-            'games'        => (int)$statsData->games,
-            'gamesResults' => [
+            'games'          => (int)$statsData->games,
+            'gamesResults'   => [
                 ['category' => 'Победы', 'value' => (int)$statsData->wins, 'color' => '#519E1E'],
                 ['category' => 'Победы в ОТ', 'value' => (int)$statsData->wins_ot, 'color' => '#A0CA84'],
                 ['category' => 'Поражения', 'value' => (int)$statsData->lose, 'color' => '#FF5016'],
                 ['category' => 'Поражения в ОТ', 'value' => (int)$statsData->lose_ot, 'color' => '#FFB600'],
             ],
-            'faceoff' => [
+            'faceoff'        => [
                 ['category' => 'Выиграно', 'value' => (int)$statsData->faceoff, 'color' => '#519E1E'],
                 ['category' => 'Проиграно', 'value' => 100 - (int)$statsData->faceoff, 'color' => '#FF5016'],
             ],
-            'penaltyFor' => [
+            'penaltyFor'     => [
                 ['category' => 'Реализовано', 'value' => (int)$statsData->penalty_for_success, 'color' => '#519E1E'],
                 ['category' => 'Не реализовано', 'value' => (int)$statsData->penalty_for - (int)$statsData->penalty_for_success, 'color' => '#FF5016'],
             ],
