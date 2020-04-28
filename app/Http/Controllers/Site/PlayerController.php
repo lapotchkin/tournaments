@@ -62,16 +62,26 @@ class PlayerController extends Controller
      */
     public function player(Request $request, Player $player)
     {
-        $player->load(['tournaments.winners']);
-        $teamStats = PlayerStats::readPlayerTeamStats($player->id);
+        $player->load(['tournamentWins']);
+        $teamStats = PlayerStats::readTeamStats($player->id);
 
-        foreach ($teamStats->teams as $team) {
+        foreach ($teamStats->items as $team) {
             $team->isActive = in_array($team->id, $player->getTeamIds());
         }
 
+        $personalStats = PlayerStats::readPersonalStats($player->id);
+        $personalWins = [];
+        foreach ($player->tournamentWins as $win) {
+            $personalWins[$win->tournament_id] = $win->place;
+        }
+        foreach ($personalStats->items as $item) {
+            $item->place = isset($personalWins[$item->id]) ? $personalWins[$item->id] : null;
+        }
+
         return view('site.player.player', [
-            'player'    => $player,
-            'teamStats' => $teamStats,
+            'player'        => $player,
+            'teamStats'     => $teamStats,
+            'personalStats' => $personalStats,
         ]);
     }
 

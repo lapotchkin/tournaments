@@ -16,27 +16,59 @@
         @endauth
     </h2>
 
-    @if(count($player->tournaments))
+    @if(count($personalStats->items))
         <h3 class="mt-3">Турниры 1 на 1</h3>
-        <ul class="fa-ul">
-            @foreach($player->tournaments as $tournament)
-                <li>
-                    <span class="fa-li"><i class="fas fa-hockey-puck"></i></span>
-                    <a href="{{ route('personal.tournament', ['tournamentId' => $tournament->id]) }}">{{ $tournament->title }}</a>
-                    @foreach($tournament->winners as $winner)
-                        @if($winner->player_id === $player->id)
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Турнир</th>
+                <th class="text-right">Победы</th>
+                <th class="text-right">Проигрыши</th>
+                <th class="text-right">Забито шайб</th>
+                <th class="text-right">Пропущено шайб</th>
+                <th class="text-right">Разница шайб</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($personalStats->items as $stats)
+                <tr>
+                    <td>
+                        @if($stats->place)
                             <span class="fa-stack" style="vertical-align: top;">
                                 <i class="fas fa-circle fa-stack-2x"></i>
-                                <i class="fas fa-trophy fa-stack-1x fa-inverse text-{{ TextUtils::winnerClass($winner->place) }}"></i>
+                                <i class="fas fa-trophy fa-stack-1x fa-inverse text-{{ TextUtils::winnerClass($stats->place) }}"></i>
                             </span>
                         @endif
-                    @endforeach
-                </li>
+                    </td>
+                    <td>
+                        <a href="{{ route('personal.tournament', ['tournamentId' => $stats->id]) }}">{{ $stats->name }}</a>
+                    </td>
+                    <td class="text-right">{{ $stats->wins }}</td>
+                    <td class="text-right">{{ $stats->lose }}</td>
+                    <td class="text-right">{{ $stats->goals_for }}</td>
+                    <td class="text-right">{{ $stats->goals_against }}</td>
+                    <td class="text-right">
+                        {{ ($stats->goals_for - $stats->goals_against) > 0 ? '+' : '' }}{{ $stats->goals_for - $stats->goals_against }}
+                    </td>
+                </tr>
             @endforeach
-        </ul>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th></th>
+                <th>ВСЕГО:</th>
+                <th class="text-right">{{ $personalStats->result->wins }}</th>
+                <th class="text-right">{{ $personalStats->result->lose }}</th>
+                <th class="text-right">{{ $personalStats->result->goals_for }}</th>
+                <th class="text-right">{{ $personalStats->result->goals_against }}</th>
+                <th class="text-right">{{ ($personalStats->result->goals_for - $personalStats->result->goals_against) > 0 ? '+' : '' }}{{ $personalStats->result->goals_for - $personalStats->result->goals_against }}</th>
+            </tr>
+            </tfoot>
+        </table>
     @endif
 
-    @if(count($teamStats->teams))
+    @if(count($teamStats->items))
         <h3>Полевой игрок EASHL</h3>
         <table class="table table-sm table-striped">
             <thead>
@@ -60,7 +92,7 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($teamStats->teams as $team)
+            @foreach($teamStats->items as $team)
                 <tr>
                     <td>
                         @if($team->isActive)<i class="fas fa-users"></i>@endif
@@ -78,7 +110,7 @@
                     <td class="text-right">{{ $team->assists }}</td>
                     <td class="text-right">
                         @if($team->rating_offense)
-                            {{ $team->plus_minus > 0 ? '+' . $team->plus_minus : str_replace('-', '−', $team->plus_minus) }}
+                            {{ $team->plus_minus > 0 ? '+' . $team->plus_minus : $team->plus_minus }}
                         @else
                             —
                         @endif
@@ -123,7 +155,7 @@
                 <th class="text-right">{{ $teamStats->result->assists }}</th>
                 <th class="text-right">
                     @if($teamStats->result->rating_offense)
-                        {{ $teamStats->result->plus_minus > 0 ? '+' . $teamStats->result->plus_minus : str_replace('-', '−', $teamStats->result->plus_minus) }}
+                        {{ $teamStats->result->plus_minus > 0 ? '+' . $teamStats->result->plus_minus : $teamStats->result->plus_minus }}
                     @else
                         —
                     @endif

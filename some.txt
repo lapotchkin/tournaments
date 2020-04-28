@@ -1,0 +1,87 @@
+Тур 1
+MIN [id28659531|J_ack_Danielss] — PHI [id75517561|ganayyy]
+MTL [id194207500|Lazzzarev__88] — DAL [id210389523|forgettwOw]
+TOR [id12755097|Music_man_79] — ARI [id395478074|denissska87]
+CHI [id297168396|Skorobogatko] — VAN [id477810267|mons3223]
+PIT [id178048253|TheNextOne9] — BUF [id87788809|artem2621]
+CGY [id151705403|tipelius] — LAK [id9328907|Andru_me]
+
+Тур 2
+MIN [id28659531|J_ack_Danielss] — CGY [id151705403|tipelius]
+PHI [id75517561|ganayyy] — MTL [id194207500|Lazzzarev__88]
+DAL [id210389523|forgettwOw] — TOR [id12755097|Music_man_79]
+ARI [id395478074|denissska87] — CHI [id297168396|Skorobogatko]
+VAN [id477810267|mons3223] — PIT [id178048253|TheNextOne9]
+BUF [id87788809|artem2621] — LAK [id9328907|Andru_me]
+
+Тур 3
+CGY [id151705403|tipelius] — BUF [id87788809|artem2621]
+MTL [id194207500|Lazzzarev__88] — MIN [id28659531|J_ack_Danielss]
+TOR [id12755097|Music_man_79] — PHI [id75517561|ganayyy]
+CHI [id297168396|Skorobogatko] — DAL [id210389523|forgettwOw]
+PIT [id178048253|TheNextOne9] — ARI [id395478074|denissska87]
+LAK [id9328907|Andru_me] — VAN [id477810267|mons3223]
+
+Тур 4
+MTL [id194207500|Lazzzarev__88] — CGY [id151705403|tipelius]
+MIN [id28659531|J_ack_Danielss] — TOR [id12755097|Music_man_79]
+PHI [id75517561|ganayyy] — CHI [id297168396|Skorobogatko]
+DAL [id210389523|forgettwOw] — PIT [id178048253|TheNextOne9]
+ARI [id395478074|denissska87] — LAK [id9328907|Andru_me]
+VAN [id477810267|mons3223] — BUF [id87788809|artem2621]
+
+Тур 5
+CGY [id151705403|tipelius] — VAN [id477810267|mons3223]
+TOR [id12755097|Music_man_79] — MTL [id194207500|Lazzzarev__88]
+CHI [id297168396|Skorobogatko] — MIN [id28659531|J_ack_Danielss]
+PIT [id178048253|TheNextOne9] — PHI [id75517561|ganayyy]
+LAK [id9328907|Andru_me] — DAL [id210389523|forgettwOw]
+BUF [id87788809|artem2621] — ARI [id395478074|denissska87]
+
+Тур 6
+TOR [id12755097|Music_man_79] — CGY [id151705403|tipelius]
+MTL [id194207500|Lazzzarev__88] — CHI [id297168396|Skorobogatko]
+MIN [id28659531|J_ack_Danielss] — PIT [id178048253|TheNextOne9]
+PHI [id75517561|ganayyy] — LAK [id9328907|Andru_me]
+DAL [id210389523|forgettwOw] — BUF [id87788809|artem2621]
+ARI [id395478074|denissska87] — VAN [id477810267|mons3223]
+
+Тур 7
+CGY [id151705403|tipelius] — ARI [id395478074|denissska87]
+CHI [id297168396|Skorobogatko] — TOR [id12755097|Music_man_79]
+PIT [id178048253|TheNextOne9] — MTL [id194207500|Lazzzarev__88]
+LAK [id9328907|Andru_me] — MIN [id28659531|J_ack_Danielss]
+BUF [id87788809|artem2621] — PHI [id75517561|ganayyy]
+VAN [id477810267|mons3223] — DAL [id210389523|forgettwOw]
+
+Тур 8
+CHI [id297168396|Skorobogatko] — CGY [id151705403|tipelius]
+TOR [id12755097|Music_man_79] — PIT [id178048253|TheNextOne9]
+MTL [id194207500|Lazzzarev__88] — LAK [id9328907|Andru_me]
+MIN [id28659531|J_ack_Danielss] — BUF [id87788809|artem2621]
+PHI [id75517561|ganayyy] — VAN [id477810267|mons3223]
+DAL [id210389523|forgettwOw] — ARI [id395478074|denissska87]
+
+Тур 9
+CGY [id151705403|tipelius] — DAL [id210389523|forgettwOw]
+PIT [id178048253|TheNextOne9] — CHI [id297168396|Skorobogatko]
+LAK [id9328907|Andru_me] — TOR [id12755097|Music_man_79]
+BUF [id87788809|artem2621] — MTL [id194207500|Lazzzarev__88]
+VAN [id477810267|mons3223] — MIN [id28659531|J_ack_Danielss]
+ARI [id395478074|denissska87] — PHI [id75517561|ganayyy]
+
+Тур 10
+PIT [id178048253|TheNextOne9] — CGY [id151705403|tipelius]
+CHI [id297168396|Skorobogatko] — LAK [id9328907|Andru_me]
+TOR [id12755097|Music_man_79] — BUF [id87788809|artem2621]
+MTL [id194207500|Lazzzarev__88] — VAN [id477810267|mons3223]
+MIN [id28659531|J_ack_Danielss] — ARI [id395478074|denissska87]
+PHI [id75517561|ganayyy] — DAL [id210389523|forgettwOw]
+
+Тур 11
+CGY [id151705403|tipelius] — PHI [id75517561|ganayyy]
+LAK [id9328907|Andru_me] — PIT [id178048253|TheNextOne9]
+BUF [id87788809|artem2621] — CHI [id297168396|Skorobogatko]
+VAN [id477810267|mons3223] — TOR [id12755097|Music_man_79]
+ARI [id395478074|denissska87] — MTL [id194207500|Lazzzarev__88]
+DAL [id210389523|forgettwOw] — MIN [id28659531|J_ack_Danielss]
