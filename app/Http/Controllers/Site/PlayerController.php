@@ -6,6 +6,7 @@ use App\Http\Requests\StoreRequest;
 use App\Models\PersonalTournament;
 use App\Models\Platform;
 use App\Models\Player;
+use App\Models\PlayerStats;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,6 +14,7 @@ use Illuminate\View\View;
 
 /**
  * Class PlayerController
+ *
  * @package App\Http\Controllers\Site
  */
 class PlayerController extends Controller
@@ -29,11 +31,7 @@ class PlayerController extends Controller
                 if (!isset($winners[$winner->player->id])) {
                     $winners[$winner->player->id] = (object)[
                         'player' => $winner->player,
-                        'cups'   => [
-                            1 => 0,
-                            2 => 0,
-                            3 => 0,
-                        ],
+                        'cups'   => [1 => 0, 2 => 0, 3 => 0],
                     ];
                 }
                 $winners[$winner->player->id]->cups[$winner->place] += 1;
@@ -59,18 +57,37 @@ class PlayerController extends Controller
     /**
      * @param Request $request
      * @param Player  $player
+     *
      * @return Factory|View
      */
     public function player(Request $request, Player $player)
     {
-        $player->load(['teams', 'tournaments.winners']);
+        $player->load(['tournamentWins']);
+        $teamStats = PlayerStats::readTeamStats($player->id);
+
+        foreach ($teamStats->items as $team) {
+            $team->isActive = in_array($team->id, $player->getTeamIds());
+        }
+
+        $personalStats = PlayerStats::readPersonalStats($player->id);
+        $personalWins = [];
+        foreach ($player->tournamentWins as $win) {
+            $personalWins[$win->tournament_id] = $win->place;
+        }
+        foreach ($personalStats->items as $item) {
+            $item->place = isset($personalWins[$item->id]) ? $personalWins[$item->id] : null;
+        }
+
         return view('site.player.player', [
-            'player' => $player,
+            'player'        => $player,
+            'teamStats'     => $teamStats,
+            'personalStats' => $personalStats,
         ]);
     }
 
     /**
      * @param StoreRequest $request
+     *
      * @return Factory|View
      */
     public function add(StoreRequest $request)
@@ -85,6 +102,7 @@ class PlayerController extends Controller
     /**
      * @param StoreRequest $request
      * @param Player       $player
+     *
      * @return Factory|View
      */
     public function edit(StoreRequest $request, Player $player)

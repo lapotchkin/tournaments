@@ -13,7 +13,6 @@ use App\Models\GroupTournamentPlayoff;
 use App\Models\GroupTournamentTeam;
 use App\Models\GroupTournamentWinner;
 use App\Models\Team;
-use App\Models\TeamPlayer;
 use Auth;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -527,7 +526,6 @@ class GroupController extends Controller
      * @param GroupTournamentPlayoff $groupTournamentPlayoff
      *
      * @return ResponseFactory|Response
-     * @throws ValidationException
      */
     public function updatePair(
         Request $request,
