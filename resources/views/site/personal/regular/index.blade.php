@@ -87,7 +87,7 @@
     </script>
 
     <style>
-        .players.dataTable tbody tr:nth-child({{ pow(2, $tournament->playoff_rounds) / count($divisions) }}) td {
+        .players.dataTable tbody tr:nth-child({{ $tournament->playoff_limit ? $tournament->playoff_limit : pow(2, $tournament->playoff_rounds) / count($divisions) }}) td {
             border-bottom: 3px red solid !important;
         }
 
