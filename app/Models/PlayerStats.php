@@ -14,13 +14,12 @@ class PlayerStats
      *
      * @return object
      */
-    public static function readTeamStats(int $playerId)
+    public static function readGroupPlayerStats(int $playerId)
     {
-        $statsRegular = DB::select(self::getTeamsStatsQuery('groupGameRegular_player'), [$playerId]);
-        $statsPlayoff = DB::select(self::getTeamsStatsQuery('groupGamePlayoff_player'), [$playerId]);
+        $statsRegular = DB::select(self::getGroupPlayerStatsQuery('groupGameRegular_player'), [$playerId]);
+        $statsPlayoff = DB::select(self::getGroupPlayerStatsQuery('groupGamePlayoff_player'), [$playerId]);
 
         $stats = self::combineResults($statsRegular, $statsPlayoff);
-        usort($stats->items, "self::sortTeamStats");
 
         $statsCount = count($stats->items);
         for ($i = 0; $i < $statsCount; $i += 1) {
@@ -43,7 +42,7 @@ class PlayerStats
         $statsRegular = DB::select(self::getPersonalStatsQuery('personalGameRegular'), [$playerId]);
         $statsPlayoff = DB::select(self::getPersonalStatsQuery('personalGamePlayoff'), [$playerId]);
 
-        return self::combineResults($statsRegular, $statsPlayoff);
+        return self::combineResults($statsRegular, $statsPlayoff, false);
     }
 
     /**
@@ -51,14 +50,45 @@ class PlayerStats
      *
      * @return object
      */
-    public static function readGoalieStats(int $playerId) {
-        $statsRegular = DB::select(self::getGoalieStatsQuery('groupGameRegular'), [$playerId]);
-        $statsPlayoff = DB::select(self::getGoalieStatsQuery('groupGamePlayoff'), [$playerId]);
+    public static function readGroupGoalieStats(int $playerId) {
+        $statsRegular = DB::select(self::getGroupGoalieStatsQuery('groupGameRegular'), [$playerId]);
+        $statsPlayoff = DB::select(self::getGroupGoalieStatsQuery('groupGamePlayoff'), [$playerId]);
+
+        return self::combineResults($statsRegular, $statsPlayoff);
+    }
+
+    /**
+     * @param int $teamId
+     *
+     * @return object
+     */
+    public static function readTeamPlayersStats(int $teamId) {
+        $statsRegular = DB::select(self::getTeamPlayersStatsQuery('groupGameRegular_player'), [$teamId]);
+        $statsPlayoff = DB::select(self::getTeamPlayersStatsQuery('groupGamePlayoff_player'), [$teamId]);
 
         $stats = self::combineResults($statsRegular, $statsPlayoff);
-        usort($stats->items, "self::sortTeamStats");
+
+        $statsCount = count($stats->items);
+        for ($i = 0; $i < $statsCount; $i += 1) {
+            self::computeResulted($stats->items[$i]);
+        }
+        if (!is_null($stats->result)) {
+            self::computeResulted($stats->result);
+        }
 
         return $stats;
+    }
+
+    /**
+     * @param int $teamId
+     *
+     * @return object
+     */
+    public static function readTeamGoaliesStats(int $teamId) {
+        $statsRegular = DB::select(self::getTeamGoaliesStatsQuery('groupGameRegular'), [$teamId]);
+        $statsPlayoff = DB::select(self::getTeamGoaliesStatsQuery('groupGamePlayoff'), [$teamId]);
+
+        return self::combineResults($statsRegular, $statsPlayoff);
     }
 
     /**
@@ -72,7 +102,7 @@ class PlayerStats
         $stats = $statsRegular;
         if (!is_null($statsPlayoff)) {
             foreach ($statsPlayoff as $key => $stat) {
-                if (in_array($key, ['id', 'name'])) {
+                if (in_array($key, ['id', 'name', 'tag', 'title'])) {
                     continue;
                 }
                 $stats->{$key} += $stat;
@@ -151,7 +181,7 @@ class PlayerStats
      *
      * @return string
      */
-    protected static function getTeamsStatsQuery(string $table)
+    protected static function getGroupPlayerStatsQuery(string $table)
     {
         return "
             select t.id,
@@ -243,7 +273,7 @@ class PlayerStats
      *
      * @return string
      */
-    protected static function getGoalieStatsQuery(string $table) {
+    protected static function getGroupGoalieStatsQuery(string $table) {
         return "
             select t.id,
                    t.name,
@@ -267,12 +297,94 @@ class PlayerStats
     }
 
     /**
+     * @param string $table
+     *
+     * @return string
+     */
+    protected static function getTeamGoaliesStatsQuery(string $table) {
+        return "
+            select p.id,
+                   p.tag,
+                   p.name,
+                   count(1) games,
+                   sum(if(gGR.home_team_id = t.id and gGR.home_score > gGR.away_score, 1, 0))
+                       + sum(if(gGR.away_team_id = t.id and gGR.away_score > gGR.home_score, 1, 0)) wins,
+                   sum(if(gGR.home_team_id = t.id and gGR.home_score < gGR.away_score, 1, 0))
+                       + sum(if(gGR.away_team_id = t.id and gGR.away_score < gGR.home_score, 1, 0)) lose,
+                   sum(if(gGR.home_team_id = t.id, gGR.away_score, gGR.home_score)) goals_against,
+                   sum(if(gGR.home_team_id = t.id, gGR.away_shot, gGR.home_shot)) shot_against,
+                   sum(if(gGR.home_team_id = t.id and gGR.away_score = 0, 1, 0))
+                       + sum(if(gGR.away_team_id = t.id and gGR.home_score = 0, 1, 0)) shotouts
+            from team t
+                     inner join {$table}_player gGRp on gGRp.team_id = t.id
+                     inner join {$table} gGR on gGRp.game_id = gGR.id and gGR.deletedAt is null
+                     inner join player p on gGRp.player_id = p.id and p.deletedAt is null
+            where t.id = ?
+              and gGRp.isGoalie = 1
+              and t.deletedAt is null
+            group by p.id, p.tag, p.name;
+        ";
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return string
+     */
+    protected static function getTeamPlayersStatsQuery(string $table) {
+        return "
+            select p.id,
+                   p.tag,
+                   p.name,
+                   count(1) games,
+                   sum(gGRp.goals) goals,
+                   sum(gGRp.assists) assists,
+                   sum(gGRp.goals) + sum(gGRp.assists) points,
+                   sum(gGRp.power_play_goals) power_play_goals,
+                   sum(gGRp.shorthanded_goals) shorthanded_goals,
+                   sum(gGRp.game_winning_goals) game_winning_goals,
+                   sum(gGRp.plus_minus) plus_minus,
+                   sum(gGRp.shots) shots,
+                   sum(if(gGRp.shots is not null, 1, 0)) shots_games,
+                   sum(gGRp.blocks) blocks,
+                   sum(if(gGRp.blocks is not null, 1, 0)) blocks_games,
+                   sum(gGRp.takeaways) takeaways,
+                   sum(if(gGRp.takeaways is not null, 1, 0)) takeaways_games,
+                   sum(gGRp.giveaways) giveaways,
+                   sum(if(gGRp.giveaways is not null, 1, 0)) giveaways_games,
+                   sum(gGRp.hits) hits,
+                   sum(if(gGRp.hits is not null, 1, 0)) hits_games,
+                   sum(gGRp.penalty_minutes) penalty_minutes,
+                   sum(if(gGRp.penalty_minutes is not null, 1, 0)) penalty_minutes_games,
+                   sum(gGRp.rating_offense) rating_offense,
+                   sum(if(gGRp.rating_offense is not null, 1, 0)) rating_offense_games,
+                   sum(gGRp.rating_teamplay) rating_teamplay,
+                   sum(if(gGRp.rating_teamplay is not null, 1, 0)) rating_teamplay_games,
+                   sum(gGRp.rating_defense) rating_defense,
+                   sum(if(gGRp.rating_defense is not null, 1, 0)) rating_defense_games,
+                   sum(if(gGRp.star = 1, 1, 0)) first_star,
+                   sum(if(gGRp.star = 2, 1, 0)) second_star,
+                   sum(if(gGRp.star = 3, 1, 0)) third_star,
+                   sum(gGRp.faceoff_win) faceoff_win,
+                   sum(gGRp.faceoff_lose) faceoff_lose
+            from team t
+                     inner join {$table} gGRp on gGRp.team_id = t.id
+            inner join player p on gGRp.player_id = p.id and  p.deletedAt is null
+            where t.id = ?
+              and gGRp.isGoalie <> 1
+            group by p.id, p.tag, p.name
+            order by games desc
+        ";
+    }
+
+    /**
      * @param array $statsRegular
      * @param array $statsPlayoff
+     * @param bool  $sort
      *
      * @return object
      */
-    protected static function combineResults(array $statsRegular, array $statsPlayoff) {
+    protected static function combineResults(array $statsRegular, array $statsPlayoff, bool $sort = true) {
         $stats = [];
         $resultStats = null;
         $statsRegularCount = count($statsRegular);
@@ -301,6 +413,10 @@ class PlayerStats
                 continue;
             }
             $stats[$statsPlayoff[$i]->id] = self::setStats($stats[$statsPlayoff[$i]->id], $statsPlayoff[$i]);
+        }
+
+        if ($sort) {
+            usort($stats, "self::sortTeamStats");
         }
 
         return (object)[

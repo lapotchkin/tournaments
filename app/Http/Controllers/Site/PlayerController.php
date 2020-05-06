@@ -63,13 +63,13 @@ class PlayerController extends Controller
     public function player(Request $request, Player $player)
     {
         $player->load(['tournamentWins']);
-        $teamStats = PlayerStats::readTeamStats($player->id);
+        $teamStats = PlayerStats::readGroupPlayerStats($player->id);
 
         foreach ($teamStats->items as $team) {
             $team->isActive = in_array($team->id, $player->getTeamIds());
         }
 
-        $goalieStats = PlayerStats::readGoalieStats($player->id);
+        $goalieStats = PlayerStats::readGroupGoalieStats($player->id);
         foreach ($goalieStats->items as $team) {
             $team->isActive = in_array($team->id, $player->getTeamIds());
         }

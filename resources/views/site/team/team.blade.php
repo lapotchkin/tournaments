@@ -80,18 +80,136 @@
         @endif
     </div>
 
-    <h3 class="mt-3">Статистика команды</h3>
-    <div class="row mt-3">
-        <div id="gamesResults" class="col-6" style="height: 20rem;"></div>
-        <div id="faceoff" class="col-6" style="height: 20rem;"></div>
-    </div>
-    <div class="row mt-3">
-        <div id="penaltyFor" class="col-6" style="height: 20rem;"></div>
-        <div id="penaltyAgainst" class="col-6" style="height: 20rem;"></div>
-    </div>
-    <div class="row">
-        <div id="scoreDynamics" class="col" style="height: 20rem;"></div>
-    </div>
+    @if(count($players->items))
+        <h3>Полевые игроки</h3>
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Игрок</th>
+                <th class="text-right">ИГР</th>
+                <th class="text-right">ОЧК</th>
+                <th class="text-right">ГОЛ</th>
+                <th class="text-right">ПЕР</th>
+                <th class="text-right">+/-</th>
+                <th class="text-right">БРОС/И</th>
+                <th class="text-right">ОТБ/И</th>
+                <th class="text-right">ПОТ/И</th>
+                <th class="text-right">СИЛ/И</th>
+                <th class="text-right">ВБР</th>
+                <th class="text-right">ШМИН/И</th>
+                <th class="text-right">АТК</th>
+                <th class="text-right">КОМ</th>
+                <th class="text-right">ЗАЩ</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($players->items as $player)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>
+                        <a href="{{ route('player', ['player' => $player->id]) }}">{{ $player->tag }}</a>
+                        <small>{{ $player->name }}</small>
+                    </td>
+                    <td class="text-right">{{ $player->games }}</td>
+                    <td class="text-right">{{ $player->points }}</td>
+                    <td class="text-right">{{ $player->goals }}</td>
+                    <td class="text-right">{{ $player->assists }}</td>
+                    <td class="text-right">
+                        @if($player->rating_offense)
+                            {{ $player->plus_minus > 0 ? '+' . $player->plus_minus : $player->plus_minus }}
+                        @else
+                            —
+                        @endif
+                    </td>
+                    <td class="text-right">
+                        {{ $player->rating_offense ? $player->shots_per_game : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $player->rating_offense ? $player->takeaways_per_game : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $player->rating_offense ? $player->giveaways_per_game : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $player->rating_offense ? $player->hits_per_game : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $player->rating_offense ? $player->faceoff_win_percent . '%' : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $player->rating_offense ? $player->penalty_minutes_per_game : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $player->rating_offense ? $player->rating_offense . '%' : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $player->rating_teamplay ? $player->rating_teamplay . '%' : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $player->rating_defense ? $player->rating_defense . '%' : '—' }}
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @endif
+
+    @if(count($goalies->items))
+        <h3>Вратари</h3>
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Игрок</th>
+                <th class="text-right">ИГР</th>
+                <th class="text-right">ПОБ</th>
+                <th class="text-right">ПОР</th>
+                <th class="text-right">БРОС</th>
+                <th class="text-right">ОТБ</th>
+                <th class="text-right">ГОЛ</th>
+                <th class="text-right">КН</th>
+                <th class="text-right">ГОЛ/И</th>
+                <th class="text-right">СУХ</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($goalies->items as $player)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>
+                        <a href="{{ route('player', ['player' => $player->id]) }}">{{ $player->tag }}</a>
+                        <small>{{ $player->name }}</small>
+                    </td>
+                    <td class="text-right">{{ $player->games }}</td>
+                    <td class="text-right">{{ $player->wins }}</td>
+                    <td class="text-right">{{ $player->lose }}</td>
+                    <td class="text-right">{{ $player->shot_against }}</td>
+                    <td class="text-right">{{ $player->shot_against - $player->goals_against }}</td>
+                    <td class="text-right">{{ $player->goals_against }}</td>
+                    <td class="text-right">{{ round(1 - $player->goals_against / $player->shot_against, 3) }}</td>
+                    <td class="text-right">{{ round($player->goals_against / $player->games, 2) }}</td>
+                    <td class="text-right">{{ $player->shotouts }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @endif
+
+    @if($stats['games'])
+        <h3 class="mt-3">Статистика команды</h3>
+        <div class="row mt-3">
+            <div id="gamesResults" class="col-6" style="height: 20rem;"></div>
+            <div id="faceoff" class="col-6" style="height: 20rem;"></div>
+        </div>
+        <div class="row mt-3">
+            <div id="penaltyFor" class="col-6" style="height: 20rem;"></div>
+            <div id="penaltyAgainst" class="col-6" style="height: 20rem;"></div>
+        </div>
+        <div class="row">
+            <div id="scoreDynamics" class="col" style="height: 20rem;"></div>
+        </div>
+    @endif
 @endsection
 
 @section('script')

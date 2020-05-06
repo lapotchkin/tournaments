@@ -6,6 +6,7 @@ use App\Models\App;
 use App\Models\GroupTournament;
 use App\Models\Platform;
 use App\Models\Player;
+use App\Models\PlayerStats;
 use App\Models\Team;
 use App\Models\TeamPlayer;
 use App\Models\TeamStats;
@@ -85,12 +86,17 @@ class TeamController extends Controller
             $i += 1;
         }
 
+        $players =  PlayerStats::readTeamPlayersStats($team->id);
+        $goalies = PlayerStats::readTeamGoaliesStats($team->id);
+
         return view('site.team.team', [
             'team'           => $team,
             'teamPlayers'    => $teamPlayers,
             'nonTeamPlayers' => $nonTeamPlayers,
             'stats'          => $stats,
             'scoreDynamics'  => $scoreDynamics,
+            'players'        => $players,
+            'goalies'        => $goalies,
         ]);
     }
 
