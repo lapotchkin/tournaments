@@ -47,6 +47,21 @@ class PlayerStats
     }
 
     /**
+     * @param int $playerId
+     *
+     * @return object
+     */
+    public static function readGoalieStats(int $playerId) {
+        $statsRegular = DB::select(self::getGoalieStatsQuery('groupGameRegular'), [$playerId]);
+        $statsPlayoff = DB::select(self::getGoalieStatsQuery('groupGamePlayoff'), [$playerId]);
+
+        $stats = self::combineResults($statsRegular, $statsPlayoff);
+        usort($stats->items, "self::sortTeamStats");
+
+        return $stats;
+    }
+
+    /**
      * @param stdClass $statsRegular
      * @param stdClass $statsPlayoff
      *
@@ -220,6 +235,34 @@ class PlayerStats
                   and pGR.deletedAt is null
             group by pT.title, pTp.tournament_id, p.name, pT.createdAt
             order by pT.createdAt;
+        ";
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return string
+     */
+    protected static function getGoalieStatsQuery(string $table) {
+        return "
+            select t.id,
+                   t.name,
+                   count(1) games,
+                   sum(if(gGR.home_team_id = t.id and gGR.home_score > gGR.away_score, 1, 0))
+                       + sum(if(gGR.away_team_id = t.id and gGR.away_score > gGR.home_score, 1, 0)) wins,
+                   sum(if(gGR.home_team_id = t.id and gGR.home_score < gGR.away_score, 1, 0))
+                       + sum(if(gGR.away_team_id = t.id and gGR.away_score < gGR.home_score, 1, 0)) lose,
+                   sum(if(gGR.home_team_id = t.id, gGR.away_score, gGR.home_score)) goals_against,
+                   sum(if(gGR.home_team_id = t.id, gGR.away_shot, gGR.home_shot)) shot_against,
+                   sum(if(gGR.home_team_id = t.id and gGR.away_score = 0, 1, 0))
+                       + sum(if(gGR.away_team_id = t.id and gGR.home_score = 0, 1, 0)) shotouts
+            from team t
+                     inner join {$table}_player gGRp on gGRp.team_id = t.id
+                     inner join {$table} gGR on gGRp.game_id = gGR.id and gGR.deletedAt is null
+            where gGRp.player_id = ?
+              and t.deletedAt is null
+              and gGRp.isGoalie = 1
+            group by t.id, t.name;
         ";
     }
 
