@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property string|null                                 $league_id        ID лиги
  * @property string                                      $title            Название
  * @property int|null                                    $playoff_rounds   Количество раундов плейоф
+ * @property int|null                                    $playoff_limit    Ручной лимит количества участников плей-офф
  * @property Carbon                                      $createdAt        Дата создания
  * @property Carbon|null                                 $deletedAt        Дата удаления
  * @property int                                         $thirdPlaceSeries Серия за третье место
@@ -48,6 +49,7 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|PersonalTournament whereLeagueId($value)
  * @method static EloquentBuilder|PersonalTournament wherePlatformId($value)
  * @method static EloquentBuilder|PersonalTournament wherePlayoffRounds($value)
+ * @method static EloquentBuilder|PersonalTournament wherePlayoffLimit($value)
  * @method static EloquentBuilder|PersonalTournament whereTitle($value)
  * @method static QueryBuilder|PersonalTournament withTrashed()
  * @method static QueryBuilder|PersonalTournament withoutTrashed()
@@ -77,6 +79,7 @@ class PersonalTournament extends Model
         'league_id',
         'title',
         'playoff_rounds',
+        'playoff_limit',
         'createdAt',
         'deletedAt',
         'thirdPlaceSeries',

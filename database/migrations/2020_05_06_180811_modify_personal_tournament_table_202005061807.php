@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class ModifyGroupTournamentTable202005061746 extends Migration
+class ModifyPersonalTournamentTable202005061807 extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,11 @@ class ModifyGroupTournamentTable202005061746 extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('groupTournament', 'playoff_limit')) {
+        if (Schema::hasColumn('personalTournament', 'playoff_limit')) {
             return;
         }
 
-        Schema::table('groupTournament', function (Blueprint $table) {
+        Schema::table('personalTournament', function (Blueprint $table) {
             $table->tinyInteger('playoff_limit')
                 ->nullable()
                 ->comment('Ручной лимит количества участников плей-офф');
@@ -30,7 +30,7 @@ class ModifyGroupTournamentTable202005061746 extends Migration
      */
     public function down()
     {
-        Schema::table('groupTournament', function (Blueprint $table) {
+        Schema::table('personalTournament', function (Blueprint $table) {
             $table->dropColumn('playoff_limit');
         });
     }

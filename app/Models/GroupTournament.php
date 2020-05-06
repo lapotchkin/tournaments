@@ -21,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property string                                   $app_id           ID игры
  * @property string                                   $title            Название
  * @property int|null                                 $playoff_rounds   Количество раундов плейоф
+ * @property int|null                                 $playoff_limit    Ручной лимит количества участников плей-офф
  * @property int|null                                 $min_players      Минимальное количество игроков в команде
  * @property Carbon                                   $createdAt        Дата создания
  * @property Carbon|null                              $deletedAt        Дата удаления
@@ -47,6 +48,7 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|GroupTournament whereMinPlayers($value)
  * @method static EloquentBuilder|GroupTournament wherePlatformId($value)
  * @method static EloquentBuilder|GroupTournament wherePlayoffRounds($value)
+ * @method static EloquentBuilder|GroupTournament wherePlayoffLimit($value)
  * @method static EloquentBuilder|GroupTournament whereTitle($value)
  * @method static QueryBuilder|GroupTournament withTrashed()
  * @method static QueryBuilder|GroupTournament withoutTrashed()
@@ -75,6 +77,7 @@ class GroupTournament extends Model
         'app_id',
         'title',
         'playoff_rounds',
+        'playoff_limit',
         'min_players',
         'createdAt',
         'deletedAt',
