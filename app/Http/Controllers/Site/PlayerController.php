@@ -69,6 +69,11 @@ class PlayerController extends Controller
             $team->isActive = in_array($team->id, $player->getTeamIds());
         }
 
+        $goalieStats = PlayerStats::readGoalieStats($player->id);
+        foreach ($goalieStats->items as $team) {
+            $team->isActive = in_array($team->id, $player->getTeamIds());
+        }
+
         $personalStats = PlayerStats::readPersonalStats($player->id);
         $personalWins = [];
         foreach ($player->tournamentWins as $win) {
@@ -82,6 +87,7 @@ class PlayerController extends Controller
             'player'        => $player,
             'teamStats'     => $teamStats,
             'personalStats' => $personalStats,
+            'goalieStats'   => $goalieStats,
         ]);
     }
 
