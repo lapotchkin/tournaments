@@ -40,7 +40,12 @@
                                 {{ $tournament->min_players }} на {{ $tournament->min_players }}
                             </span>
                             <br>
-                            Создан: {{ (new \DateTime($tournament->createdAt))->format('d.m.Y') }}
+                            <span class="text-muted">Создан:</span>
+                            {{ (new \DateTime($tournament->createdAt))->format('d.m.Y') }}
+                            @if($tournament->startedAt)
+                                <span class="text-muted ml-3">Начат:</span>
+                                {{ (new \DateTime($tournament->startedAt))->format('d.m.Y') }}
+                            @endif
                         </div>
                     </div>
                 @endforeach

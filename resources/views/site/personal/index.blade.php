@@ -21,9 +21,9 @@
                 @foreach($app->personalTournaments as $tournament)
                     <div class="media pt-2">
                         <i
-                            class="fab fa-2x fa-{{ $tournament->platform->icon }} {{ $tournament->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
+                                class="fab fa-2x fa-{{ $tournament->platform->icon }} {{ $tournament->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
                         <div
-                            class="media-body pb-2 ml-2 mb-0 lh-125 {{ !$loop->last ? 'border-bottom border-gray' : '' }}">
+                                class="media-body pb-2 ml-2 mb-0 lh-125 {{ !$loop->last ? 'border-bottom border-gray' : '' }}">
                             @if(count($tournament->winners))
                                 <div class="float-right">
                                     @foreach($tournament->winners as $winner)
@@ -43,7 +43,12 @@
                                 {{ $tournament->league_id }}
                             </span>
                             <br>
-                            Создан: {{ (new \DateTime($tournament->createdAt))->format('d.m.Y') }}
+                            <span class="text-muted">Создан:</span>
+                            {{ (new \DateTime($tournament->createdAt))->format('d.m.Y') }}
+                            @if($tournament->startedAt)
+                                <span class="text-muted ml-3">Начат:</span>
+                                {{ (new \DateTime($tournament->startedAt))->format('d.m.Y') }}
+                            @endif
                         </div>
                     </div>
                 @endforeach

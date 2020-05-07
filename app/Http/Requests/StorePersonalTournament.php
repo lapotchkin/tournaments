@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class StorePersonalTournament
+ *
  * @package App\Http\Requests
  */
 class StorePersonalTournament extends FormRequest
@@ -37,6 +38,7 @@ class StorePersonalTournament extends FormRequest
             'playoff_rounds'   => 'int|min:1|max:4',
             'thirdPlaceSeries' => 'int|in:0,1',
             'vk_group_id'      => 'int',
+            'startedAt'        => 'date',
         ];
     }
 }
