@@ -31,6 +31,7 @@ use VK\Exceptions\VKClientException;
 
 /**
  * Class PersonalController
+ *
  * @package App\Http\Controllers\Ajax
  */
 class PersonalController extends Controller
@@ -47,6 +48,7 @@ class PersonalController extends Controller
 
     /**
      * @param StorePersonalTournament $request
+     *
      * @return ResponseFactory|Response
      */
     public function create(StorePersonalTournament $request)
@@ -61,6 +63,9 @@ class PersonalController extends Controller
         $tournament->playoff_rounds = $validatedData['playoff_rounds'];
         $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
         $tournament->vk_group_id = $validatedData['vk_group_id'];
+        $tournament->startedAt = isset($validatedData['startedAt'])
+            ? $validatedData['startedAt']
+            : null;
 
         $tournament->save();
 
@@ -70,6 +75,7 @@ class PersonalController extends Controller
     /**
      * @param StorePersonalTournament $request
      * @param int                     $tournamentId
+     *
      * @return ResponseFactory|Response
      */
     public function edit(StorePersonalTournament $request, int $tournamentId)
@@ -85,6 +91,9 @@ class PersonalController extends Controller
         $tournament->playoff_rounds = $validatedData['playoff_rounds'];
         $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
         $tournament->vk_group_id = $validatedData['vk_group_id'];
+        $tournament->startedAt = isset($validatedData['startedAt'])
+            ? $validatedData['startedAt']
+            : null;
 
         $tournament->save();
 
@@ -94,6 +103,7 @@ class PersonalController extends Controller
     /**
      * @param StoreRequest $request
      * @param int          $tournamentId
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -109,6 +119,7 @@ class PersonalController extends Controller
     /**
      * @param StoreRequest $request
      * @param int          $tournamentId
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -142,6 +153,7 @@ class PersonalController extends Controller
     /**
      * @param StoreRequest $request
      * @param int          $tournamentId
+     *
      * @return ResponseFactory|Response
      */
     public function addPlayer(StoreRequest $request, int $tournamentId)
@@ -179,6 +191,7 @@ class PersonalController extends Controller
      * @param StoreRequest $request
      * @param int          $tournamentId
      * @param int          $playerId
+     *
      * @return ResponseFactory|Response
      */
     public function editPlayer(StoreRequest $request, int $tournamentId, int $playerId)
@@ -199,6 +212,7 @@ class PersonalController extends Controller
      * @param StoreRequest $request
      * @param int          $tournamentId
      * @param int          $playerId
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -219,6 +233,7 @@ class PersonalController extends Controller
      * @param StoreRequest $request
      * @param int          $tournamentId
      * @param int          $gameId
+     *
      * @return ResponseFactory|Response
      */
     public function editRegularGame(StoreRequest $request, int $tournamentId, int $gameId)
@@ -249,6 +264,7 @@ class PersonalController extends Controller
     /**
      * @param StoreRequest $request
      * @param int          $tournamentId
+     *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
@@ -294,6 +310,7 @@ class PersonalController extends Controller
      * @param StoreRequest $request
      * @param int          $tournamentId
      * @param int          $pairId
+     *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
@@ -327,6 +344,7 @@ class PersonalController extends Controller
      * @param StoreRequest $request
      * @param int          $tournamentId
      * @param int          $pairId
+     *
      * @return ResponseFactory|Response
      */
     public function createPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId)
@@ -354,6 +372,7 @@ class PersonalController extends Controller
      * @param int          $tournamentId
      * @param int          $pairId
      * @param int          $gameId
+     *
      * @return ResponseFactory|Response
      */
     public function editPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
@@ -385,6 +404,7 @@ class PersonalController extends Controller
      * @param StoreRequest $request
      * @param int          $tournamentId
      * @param int          $gameId
+     *
      * @return ResponseFactory|Response
      * @throws VKApiException
      * @throws VKApiParamAlbumIdException
@@ -416,6 +436,7 @@ class PersonalController extends Controller
      * @param int          $tournamentId
      * @param int          $pairId
      * @param int          $gameId
+     *
      * @return ResponseFactory|Response
      * @throws VKApiException
      * @throws VKApiParamAlbumIdException

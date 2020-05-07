@@ -10,7 +10,14 @@
         </a>
     @endcan
 </h2>
-<p>Создан: {{ (new \DateTime($tournament->createdAt))->format('d.m.Y') }}</p>
+<p>
+    <span class="text-muted">Создан:</span>
+    {{ (new \DateTime($tournament->createdAt))->format('d.m.Y') }}
+    @if($tournament->startedAt)
+        <span class="text-muted ml-3">Начат:</span>
+        {{ (new \DateTime($tournament->startedAt))->format('d.m.Y') }}
+    @endif
+</p>
 @if(count($tournament->winners))
     <h3>Победитель и призёры</h3>
     <div class="row">
