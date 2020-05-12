@@ -130,6 +130,7 @@ class ImageGenerator extends Command
         }
 
         $photos = [];
+        $text = $tournament->title;
         foreach ($chunks as $index => $chunk) {
             $this->line('Chunk ' . ($index + 1));
             sleep(1);
@@ -141,7 +142,7 @@ class ImageGenerator extends Command
                 $game->save();
             }
         }
-        Vk::wallPost(implode(',', $photos), $tournament->vk_group_id, '');
+        Vk::wallPost(implode(',', $photos), $tournament->vk_group_id, $text);
     }
 
     /**
