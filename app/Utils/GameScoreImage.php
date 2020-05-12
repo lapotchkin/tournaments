@@ -11,21 +11,9 @@ use App\Models\Team;
 use DateTime;
 use Exception;
 use Image;
-use SebastianBergmann\CodeCoverage\Report\PHP;
 use TextUtils;
-use VK\Client\VKApiClient;
-use VK\Exceptions\Api\VKApiParamAlbumIdException;
-use VK\Exceptions\Api\VKApiParamHashException;
-use VK\Exceptions\Api\VKApiParamServerException;
-use VK\Exceptions\Api\VKApiWallAddPostException;
-use VK\Exceptions\Api\VKApiWallAdsPostLimitReachedException;
-use VK\Exceptions\Api\VKApiWallAdsPublishedException;
-use VK\Exceptions\Api\VKApiWallLinksForbiddenException;
-use VK\Exceptions\Api\VKApiWallTooManyRecipientsException;
-use VK\Exceptions\VKApiException;
-use VK\Exceptions\VKClientException;
 
-class ScoreImage
+class GameScoreImage
 {
     const FILE_NAME = 'bar.jpg';
     const TEMPLATE = 'score_template.jpg';

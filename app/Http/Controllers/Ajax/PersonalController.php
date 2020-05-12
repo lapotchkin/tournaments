@@ -10,7 +10,7 @@ use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPlayer;
 use App\Models\PersonalTournamentPlayoff;
 use App\Models\PersonalTournamentWinner;
-use App\Utils\ScoreImage;
+use App\Utils\GameScoreImage;
 use App\Utils\Vk;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;

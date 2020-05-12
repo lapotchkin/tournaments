@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TeamPlayer;
-use App\Utils\ScoreImage;
+use App\Utils\GameScoreImage;
 use App\Utils\Vk;
 use Auth;
 use Exception;
@@ -95,7 +95,7 @@ class Controller extends BaseController
             return;
         }
 
-        $scoreImage = new ScoreImage($game);
+        $scoreImage = new GameScoreImage($game);
         $imagePath = $scoreImage->create();
         $photo = Vk::uploadWallPhoto($imagePath, $game->tournament->vk_group_id);
         if (isset($game->homeTeam)) {

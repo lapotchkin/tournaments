@@ -2,12 +2,18 @@
 
 namespace App\Console\Commands;
 
+use App\Models\GroupGamePlayoff;
+use App\Models\GroupGameRegular;
 use App\Models\GroupTournament;
+use App\Models\PersonalGamePlayoff;
+use App\Models\PersonalGameRegular;
 use App\Models\PersonalTournament;
-use App\Utils\ScoreImage;
+use App\Utils\GameScoreImage;
+use App\Utils\GamesScoreImage;
 use App\Utils\Vk;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use VK\Exceptions\Api\VKApiParamAlbumIdException;
 use VK\Exceptions\Api\VKApiParamHashException;
 use VK\Exceptions\Api\VKApiParamServerException;
@@ -21,6 +27,7 @@ use VK\Exceptions\VKClientException;
 
 /**
  * Class ImageGenerator
+ *
  * @package App\Console\Commands
  */
 class ImageGenerator extends Command
@@ -52,6 +59,7 @@ class ImageGenerator extends Command
 
     /**
      * Execute the console command.
+     *
      * @throws Exception
      */
     public function handle()
@@ -70,6 +78,7 @@ class ImageGenerator extends Command
 
     /**
      * @param GroupTournament|PersonalTournament $tournament
+     *
      * @throws Exception
      */
     private function _processTournament($tournament)
@@ -85,15 +94,60 @@ class ImageGenerator extends Command
             return;
         }
 
+        $this->warn('Regular');
         $regularGames = $tournament->getNotSharedRegularGames();
-        $this->_shareGames($regularGames, $tournament);
+//        $this->_shareGamesOnSeparateImages($regularGames, $tournament);
+        $this->_shareGamesOnSingleImage($regularGames, $tournament);
+
+        $this->warn('Playoff');
         $playoffGames = $tournament->getNotSharedPlayoffGames();
-        $this->_shareGames($playoffGames, $tournament);
+//        $this->_shareGamesOnSeparateImages($playoffGames, $tournament);
+        $this->_shareGamesOnSingleImage($playoffGames, $tournament, true);
+    }
+
+    /**
+     * @param GroupGameRegular[]|GroupGamePlayoff[]|PersonalGameRegular[]|PersonalGamePlayoff[]|Collection $games
+     * @param GroupTournament|PersonalTournament                                                           $tournament
+     * @param bool                                                                                         $isPlayoff
+     *
+     * @throws VKApiException
+     * @throws VKApiParamAlbumIdException
+     * @throws VKApiParamHashException
+     * @throws VKApiParamServerException
+     * @throws VKApiWallAddPostException
+     * @throws VKApiWallAdsPostLimitReachedException
+     * @throws VKApiWallAdsPublishedException
+     * @throws VKApiWallLinksForbiddenException
+     * @throws VKApiWallTooManyRecipientsException
+     * @throws VKClientException
+     */
+    private function _shareGamesOnSingleImage($games, $tournament, bool $isPlayoff = false)
+    {
+        $chunks = $games->chunk(self::PHOTOS_PER_POST);
+        if (empty($chunks->toArray())) {
+            $this->line('No games to post');
+            return;
+        }
+
+        $photos = [];
+        foreach ($chunks as $index => $chunk) {
+            $this->line('Chunk ' . ($index + 1));
+            sleep(1);
+            $scoreImage = new GamesScoreImage($chunk, $tournament, $isPlayoff);
+            $imagePath = $scoreImage->create();
+            $photos[] = Vk::uploadWallPhoto($imagePath, $tournament->vk_group_id);
+            foreach ($chunk as $game) {
+                $game->sharedAt = date('Y-m-d H:i:s');
+                $game->save();
+            }
+        }
+        Vk::wallPost(implode(',', $photos), $tournament->vk_group_id, '');
     }
 
     /**
      * @param $games
      * @param $tournament
+     *
      * @throws VKApiParamAlbumIdException
      * @throws VKApiParamHashException
      * @throws VKApiParamServerException
@@ -106,17 +160,9 @@ class ImageGenerator extends Command
      * @throws VKClientException
      * @throws Exception
      */
-    private function _shareGames($games, $tournament)
+    private function _shareGamesOnSeparateImages($games, $tournament)
     {
-        $pucks = [];
-        $i = -1;
-        foreach ($games as $index => $game) {
-            if ($index % self::PHOTOS_PER_POST === 0) {
-                $i += 1;
-            }
-            $pucks[$i][] = $game;
-        }
-
+        $pucks = array_chunk($games, self::PHOTOS_PER_POST);
         if (empty($pucks)) {
             $this->line('No games to post');
             return;
@@ -129,7 +175,7 @@ class ImageGenerator extends Command
             foreach ($puck as $game) {
                 sleep(1);
                 $this->line($game->id);
-                $scoreImage = new ScoreImage($game);
+                $scoreImage = new GameScoreImage($game);
                 $imagePath = $scoreImage->create();
                 $photos[] = Vk::uploadWallPhoto($imagePath, $tournament->vk_group_id);
                 if (isset($game->homeTeam)) {
