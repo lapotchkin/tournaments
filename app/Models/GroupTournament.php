@@ -124,6 +124,7 @@ class GroupTournament extends Model
             ->whereNotNull('away_score')
             ->whereNull('sharedAt')
             ->whereNotNull('playedAt')
+            ->orderBy('round')
             ->get();
     }
 
@@ -144,6 +145,7 @@ class GroupTournament extends Model
             ->whereNotNull('home_score')
             ->whereNotNull('away_score')
             ->whereNotNull('playedAt')
+            ->orderBy('round')
             ->get();
     }
 

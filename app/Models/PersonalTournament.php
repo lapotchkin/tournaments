@@ -131,6 +131,7 @@ class PersonalTournament extends Model
             ->whereNotNull('away_score')
             ->whereNull('sharedAt')
             ->whereNotNull('playedAt')
+            ->orderBy('round')
             ->get();
     }
 
@@ -151,6 +152,7 @@ class PersonalTournament extends Model
             ->whereNotNull('home_score')
             ->whereNotNull('away_score')
             ->whereNotNull('playedAt')
+            ->orderBy('round')
             ->get();
     }
 
