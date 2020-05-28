@@ -32,8 +32,14 @@ class GroupTournamentLeaders
             from
                 (
                     select p.id,
+                           p.tag,
+                           p.name,
                            concat('<a href=\"/player/', p.id, '\">', p.tag, '</a> <small>', p.name, '</small>') player,
                            count(gGRp.id) games,
+                           sum(if(gGRp.position_id = 1, 1, 0)) defender_count,
+                           sum(if(gGRp.position_id = 3, 1, 0)) left_count,
+                           sum(if(gGRp.position_id = 4, 1, 0)) center_count,
+                           sum(if(gGRp.position_id = 5, 1, 0)) right_count,
                            sum(gGRp.goals) goals,
                            sum(gGRp.assists) assists,
                            sum(gGRp.assists + gGRp.goals) points,

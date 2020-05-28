@@ -9,6 +9,7 @@ use App\Models\GroupTournamentGoalies;
 use App\Models\GroupTournamentLeaders;
 use App\Models\GroupTournamentPosition;
 use App\Models\PlayerPosition;
+use TextUtils;
 use Auth;
 use DateInterval;
 use DateTime;
@@ -355,6 +356,25 @@ class GroupRegularController extends Controller
             'goals'   => ['goals', 'points', 'games'],
             'assists' => ['assists', 'points', 'games'],
         ];
+
+        foreach ($currentLeaders as &$player) {
+            $player->position = '';
+
+            if ($player->center_count > 0) {
+                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 4, 'short_title' => 'Ц']);
+            }
+            if ($player->left_count > 0) {
+                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 3, 'short_title' => 'ЛН']);
+            }
+            if ($player->right_count > 0) {
+                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 5, 'short_title' => 'ПН']);
+            }
+            if ($player->defender_count > 0) {
+                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 1, 'short_title' => 'З']);
+            }
+            $player->position = trim($player->position);
+        }
+        unset($player);
 
         $leaders = (object)[];
         foreach ($order as $key => $sort) {
