@@ -361,16 +361,16 @@ class GroupRegularController extends Controller
             $player->position = '';
 
             if ($player->center_count > 0) {
-                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 4, 'short_title' => 'Ц']);
+                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 4, 'short_title' => 'ЦЕН']);
             }
             if ($player->left_count > 0) {
-                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 3, 'short_title' => 'ЛН']);
+                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 3, 'short_title' => 'ЛЕВ']);
             }
             if ($player->right_count > 0) {
-                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 5, 'short_title' => 'ПН']);
+                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 5, 'short_title' => 'ПРАВ']);
             }
             if ($player->defender_count > 0) {
-                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 1, 'short_title' => 'З']);
+                $player->position .= ' ' . TextUtils::positionBadge((object)['id' => 1, 'short_title' => 'ЗАЩ']);
             }
             $player->position = trim($player->position);
         }
