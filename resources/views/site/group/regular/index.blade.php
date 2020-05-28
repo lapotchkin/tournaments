@@ -358,7 +358,8 @@
         .teams.dataTable tbody td:nth-child(3),
         .leaders.dataTable tbody td:nth-child(2),
         .leaders.dataTable tbody td:nth-child(3),
-        .leaders.dataTable tbody td:nth-child(4) {
+        .leaders.dataTable tbody td:nth-child(4),
+        .leaders.dataTable tbody td:nth-child(5) {
             text-align: left !important;
         }
 
@@ -368,7 +369,8 @@
         }
 
         #players.dataTable tbody td:nth-child(1),
-        #players.dataTable tbody td:nth-child(2) {
+        #players.dataTable tbody td:nth-child(2),
+        #players.dataTable tbody td:nth-child(3) {
             text-align: left !important;
         }
     </style>
