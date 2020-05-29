@@ -52,9 +52,9 @@ $line-height-base: 1.5;
     color: $light;
 }
 
-#topPoints.dataTable tbody td:nth-child(8),
-#topGoals.dataTable tbody td:nth-child(6),
-#topAssists.dataTable tbody td:nth-child(7),
+#topPoints.dataTable tbody td:nth-child(9),
+#topGoals.dataTable tbody td:nth-child(7),
+#topAssists.dataTable tbody td:nth-child(8),
 #goalies.dataTable tbody td:nth-child(11) {
     background-color: $green !important;
     /*color: white !important;*/
