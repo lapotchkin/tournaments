@@ -94,6 +94,7 @@
                     {data: 'place', 'title': ''},
                     {data: 'prevPlace', 'title': ''},
                     {data: 'player', title: 'Игрок'},
+                    {data: 'position', title: ''},
                     {data: 'team', title: 'Команда'},
                     {data: 'games', title: 'Игры'},
                     {data: 'goals', title: 'Голы'},
@@ -110,6 +111,7 @@
                     {data: 'place', 'title': ''},
                     {data: 'prevPlace', 'title': ''},
                     {data: 'player', title: 'Игрок'},
+                    {data: 'position', title: ''},
                     {data: 'team', title: 'Команда'},
                     {data: 'games', title: 'Игры'},
                     {data: 'goals', title: 'Голы'},
@@ -126,6 +128,7 @@
                     {data: 'place', 'title': ''},
                     {data: 'prevPlace', 'title': ''},
                     {data: 'player', title: 'Игрок'},
+                    {data: 'position', title: ''},
                     {data: 'team', title: 'Команда'},
                     {data: 'games', title: 'Игры'},
                     {data: 'goals', title: 'Голы'},
@@ -140,6 +143,7 @@
                 data: {!! json_encode($leaders->assists) !!},
                 columns: [
                     {data: 'player', title: 'Игрок'},
+                    {data: 'position', title: ''},
                     {data: 'team', title: 'Команда'},
                     {data: 'games', title: 'И'},
                     {data: 'points', title: 'О'},
@@ -216,7 +220,8 @@
         .teams.dataTable tbody td:nth-child(3),
         .leaders.dataTable tbody td:nth-child(2),
         .leaders.dataTable tbody td:nth-child(3),
-        .leaders.dataTable tbody td:nth-child(4) {
+        .leaders.dataTable tbody td:nth-child(4),
+        .leaders.dataTable tbody td:nth-child(5) {
             text-align: left !important;
         }
 
@@ -226,7 +231,8 @@
         }
 
         #players.dataTable tbody td:nth-child(1),
-        #players.dataTable tbody td:nth-child(2) {
+        #players.dataTable tbody td:nth-child(2),
+        #players.dataTable tbody td:nth-child(3) {
             text-align: left !important;
         }
     </style>

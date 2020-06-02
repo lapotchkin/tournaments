@@ -288,6 +288,29 @@ class GroupPlayoffController extends Controller
             'assists' => ['assists', 'points', 'games'],
         ];
 
+        foreach ($currentLeaders as &$player) {
+            $player->position = '';
+
+            if ($player->center_count > 0) {
+                $player->position .= ' '
+                    . TextUtils::positionBadge((object)['id' => 4, 'short_title' => 'ЦЕН: ' . $player->center_count]);
+            }
+            if ($player->left_count > 0) {
+                $player->position .= ' '
+                    . TextUtils::positionBadge((object)['id' => 3, 'short_title' => 'ЛЕВ: ' . $player->left_count]);
+            }
+            if ($player->right_count > 0) {
+                $player->position .= ' '
+                    . TextUtils::positionBadge((object)['id' => 5, 'short_title' => 'ПРАВ: ' . $player->right_count]);
+            }
+            if ($player->defender_count > 0) {
+                $player->position .= ' '
+                    . TextUtils::positionBadge((object)['id' => 1, 'short_title' => 'ЗАЩ: ' . $player->defender_count]);
+            }
+            $player->position = trim($player->position);
+        }
+        unset($player);
+
         $leaders = (object)[];
         foreach ($order as $key => $sort) {
             //так сделано, потому что иначе позиция ставится по последней сорнтировке
