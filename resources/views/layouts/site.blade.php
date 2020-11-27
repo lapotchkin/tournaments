@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@yield('title')Киберспортивная лига</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" href="/images/favicon/favicon-32x32.png"/>
+    <link rel="apple-touch-icon" href="/images/favicon/apple-touch-icon.png" />
     @section('script')
         <script src="{!! mix('/js/bootstrap.js') !!}"></script>
         <script src="{!! mix('/js/app.js') !!}"></script>
