@@ -67,6 +67,10 @@ class EaImporter extends Command
                 $games = json_decode(EaRest::readGames($platform, $tournament->app_id, $team['clubId']), true);
                 foreach ($games as $game) {
                     $gameClubIds = array_keys($game['clubs']);
+                    if (count($gameClubIds) < 2) {
+                        $this->warn("    Match ID: {$game['matchId']}. Less than 2 teams in the match");
+                        continue;
+                    }
 
                     if (!in_array($gameClubIds[0], $clubIds) || !in_array($gameClubIds[1], $clubIds)) {
                         $this->warn("    Match ID: {$game['matchId']}. One of the teams is not presented in the tournament");
