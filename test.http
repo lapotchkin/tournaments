@@ -1,0 +1,1 @@
+GET https://proclubs.ea.com/api/nhl/clubs/matches?matchType=club_private&match_type=club_private&maxResultCount=5&matches_returned=5&platform=xbox&clubIds=498617

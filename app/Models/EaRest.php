@@ -69,13 +69,16 @@ class EaRest
      */
     public static function readGames(string $platform, string $app, int $clubId)
     {
-        $httpClient = new Client(['base_uri' => self::BASE_URL[$app]]);
+        $baseUrl = isset(self::BASE_URL[$app]) ? self::BASE_URL[$app] : self::BASE_URL['eanhl20'];
+        $apiPath = isset(self::API_PATH[$app]) ? self::API_PATH[$app] : self::API_PATH['eanhl20'];
+
+        $httpClient = new Client(['base_uri' => $baseUrl]);
         $response = $httpClient->request(
             'GET',
             str_replace(
                 ['{platformId}', '{clubId}'],
                 [$platform, $clubId],
-                self::API_PATH[$app] . self::MATCHES_PATH
+                $apiPath . self::MATCHES_PATH
             ),
             [
                 'headers' => [
