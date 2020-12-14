@@ -64,34 +64,50 @@ class EaImporter extends Command
 
             foreach ($teams as $teamId => $team) {
                 $this->line("  Team ID: {$teamId} {$team['name']} ({$team['clubId']})");
-                $games = json_decode(EaRest::readGames($platform, $tournament->app_id, $team['clubId']), true);
-                foreach ($games as $game) {
-                    $gameClubIds = array_keys($game['clubs']);
-                    if (count($gameClubIds) < 2) {
-                        $this->warn("    Match ID: {$game['matchId']}. Less than 2 teams in the match");
-                        continue;
-                    }
 
-                    if (!in_array($gameClubIds[0], $clubIds) || !in_array($gameClubIds[1], $clubIds)) {
-                        $this->warn("    Match ID: {$game['matchId']}. One of the teams is not presented in the tournament");
-                        continue;
-                    }
+                $this->line("  PRIVATE");
+                $privateGames = json_decode(
+                    EaRest::readGames($platform, $tournament->app_id, $team['clubId']),
+                    true
+                );
+                $this->saveGames($privateGames, $clubIds);
 
-                    /**
-                     * @var EaGame $eaGame
-                     */
-                    $eaGame = EaGame::where('matchId', '=', $game['matchId'])->first();
-
-                    if (!is_null($eaGame)) {
-                        $this->warn("    Match ID: {$game['matchId']}. Game already exists");
-                        continue;
-                    }
-
-                    $this->line("    Match ID: {$game['matchId']}. Creating the game");
-                    $eaGame = new EaGame($game);
-                    $eaGame->save();
-                }
+                $this->line("  REGULAR");
+                $regularGames = json_decode(
+                    EaRest::readGames($platform, $tournament->app_id, $team['clubId'], false),
+                    true
+                );
+                $this->saveGames($regularGames, $clubIds);
             }
+        }
+    }
+
+    protected function saveGames(array $games, array $clubIds) {
+        foreach ($games as $game) {
+            $gameClubIds = array_keys($game['clubs']);
+            if (count($gameClubIds) < 2) {
+                $this->warn("    Match ID: {$game['matchId']}. Less than 2 teams in the match");
+                continue;
+            }
+
+            if (!in_array($gameClubIds[0], $clubIds) || !in_array($gameClubIds[1], $clubIds)) {
+                $this->warn("    Match ID: {$game['matchId']}. One of the teams is not presented in the tournament");
+                continue;
+            }
+
+            /**
+             * @var EaGame $eaGame
+             */
+            $eaGame = EaGame::where('matchId', '=', $game['matchId'])->first();
+
+            if (!is_null($eaGame)) {
+                $this->warn("    Match ID: {$game['matchId']}. Game already exists");
+                continue;
+            }
+
+            $this->line("    Match ID: {$game['matchId']}. Creating the game");
+            $eaGame = new EaGame($game);
+            $eaGame->save();
         }
     }
 }

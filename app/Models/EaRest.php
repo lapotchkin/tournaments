@@ -5,7 +5,6 @@ namespace App\Models;
 use DateTime;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 
 class EaRest
 {
@@ -59,15 +58,19 @@ class EaRest
             'away' => [],
         ],
     ];
+    const PRIVATE_MATCH = 'club_private';
+    const REGULAR_MATCH = 'gameType5';
 
     /**
      * @param string $platform
      * @param string $app
      * @param int    $clubId
+     * @param bool   $isPrivate
+     *
      * @return string
-     * @throws GuzzleException
      */
-    public static function readGames(string $platform, string $app, int $clubId)
+    public static function readGames(string $platform, string $app, int $clubId, bool $isPrivate = true)
+    : string
     {
         $baseUrl = isset(self::BASE_URL[$app]) ? self::BASE_URL[$app] : self::BASE_URL['eanhl20'];
         $apiPath = isset(self::API_PATH[$app]) ? self::API_PATH[$app] : self::API_PATH['eanhl20'];
@@ -94,8 +97,8 @@ class EaRest
                     'Connection'      => 'keep-alive',
                 ],
                 'query'   => [
-                    'matchType'        => 'club_private',
-                    'match_type'       => 'club_private',
+                    'matchType'        => $isPrivate ? self::PRIVATE_MATCH : self::REGULAR_MATCH,
+                    'match_type'       => $isPrivate ? self::PRIVATE_MATCH : self::REGULAR_MATCH,
                     'maxResultCount'   => self::MATCHES_PER_REQUEST,
                     'matches_returned' => self::MATCHES_PER_REQUEST,
                     'platform'         => $platform,
@@ -112,10 +115,12 @@ class EaRest
      * @param GroupTournament $tournament
      * @param Team            $homeTeam
      * @param Team            $awayTeam
+     *
      * @return array
      * @throws Exception
      */
     public static function parseMatches($response, GroupTournament $tournament, Team $homeTeam, Team $awayTeam)
+    : array
     {
         $matches = [];
         $homeClubId = (int)$homeTeam->getClubId($tournament->app_id);
@@ -214,10 +219,12 @@ class EaRest
      * @param Team  $team
      * @param bool  $isWin
      * @param array $positions
+     *
      * @return array
      * @throws Exception
      */
     protected static function getPlayer(array $playerData, Team $team, bool $isWin, array $positions)
+    : array
     {
         //echo $playerData['playername'] . PHP_EOL;
         $player = Player::where('tag', '=', $playerData['playername'])
@@ -278,6 +285,7 @@ class EaRest
      * @return array
      */
     protected static function getPlayerPositions()
+    : array
     {
         $playerPositions = PlayerPosition::all();
         $result = [
