@@ -94,9 +94,11 @@
                 <th class="text-right">+/-</th>
                 <th class="text-right">БРОС/И</th>
                 <th class="text-right">ОТБ/И</th>
+                <th class="text-right">ПЕР/И</th>
                 <th class="text-right">ПОТ/И</th>
                 <th class="text-right">СИЛ/И</th>
                 <th class="text-right">ВБР</th>
+                <th class="text-right">ПАС</th>
                 <th class="text-right">ШМИН/И</th>
                 <th class="text-right">АТК</th>
                 <th class="text-right">КОМ</th>
@@ -129,6 +131,9 @@
                         {{ $player->rating_offense ? $player->takeaways_per_game : '—' }}
                     </td>
                     <td class="text-right">
+                        {{ $player->interceptions_per_game ? $player->interceptions_per_game : '—' }}
+                    </td>
+                    <td class="text-right">
                         {{ $player->rating_offense ? $player->giveaways_per_game : '—' }}
                     </td>
                     <td class="text-right">
@@ -136,6 +141,9 @@
                     </td>
                     <td class="text-right">
                         {{ $player->rating_offense ? $player->faceoff_win_percent . '%' : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $player->interceptions_per_game ? $player->pass_percent . '%' : '—' }}
                     </td>
                     <td class="text-right">
                         {{ $player->rating_offense ? $player->penalty_minutes_per_game : '—' }}

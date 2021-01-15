@@ -50,7 +50,8 @@ class PlayerStats
      *
      * @return object
      */
-    public static function readGroupGoalieStats(int $playerId) {
+    public static function readGroupGoalieStats(int $playerId)
+    {
         $statsRegular = DB::select(self::getGroupGoalieStatsQuery('groupGameRegular'), [$playerId]);
         $statsPlayoff = DB::select(self::getGroupGoalieStatsQuery('groupGamePlayoff'), [$playerId]);
 
@@ -62,7 +63,8 @@ class PlayerStats
      *
      * @return object
      */
-    public static function readTeamPlayersStats(int $teamId) {
+    public static function readTeamPlayersStats(int $teamId)
+    {
         $statsRegular = DB::select(self::getTeamPlayersStatsQuery('groupGameRegular_player'), [$teamId]);
         $statsPlayoff = DB::select(self::getTeamPlayersStatsQuery('groupGamePlayoff_player'), [$teamId]);
 
@@ -84,7 +86,8 @@ class PlayerStats
      *
      * @return object
      */
-    public static function readTeamGoaliesStats(int $teamId) {
+    public static function readTeamGoaliesStats(int $teamId)
+    {
         $statsRegular = DB::select(self::getTeamGoaliesStatsQuery('groupGameRegular'), [$teamId]);
         $statsPlayoff = DB::select(self::getTeamGoaliesStatsQuery('groupGamePlayoff'), [$teamId]);
 
@@ -128,6 +131,9 @@ class PlayerStats
         $stats->takeaways_per_game = $stats->takeaways_games
             ? round($stats->takeaways / $stats->takeaways_games, 2)
             : 0;
+        $stats->interceptions_per_game = $stats->interceptions_games
+            ? round($stats->interceptions / $stats->interceptions_games, 2)
+            : 0;
         $stats->giveaways_per_game = $stats->giveaways_games
             ? round($stats->giveaways / $stats->giveaways_games, 2)
             : 0;
@@ -150,6 +156,9 @@ class PlayerStats
             ? (int)round($stats->faceoff_win / ($stats->faceoff_win + $stats->faceoff_lose) * 100, 0)
             : 0;
         $stats->faceoff_lose_percent = 100 - $stats->faceoff_win_percent;
+        $stats->pass_percent = $stats->pass_attempts
+            ? (int)round($stats->passes / $stats->pass_attempts * 100, 0)
+            : 0;
 
 //        unset($stats->shots_games);
 //        unset($stats->blocks_games);
@@ -201,6 +210,8 @@ class PlayerStats
                    sum(gGRp.takeaways) takeaways,
                    sum(if(gGRp.takeaways is not null, 1, 0)) takeaways_games,
                    sum(gGRp.giveaways) giveaways,
+                   sum(gGRp.interceptions) interceptions,
+                   sum(if(gGRp.createdAt > '2021-01-09 00:00:00', 1, 0)) interceptions_games,
                    sum(if(gGRp.giveaways is not null, 1, 0)) giveaways_games,
                    sum(gGRp.hits) hits,
                    sum(if(gGRp.hits is not null, 1, 0)) hits_games,
@@ -216,7 +227,10 @@ class PlayerStats
                    sum(if(gGRp.star = 2, 1, 0)) second_star,
                    sum(if(gGRp.star = 3, 1, 0)) third_star,
                    sum(gGRp.faceoff_win) faceoff_win,
-                   sum(gGRp.faceoff_lose) faceoff_lose
+                   sum(gGRp.faceoff_lose) faceoff_lose,
+                   sum(gGRp.passes) passes,
+                   sum(gGRp.pass_attempts) pass_attempts,
+                   sum(if(gGRp.createdAt > '2021-01-09 00:00:00' is not null, 1, 0)) passes_games
             from team t
                      inner join {$table} gGRp on gGRp.team_id = t.id
             where gGRp.player_id = ?
@@ -273,7 +287,8 @@ class PlayerStats
      *
      * @return string
      */
-    protected static function getGroupGoalieStatsQuery(string $table) {
+    protected static function getGroupGoalieStatsQuery(string $table)
+    {
         return "
             select t.id,
                    t.name,
@@ -301,7 +316,8 @@ class PlayerStats
      *
      * @return string
      */
-    protected static function getTeamGoaliesStatsQuery(string $table) {
+    protected static function getTeamGoaliesStatsQuery(string $table)
+    {
         return "
             select p.id,
                    p.tag,
@@ -331,7 +347,9 @@ class PlayerStats
      *
      * @return string
      */
-    protected static function getTeamPlayersStatsQuery(string $table) {
+    protected static function getTeamPlayersStatsQuery(string $table)
+    : string
+    {
         return "
             select p.id,
                    p.tag,
@@ -352,6 +370,8 @@ class PlayerStats
                    sum(if(gGRp.takeaways is not null, 1, 0)) takeaways_games,
                    sum(gGRp.giveaways) giveaways,
                    sum(if(gGRp.giveaways is not null, 1, 0)) giveaways_games,
+                   sum(gGRp.interceptions) interceptions,
+                   sum(if(gGRp.createdAt > '2021-01-09 00:00:00', 1, 0)) interceptions_games,
                    sum(gGRp.hits) hits,
                    sum(if(gGRp.hits is not null, 1, 0)) hits_games,
                    sum(gGRp.penalty_minutes) penalty_minutes,
@@ -366,7 +386,10 @@ class PlayerStats
                    sum(if(gGRp.star = 2, 1, 0)) second_star,
                    sum(if(gGRp.star = 3, 1, 0)) third_star,
                    sum(gGRp.faceoff_win) faceoff_win,
-                   sum(gGRp.faceoff_lose) faceoff_lose
+                   sum(gGRp.faceoff_lose) faceoff_lose,
+                   sum(gGRp.passes) passes,
+                   sum(gGRp.pass_attempts) pass_attempts,
+                   sum(if(gGRp.createdAt > '2021-01-09 00:00:00' is not null, 1, 0)) passes_games
             from team t
                      inner join {$table} gGRp on gGRp.team_id = t.id
             inner join player p on gGRp.player_id = p.id and  p.deletedAt is null
@@ -384,7 +407,8 @@ class PlayerStats
      *
      * @return object
      */
-    protected static function combineResults(array $statsRegular, array $statsPlayoff, bool $sort = true) {
+    protected static function combineResults(array $statsRegular, array $statsPlayoff, bool $sort = true)
+    {
         $stats = [];
         $resultStats = null;
         $statsRegularCount = count($statsRegular);

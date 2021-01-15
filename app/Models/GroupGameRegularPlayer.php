@@ -32,7 +32,7 @@ use stdClass;
  * @property int|null              $faceoff_lose        Проиграно вбрасываний
  * @property int|null              $blocks              Заблокировал бросков
  * @property int|null              $giveaways           Потери шайбы
- * @property int|null              $takeaways           Перехваты шайбы
+ * @property int|null              $takeaways           Отборы шайбы
  * @property int|null              $hits                Силовые приёмы
  * @property int|null              $penalty_minutes     Штрафные минуты
  * @property float|null            $rating_defense      Рейтинг защиты
@@ -46,6 +46,15 @@ use stdClass;
  * @property int|null              $penalty_saves       Отбито буллитов
  * @property int|null              $goals_against       Пропущено голов
  * @property int|null              $pokechecks          Покчек (тычки клюшкой)
+ * @property int|null              $shot_attempts       Попытки бросков
+ * @property int|null              $deflections         Отклонения
+ * @property int|null              $interceptions       Перехваты шайбы
+ * @property int|null              $pass_attempts       Попытки паса
+ * @property int|null              $passes              Удачные пасы
+ * @property int|null              $saucer_passes       Пасы подкидкой
+ * @property int|null              $clear_zone          Выбросы шайбы из зоны
+ * @property int|null              $possession          Владение шайбой в секундах
+ * @property int|null              $penalties_drawn     Количество штрафов
  * @property int|null              $isWin               Победа
  * @property int|null              $assists             Пасы
  * @property int                   $isGoalie            Вратарь
@@ -152,6 +161,15 @@ class GroupGameRegularPlayer extends Model
         'isWin',
         'assists',
         'isGoalie',
+        'shot_attempts',
+        'deflections',
+        'interceptions',
+        'pass_attempts',
+        'passes',
+        'saucer_passes',
+        'clear_zone',
+        'possession',
+        'penalties_drawn',
     ];
 
     /**

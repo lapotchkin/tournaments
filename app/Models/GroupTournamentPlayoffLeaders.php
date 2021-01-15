@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Class GroupTournamentPlayoffLeaders
+ *
  * @package App\Models
  */
 class GroupTournamentPlayoffLeaders
@@ -13,6 +14,7 @@ class GroupTournamentPlayoffLeaders
     /**
      * @param int         $tournamentId
      * @param string|null $date
+     *
      * @return array
      */
     public static function readLeaders(int $tournamentId, string $date = null)
@@ -60,13 +62,16 @@ class GroupTournamentPlayoffLeaders
                            round(sum(gGPp.takeaways) / count(gGPp.id), 2) takeaways_per_game,
                            sum(gGPp.giveaways) giveaways,
                            round(sum(gGPp.giveaways) / count(gGPp.id), 2) giveaways_per_game,
+                           sum(gGPp.interceptions) interceptions,
+                           round(sum(gGPp.interceptions) / count(gGPp.id), 2) interceptions_per_game,
                            sum(gGPp.hits) hits,
                            round(sum(gGPp.hits) / count(gGPp.id), 2) hits_per_game,
                            sum(gGPp.penalty_minutes) penalty_minutes,
                            round(sum(gGPp.penalty_minutes) / count(gGPp.id), 2) penalty_minutes_per_game,
                            round(avg(gGPp.rating_offense)) rating_offense,
                            round(avg(gGPp.rating_defense)) rating_defense,
-                           round(avg(gGPp.rating_teamplay)) rating_teamplay
+                           round(avg(gGPp.rating_teamplay)) rating_teamplay,
+                           round(if(sum(gGPp.pass_attempts) > 0, sum(gGPp.passes) / sum(gGPp.pass_attempts) * 100, 0)) pass_percent
                     from
                         groupTournament gT
                             inner join groupTournamentPlayoff gTP on gT.id = gTP.tournament_id

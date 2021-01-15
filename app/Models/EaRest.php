@@ -162,6 +162,7 @@ class EaRest
                     $matches[$matchId]['game']['home_penalty_success'] = (int)$club['ppg'];
                     $date->setTimestamp((int)$club['toa']);
                     $matches[$matchId]['game']['home_attack_time'] = $date->format('i:s');
+                    $matches[$matchId]['game']['home_pass_percent'] = 0;
                     $matches[$matchId]['game']['home_shot'] = (int)$match['aggregate'][$clubId]['skshots'];
                     $matches[$matchId]['game']['home_hit'] = (int)$match['aggregate'][$clubId]['skhits'];
                     $matches[$matchId]['game']['home_faceoff'] = (int)$match['aggregate'][$clubId]['skfow'];
@@ -177,6 +178,7 @@ class EaRest
                     $matches[$matchId]['game']['away_penalty_success'] = (int)$club['ppg'];
                     $date->setTimestamp((int)$club['toa']);
                     $matches[$matchId]['game']['away_attack_time'] = $date->format('i:s');
+                    $matches[$matchId]['game']['away_pass_percent'] = 0;
                     $matches[$matchId]['game']['away_shot'] = (int)$match['aggregate'][$clubId]['skshots'];
                     $matches[$matchId]['game']['away_hit'] = (int)$match['aggregate'][$clubId]['skhits'];
                     $matches[$matchId]['game']['away_faceoff'] = (int)$match['aggregate'][$clubId]['skfow'];
@@ -186,6 +188,10 @@ class EaRest
                 }
             }
 
+            $homePassAttempts = 0;
+            $awayPassAttempts = 0;
+            $homePasses = 0;
+            $awayPasses = 0;
             foreach ($match['players'] as $clubId => $players) {
                 foreach ($players as $player) {
                     if ((int)$clubId === $matches[$matchId]['game']['home_club_id']) {
@@ -197,6 +203,8 @@ class EaRest
                         );
                         $matches[$matchId]['players']['home'][] = $playerData;
                         $matches[$matchId]['game']['home_score'] += $playerData['goals'];
+                        $homePassAttempts += $playerData['pass_attempts'];
+                        $homePasses += $playerData['passes'];
                     } else {
                         $playerData = self::getPlayer(
                             $player,
@@ -206,9 +214,23 @@ class EaRest
                         );
                         $matches[$matchId]['players']['away'][] = $playerData;
                         $matches[$matchId]['game']['away_score'] += $playerData['goals'];
+                        $awayPassAttempts += $playerData['pass_attempts'];
+                        $awayPasses += $playerData['passes'];
                     }
                 }
             }
+            $matches[$matchId]['game']['home_pass_percent'] = $homePassAttempts ?
+                round(
+                    $homePasses / $homePassAttempts * 100,
+                    1
+                )
+                : 0;
+            $matches[$matchId]['game']['away_pass_percent'] = $awayPassAttempts ?
+                round(
+                    $awayPasses / $awayPassAttempts * 100,
+                    1
+                )
+                : 0;
         }
 
         return $matches;
@@ -255,14 +277,25 @@ class EaRest
             'game_winning_goals'  => (int)$playerData['skgwg'],
             'assists'             => (int)$playerData['skassists'],
             'shots'               => (int)$playerData['skshots'],
+            'shot_attempts'       => (int)$playerData['skshotattempts'],
             'plus_minus'          => (int)$playerData['skplusmin'],
             'faceoff_win'         => (int)$playerData['skfow'],
             'faceoff_lose'        => (int)$playerData['skfol'],
             'blocks'              => (int)$playerData['skbs'],
             'giveaways'           => (int)$playerData['skgiveaways'],
             'takeaways'           => (int)$playerData['sktakeaways'],
+            'deflections'         => (int)$playerData['skdeflections'],
+            'interceptions'       => (int)$playerData['skinterceptions'],
+            'pass_attempts'       => (int)$playerData['skpassattempts'],
+            'passes'              => (int)$playerData['skpasses'],
+            'saucer_passes'       => (int)$playerData['sksaucerpasses'],
+            'clear_zone'          => (int)$playerData['skpkclearzone']
+                ? (int)$playerData['skpkclearzone']
+                : (int)$playerData['glpkclearzone'],
             'hits'                => (int)$playerData['skhits'],
+            'possession'          => (int)$playerData['skpossession'],
             'penalty_minutes'     => (int)$playerData['skpim'],
+            'penalties_drawn'     => (int)$playerData['skpenaltiesdrawn'],
             'rating_defense'      => (float)$playerData['ratingDefense'],
             'rating_offense'      => (float)$playerData['ratingOffense'],
             'rating_teamplay'     => (float)$playerData['ratingTeamplay'],
