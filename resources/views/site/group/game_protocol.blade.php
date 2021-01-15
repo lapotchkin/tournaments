@@ -210,9 +210,11 @@
                 <th class="text-center">БР%</th>
                 <th class="text-center">СИЛ</th>
                 <th class="text-center">ВБ%</th>
+                <th class="text-center">ПАС%</th>
                 <th class="text-center">ШМ</th>
                 <th class="text-center">БЛК</th>
                 <th class="text-center">ОТБ</th>
+                <th class="text-center">ПЕР</th>
                 <th class="text-center">ПОТ</th>
             </tr>
             </thead>
@@ -245,9 +247,13 @@
                         <td class="text-center">
                             {{ $protocol->faceoff_lose ? round($protocol->faceoff_win / ($protocol->faceoff_win + $protocol->faceoff_lose) * 100, 1) . '%' : '—' }}
                         </td>
+                        <td class="text-center">
+                            {{ $protocol->pass_attempts ? round($protocol->passes / $protocol->pass_attempts * 100, 1) . '%' : '—' }}
+                        </td>
                         <td class="text-center">{{ $protocol->penalty_minutes }}</td>
                         <td class="text-center">{{ $protocol->blocks }}</td>
                         <td class="text-center">{{ $protocol->takeaways }}</td>
+                        <td class="text-center">{{ $protocol->interceptions }}</td>
                         <td class="text-center">{{ $protocol->giveaways }}</td>
                     </tr>
                 @endIf
@@ -311,9 +317,11 @@
                 <th class="text-center">БР%</th>
                 <th class="text-center">СИЛ</th>
                 <th class="text-center">ВБ%</th>
+                <th class="text-center">ПАС%</th>
                 <th class="text-center">ШМ</th>
                 <th class="text-center">БЛК</th>
                 <th class="text-center">ОТБ</th>
+                <th class="text-center">ПЕР</th>
                 <th class="text-center">ПОТ</th>
             </tr>
             </thead>
@@ -346,9 +354,13 @@
                         <td class="text-center">
                             {{ $protocol->faceoff_lose ? round($protocol->faceoff_win / ($protocol->faceoff_win + $protocol->faceoff_lose) * 100, 1) . '%' : '—' }}
                         </td>
+                        <td class="text-center">
+                            {{ $protocol->pass_attempts ? round($protocol->passes / $protocol->pass_attempts * 100, 1) . '%' : '—' }}
+                        </td>
                         <td class="text-center">{{ $protocol->penalty_minutes }}</td>
                         <td class="text-center">{{ $protocol->blocks }}</td>
                         <td class="text-center">{{ $protocol->takeaways }}</td>
+                        <td class="text-center">{{ $protocol->interceptions }}</td>
                         <td class="text-center">{{ $protocol->giveaways }}</td>
                     </tr>
                 @endif
