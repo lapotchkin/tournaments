@@ -23,47 +23,38 @@ class ModifyGroupGameRegularPlayerTable202101151755 extends Migration
             $table->tinyInteger('shot_attempts')
                 ->nullable()
                 ->after('pokechecks')
-                ->default(0)
                 ->comment('Попытки бросков');
             $table->tinyInteger('deflections')
                 ->nullable()
                 ->after('shot_attempts')
-                ->default(0)
                 ->comment('Отклонения');
             $table->tinyInteger('interceptions')
                 ->nullable()
                 ->after('deflections')
-                ->default(0)
                 ->comment('Перехваты шайбы');
             $table->tinyInteger('pass_attempts')
                 ->nullable()
                 ->after('interceptions')
-                ->default(0)
                 ->comment('Попытки паса');
             $table->tinyInteger('passes')
                 ->nullable()
                 ->after('pass_attempts')
-                ->default(0)
                 ->comment('Удачные пасы');
             $table->tinyInteger('saucer_passes')
                 ->nullable()
                 ->after('passes')
-                ->default(0)
                 ->comment('Пасы подкидкой');
             $table->tinyInteger('clear_zone')
                 ->nullable()
                 ->after('saucer_passes')
-                ->default(0)
                 ->comment('Выбросы шайбы из зоны');
             $table->tinyInteger('possession')
                 ->nullable()
                 ->after('clear_zone')
-                ->default(0)
                 ->comment('Владение шайбой в секундах');
             $table->tinyInteger('penalties_drawn')
                 ->nullable()
                 ->after('possession')
-                ->default(0)
                 ->comment('Количество штрафов');
         });
     }

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Class GroupTournamentLeaders
+ *
  * @package App\Models
  */
 class GroupTournamentLeaders
@@ -13,6 +14,7 @@ class GroupTournamentLeaders
     /**
      * @param int         $tournamentId
      * @param string|null $date
+     *
      * @return array
      */
     public static function readLeaders(int $tournamentId, string $date = null)
@@ -58,12 +60,15 @@ class GroupTournamentLeaders
                            sum(gGRp.giveaways) giveaways,
                            round(sum(gGRp.giveaways) / count(gGRp.id), 2) giveaways_per_game,
                            sum(gGRp.hits) hits,
+                           sum(gGRp.interceptions) interceptions,
+                           round(sum(gGRp.interceptions) / count(gGRp.id), 2) interceptions_per_game,
                            round(sum(gGRp.hits) / count(gGRp.id), 2) hits_per_game,
                            sum(gGRp.penalty_minutes) penalty_minutes,
                            round(sum(gGRp.penalty_minutes) / count(gGRp.id), 2) penalty_minutes_per_game,
                            round(avg(gGRp.rating_offense)) rating_offense,
                            round(avg(gGRp.rating_defense)) rating_defense,
-                           round(avg(gGRp.rating_teamplay)) rating_teamplay
+                           round(avg(gGRp.rating_teamplay)) rating_teamplay,
+                           round(if(sum(gGRp.pass_attempts) > 0, sum(gGRp.passes) / sum(gGRp.pass_attempts) * 100, 0)) pass_percent
                     from
                         groupTournament gT
                             inner join groupGameRegular gGR on gT.id = gGR.tournament_id and gGR.deletedAt is null

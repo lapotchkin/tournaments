@@ -82,9 +82,11 @@
                 <th class="text-right">+/-</th>
                 <th class="text-right">БРОС/И</th>
                 <th class="text-right">ОТБ/И</th>
+                <th class="text-right">ПЕР/И</th>
                 <th class="text-right">ПОТ/И</th>
                 <th class="text-right">СИЛ/И</th>
                 <th class="text-right">ВБР</th>
+                <th class="text-right">ПАС</th>
                 <th class="text-right">ШМИН/И</th>
                 <th class="text-right">АТК</th>
                 <th class="text-right">КОМ</th>
@@ -122,6 +124,9 @@
                         {{ $team->rating_offense ? $team->takeaways_per_game : '—' }}
                     </td>
                     <td class="text-right">
+                        {{ $team->interceptions_per_game ? $team->interceptions_per_game : '—' }}
+                    </td>
+                    <td class="text-right">
                         {{ $team->rating_offense ? $team->giveaways_per_game : '—' }}
                     </td>
                     <td class="text-right">
@@ -129,6 +134,9 @@
                     </td>
                     <td class="text-right">
                         {{ $team->rating_offense ? $team->faceoff_win_percent . '%' : '—' }}
+                    </td>
+                    <td class="text-right">
+                        {{ $team->interceptions_per_game ? $team->pass_percent . '%' : '—' }}
                     </td>
                     <td class="text-right">
                         {{ $team->rating_offense ? $team->penalty_minutes_per_game : '—' }}
@@ -167,6 +175,9 @@
                     {{ $teamStats->result->rating_offense ? $teamStats->result->takeaways_per_game : '—' }}
                 </th>
                 <th class="text-right">
+                    {{ $teamStats->result->interceptions_per_game ? $teamStats->result->interceptions_per_game : '—' }}
+                </th>
+                <th class="text-right">
                     {{ $teamStats->result->rating_offense ? $teamStats->result->giveaways_per_game : '—' }}
                 </th>
                 <th class="text-right">
@@ -174,6 +185,9 @@
                 </th>
                 <th class="text-right">
                     {{ $teamStats->result->rating_offense ? $teamStats->result->faceoff_win_percent . '%' : '—' }}
+                </th>
+                <th class="text-right">
+                    {{ $teamStats->result->interceptions_per_game ? $teamStats->result->pass_percent . '%' : '—' }}
                 </th>
                 <th class="text-right">
                     {{ $teamStats->result->rating_offense ? $teamStats->result->penalty_minutes_per_game : '—' }}
