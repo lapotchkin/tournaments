@@ -10,30 +10,30 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "axios": "^0.19.2",
-        "bootstrap": "^4.4.1",
+        "axios": "^0.21.1",
+        "bootstrap": "^4.5.3",
         "cross-env": "^5.2.1",
         "jquery": "^3.5.1",
-        "kind-of": ">=6.0.3",
-        "laravel-mix": "^4.1.4",
-        "lodash": "^4.17.15",
-        "minimist": ">=1.2.3",
+        "kind-of": "^6.0.3",
+        "laravel-mix": "^5.0.9",
+        "lodash": "^4.17.20",
+        "minimist": "^1.2.5",
         "popper.js": "^1.16.1",
         "resolve-url-loader": "^2.3.2",
-        "sass": "^1.26.3",
-        "sass-loader": "^7.3.1",
-        "serialize-javascript": ">=2.1.1",
-        "vue-template-compiler": "^2.6.11"
+        "sass": "^1.32.4",
+        "sass-loader": "^8.0.2",
+        "serialize-javascript": "^5.0.1",
+        "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
-        "@amcharts/amcharts4": "^4.9.13",
-        "@fortawesome/fontawesome-free": "^5.13.0",
+        "@amcharts/amcharts4": "^4.10.13",
+        "@fortawesome/fontawesome-free": "^5.15.2",
         "bootstrap-datepicker": "^1.9.0",
         "canvas": "^2.6.1",
         "chosen-js": "^1.8.7",
-        "datatables.net": "^1.10.20",
-        "datatables.net-bs4": "^1.10.20",
-        "leaflet": "^1.6.0",
+        "datatables.net": "^1.10.23",
+        "datatables.net-bs4": "^1.10.23",
+        "leaflet": "^1.7.1",
         "leaflet.markercluster": "^1.4.1"
     }
 }
