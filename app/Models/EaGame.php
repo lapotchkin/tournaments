@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+use Eloquent;
+use Jenssegers\Mongodb\Eloquent\Model as EloquentMongo;
 
 /**
  * Class EaGame
+ *
  * @property string $matchId
- * @property int $timestamp
+ * @property int    $timestamp
+ * @mixin Eloquent
  * @package App\Models
  */
-class EaGame extends Eloquent
+class EaGame extends EloquentMongo
 {
     protected $connection = 'mongodb';
     protected $collection = 'games';

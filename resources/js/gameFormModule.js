@@ -562,14 +562,23 @@ window.TRNMNT_gameFormModule = (function () {
     }
 
     function _concatGameProtocol(game) {
+        let index = 2;
+        const forAvg = {};
         for (let field in game.game) {
-            if (_.isInteger(game.game[field])) {
+            if (field.indexOf('percent') !== -1 && game.game[field] > 0) {
+                forAvg[field] = forAvg.hasOwnProperty(field)
+                    ? forAvg[field] + game.game[field]
+                    : _gameToSave.game[field] + game.game[field];
+            } else if (_.isInteger(game.game[field])) {
                 _gameToSave.game[field] += game.game[field];
             } else if (field.indexOf('time') !== -1 && field.indexOf('_powerplay_time') === -1) {
                 const seconds = TRNMNT_helpers.convertTimeStringToSeconds(_gameToSave.game[field]);
                 const additionalSeconds = TRNMNT_helpers.convertTimeStringToSeconds(game.game[field]);
                 _gameToSave.game[field] = TRNMNT_helpers.convertSecondsToTimeString(seconds + additionalSeconds);
             }
+        }
+        for (let field in forAvg) {
+            _gameToSave.game[field] = _.round(forAvg[field] / index, 1);
         }
         _concatPlayers(game.players);
         _fillGameProtocol(_gameToSave);

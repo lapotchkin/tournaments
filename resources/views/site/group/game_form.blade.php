@@ -129,12 +129,14 @@
             <div class="col-1 col-md-2 col-xl-3"></div>
             <div class="col">
                 <input type="text" id="home_pass_percent" class="form-control text-right" name="home_pass_percent"
-                       value="{{ $game && !is_null($game->home_pass_percent) ? str_replace('.', ',', $game->home_pass_percent): '' }}">
+                       value="{{ $game && !is_null($game->home_pass_percent) ? str_replace('.', ',', $game->home_pass_percent): '' }}"
+                        {{ $game && $game->match_id ? 'readonly' : '' }}>
             </div>
             <div class="col-3 text-center"><strong>Пас</strong></div>
             <div class="col">
                 <input type="text" id="away_pass_percent" class="form-control text-right" name="away_pass_percent"
-                       value="{{ $game && !is_null($game->away_pass_percent) ? str_replace('.', ',', $game->away_pass_percent): '' }}">
+                       value="{{ $game && !is_null($game->away_pass_percent) ? str_replace('.', ',', $game->away_pass_percent): '' }}"
+                        {{ $game && $game->match_id ? 'readonly' : '' }}>
             </div>
             <div class="col-1 col-md-2 col-xl-3"></div>
         </div>
@@ -205,25 +207,25 @@
                 </div>
                 <div class="col-1 col-md-2 col-xl-3"></div>
             </div>
-                <div class="row mt-1">
-                    <div class="col-1 col-md-2 col-xl-3"></div>
-                    <div class="col">
+            <div class="row mt-1">
+                <div class="col-1 col-md-2 col-xl-3"></div>
+                <div class="col">
                     <input type="time" id="home_shorthanded_goal" class="form-control text-right"
                            name="home_shorthanded_goal" {{ $game && $game->match_id ? 'readonly' : '' }}
                            value="{{ $game ? $game->home_shorthanded_goal : '' }}">
-                    </div>
-                    <div class="col-3 text-center"><strong>Голы в меньшинстве</strong></div>
-                    <div class="col">
+                </div>
+                <div class="col-3 text-center"><strong>Голы в меньшинстве</strong></div>
+                <div class="col">
                     <input type="time" id="away_shorthanded_goal" class="form-control text-right"
                            name="away_shorthanded_goal" {{ $game && $game->match_id ? 'readonly' : '' }}
                            value="{{ $game ? $game->away_shorthanded_goal : '' }}">
-                    </div>
-                    <div class="col-1 col-md-2 col-xl-3"></div>
                 </div>
-            @endif
-            <div class="text-center mt-2">
-                <input type="submit" class="btn btn-primary" value="Сохранить">
+                <div class="col-1 col-md-2 col-xl-3"></div>
             </div>
+        @endif
+        <div class="text-center mt-2">
+            <input type="submit" class="btn btn-primary" value="Сохранить">
+        </div>
     </form>
 
     <h3 class="mt-3">Статистика игроков</h3>

@@ -8,19 +8,20 @@ use App\Models\EaRest;
 use App\Models\GroupGameRegular;
 use App\Models\GroupTournamentPlayoff;
 use Exception;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 /**
  * Class EaController
+ *
  * @package App\Http\Controllers\Ajax
  */
 class EaController extends Controller
 {
     /**
      * @param Request $request
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */

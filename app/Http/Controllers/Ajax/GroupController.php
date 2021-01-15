@@ -38,7 +38,7 @@ use VK\Exceptions\VKClientException;
  */
 class GroupController extends Controller
 {
-    const GAME_RULES = [
+    public const GAME_RULES = [
         'game'                          => 'required|array',
         'game.home_score'               => 'required|int',
         'game.away_score'               => 'required|int',
@@ -105,7 +105,7 @@ class GroupController extends Controller
         'players.*.isGoalie'            => 'int|min:0|max:1',
     ];
 
-    const GAME_EMPTY = [
+    public const GAME_EMPTY = [
         'home_score'            => null,
         'away_score'            => null,
         'home_shot'             => null,
@@ -245,7 +245,7 @@ class GroupController extends Controller
             ->first();
 
         if (is_null($tournamentTeam)) {
-            $tournamentTeam = new GroupTournamentTeam;
+            $tournamentTeam = new GroupTournamentTeam();
             $tournamentTeam->tournament_id = $groupTournament->id;
             $tournamentTeam->team_id = $validatedData['team_id'];
             $tournamentTeam->division = $validatedData['division'];
@@ -314,6 +314,7 @@ class GroupController extends Controller
      * @param GroupGameRegular $groupGameRegular
      *
      * @return ResponseFactory|Response
+     * @throws ValidationException
      */
     public function editRegularGame(
         Request $request,
@@ -421,7 +422,7 @@ class GroupController extends Controller
         }
 
         $input = json_decode($request->getContent(), true);
-        $protocol = new GroupGameRegularPlayer;
+        $protocol = new GroupGameRegularPlayer();
         $protocol->fill($input);
         $protocol->save();
 
@@ -512,7 +513,7 @@ class GroupController extends Controller
             ->first();
 
         if (is_null($groupTournamentPlayoff)) {
-            $groupTournamentPlayoff = new GroupTournamentPlayoff;
+            $groupTournamentPlayoff = new GroupTournamentPlayoff();
         }
         $groupTournamentPlayoff->fill($validatedData);
         $groupTournamentPlayoff->save();
@@ -577,7 +578,7 @@ class GroupController extends Controller
         $validator = Validator::make($input, self::GAME_RULES);
         $validatedData = $validator->validate();
 
-        $groupGamePlayoff = new GroupGamePlayoff;
+        $groupGamePlayoff = new GroupGamePlayoff();
         $attributes = $groupGamePlayoff->getFillable();
         foreach ($validatedData['game'] as $field => $value) {
             if (!in_array($field, $attributes)) {
@@ -741,7 +742,7 @@ class GroupController extends Controller
         }
 
         $input = json_decode($request->getContent(), true);
-        $groupGamePlayoff_player = new GroupGamePlayoffPlayer;
+        $groupGamePlayoff_player = new GroupGamePlayoffPlayer();
         $groupGamePlayoff_player->fill($input);
         $groupGamePlayoff_player->save();
 
