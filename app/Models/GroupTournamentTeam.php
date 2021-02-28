@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Awobaz\Compoships\Compoships;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
@@ -38,6 +39,7 @@ use Illuminate\Support\Carbon;
 class GroupTournamentTeam extends Model
 {
     use SoftDeletes;
+    use Compoships;
 
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = null;

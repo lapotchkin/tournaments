@@ -11,6 +11,7 @@
         "php": "^7.2",
         "ext-json": "*",
         "arrilot/laravel-widgets": "^3.13",
+        "awobaz/compoships": "^2.0",
         "davejamesmiller/laravel-breadcrumbs": "5.x",
         "fideloper/proxy": "^4.0",
         "intervention/image": "^2.5",

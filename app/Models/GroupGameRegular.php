@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Auth;
+use Awobaz\Compoships\Compoships;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
@@ -110,6 +111,7 @@ use Illuminate\Support\Carbon;
 class GroupGameRegular extends Model
 {
     use SoftDeletes;
+    use Compoships;
 
     public const CREATED_AT = 'createdAt';
     public const UPDATED_AT = 'updatedAt';
@@ -190,7 +192,11 @@ class GroupGameRegular extends Model
      */
     public function homeTeam()
     {
-        return $this->belongsTo('App\Models\GroupTournamentTeam', 'home_team_id', 'team_id');
+        return $this->belongsTo(
+            'App\Models\GroupTournamentTeam',
+            ['home_team_id', 'tournament_id'],
+            ['team_id', 'tournament_id']
+        );
     }
 
     /**
@@ -198,7 +204,11 @@ class GroupGameRegular extends Model
      */
     public function awayTeam()
     {
-        return $this->belongsTo('App\Models\GroupTournamentTeam', 'away_team_id', 'team_id');
+        return $this->belongsTo(
+            'App\Models\GroupTournamentTeam',
+            ['away_team_id', 'tournament_id'],
+            ['team_id', 'tournament_id']
+        );
     }
 
     /**
