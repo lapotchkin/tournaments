@@ -24,7 +24,7 @@ Breadcrumbs::for('group.new', function ($trail) {
 Breadcrumbs::for('group.tournament', function ($trail, $tournament) {
     $trail->parent('group');
     $trail->push(
-        '<i class="fab fa-' . $tournament->platform->icon . '"></i> ' . $tournament->title,
+        '<span><i class="fab fa-' . $tournament->platform->icon . '"></i> ' . $tournament->title . '</span>',
         route('group.tournament', ['groupTournament' => $tournament->id])
     );
 });
@@ -155,7 +155,7 @@ Breadcrumbs::for('personal.new', function ($trail) {
 Breadcrumbs::for('personal.tournament', function ($trail, PersonalTournament $tournament) {
     $trail->parent('personal');
     $trail->push(
-        '<i class="fab fa-' . $tournament->platform->icon . '"></i> ' . $tournament->title,
+        '<span><i class="fab fa-' . $tournament->platform->icon . '"></i> ' . $tournament->title . '</span>',
         route('personal.tournament', ['tournamentId' => $tournament->id])
     );
 });
