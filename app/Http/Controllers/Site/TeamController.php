@@ -67,10 +67,15 @@ class TeamController extends Controller
     public function team(Request $request, Team $team)
     {
         //$team = Team::with(['teamPlayers', 'tournaments'])->find($teamId);
-        $playerIds = $team->teamPlayers->map(function (TeamPlayer $teamPlayer, $key) {
+        $teamPlayers = $team->teamPlayers->filter(function (TeamPlayer $teamPlayer) {
+            return !is_null($teamPlayer->player);
+        });
+
+        $playerIds = $teamPlayers->map(function (TeamPlayer $teamPlayer, $key) {
             return $teamPlayer->player_id;
         });
-        $teamPlayers = $team->teamPlayers->sortBy(function (TeamPlayer $teamPlayer, $key) {
+
+        $teamPlayers = $teamPlayers->sortBy(function (TeamPlayer $teamPlayer, $key) {
             return mb_strtolower($teamPlayer->player->tag);
         });
         $nonTeamPlayers = Player::whereNotIn('id', $playerIds)
@@ -86,7 +91,7 @@ class TeamController extends Controller
             $i += 1;
         }
 
-        $players =  PlayerStats::readTeamPlayersStats($team->id);
+        $players = PlayerStats::readTeamPlayersStats($team->id);
         $goalies = PlayerStats::readTeamGoaliesStats($team->id);
 
         return view('site.team.team', [
