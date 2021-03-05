@@ -183,12 +183,12 @@ class PersonalRegularController extends Controller
     private static function _getPrevPlace($prevPlace)
     {
         if ($prevPlace !== '—' && $prevPlace > 0) {
-            return "<span class='text-success'>{$prevPlace}<i class='fas fa-long-arrow-alt-up'></i></span>";
+            return "<span class='text-success text-nowrap'>{$prevPlace}<i class='fas fa-long-arrow-alt-up'></i></span>";
         } elseif ($prevPlace === 0) {
             return '<i class="fas fa-arrows-alt-h"></i>';
         } elseif ($prevPlace < 0) {
             $prevPlace = str_replace('-', '', $prevPlace);
-            return "<span class='text-danger'>{$prevPlace}<i class='fas fa-long-arrow-alt-down'></i></span>";
+            return "<span class='text-danger text-nowrap'>{$prevPlace}<i class='fas fa-long-arrow-alt-down'></i></span>";
         }
         return '<span class="text-primary"><i class="fas fa-arrow-right"></i></span>';
     }
