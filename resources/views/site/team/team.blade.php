@@ -176,7 +176,7 @@
                 <th class="text-right">БРОС</th>
                 <th class="text-right">ОТБ</th>
                 <th class="text-right">ГОЛ</th>
-                <th class="text-right">КН</th>
+                <th class="text-right">%ОТБ</th>
                 <th class="text-right">ГОЛ/И</th>
                 <th class="text-right">СУХ</th>
             </tr>

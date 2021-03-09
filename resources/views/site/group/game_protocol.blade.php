@@ -269,7 +269,7 @@
                     <th class="text-center">БР</th>
                     <th class="text-center">ОТБ</th>
                     <th class="text-center">ГОЛ</th>
-                    <th class="text-center">КН</th>
+                    <th class="text-center">%ОТБ</th>
                     <th class="text-center">1на1БР</th>
                     <th class="text-center">1на1ОТБ</th>
                     <th class="text-center">БУЛ</th>
@@ -376,7 +376,7 @@
                     <th class="text-center">БР</th>
                     <th class="text-center">ОТБ</th>
                     <th class="text-center">ГОЛ</th>
-                    <th class="text-center">КН</th>
+                    <th class="text-center">%ОТБ</th>
                     <th class="text-center">1на1БР</th>
                     <th class="text-center">1на1ОТБ</th>
                     <th class="text-center">БУЛ</th>
