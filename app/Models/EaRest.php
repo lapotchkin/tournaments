@@ -157,13 +157,14 @@ class EaRest
                     $matches[$matchId]['game']['home_team'] = (int)$clubId === $homeClubId
                         ? $homeTeam->name : $awayTeam->name;
                     $matches[$matchId]['game']['home_club_id'] = (int)$clubId;
-                    $matches[$matchId]['game']['home_score'] = 0;
+                    $matches[$matchId]['game']['home_score'] = (int)$match['aggregate'][$clubId]['skgoals'];
                     $matches[$matchId]['game']['home_penalty_total'] = (int)$club['ppo'];
                     $matches[$matchId]['game']['home_penalty_success'] = (int)$club['ppg'];
                     $date->setTimestamp((int)$club['toa']);
                     $matches[$matchId]['game']['home_attack_time'] = $date->format('i:s');
                     $matches[$matchId]['game']['home_pass_percent'] = 0;
-                    $matches[$matchId]['game']['home_shot'] = (int)$match['aggregate'][$clubId]['skshots'];
+                    //Так надо, потому что нужно по вратарям считать броски
+                    $matches[$matchId]['game']['away_shot'] = (int)$match['aggregate'][$clubId]['glshots'];
                     $matches[$matchId]['game']['home_hit'] = (int)$match['aggregate'][$clubId]['skhits'];
                     $matches[$matchId]['game']['home_faceoff'] = (int)$match['aggregate'][$clubId]['skfow'];
                     $matches[$matchId]['game']['home_shorthanded_goal'] = (int)$match['aggregate'][$clubId]['skshg'];
@@ -173,13 +174,14 @@ class EaRest
                     $matches[$matchId]['game']['away_team'] = (int)$clubId === $homeClubId
                         ? $homeTeam->name : $awayTeam->name;
                     $matches[$matchId]['game']['away_club_id'] = (int)$clubId;
-                    $matches[$matchId]['game']['away_score'] = 0;
+                    $matches[$matchId]['game']['away_score'] = (int)$match['aggregate'][$clubId]['skgoals'];
                     $matches[$matchId]['game']['away_penalty_total'] = (int)$club['ppo'];
                     $matches[$matchId]['game']['away_penalty_success'] = (int)$club['ppg'];
                     $date->setTimestamp((int)$club['toa']);
                     $matches[$matchId]['game']['away_attack_time'] = $date->format('i:s');
                     $matches[$matchId]['game']['away_pass_percent'] = 0;
-                    $matches[$matchId]['game']['away_shot'] = (int)$match['aggregate'][$clubId]['skshots'];
+                    //Так надо, потому что нужно по вратарям считать броски
+                    $matches[$matchId]['game']['home_shot'] = (int)$match['aggregate'][$clubId]['glshots'];
                     $matches[$matchId]['game']['away_hit'] = (int)$match['aggregate'][$clubId]['skhits'];
                     $matches[$matchId]['game']['away_faceoff'] = (int)$match['aggregate'][$clubId]['skfow'];
                     $matches[$matchId]['game']['away_shorthanded_goal'] = (int)$match['aggregate'][$clubId]['skshg'];
@@ -202,7 +204,7 @@ class EaRest
                             $positions
                         );
                         $matches[$matchId]['players']['home'][] = $playerData;
-                        $matches[$matchId]['game']['home_score'] += $playerData['goals'];
+//                        $matches[$matchId]['game']['home_score'] += $playerData['goals'];
                         $homePassAttempts += $playerData['pass_attempts'];
                         $homePasses += $playerData['passes'];
                     } else {
@@ -213,23 +215,17 @@ class EaRest
                             $positions
                         );
                         $matches[$matchId]['players']['away'][] = $playerData;
-                        $matches[$matchId]['game']['away_score'] += $playerData['goals'];
+//                        $matches[$matchId]['game']['away_score'] += $playerData['goals'];
                         $awayPassAttempts += $playerData['pass_attempts'];
                         $awayPasses += $playerData['passes'];
                     }
                 }
             }
-            $matches[$matchId]['game']['home_pass_percent'] = $homePassAttempts ?
-                round(
-                    $homePasses / $homePassAttempts * 100,
-                    1
-                )
+            $matches[$matchId]['game']['home_pass_percent'] = $homePassAttempts
+                ? round($homePasses / $homePassAttempts * 100, 1)
                 : 0;
-            $matches[$matchId]['game']['away_pass_percent'] = $awayPassAttempts ?
-                round(
-                    $awayPasses / $awayPassAttempts * 100,
-                    1
-                )
+            $matches[$matchId]['game']['away_pass_percent'] = $awayPassAttempts
+                ? round($awayPasses / $awayPassAttempts * 100, 1)
                 : 0;
         }
 
