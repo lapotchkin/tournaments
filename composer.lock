@@ -2287,16 +2287,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "3.0.5",
+            "version": "3.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "7c751ea006577e4c2e83326d90c8b1e8c11b8ede"
+                "reference": "d369510df0ebd5e1a5d0fe3d4d23c55fa87a403d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/7c751ea006577e4c2e83326d90c8b1e8c11b8ede",
-                "reference": "7c751ea006577e4c2e83326d90c8b1e8c11b8ede",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/d369510df0ebd5e1a5d0fe3d4d23c55fa87a403d",
+                "reference": "d369510df0ebd5e1a5d0fe3d4d23c55fa87a403d",
                 "shasum": ""
             },
             "require": {
@@ -2390,7 +2390,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-02-12T16:18:16+00:00"
+            "time": "2021-04-06T14:00:11+00:00"
         },
         {
             "name": "predis/predis",
@@ -5391,9 +5391,9 @@
             "authors": [
                 {
                     "name": "Marcel Pociot",
-                    "role": "Developer",
                     "email": "marcel@beyondco.de",
-                    "homepage": "https://beyondco.de"
+                    "homepage": "https://beyondco.de",
+                    "role": "Developer"
                 }
             ],
             "description": "Symfony Var-Dump Server for Laravel",
@@ -6917,18 +6917,18 @@
             "authors": [
                 {
                     "name": "Arne Blankerts",
-                    "role": "Developer",
-                    "email": "arne@blankerts.de"
+                    "email": "arne@blankerts.de",
+                    "role": "Developer"
                 },
                 {
                     "name": "Sebastian Heuer",
-                    "role": "Developer",
-                    "email": "sebastian@phpeople.de"
+                    "email": "sebastian@phpeople.de",
+                    "role": "Developer"
                 },
                 {
                     "name": "Sebastian Bergmann",
-                    "role": "Developer",
-                    "email": "sebastian@phpunit.de"
+                    "email": "sebastian@phpunit.de",
+                    "role": "Developer"
                 }
             ],
             "description": "Library for handling version information and constraints",
@@ -7338,8 +7338,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "role": "lead",
-                    "email": "sebastian@phpunit.de"
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
                 }
             ],
             "description": "Library that provides collection, processing, and rendering functionality for PHP code coverage information.",
@@ -7437,8 +7437,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "role": "lead",
-                    "email": "sebastian@phpunit.de"
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
                 }
             ],
             "description": "Simple template engine.",
@@ -8255,8 +8255,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "role": "lead",
-                    "email": "sebastian@phpunit.de"
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
                 }
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
