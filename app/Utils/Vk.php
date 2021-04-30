@@ -66,4 +66,25 @@ class Vk
 
         return $post;
     }
+
+    /**
+     * @param int $groupId
+     *
+     * @return mixed
+     * @throws VKApiException
+     * @throws VKApiWallAddPostException
+     * @throws VKApiWallAdsPostLimitReachedException
+     * @throws VKApiWallAdsPublishedException
+     * @throws VKApiWallLinksForbiddenException
+     * @throws VKApiWallTooManyRecipientsException
+     * @throws VKClientException
+     */
+    public static function testWallPost() {
+        $vk = new VKApiClient(env('VK_API_VERSION'));
+        return $vk->wall()->post(env('VK_ACCESS_TOKEN'), [
+            'owner_id'    => '-115683799',
+            'from_group'  => 1,
+            'message'     => 'Test wall post',
+        ]);
+    }
 }
