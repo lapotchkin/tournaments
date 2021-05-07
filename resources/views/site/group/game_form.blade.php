@@ -157,14 +157,14 @@
             <div class="row mt-1">
                 <div class="col-1 col-md-2 col-xl-3"></div>
                 <div class="col">
-                    <input type="time" id="home_penalty_time" class="form-control text-right"
+                    <input id="home_penalty_time" class="form-control text-right"
                            name="home_penalty_time"
                            value="{{ $game && !is_null($game->home_penalty_time) ? TextUtils::protocolTime($game->home_penalty_time) : '' }}"
                             {{ $game && $game->match_id ? 'readonly' : '' }}>
                 </div>
                 <div class="col-3 text-center"><strong>Штрафные минуты</strong></div>
                 <div class="col">
-                    <input type="time" id="away_penalty_time" class="form-control text-right"
+                    <input id="away_penalty_time" class="form-control text-right"
                            name="away_penalty_time"
                            value="{{ $game && !is_null($game->away_penalty_time) ? TextUtils::protocolTime($game->away_penalty_time) : '' }}"
                             {{ $game && $game->match_id ? 'readonly' : '' }}>
@@ -195,13 +195,13 @@
             <div class="row mt-1">
                 <div class="col-1 col-md-2 col-xl-3"></div>
                 <div class="col">
-                    <input type="time" id="home_powerplay_time" class="form-control text-right"
+                    <input id="home_powerplay_time" class="form-control text-right"
                            name="home_powerplay_time"
                            value="{{ $game && !is_null($game->home_powerplay_time) ? TextUtils::protocolTime($game->home_powerplay_time) : '' }}">
                 </div>
                 <div class="col-3 text-center"><strong>Минут в большинстве</strong></div>
                 <div class="col">
-                    <input type="time" id="away_powerplay_time" class="form-control text-right"
+                    <input id="away_powerplay_time" class="form-control text-right"
                            name="away_powerplay_time"
                            value="{{ $game && !is_null($game->away_powerplay_time) ? TextUtils::protocolTime($game->away_powerplay_time) : '' }}">
                 </div>
