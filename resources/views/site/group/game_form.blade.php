@@ -210,13 +210,13 @@
             <div class="row mt-1">
                 <div class="col-1 col-md-2 col-xl-3"></div>
                 <div class="col">
-                    <input type="time" id="home_shorthanded_goal" class="form-control text-right"
+                    <input type="number" id="home_shorthanded_goal" class="form-control text-right"
                            name="home_shorthanded_goal" {{ $game && $game->match_id ? 'readonly' : '' }}
                            value="{{ $game ? $game->home_shorthanded_goal : '' }}">
                 </div>
                 <div class="col-3 text-center"><strong>Голы в меньшинстве</strong></div>
                 <div class="col">
-                    <input type="time" id="away_shorthanded_goal" class="form-control text-right"
+                    <input type="number" id="away_shorthanded_goal" class="form-control text-right"
                            name="away_shorthanded_goal" {{ $game && $game->match_id ? 'readonly' : '' }}
                            value="{{ $game ? $game->away_shorthanded_goal : '' }}">
                 </div>
