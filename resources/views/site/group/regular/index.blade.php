@@ -271,7 +271,7 @@
                     {data: 'games', title: 'И'},
                     {data: 'points', title: 'О'},
                     {data: 'goals', title: 'Г'},
-                    // {data: 'shots', title: 'Б'},
+                    {data: 'shots', title: 'Б'},
                     {data: 'shots_percent', title: 'Б%'},
                     {data: 'assists', title: 'П'},
                     {data: 'power_play_goals', title: 'ГвБ'},
