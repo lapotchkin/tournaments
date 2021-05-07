@@ -51,8 +51,18 @@ class GroupTournamentPlayoffLeaders
                            sum(gGPp.power_play_goals) power_play_goals,
                            sum(gGPp.shorthanded_goals) shorthanded_goals,
                            sum(gGPp.game_winning_goals) game_winning_goals,
-                           sum(gGPp.shots) shots,
-                           round(sum(gGPp.goals) / sum(gGPp.shots) * 100) shots_percent,
+                           sum(if(isnull(gGPp.shot_attempts), gGPp.shots, gGPp.shot_attempts)) shots,
+                           round(
+                               sum(gGPp.goals)
+                               / sum(
+                                   if(
+                                       isnull(gGPp.shot_attempts),
+                                       if(isnull(gGPp.shots), 1, gGPp.shots),
+                                       gGPp.shot_attempts
+                                   )
+                               )
+                               * 100
+                           ) shots_percent,
                            sum(gGPp.plus_minus) plus_minus,
                            round(sum(gGPp.faceoff_win) / (sum(gGPp.faceoff_win) + sum(gGPp.faceoff_lose)) * 100) faceoff_win_percent,
                            count(if(gGPp.star = 1, 1, 0)) first_star,

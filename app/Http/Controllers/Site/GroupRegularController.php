@@ -10,7 +10,6 @@ use App\Models\GroupTournamentLeaders;
 use App\Models\GroupTournamentPosition;
 use App\Models\PlayerPosition;
 use TextUtils;
-use Auth;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -245,11 +244,12 @@ class GroupRegularController extends Controller
     }
 
     /**
-     * @param $prevPlace
+     * @param mixed $prevPlace
      *
      * @return string
      */
     private static function _getPrevPlace($prevPlace)
+    : string
     {
         if ($prevPlace !== '—' && $prevPlace > 0) {
             return "<span class='text-success text-nowrap'>{$prevPlace}<i class='fas fa-long-arrow-alt-up'></i></span>";
@@ -270,6 +270,7 @@ class GroupRegularController extends Controller
      * @throws Exception
      */
     private static function _getPosition(array $currentPosition, array $previousPosition = null)
+    : array
     {
         $previousPlaces = [];
         if (!is_null($previousPosition)) {
