@@ -48,13 +48,19 @@ class GroupTournamentLeaders
                            sum(gGRp.power_play_goals) power_play_goals,
                            sum(gGRp.shorthanded_goals) shorthanded_goals,
                            sum(gGRp.game_winning_goals) game_winning_goals,
-                           sum(if(isnull(gGRp.shot_attempts), gGRp.shots, gGRp.shot_attempts)) shots,
+                           sum(
+                               if(
+                                   isnull(gGRp.shot_attempts),
+                                   if(isnull(gGRp.shots), gGRp.goals, gGRp.shots),
+                                   gGRp.shot_attempts
+                               )
+                           ) shots,
                            round(
                                sum(gGRp.goals)
                                / sum(
                                    if(
                                        isnull(gGRp.shot_attempts),
-                                       if(isnull(gGRp.shots), 1, gGRp.shots),
+                                       if(isnull(gGRp.shots), gGRp.goals, gGRp.shots),
                                        gGRp.shot_attempts
                                    )
                                )
