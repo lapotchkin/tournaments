@@ -111,7 +111,9 @@ class GroupTournament extends Model
      */
     public function regularGames()
     {
-        return $this->hasMany('App\Models\GroupGameRegular', 'tournament_id');
+        return $this->hasMany('App\Models\GroupGameRegular', 'tournament_id')
+            ->orderBy('round')
+            ->orderBy('id');
     }
 
     /**
