@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Models\Policies;
 
 use App\Models\Player;
 use App\Models\Team;

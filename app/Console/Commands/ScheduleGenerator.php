@@ -7,7 +7,6 @@ use App\Models\GroupTournament;
 use App\Models\PersonalGameRegular;
 use App\Models\PersonalTournament;
 use App\Utils\TournamentScheduler;
-use Exception;
 use Illuminate\Console\Command;
 
 class ScheduleGenerator extends Command

@@ -39,6 +39,7 @@ class StorePersonalTournament extends FormRequest
             'thirdPlaceSeries' => 'int|in:0,1',
             'vk_group_id'      => 'int',
             'startedAt'        => 'date',
+            'playoff_limit'   => 'int|min:1',
         ];
     }
 }

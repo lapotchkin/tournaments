@@ -32,6 +32,11 @@ Route::post('/ajax/group/{groupTournament}/team/{team}', 'Ajax\GroupController@e
 Route::delete('/ajax/group/{groupTournament}/team/{team}', 'Ajax\GroupController@deleteTeam')
     ->middleware('can:create,App\Models\GroupTournament');
 
+Route::put('/ajax/group/{groupTournament}/schedule', 'Ajax\GroupController@addSchedule')
+    ->middleware('can:create,App\Models\GroupTournament');
+Route::delete('/ajax/group/{groupTournament}/schedule', 'Ajax\GroupController@deleteSchedule')
+    ->middleware('can:create,App\Models\GroupTournament');
+
 /*
 |--------------------------------------------------------------------------
 | Regular
@@ -94,7 +99,7 @@ Route::post(
     '/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}/{groupGamePlayoff}/confirm',
     'Ajax\GroupController@confirmPlayoffResult'
 )
-    ->middleware('can:update,groupGameRegular');
+    ->middleware('can:update,groupTournamentPlayoff');
 Route::post(
     '/ajax/group/{groupTournament}/playoff/{groupTournamentPlayoff}/{groupGamePlayoff}/reset',
     'Ajax\GroupController@resetPlayoffGame'

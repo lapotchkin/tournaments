@@ -17,13 +17,13 @@ use Illuminate\Http\Response;
 
 class TeamController extends Controller
 {
-    const ADD_TO_TEAM = 1;
-    const DELETE_FROM_TEAM = 2;
-    const SET_AS_CAPTAIN = 3;
-    const SET_AS_ASSISTANT = 4;
-    const SET_AS_PLAYER = 5;
+    protected const ADD_TO_TEAM = 1;
+    protected const DELETE_FROM_TEAM = 2;
+    protected const SET_AS_CAPTAIN = 3;
+    protected const SET_AS_ASSISTANT = 4;
+    protected const SET_AS_PLAYER = 5;
 
-    const TEAM_RULES = [
+    protected const TEAM_RULES = [
         'name'        => 'required|string',
         'short_name'  => 'required|string|max:3',
         'platform_id' => 'required|string|exists:platform,id',
@@ -31,6 +31,7 @@ class TeamController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return ResponseFactory|Response
      */
     public function create(Request $request)
@@ -54,7 +55,7 @@ class TeamController extends Controller
             abort(409, 'Такая команда уже существует');
         }
 
-        $team = new Team;
+        $team = new Team();
         $team->fill($validatedData);
         $team->save();
 
@@ -64,6 +65,7 @@ class TeamController extends Controller
     /**
      * @param Request $request
      * @param Team    $team
+     *
      * @return ResponseFactory|Response
      */
     public function edit(Request $request, Team $team)
@@ -78,6 +80,7 @@ class TeamController extends Controller
     /**
      * @param Request $request
      * @param Team    $team
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -91,6 +94,7 @@ class TeamController extends Controller
     /**
      * @param Request $request
      * @param Team    $team
+     *
      * @return ResponseFactory|Response
      */
     public function setTeamId(Request $request, Team $team)
@@ -117,6 +121,7 @@ class TeamController extends Controller
      * @param Request $request
      * @param Team    $team
      * @param App     $app
+     *
      * @return ResponseFactory|Response
      */
     public function deleteTeamId(Request $request, Team $team, App $app)
@@ -129,6 +134,7 @@ class TeamController extends Controller
     /**
      * @param Request $request
      * @param Team    $team
+     *
      * @return ResponseFactory|Response
      */
     public function addPlayer(Request $request, Team $team)
@@ -156,6 +162,7 @@ class TeamController extends Controller
      * @param Request $request
      * @param Team    $team
      * @param Player  $player
+     *
      * @return ResponseFactory|Response
      */
     public function updatePlayer(Request $request, Team $team, Player $player)
@@ -193,6 +200,7 @@ class TeamController extends Controller
      * @param Request $request
      * @param Team    $team
      * @param Player  $player
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */
@@ -224,9 +232,11 @@ class TeamController extends Controller
 
     /**
      * @param int $isCaptain
+     *
      * @return int
      */
     private function _getActionId(int $isCaptain)
+    : int
     {
         switch ($isCaptain) {
             case 1:

@@ -16,52 +16,65 @@
 | Common
 |--------------------------------------------------------------------------
 */
-Route::put('/ajax/personal', 'Ajax\PersonalController@create');
-Route::post('/ajax/personal/{tournamentId}', 'Ajax\PersonalController@edit')
-    ->where(['tournamentId' => '[0-9]+']);
-Route::delete('/ajax/personal/{tournamentId}', 'Ajax\PersonalController@delete')
-    ->where(['tournamentId' => '[0-9]+']);
-Route::post('/ajax/personal/{tournamentId}/winner', 'Ajax\PersonalController@setWinner')
-    ->where(['tournamentId' => '[0-9]+']);
+Route::put('/ajax/personal', 'Ajax\PersonalController@create')
+    ->middleware('can:create,App\Models\PersonalTournament');
+Route::post('/ajax/personal/{personalTournament}', 'Ajax\PersonalController@edit')
+    ->middleware('can:create,App\Models\PersonalTournament');
+Route::delete('/ajax/personal/{personalTournament}', 'Ajax\PersonalController@delete')
+    ->middleware('can:create,App\Models\PersonalTournament');
 
-Route::put('/ajax/personal/{tournamentId}/player', 'Ajax\PersonalController@addPlayer')
-    ->where(['tournamentId' => '[0-9]+']);
-Route::post('/ajax/personal/{tournamentId}/player/{playerId}', 'Ajax\PersonalController@editPlayer')
-    ->where(['tournamentId' => '[0-9]+', 'playerId' => '[0-9]+']);
-Route::delete('/ajax/personal/{tournamentId}/player/{playerId}', 'Ajax\PersonalController@deletePlayer')
-    ->where(['tournamentId' => '[0-9]+', 'playerId' => '[0-9]+']);
+Route::post('/ajax/personal/{personalTournament}/winner', 'Ajax\PersonalController@setWinner')
+    ->middleware('can:create,App\Models\PersonalTournament');
+
+Route::put('/ajax/personal/{personalTournament}/player', 'Ajax\PersonalController@addPlayer')
+    ->middleware('can:create,App\Models\PersonalTournament');
+Route::post('/ajax/personal/{personalTournament}/player/{player}', 'Ajax\PersonalController@editPlayer')
+    ->middleware('can:create,App\Models\PersonalTournament');
+Route::delete('/ajax/personal/{personalTournament}/player/{player}', 'Ajax\PersonalController@deletePlayer')
+    ->middleware('can:create,App\Models\PersonalTournament');
+
+Route::put('/ajax/personal/{personalTournament}/schedule', 'Ajax\PersonalController@addSchedule')
+    ->middleware('can:create,App\Models\PersonalTournament');
+Route::delete('/ajax/personal/{personalTournament}/schedule', 'Ajax\PersonalController@deleteSchedule')
+    ->middleware('can:create,App\Models\PersonalTournament');
 
 /*
 |--------------------------------------------------------------------------
 | Regular
 |--------------------------------------------------------------------------
 */
-Route::post('/ajax/personal/{tournamentId}/regular/{gameId}', 'Ajax\PersonalController@editRegularGame')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::post('/ajax/personal/{personalTournament}/regular/{personalGameRegular}', 'Ajax\PersonalController@editRegularGame')
+    ->middleware('can:update,personalGameRegular');
 
 /*
 |--------------------------------------------------------------------------
 | Playoff
 |--------------------------------------------------------------------------
 */
-Route::put('/ajax/personal/{tournamentId}/playoff', 'Ajax\PersonalController@createPair')
-    ->where(['tournamentId' => '[0-9]+']);
-Route::post('/ajax/personal/{tournamentId}/playoff/{pairId}', 'Ajax\PersonalController@updatePair')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+']);
-Route::put('/ajax/personal/{tournamentId}/playoff/{pairId}', 'Ajax\PersonalController@createPlayoffGame')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+']);
-Route::post('/ajax/personal/{tournamentId}/playoff/{pairId}/{gameId}', 'Ajax\PersonalController@editPlayoffGame')
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::put('/ajax/personal/{personalTournament}/playoff', 'Ajax\PersonalController@createPair')
+    ->middleware('can:create,App\Models\PersonalTournament');
+Route::post(
+    '/ajax/personal/{personalTournament}/playoff/{personalTournamentPlayoff}',
+    'Ajax\PersonalController@updatePair'
+)
+    ->middleware('can:create,App\Models\PersonalTournament');
+Route::put(
+    '/ajax/personal/{personalTournament}/playoff/{personalTournamentPlayoff}',
+    'Ajax\PersonalController@createPlayoffGame'
+)
+    ->middleware('can:update,personalTournamentPlayoff');
+Route::post('/ajax/personal/{personalTournament}/playoff/{personalTournamentPlayoff}/{personalGamePlayoff}', 'Ajax\PersonalController@editPlayoffGame')
+    ->middleware('can:update,personalTournamentPlayoff');
 
 /*
 |--------------------------------------------------------------------------
 | VK
 |--------------------------------------------------------------------------
 */
-Route::post('/ajax/personal/{tournamentId}/regular/{gameId}/share', 'Ajax\PersonalController@shareRegularResult')
-    ->where(['tournamentId' => '[0-9]+', 'gameId' => '[0-9]+']);
+Route::post('/ajax/personal/{personalTournament}/regular/{personalGameRegular}/share', 'Ajax\PersonalController@shareRegularResult')
+    ->middleware('can:create,App\Models\PersonalTournament');
 Route::post(
-    '/ajax/personal/{tournamentId}/playoff/{pairId}/{gameId}/share',
+    '/ajax/personal/{personalTournament}/playoff/{personalTournamentPlayoff}/{personalGamePlayoff}/share',
     'Ajax\PersonalController@sharePlayoffResult'
 )
-    ->where(['tournamentId' => '[0-9]+', 'pairId' => '[0-9]+', 'gameId' => '[0-9]+']);
+    ->middleware('can:create,App\Models\PersonalTournament');

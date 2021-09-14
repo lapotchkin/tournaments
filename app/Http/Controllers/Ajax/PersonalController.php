@@ -10,11 +10,12 @@ use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPlayer;
 use App\Models\PersonalTournamentPlayoff;
 use App\Models\PersonalTournamentWinner;
-use App\Utils\GameScoreImage;
-use App\Utils\Vk;
+use App\Models\Player;
+use App\Utils\TournamentScheduler;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Validator;
@@ -36,10 +37,9 @@ use VK\Exceptions\VKClientException;
  */
 class PersonalController extends Controller
 {
-    const GAME_RULES = [
+    protected const GAME_RULES = [
         'home_score'        => 'int',
         'away_score'        => 'int',
-        'home_shot'         => 'int',
         'isOvertime'        => 'int|min:0|max:1',
         'isShootout'        => 'int|min:0|max:1',
         'isTechnicalDefeat' => 'int|min:0|max:1',
@@ -63,9 +63,8 @@ class PersonalController extends Controller
         $tournament->playoff_rounds = $validatedData['playoff_rounds'];
         $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
         $tournament->vk_group_id = $validatedData['vk_group_id'];
-        $tournament->startedAt = isset($validatedData['startedAt'])
-            ? $validatedData['startedAt']
-            : null;
+        $tournament->startedAt = $validatedData['startedAt'] ?? null;
+        $tournament->playoff_limit = $validatedData['playoff_limit'] ?? null;
 
         $tournament->save();
 
@@ -74,69 +73,132 @@ class PersonalController extends Controller
 
     /**
      * @param StorePersonalTournament $request
-     * @param int                     $tournamentId
+     * @param PersonalTournament      $personalTournament
      *
      * @return ResponseFactory|Response
      */
-    public function edit(StorePersonalTournament $request, int $tournamentId)
+    public function edit(StorePersonalTournament $request, PersonalTournament $personalTournament)
     {
         $validatedData = $request->validated();
 
-        /** @var PersonalTournament $tournament */
-        $tournament = PersonalTournament::find($tournamentId);
-        $tournament->platform_id = $validatedData['platform_id'];
-        $tournament->app_id = $validatedData['app_id'];
-        $tournament->league_id = $validatedData['league_id'];
-        $tournament->title = $validatedData['title'];
-        $tournament->playoff_rounds = $validatedData['playoff_rounds'];
-        $tournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
-        $tournament->vk_group_id = $validatedData['vk_group_id'];
-        $tournament->startedAt = isset($validatedData['startedAt'])
-            ? $validatedData['startedAt']
-            : null;
+        $personalTournament->platform_id = $validatedData['platform_id'];
+        $personalTournament->app_id = $validatedData['app_id'];
+        $personalTournament->league_id = $validatedData['league_id'];
+        $personalTournament->title = $validatedData['title'];
+        $personalTournament->playoff_rounds = $validatedData['playoff_rounds'];
+        $personalTournament->thirdPlaceSeries = $validatedData['thirdPlaceSeries'];
+        $personalTournament->vk_group_id = $validatedData['vk_group_id'];
+        $personalTournament->startedAt = $validatedData['startedAt'] ?? null;
+        $personalTournament->playoff_limit = $validatedData['playoff_limit'] ?? null;
 
-        $tournament->save();
+        $personalTournament->save();
 
-        return $this->renderAjax(['id' => $tournament->id]);
+        return $this->renderAjax(['id' => $personalTournament->id]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
      *
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function delete(StoreRequest $request, int $tournamentId)
+    public function delete(Request $request, PersonalTournament $personalTournament)
     {
-        /** @var PersonalTournament $tournament */
-        $tournament = PersonalTournament::find($tournamentId);
-        $tournament->delete();
+        $personalTournament->delete();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     *
+     * @return ResponseFactory|Response
+     */
+    public function addSchedule(Request $request, PersonalTournament $personalTournament)
+    {
+        if (count($personalTournament->regularGames)) {
+            abort(400, 'Расписание уже создано');
+        }
+
+        $validatedData = $request->validate([
+            'gamesCount' => 'required|int|min:1|max:2',
+            'rounds'     => 'required|int|min:1|max:10',
+        ]);
+
+        $divisions = [];
+        foreach ($personalTournament->tournamentPlayers as $tournamentPlayer) {
+            $divisions[$tournamentPlayer->division][] = $tournamentPlayer->player_id;
+        }
+
+        foreach ($divisions as $division) {
+            $divisionSchedule = TournamentScheduler::generate($division);
+
+            for ($repeat = 1; $repeat < $validatedData['rounds'] + 1; $repeat += 1) {
+                foreach ($divisionSchedule as $round => $games) {
+                    foreach ($games as $teams) {
+                        $gameOne = new PersonalGameRegular([
+                            'tournament_id'  => $personalTournament->id,
+                            'round'          => ($round + 1) * $repeat,
+                            'home_player_id' => $teams[0],
+                            'away_player_id' => $teams[1],
+                        ]);
+                        $gameOne->save();
+
+                        if ($validatedData['gamesCount'] === 2) {
+                            $gameTwo = new PersonalGameRegular([
+                                'tournament_id'  => $personalTournament->id,
+                                'round'          => ($round + 1) * $repeat,
+                                'home_player_id' => $teams[1],
+                                'away_player_id' => $teams[0],
+                            ]);
+                            $gameTwo->save();
+                        }
+                    }
+                }
+            }
+        }
+
+        return $this->renderAjax([], 'Расписание создано');
+    }
+
+    /**
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
      *
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function setWinner(StoreRequest $request, int $tournamentId)
+    public function deleteSchedule(Request $request, PersonalTournament $personalTournament)
+    {
+        foreach ($personalTournament->regularGames as $regularGame) {
+            $regularGame->delete();
+        }
+
+        return $this->renderAjax([], 'Расписание удалено');
+    }
+
+    /**
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     *
+     * @return ResponseFactory|Response
+     * @throws Exception
+     */
+    public function setWinner(Request $request, PersonalTournament $personalTournament)
     {
         $validatedData = $request->validate([
             'player_id' => 'required|int|min:0',
             'place'     => 'required|int|min:1|max:3',
         ]);
-        /** @var PersonalTournamentWinner $winner */
-        $winner = PersonalTournamentWinner::where('tournament_id', $tournamentId)
+        $winner = PersonalTournamentWinner::where('tournament_id', $personalTournament->id)
             ->where('place', $validatedData['place'])
             ->first();
 
         $message = $validatedData['place'] . ' место сохранено';
         if (is_null($winner)) {
-            $validatedData['tournament_id'] = $tournamentId;
+            $validatedData['tournament_id'] = $personalTournament->id;
             $winner = new PersonalTournamentWinner($validatedData);
             $winner->save();
         } elseif ($validatedData['player_id'] === '0') {
@@ -151,12 +213,12 @@ class PersonalController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param StoreRequest       $request
+     * @param PersonalTournament $personalTournament
      *
      * @return ResponseFactory|Response
      */
-    public function addPlayer(StoreRequest $request, int $tournamentId)
+    public function addPlayer(Request $request, PersonalTournament $personalTournament)
     {
         $validatedData = $request->validate([
             'player_id' => 'required|int|exists:player,id',
@@ -164,19 +226,19 @@ class PersonalController extends Controller
         ]);
 
         $tournamentPlayer = PersonalTournamentPlayer::withTrashed()
-            ->where('tournament_id', $tournamentId)
+            ->where('tournament_id', $personalTournament->id)
             ->where('player_id', $validatedData['player_id'])
             ->first();
 
         if (is_null($tournamentPlayer)) {
-            $tournamentPlayer = new PersonalTournamentPlayer;
-            $tournamentPlayer->tournament_id = $tournamentId;
+            $tournamentPlayer = new PersonalTournamentPlayer();
+            $tournamentPlayer->tournament_id = $personalTournament->id;
             $tournamentPlayer->player_id = $validatedData['player_id'];
             $tournamentPlayer->division = $validatedData['division'];
             $tournamentPlayer->save();
         } else {
             PersonalTournamentPlayer::withTrashed()
-                ->where('tournament_id', $tournamentId)
+                ->where('tournament_id', $personalTournament->id)
                 ->where('player_id', $validatedData['player_id'])
                 ->update([
                     'division'  => $validatedData['division'],
@@ -188,94 +250,88 @@ class PersonalController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $playerId
+     * @param StoreRequest       $request
+     * @param PersonalTournament $personalTournament
+     * @param Player             $player
      *
      * @return ResponseFactory|Response
      */
-    public function editPlayer(StoreRequest $request, int $tournamentId, int $playerId)
+    public function editPlayer(Request $request, PersonalTournament $personalTournament, Player $player)
     {
         $validatedData = $request->validate([
             'club_id'  => 'string|exists:club,id',
             'division' => 'required|int|min:1|max:26',
         ]);
 
-        PersonalTournamentPlayer::where('tournament_id', $tournamentId)
-            ->where('player_id', $playerId)
+        PersonalTournamentPlayer::where('tournament_id', $personalTournament->id)
+            ->where('player_id', $player->id)
             ->update($validatedData);
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $playerId
+     * @param StoreRequest       $request
+     * @param PersonalTournament $personalTournament
+     * @param Player             $player
      *
      * @return ResponseFactory|Response
      * @throws Exception
      */
-    public function deletePlayer(StoreRequest $request, int $tournamentId, int $playerId)
+    public function deletePlayer(Request $request, PersonalTournament $personalTournament, Player $player)
     {
-        PersonalTournamentPlayer::where('tournament_id', $tournamentId)
-            ->where('player_id', $playerId)
+        PersonalTournamentPlayer::where('tournament_id', $personalTournament->id)
+            ->where('player_id', $player->id)
             ->delete();
-        PersonalGameRegular::whereTournamentId($tournamentId)
-            ->where('home_player_id', '=', $playerId)
-            ->orWhere('away_player_id', '=', $playerId)
+        PersonalGameRegular::whereTournamentId($personalTournament->id)
+            ->where('home_player_id', '=', $player->id)
+            ->orWhere('away_player_id', '=', $player->id)
             ->delete();
 
         return $this->renderAjax();
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $gameId
+     * @param Request             $request
+     * @param PersonalTournament  $personalTournament
+     * @param PersonalGameRegular $personalGameRegular
      *
      * @return ResponseFactory|Response
+     * @throws ValidationException
      */
-    public function editRegularGame(StoreRequest $request, int $tournamentId, int $gameId)
+    public function editRegularGame(
+        Request             $request,
+        PersonalTournament  $personalTournament,
+        PersonalGameRegular $personalGameRegular
+    )
     {
-        /** @var PersonalGameRegular $game */
-        $game = PersonalGameRegular::with(['homePlayer', 'awayPlayer'])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        $personalGameRegular->load(['homePlayer', 'awayPlayer']);
+        if ($personalGameRegular->tournament_id !== $personalTournament->id) {
             abort(404);
         }
 
-        $validatedData = $request->validate(self::GAME_RULES);
-        if (!isset($validatedData['isOvertime'])) {
-            $validatedData['isOvertime'] = 0;
-        }
-        if (!isset($validatedData['isShootout'])) {
-            $validatedData['isShootout'] = 0;
-        }
-        if (!isset($validatedData['isTechnicalDefeat'])) {
-            $validatedData['isTechnicalDefeat'] = 0;
-        }
-        $game->fill($validatedData);
-        $game->save();
+        $input = json_decode($request->getContent(), true);
+        $validator = Validator::make($input, self::GAME_RULES);
+        $validatedData = $validator->validate();
+        $validatedData['isOvertime'] = $validatedData['isOvertime'] ?? 0;
+        $validatedData['isShootout'] = $validatedData['isShootout'] ?? 0;
+        $validatedData['isTechnicalDefeat'] = $validatedData['isTechnicalDefeat'] ?? 0;
+
+        $personalGameRegular->fill($validatedData);
+        $personalGameRegular->save();
 
         return $this->renderAjax($validatedData, 'Протокол игры сохранён');
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
      *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
-    public function createPair(StoreRequest $request, int $tournamentId)
+    public function createPair(Request $request, PersonalTournament $personalTournament)
     {
-        /** @var PersonalTournament $game */
-        $tournament = PersonalTournament::find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
         $input = json_decode($request->getContent(), true);
         $rules = [
             'round'         => 'required|int',
@@ -285,40 +341,41 @@ class PersonalController extends Controller
         ];
         $validator = Validator::make($input, $rules);
         $validatedData = $validator->validate();
-        $validatedData['tournament_id'] = $tournamentId;
+        $validatedData['tournament_id'] = $personalTournament->id;
 
         if (!isset($validatedData['player_one_id']) && !isset($validatedData['player_two_id'])) {
             abort(400, 'Не передан ни один ID игрока');
         }
 
-        /** @var PersonalTournamentPlayoff $pair */
-        $pair = PersonalTournamentPlayoff::where('tournament_id', '=', $tournamentId)
+        $personalTournamentPlayoff = PersonalTournamentPlayoff::where('tournament_id', '=', $personalTournament->id)
             ->where('round', '=', $validatedData['round'])
             ->where('pair', '=', $validatedData['pair'])
             ->first();
 
-        if (is_null($pair)) {
-            $pair = new PersonalTournamentPlayoff;
+        if (is_null($personalTournamentPlayoff)) {
+            $personalTournamentPlayoff = new PersonalTournamentPlayoff();
         }
-        $pair->fill($validatedData);
-        $pair->save();
+        $personalTournamentPlayoff->fill($validatedData);
+        $personalTournamentPlayoff->save();
 
-        return $this->renderAjax(['id' => $pair->id], 'Пара создана');
+        return $this->renderAjax(['id' => $personalTournamentPlayoff->id], 'Пара создана');
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
+     * @param StoreRequest              $request
+     * @param PersonalTournament        $personalTournament
+     * @param PersonalTournamentPlayoff $personalTournamentPlayoff
      *
      * @return ResponseFactory|Response
      * @throws ValidationException
      */
-    public function updatePair(StoreRequest $request, int $tournamentId, int $pairId)
+    public function updatePair(
+        Request                   $request,
+        PersonalTournament        $personalTournament,
+        PersonalTournamentPlayoff $personalTournamentPlayoff
+    )
     {
-        /** @var PersonalTournamentPlayoff $pair */
-        $pair = PersonalTournamentPlayoff::find($pairId);
-        if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
+        if ($personalTournamentPlayoff->tournament_id !== $personalTournament->id) {
             abort(404);
         }
 
@@ -334,33 +391,35 @@ class PersonalController extends Controller
             abort(400, 'Не передан ни один ID игрока');
         }
 
-        $pair->fill($validatedData);
-        $pair->save();
+        $personalTournamentPlayoff->fill($validatedData);
+        $personalTournamentPlayoff->save();
 
         return $this->renderAjax([], 'Пара обновлена');
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
+     * @param Request                   $request
+     * @param PersonalTournament        $personalTournament
+     * @param PersonalTournamentPlayoff $personalTournamentPlayoff
      *
      * @return ResponseFactory|Response
      */
-    public function createPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId)
+    public function createPlayoffGame(
+        Request                   $request,
+        PersonalTournament        $personalTournament,
+        PersonalTournamentPlayoff $personalTournamentPlayoff
+    )
     {
-        /** @var PersonalTournamentPlayoff $pair */
-        $pair = PersonalTournamentPlayoff::find($pairId);
-        if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
+        if ($personalTournamentPlayoff->tournament_id !== $personalTournament->id) {
             abort(404);
         }
 
         $validatedData = $request->validate(self::GAME_RULES);
         $game = new PersonalGamePlayoff();
         $game->fill($validatedData);
-        $game->playoff_pair_id = $pairId;
-        $game->home_player_id = $pair->player_one_id;
-        $game->away_player_id = $pair->player_two_id;
+        $game->playoff_pair_id = $personalTournamentPlayoff->id;
+        $game->home_player_id = $personalTournamentPlayoff->player_one_id;
+        $game->away_player_id = $personalTournamentPlayoff->player_two_id;
 
         $game->save();
 
@@ -368,42 +427,46 @@ class PersonalController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
+     * @param Request                   $request
+     * @param PersonalTournament        $personalTournament
+     * @param PersonalTournamentPlayoff $personalTournamentPlayoff
+     * @param PersonalGamePlayoff       $personalGamePlayoff
      *
      * @return ResponseFactory|Response
+     * @throws ValidationException
      */
-    public function editPlayoffGame(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    public function editPlayoffGame(
+        Request                   $request,
+        PersonalTournament        $personalTournament,
+        PersonalTournamentPlayoff $personalTournamentPlayoff,
+        PersonalGamePlayoff       $personalGamePlayoff
+    )
     {
-        /** @var PersonalGamePlayoff $game */
-        $game = PersonalGamePlayoff::with(['homePlayer', 'awayPlayer'])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+        $personalGamePlayoff->load(['homePlayer', 'awayPlayer']);
+        if (
+            $personalGamePlayoff->playoff_pair_id !== $personalTournamentPlayoff->id
+            || $personalGamePlayoff->playoffPair->tournament_id !== $personalTournament->id
+        ) {
             abort(404);
         }
 
-        $validatedData = $request->validate(self::GAME_RULES);
-        if (!isset($validatedData['isOvertime'])) {
-            $validatedData['isOvertime'] = 0;
-        }
-        if (!isset($validatedData['isShootout'])) {
-            $validatedData['isShootout'] = 0;
-        }
-        if (!isset($validatedData['isTechnicalDefeat'])) {
-            $validatedData['isTechnicalDefeat'] = 0;
-        }
-        $game->fill($validatedData);
-        $game->save();
+        $input = json_decode($request->getContent(), true);
+        $validator = Validator::make($input, self::GAME_RULES);
+        $validatedData = $validator->validate();
+        $validatedData['isOvertime'] = $validatedData['isOvertime'] ?? 0;
+        $validatedData['isShootout'] = $validatedData['isShootout'] ?? 0;
+        $validatedData['isTechnicalDefeat'] = $validatedData['isTechnicalDefeat'] ?? 0;
+
+        $personalGamePlayoff->fill($validatedData);
+        $personalGamePlayoff->save();
 
         return $this->renderAjax([], 'Протокол игры сохранён');
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $gameId
+     * @param Request             $request
+     * @param PersonalTournament  $personalTournament
+     * @param PersonalGameRegular $personalGameRegular
      *
      * @return ResponseFactory|Response
      * @throws VKApiException
@@ -417,25 +480,27 @@ class PersonalController extends Controller
      * @throws VKApiWallTooManyRecipientsException
      * @throws VKClientException
      */
-    public function shareRegularResult(StoreRequest $request, int $tournamentId, int $gameId)
+    public function shareRegularResult(
+        Request             $request,
+        PersonalTournament  $personalTournament,
+        PersonalGameRegular $personalGameRegular
+    )
     {
-        /** @var PersonalGameRegular $game */
-        $game = PersonalGameRegular::with(['homePlayer', 'awayPlayer'])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        $personalGameRegular->load(['homePlayer', 'awayPlayer']);
+        if ($personalGameRegular->tournament_id !== $personalTournament->id) {
             abort(404);
         }
 
-        self::postToVk($game);
+        self::postToVk($personalGameRegular);
 
         return $this->renderAjax([], 'Результат игры опубликован');
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
+     * @param Request                   $request
+     * @param PersonalTournament        $personalTournament
+     * @param PersonalTournamentPlayoff $personalTournamentPlayoff
+     * @param PersonalGamePlayoff       $personalGamePlayoff
      *
      * @return ResponseFactory|Response
      * @throws VKApiException
@@ -449,16 +514,22 @@ class PersonalController extends Controller
      * @throws VKApiWallTooManyRecipientsException
      * @throws VKClientException
      */
-    public function sharePlayoffResult(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    public function sharePlayoffResult(
+        Request                   $request,
+        PersonalTournament        $personalTournament,
+        PersonalTournamentPlayoff $personalTournamentPlayoff,
+        PersonalGamePlayoff       $personalGamePlayoff
+    )
     {
-        /** @var PersonalGamePlayoff $game */
-        $game = PersonalGamePlayoff::with(['homePlayer', 'awayPlayer'])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+        $personalGamePlayoff->load(['homePlayer', 'awayPlayer']);
+        if (
+            $personalGamePlayoff->playoff_pair_id !== $personalTournamentPlayoff->id
+            || $personalGamePlayoff->playoffPair->tournament_id !== $personalTournament->id
+        ) {
             abort(404);
         }
 
-        self::postToVk($game);
+        self::postToVk($personalGamePlayoff);
 
         return $this->renderAjax([], 'Результат игры опубликован');
     }

@@ -12,11 +12,12 @@ use Illuminate\Http\Response;
 
 /**
  * Class PlayerController
+ *
  * @package App\Http\Controllers\Ajax
  */
 class PlayerController extends Controller
 {
-    const USER_RULES = [
+    protected const USER_RULES = [
         'tag'         => 'required|string',
         'name'        => 'string',
         'vk'          => 'string',
@@ -28,6 +29,7 @@ class PlayerController extends Controller
 
     /**
      * @param StoreRequest $request
+     *
      * @return ResponseFactory|Response
      */
     public function create(StoreRequest $request)
@@ -51,7 +53,7 @@ class PlayerController extends Controller
             abort(409, 'Такой игрок уже существует');
         }
 
-        $player = new Player;
+        $player = new Player();
         $player->fill($validatedData);
         $player->save();
 
@@ -61,6 +63,7 @@ class PlayerController extends Controller
     /**
      * @param StoreRequest $request
      * @param Player       $player
+     *
      * @return ResponseFactory|Response
      */
     public function edit(StoreRequest $request, Player $player)
@@ -91,6 +94,7 @@ class PlayerController extends Controller
     /**
      * @param StoreRequest $request
      * @param Player       $player
+     *
      * @return ResponseFactory|Response
      * @throws Exception
      */

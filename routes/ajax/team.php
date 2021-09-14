@@ -16,12 +16,14 @@ Route::post('/ajax/team/{team}', 'Ajax\TeamController@edit')
     ->middleware('can:create,App\Models\Team');
 Route::delete('/ajax/team/{team}', 'Ajax\TeamController@delete')
     ->middleware('can:create,App\Models\Team');;
-Route::put('/ajax/team/{team}', 'Ajax\TeamController@addPlayer')
-    ->middleware('can:update,team');
+
 Route::post('/ajax/team/{team}/app', 'Ajax\TeamController@setTeamId')
     ->middleware('can:create,App\Models\Team');
 Route::delete('/ajax/team/{team}/app/{app}', 'Ajax\TeamController@deleteTeamId')
     ->middleware('can:create,App\Models\Team');
+
+Route::put('/ajax/team/{team}', 'Ajax\TeamController@addPlayer')
+    ->middleware('can:update,team');
 Route::post('/ajax/team/{team}/{player}', 'Ajax\TeamController@updatePlayer')
     ->middleware('can:update,team');
 Route::delete('/ajax/team/{team}/{player}', 'Ajax\TeamController@deletePlayer')

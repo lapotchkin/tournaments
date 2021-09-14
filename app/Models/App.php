@@ -39,9 +39,9 @@ class App extends Model
 {
     use SoftDeletes;
 
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = null;
-    const DELETED_AT = 'deletedAt';
+    public const CREATED_AT = 'createdAt';
+    public const UPDATED_AT = null;
+    public const DELETED_AT = 'deletedAt';
 
     /**
      * The table associated with the model.
@@ -73,6 +73,7 @@ class App extends Model
      * @return HasMany
      */
     public function groupTournaments()
+    : HasMany
     {
         return $this->hasMany('App\Models\GroupTournament')
             ->orderByDesc('createdAt');
@@ -82,6 +83,7 @@ class App extends Model
      * @return HasMany
      */
     public function personalTournaments()
+    : HasMany
     {
         return $this->hasMany('App\Models\PersonalTournament')
             ->orderByDesc('createdAt');
@@ -91,6 +93,7 @@ class App extends Model
      * @return HasMany
      */
     public function appTeams()
+    : HasMany
     {
         return $this->hasMany('App\Models\AppTeam');
     }

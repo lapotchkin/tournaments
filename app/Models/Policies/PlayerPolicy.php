@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Policies;
+namespace App\Models\Policies;
 
 use App\Models\Player;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class GroupTournamentPolicy
+class PlayerPolicy
 {
     use HandlesAuthorization;
 
@@ -21,10 +21,24 @@ class GroupTournamentPolicy
 
     /**
      * @param Player $user
+     *
      * @return bool
      */
     public function create(Player $user)
+    : bool
     {
         return $user->isAdmin();
+    }
+
+    /**
+     * @param Player $user
+     * @param Player $player
+     *
+     * @return bool
+     */
+    public function update(Player $user, Player $player)
+    : bool
+    {
+        return $user->isAdmin() || $user->id === $player->id;
     }
 }

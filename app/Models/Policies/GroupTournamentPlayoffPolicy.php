@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Models\Policies;
 
 use App\Models\GroupTournamentPlayoff;
 use App\Models\Player;
@@ -27,20 +27,24 @@ class GroupTournamentPlayoffPolicy
      * @return bool
      */
     public function update(Player $user, GroupTournamentPlayoff $groupTournamentPlayoff)
+    : bool
     {
         if ($user->isAdmin()) {
             return true;
         }
+
         foreach ($groupTournamentPlayoff->teamOne->teamPlayers as $teamPlayer) {
             if ($user->id === $teamPlayer->player_id && $teamPlayer->isCaptain > 0) {
                 return true;
             }
         }
+
         foreach ($groupTournamentPlayoff->teamTwo->teamPlayers as $teamPlayer) {
             if ($user->id === $teamPlayer->player_id && $teamPlayer->isCaptain > 0) {
                 return true;
             }
         }
+
         return false;
     }
 }

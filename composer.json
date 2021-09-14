@@ -18,11 +18,11 @@
         "jenssegers/mongodb": "^3.6",
         "laravel/framework": "^6.0",
         "laravel/socialite": "^4.3",
-        "laravel/telescope": "^3.2",
         "laravel/tinker": "^2.3",
         "predis/predis": "^1.1",
         "socialiteproviders/vkontakte": "^4.2.1",
-        "vkcom/vk-php-sdk": "^5.101"
+        "vkcom/vk-php-sdk": "^5.101",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.6",

@@ -11,7 +11,8 @@
 |
 */
 
-Route::put('/ajax/player', 'Ajax\PlayerController@create');
+Route::put('/ajax/player', 'Ajax\PlayerController@create')
+    ->middleware('can:create,App\Models\Player');
 Route::post('/ajax/player/{player}', 'Ajax\PlayerController@edit')
     ->middleware('can:update,player');
 Route::delete('/ajax/player/{player}', 'Ajax\PlayerController@delete')

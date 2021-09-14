@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class StoreGroupTournament
+ *
  * @package App\Http\Requests
  */
 class StoreGroupTournament extends FormRequest
@@ -17,6 +17,7 @@ class StoreGroupTournament extends FormRequest
      * @return array
      */
     public function rules()
+    : array
     {
         return [
             'platform_id'      => 'required|string|exists:platform,id',
@@ -27,6 +28,7 @@ class StoreGroupTournament extends FormRequest
             'thirdPlaceSeries' => 'int|in:0,1',
             'vk_group_id'      => 'int',
             'startedAt'        => 'date',
+            'playoff_limit'    => 'int|min:1',
         ];
     }
 }
