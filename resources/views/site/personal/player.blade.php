@@ -58,17 +58,17 @@
             TRNMNT_sendData({
                 selector: '#player-edit',
                 method: 'post',
-                url: '{{ action('Ajax\PersonalController@editPlayer', ['tournamentId' => $tournamentPlayer->tournament_id, 'playerId' => $tournamentPlayer->player_id])}}',
+                url: '{{ action('Ajax\PersonalController@editPlayer', ['personalTournament' => $tournamentPlayer->tournament, 'player' => $tournamentPlayer->player])}}',
                 success: function (response) {
-                    window.location.href = '{{ route('personal.tournament', ['tournamentId' => $tournamentPlayer->tournament_id]) }}';
+                    window.location.href = '{{ route('personal.tournament', ['personalTournament' => $tournamentPlayer->tournament]) }}';
                 }
             });
 
             TRNMNT_deleteData({
                 selector: '#player-delete-button',
-                url: '{{ action('Ajax\PersonalController@deletePlayer', ['tournamentId' => $tournamentPlayer->tournament_id, 'playerId' => $tournamentPlayer->player_id])}}',
+                url: '{{ action('Ajax\PersonalController@deletePlayer', ['personalTournament' => $tournamentPlayer->tournament, 'player' => $tournamentPlayer->player])}}',
                 success: function () {
-                    window.location.href = '{{ route('personal.tournament', ['tournamentId' => $tournamentPlayer->tournament_id]) }}';
+                    window.location.href = '{{ route('personal.tournament', ['personalTournament' => $tournamentPlayer->tournament]) }}';
                 }
             });
         });

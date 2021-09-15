@@ -61,8 +61,8 @@
                 </div>
                 <div class="form-group">
                     <label for="startedAt">Дата начала турнира</label>
-                    <input type="date" id="startedAt" class="form-control" name="startedAt" readonly
-                           value="{{ !is_null($tournament) ? $tournament->startedAt : '' }}">
+                    <input id="startedAt" class="form-control" name="startedAt" readonly
+                           value="{{ !is_null($tournament) ? date('Y-m-d', strtotime($tournament->startedAt)) : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
@@ -95,6 +95,12 @@
                             Да
                         </option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="playoff_limit">Количество участников плей-офф</label>
+                    <input type="text" id="playoff_limit" class="form-control" name="playoff_limit"
+                           value="{{ !is_null($tournament) ? $tournament->playoff_limit : '' }}">
+                    <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">
@@ -189,7 +195,7 @@
             TRNMNT_sendData({
                 selector: '#tournament-form',
                 method: '{{ is_null($tournament) ? 'put' : 'post' }}',
-                url: '{{ is_null($tournament) ? action('Ajax\PersonalController@create') : action('Ajax\PersonalController@edit', ['tournamentId' => $tournament->id])}}',
+                url: '{{ is_null($tournament) ? action('Ajax\PersonalController@create') : action('Ajax\PersonalController@edit', ['personalTournament' => $tournament])}}',
                 success: function (response) {
                     window.location.href = '{{ route('personal') }}/' + response.data.id;
                 }
@@ -198,7 +204,7 @@
             @if (!is_null($tournament))
             TRNMNT_deleteData({
                 selector: '#tournament-delete-button',
-                url: '{{ action('Ajax\PersonalController@delete', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\PersonalController@delete', ['personalTournament' => $tournament])}}',
                 success: function () {
                     window.location.href = '{{ route('personal') }}';
                 }
@@ -207,7 +213,7 @@
             TRNMNT_sendData({
                 selector: '#first_place-form',
                 method: 'post',
-                url: '{{ action('Ajax\PersonalController@setWinner', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\PersonalController@setWinner', ['personalTournament' => $tournament])}}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                 },
@@ -216,7 +222,7 @@
             TRNMNT_sendData({
                 selector: '#second_place-form',
                 method: 'post',
-                url: '{{ action('Ajax\PersonalController@setWinner', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\PersonalController@setWinner', ['personalTournament' => $tournament])}}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                 },
@@ -226,7 +232,7 @@
             TRNMNT_sendData({
                 selector: '#third_place-form',
                 method: 'post',
-                url: '{{ action('Ajax\PersonalController@setWinner', ['tournamentId' => $tournament->id])}}',
+                url: '{{ action('Ajax\PersonalController@setWinner', ['personalTournament' => $tournament])}}',
                 success: function (response) {
                     TRNMNT_helpers.showNotification(response.message);
                 },

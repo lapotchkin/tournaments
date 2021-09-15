@@ -36,7 +36,7 @@ class GroupController extends Controller
      * @param Request $request
      * @return Factory|View
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         return view('site.group.tournament_editor', [
             'title'      => 'Новый турнир',

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Http\Requests\StoreRequest;
 use App\Models\PersonalGamePlayoff;
 use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPlayoff;
@@ -16,16 +15,18 @@ use TextUtils;
 
 /**
  * Class PersonalPlayoffController
+ *
  * @package App\Http\Controllers\Site
  */
 class PersonalPlayoffController extends Controller
 {
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     *
      * @return Factory|View
      */
-    public function index(Request $request, int $tournamentId)
+    public function index(Request $request, PersonalTournament $personalTournament)
     {
         $view = 'site.personal.playoff.index';
         if (Route::currentRouteName() === 'personal.tournament.playoff.games') {
@@ -35,106 +36,121 @@ class PersonalPlayoffController extends Controller
             $view = 'site.personal.playoff.games';
         }
 
-        /** @var PersonalTournament $tournament */
-        $tournament = PersonalTournament::with(['playoff.playerOne', 'playoff.playerTwo', 'winners.player'])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
         $bracket = [];
-        $maxTeams = pow(2, $tournament->playoff_rounds + $tournament->thirdPlaceSeries);
-        for ($i = 1; $i <= $tournament->playoff_rounds + $tournament->thirdPlaceSeries; $i += 1) {
-            for ($j = 1; $j <= $maxTeams / pow(2, $i + $tournament->thirdPlaceSeries); $j += 1) {
+        $maxTeams = pow(2, $personalTournament->playoff_rounds + $personalTournament->thirdPlaceSeries);
+        for ($i = 1; $i <= $personalTournament->playoff_rounds + $personalTournament->thirdPlaceSeries; $i += 1) {
+            for ($j = 1; $j <= $maxTeams / pow(2, $i + $personalTournament->thirdPlaceSeries); $j += 1) {
                 $bracket[$i][$j] = null;
             }
         }
-        if ($tournament->thirdPlaceSeries) {
-            $bracket[$tournament->playoff_rounds + $tournament->thirdPlaceSeries][1] = null;
+        if ($personalTournament->thirdPlaceSeries) {
+            $bracket[$personalTournament->playoff_rounds + $personalTournament->thirdPlaceSeries][1] = null;
         }
-        foreach ($tournament->playoff as $playoff) {
+        foreach ($personalTournament->playoff as $playoff) {
             $bracket[$playoff->round][$playoff->pair] = $playoff;
         }
 
         return view($view, [
-            'tournament' => $tournament,
+            'tournament' => $personalTournament,
             'bracket'    => $bracket,
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
-     * @param int     $pairId
-     * @param int     $gameId
+     * @param Request                   $request
+     * @param PersonalTournament        $personalTournament
+     * @param PersonalTournamentPlayoff $personalTournamentPlayoff
+     * @param PersonalGamePlayoff       $personalGamePlayoff
+     *
      * @return Factory|View
      */
-    public function game(Request $request, int $tournamentId, int $pairId, int $gameId)
+    public function game(
+        Request                   $request,
+        PersonalTournament        $personalTournament,
+        PersonalTournamentPlayoff $personalTournamentPlayoff,
+        PersonalGamePlayoff       $personalGamePlayoff
+    )
     {
-        /** @var PersonalGamePlayoff $game */
-        $game = PersonalGamePlayoff::with(['homePlayer', 'awayPlayer'])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+        $personalGamePlayoff->load(['homePlayer', 'awayPlayer']);
+        if (
+            $personalGamePlayoff->playoff_pair_id !== $personalTournamentPlayoff->id
+            || $personalGamePlayoff->playoffPair->tournament_id !== $personalTournament->id
+        ) {
             abort(404);
         }
 
-        $roundText = TextUtils::playoffRound($game->playoffPair->tournament, $game->playoffPair->round);
-        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $game->playoffPair->pair . ')' : '';
+        $roundText = TextUtils::playoffRound(
+            $personalGamePlayoff->playoffPair->tournament,
+            $personalGamePlayoff->playoffPair->round
+        );
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $personalGamePlayoff->playoffPair->pair . ')' : '';
         return view('site.personal.game_protocol', [
-            'title' => $game->homePlayer->name . ' vs. ' . $game->awayPlayer->name . ' : ' . $roundText . $pairText,
-            'game'  => $game,
+            'title' => $personalGamePlayoff->homePlayer->name . ' vs. ' . $personalGamePlayoff->awayPlayer->name . ' : ' . $roundText . $pairText,
+            'game'  => $personalGamePlayoff,
         ]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
+     * @param Request                   $request
+     * @param PersonalTournament        $personalTournament
+     * @param PersonalTournamentPlayoff $personalTournamentPlayoff
+     *
      * @return Factory|View
      */
-    public function gameAdd(StoreRequest $request, int $tournamentId, int $pairId)
+    public function gameAdd(
+        Request                   $request,
+        PersonalTournament        $personalTournament,
+        PersonalTournamentPlayoff $personalTournamentPlayoff
+    )
     {
-        /** @var PersonalTournamentPlayoff $pair */
-        $pair = PersonalTournamentPlayoff::find($pairId);
-        if (is_null($pair) || $pair->tournament_id !== $tournamentId) {
+        if ($personalTournamentPlayoff->tournament_id !== $personalTournament->id) {
             abort(404);
         }
 
-        $view = !$pair->player_one_id || !$pair->player_two_id
+        $view = !$personalTournamentPlayoff->player_one_id || !$personalTournamentPlayoff->player_two_id
             ? 'site.personal.playoff.incomplete_pair_protocol'
             : 'site.personal.game_form';
 
-        $roundText = TextUtils::playoffRound($pair->tournament, $pair->round);
-        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $pair->pair . ')' : '';
+        $roundText = TextUtils::playoffRound($personalTournamentPlayoff->tournament, $personalTournamentPlayoff->round);
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $personalTournamentPlayoff->pair . ')' : '';
         return view($view, [
             'title' => $roundText . $pairText,
-            'pair'  => $pair,
+            'pair'  => $personalTournamentPlayoff,
             'game'  => null,
         ]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $pairId
-     * @param int          $gameId
+     * @param Request                   $request
+     * @param PersonalTournament        $personalTournament
+     * @param PersonalTournamentPlayoff $personalTournamentPlayoff
+     * @param PersonalGamePlayoff       $personalGamePlayoff
+     *
      * @return Factory|View
      */
-    public function gameEdit(StoreRequest $request, int $tournamentId, int $pairId, int $gameId)
+    public function gameEdit(
+        Request                   $request,
+        PersonalTournament        $personalTournament,
+        PersonalTournamentPlayoff $personalTournamentPlayoff,
+        PersonalGamePlayoff       $personalGamePlayoff
+    )
     {
-        /** @var PersonalGamePlayoff $game */
-        $game = PersonalGamePlayoff::with(['homePlayer', 'awayPlayer'])
-            ->find($gameId);
-        if (is_null($game) || $game->playoff_pair_id !== $pairId || $game->playoffPair->tournament_id !== $tournamentId) {
+        if (
+            $personalGamePlayoff->playoff_pair_id !== $personalTournamentPlayoff->id
+            || $personalGamePlayoff->playoffPair->tournament_id !== $personalTournament->id
+        ) {
             abort(404);
         }
 
-        $roundText = TextUtils::playoffRound($game->playoffPair->tournament, $game->playoffPair->round);
-        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $game->playoffPair->pair . ')' : '';
+        $roundText = TextUtils::playoffRound(
+            $personalGamePlayoff->playoffPair->tournament,
+            $personalGamePlayoff->playoffPair->round
+        );
+        $pairText = strstr($roundText, 'финала') ? ' (пара ' . $personalGamePlayoff->playoffPair->pair . ')' : '';
         return view('site.personal.game_form', [
             'title' => $roundText . $pairText,
-            'pair'  => $game->playoffPair,
-            'game'  => $game,
+            'pair'  => $personalGamePlayoff->playoffPair,
+            'game'  => $personalGamePlayoff,
         ]);
     }
 }

@@ -100,16 +100,16 @@
             if ($game) {
                 $saveGameUrl = action(
                     'Ajax\PersonalController@editPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                     ['personalTournament' => $pair->tournament, 'personalTournamentPlayoff' => $pair, 'personalGamePlayoff' => $game]
                  );
                 $shareUrl = action(
                     'Ajax\PersonalController@sharePlayoffResult',
-                    ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id, 'gameId' => $game->id]
+                    ['personalTournament' => $pair->tournament, 'personalTournamentPlayoff' => $pair, 'personalGamePlayoff' => $game]
                 );
              } else {
                 $saveGameUrl = action(
                     'Ajax\PersonalController@createPlayoffGame',
-                     ['tournamentId' => $pair->tournament_id, 'pairId' => $pair->id]
+                     ['personalTournament' => $pair->tournament, 'personalTournamentPlayoff' => $pair]
                  );
                 $method = 'put';
              }
@@ -117,12 +117,12 @@
             if ($game) {
                 $shareUrl = action(
                     'Ajax\PersonalController@shareRegularResult',
-                    ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                    ['personalTournament' => $game->tournament, 'personalGameRegular' => $game]
                 );
             }
             $saveGameUrl = action(
                 'Ajax\PersonalController@editRegularGame',
-                ['tournamentId' => $game->tournament_id, 'gameId' => $game->id]
+                ['personalTournament' => $game->tournament, 'personalGameRegular' => $game]
             );
         }
     @endphp

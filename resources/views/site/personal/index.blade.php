@@ -36,7 +36,7 @@
                                     @endforeach
                                 </div>
                             @endif
-                            <a href="{{ route('personal.tournament', ['tournamentId' => $tournament->id]) }}">
+                            <a href="{{ route('personal.tournament', ['personalTournament' => $tournament]) }}">
                                 {{ $tournament->title }}
                             </a>
                             <span class="badge badge-pill badge-secondary text-uppercase">

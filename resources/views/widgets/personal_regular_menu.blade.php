@@ -3,7 +3,7 @@
         @if (Route::currentRouteName() === 'personal.tournament.regular')
             <a class="nav-link active" href="#">Статистика</a>
         @else
-            <a class="nav-link" href="{{ route('personal.tournament.regular', ['tournamentId' => $tournament->id]) }}">
+            <a class="nav-link" href="{{ route('personal.tournament.regular', ['personalTournament' => $tournament]) }}">
                 Статистика
             </a>
         @endif
@@ -13,7 +13,7 @@
             <a class="nav-link active" href="#">Расписание</a>
         @else
             <a class="nav-link"
-               href="{{ route('personal.tournament.regular.games', ['tournamentId' => $tournament->id]) }}">
+               href="{{ route('personal.tournament.regular.games', ['personalTournament' => $tournament]) }}">
                 Расписание
             </a>
         @endif
@@ -25,7 +25,7 @@
                     <a class="nav-link active" href="#">Расписание ВК</a>
                 @else
                     <a class="nav-link"
-                       href="{{ route('personal.tournament.regular.schedule', ['tournamentId' => $tournament->id]) }}">
+                       href="{{ route('personal.tournament.regular.schedule', ['personalTournament' => $tournament]) }}">
                         Расписание ВК
                     </a>
                 @endif

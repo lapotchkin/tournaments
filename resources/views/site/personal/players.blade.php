@@ -28,7 +28,7 @@
                                     @auth
                                         @if(Auth::user()->isAdmin())
                                             <a class="btn btn-primary btn-sm"
-                                               href="{{ route('personal.tournament.player', ['tournamentId' => $tournament->id, 'playerId' => $player->player_id]) }}">
+                                               href="{{ route('personal.tournament.player', ['personalTournament' => $tournament, 'player' => $player->player]) }}">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         @endif
@@ -90,7 +90,7 @@
                     TRNMNT_sendData({
                         selector: '#player-add',
                         method: 'put',
-                        url: '{{ action('Ajax\PersonalController@addPlayer', ['tournamentId' => $tournament->id])}}',
+                        url: '{{ action('Ajax\PersonalController@addPlayer', ['personalTournament' => $tournament->id])}}',
                         success: function (response) {
                             const $division = $('#division');
                             const division = $division.val();
@@ -110,7 +110,7 @@
                                 + (playerData[1] ? '<small>' + playerData[1].replace(')', '') + '</small>' : '')
                                 + '</td>'
                             );
-                            $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ route('personal.tournament', ['tournamentId' => $tournament->id]) }}/player/' + playerId + '"><i class="fas fa-edit"></i></a></td>');
+                            $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ route('personal.tournament', ['personalTournament' => $tournament]) }}/player/' + playerId + '"><i class="fas fa-edit"></i></a></td>');
                             $tbody.append($row);
                             $option.remove();
                             $player.val('');

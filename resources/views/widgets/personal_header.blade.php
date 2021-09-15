@@ -6,7 +6,7 @@
     </span>
     @auth
         @if(Auth::user()->isAdmin())
-            <a class="btn btn-primary" href="{{ route('personal.tournament.edit', ['tournamentId' => $tournament->id]) }}">
+            <a class="btn btn-primary" href="{{ route('personal.tournament.edit', ['personalTournament' => $tournament]) }}">
                 <i class="fas fa-edit"></i>
             </a>
         @endif

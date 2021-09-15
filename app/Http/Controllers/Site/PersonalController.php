@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Http\Requests\StoreRequest;
 use App\Models\App;
 use App\Models\Club;
 use App\Models\League;
@@ -29,10 +28,11 @@ class PersonalController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
+     * @param Request $request
+     *
      * @return Factory|View
      */
-    public function new(StoreRequest $request)
+    public function create(Request $request)
     {
         return view('site.personal.tournament_editor', [
             'title'      => 'Новый турнир',
@@ -44,44 +44,33 @@ class PersonalController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     *
      * @return Factory|View
      */
-    public function edit(StoreRequest $request, int $tournamentId)
+    public function edit(Request $request, PersonalTournament $personalTournament)
     {
-        /** @var PersonalTournament $tournament */
-        $tournament = PersonalTournament::find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
         return view('site.personal.tournament_editor', [
-            'title'      => $tournament->title . ': Редактировать турнир',
+            'title'      => $personalTournament->title . ': Редактировать турнир',
             'platforms'  => Platform::all(),
             'apps'       => App::all(),
             'leagues'    => League::all(),
-            'tournament' => $tournament,
+            'tournament' => $personalTournament,
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     *
      * @return Factory|View
      */
-    public function players(Request $request, int $tournamentId)
+    public function players(Request $request, PersonalTournament $personalTournament)
     {
-        /** @var PersonalTournament $tournament */
-        $tournament = PersonalTournament::with(['tournamentPlayers', 'tournamentPlayers.player', 'winners.player'])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
         $divisions = [];
         $playerIds = [];
-        foreach ($tournament->tournamentPlayers as $tournamentPlayer) {
+        foreach ($personalTournament->tournamentPlayers as $tournamentPlayer) {
             $playerIds[] = $tournamentPlayer->player_id;
             $divisions[$tournamentPlayer->division][] = $tournamentPlayer;
         }
@@ -96,34 +85,39 @@ class PersonalController extends Controller
 
         if (strstr($request->path(), 'copypaste')) {
             return view('site.personal.copypaste', [
-                'tournament' => $tournament,
+                'tournament' => $personalTournament,
                 'divisions'  => $divisions,
             ]);
         }
 
         $nonTournamentPlayers = Player::whereNotIn('id', $playerIds)
-            ->where('platform_id', $tournament->platform_id)
+            ->where('platform_id', $personalTournament->platform_id)
             ->orderBy('tag')
             ->get();
 
         return view('site.personal.players', [
-            'tournament'           => $tournament,
+            'tournament'           => $personalTournament,
             'divisions'            => $divisions,
             'nonTournamentPlayers' => $nonTournamentPlayers,
         ]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $playerId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     * @param Player             $player
+     *
      * @return Factory|View
      */
-    public function player(StoreRequest $request, int $tournamentId, int $playerId)
+    public function player(
+        Request            $request,
+        PersonalTournament $personalTournament,
+        Player             $player
+    )
     {
         /** @var PersonalTournamentPlayer $tournamentPlayer */
-        $tournamentPlayer = PersonalTournamentPlayer::where('tournament_id', $tournamentId)
-            ->where('player_id', $playerId)
+        $tournamentPlayer = PersonalTournamentPlayer::where('tournament_id', $personalTournament->id)
+            ->where('player_id', $player->id)
             ->first();
 
         if (is_null($tournamentPlayer)) {
@@ -143,25 +137,20 @@ class PersonalController extends Controller
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     *
      * @return Factory|View
      */
-    public function map(StoreRequest $request, int $tournamentId)
+    public function map(Request $request, PersonalTournament $personalTournament)
     {
-        /** @var PersonalTournament $tournament */
-        $tournament = PersonalTournament::find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
         $points = [];
-        foreach ($tournament->players as $player) {
+        foreach ($personalTournament->players as $player) {
             $points[] = [$player->lat, $player->lon, $player->name . ' (' . $player->city . ')'];
         }
 
         return view('site.personal.map', [
-            'tournament' => $tournament,
+            'tournament' => $personalTournament,
             'points'     => $points,
         ]);
     }

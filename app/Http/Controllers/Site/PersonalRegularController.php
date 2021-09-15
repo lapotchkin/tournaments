@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Http\Requests\StoreRequest;
 use App\Models\PersonalGameRegular;
 use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPosition;
@@ -14,35 +13,31 @@ use Illuminate\View\View;
 
 /**
  * Class PersonalRegularController
+ *
  * @package App\Http\Controllers\Site
  */
 class PersonalRegularController extends Controller
 {
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     *
      * @return Factory|View
      * @throws Exception
      */
-    public function index(Request $request, int $tournamentId)
+    public function index(Request $request, PersonalTournament $personalTournament)
     {
-        /** @var PersonalTournament $tournament */
-        $tournament = PersonalTournament::with(['winners.player'])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
         $toDate = $request->input('toDate');
 
-        $firstPlayedGameDate = PersonalTournamentPosition::readFirstGameDate($tournamentId);
+        $firstPlayedGameDate = PersonalTournamentPosition::readFirstGameDate($personalTournament->id);
         $dateToCompare = !is_null($toDate)
             ? $toDate . ' 00:00:00'
-            : PersonalTournamentPosition::readLastGameDate($tournamentId);
+            : PersonalTournamentPosition::readLastGameDate($personalTournament->id);
 
-        $currentPosition = PersonalTournamentPosition::readPosition($tournamentId);
+        $currentPosition = PersonalTournamentPosition::readPosition($personalTournament->id);
         $previousPosition = null;
         if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
-            $previousPosition = PersonalTournamentPosition::readPosition($tournamentId, $dateToCompare);
+            $previousPosition = PersonalTournamentPosition::readPosition($personalTournament->id, $dateToCompare);
         }
         $positions = self::_getPosition($currentPosition, $previousPosition);
 
@@ -52,34 +47,25 @@ class PersonalRegularController extends Controller
         }
 
         return view('site.personal.regular.index', [
-            'tournament'    => $tournament,
+            'tournament'    => $personalTournament,
             'divisions'     => $divisions,
             'dateToCompare' => $dateToCompare,
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     *
      * @return Factory|View
      */
-    public function games(Request $request, int $tournamentId)
+    public function games(Request $request, PersonalTournament $personalTournament)
     {
-        /** @var PersonalTournament $tournament */
-        $tournament = PersonalTournament::with([
-            'regularGames.homePlayer',
-            'regularGames.awayPlayer',
-            'winners.player',
-        ])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
+        $personalTournament->load(['regularGames.homePlayer', 'regularGames.awayPlayer', 'winners.player']);
         $rounds = [];
         $divisions = [];
-        foreach ($tournament->regularGames as $regularGame) {
-            $division = $regularGame->homePlayer->getDivision($tournamentId);
+        foreach ($personalTournament->regularGames as $regularGame) {
+            $division = $regularGame->homePlayer->getDivision($personalTournament->id);
             if (!in_array($division, $divisions)) {
                 $divisions[] = $division;
             }
@@ -87,108 +73,96 @@ class PersonalRegularController extends Controller
         }
 
         return view('site.personal.regular.games', [
-            'tournament' => $tournament,
+            'tournament' => $personalTournament,
             'rounds'     => $rounds,
             'divisions'  => $divisions,
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
-     * @param int     $gameId
+     * @param Request             $request
+     * @param PersonalTournament  $personalTournament
+     * @param PersonalGameRegular $personalGameRegular
+     *
      * @return Factory|View
      */
-    public function game(Request $request, int $tournamentId, int $gameId)
+    public function game(
+        Request             $request,
+        PersonalTournament  $personalTournament,
+        PersonalGameRegular $personalGameRegular
+    )
     {
-        /** @var PersonalGameRegular $game */
-        $game = PersonalGameRegular::with(['homePlayer', 'awayPlayer'])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        $personalGameRegular->load(['homePlayer', 'awayPlayer']);
+        if ($personalGameRegular->tournament_id !== $personalTournament->id) {
             abort(404);
         }
 
         return view('site.personal.game_protocol', [
-            'title' => $game->homePlayer->name . ' vs. ' . $game->awayPlayer->name . ' (Тур ' . $game->round . ')',
-            'game'  => $game,
+            'title' => $personalGameRegular->homePlayer->name . ' vs. ' . $personalGameRegular->awayPlayer->name . ' (Тур ' . $personalGameRegular->round . ')',
+            'game'  => $personalGameRegular,
         ]);
     }
 
     /**
-     * @param StoreRequest $request
-     * @param int          $tournamentId
-     * @param int          $gameId
+     * @param Request             $request
+     * @param PersonalTournament  $personalTournament
+     * @param PersonalGameRegular $personalGameRegular
+     *
      * @return Factory|View
      */
-    public function gameEdit(StoreRequest $request, int $tournamentId, int $gameId)
+    public function gameEdit(
+        Request             $request,
+        PersonalTournament  $personalTournament,
+        PersonalGameRegular $personalGameRegular
+    )
     {
-        /** @var PersonalGameRegular $game */
-        $game = PersonalGameRegular::with([
-            'homePlayer',
-            'awayPlayer',
-        ])
-            ->find($gameId);
-        if (is_null($game) || $game->tournament_id !== $tournamentId) {
+        $personalGameRegular->load(['homePlayer', 'awayPlayer']);
+        if ($personalGameRegular->tournament_id !== $personalTournament->id) {
             abort(404);
         }
 
         return view('site.personal.game_form', [
-            'title' => $game->homePlayer->name . ' vs. ' . $game->awayPlayer->name . ' (Тур ' . $game->round . ')',
+            'title' => $personalGameRegular->homePlayer->name . ' vs. ' . $personalGameRegular->awayPlayer->name . ' (Тур ' . $personalGameRegular->round . ')',
             'pair'  => null,
-            'game'  => $game,
+            'game'  => $personalGameRegular,
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int     $tournamentId
+     * @param Request            $request
+     * @param PersonalTournament $personalTournament
+     *
      * @return Factory|View
      */
-    public function schedule(Request $request, int $tournamentId)
+    public function schedule(Request $request, PersonalTournament $personalTournament)
     {
-        /** @var PersonalTournament $tournament */
-        $tournament = PersonalTournament::with([
-            'regularGames.homePlayer',
-            'regularGames.awayPlayer',
-            'winners.player',
-        ])
-            ->find($tournamentId);
-        if (is_null($tournament)) {
-            abort(404);
-        }
-
+        $personalTournament->load(['regularGames.homePlayer', 'regularGames.awayPlayer', 'winners.player']);
         $rounds = [];
-        foreach ($tournament->regularGames as $index => $regularGame) {
-            //if (
-            //    $index > 0
-            //    && (
-            //        $tournament->regularGames[$index - 1]->home_player_id === $tournament->regularGames[$index]->away_player_id
-            //        && $tournament->regularGames[$index - 1]->away_player_id === $tournament->regularGames[$index]->home_player_id
-            //    )
-            //) {
-            $rounds[$regularGame->round][$regularGame->homePlayer->getDivision($tournamentId)][] = $regularGame;
-            //}
+        foreach ($personalTournament->regularGames as $regularGame) {
+            $rounds[$regularGame->round][$regularGame->homePlayer->getDivision($personalTournament->id)][] = $regularGame;
         }
 
         return view('site.personal.regular.schedule', [
-            'tournament' => $tournament,
+            'tournament' => $personalTournament,
             'rounds'     => $rounds,
         ]);
     }
 
     /**
      * @param $prevPlace
+     *
      * @return string
      */
     private static function _getPrevPlace($prevPlace)
+    : string
     {
         if ($prevPlace !== '—' && $prevPlace > 0) {
-            return "<span class='text-success text-nowrap'>{$prevPlace}<i class='fas fa-long-arrow-alt-up'></i></span>";
+            return "<span class='text-success text-nowrap'>$prevPlace<i class='fas fa-long-arrow-alt-up'></i></span>";
         } elseif ($prevPlace === 0) {
             return '<i class="fas fa-arrows-alt-h"></i>';
         } elseif ($prevPlace < 0) {
             $prevPlace = str_replace('-', '', $prevPlace);
-            return "<span class='text-danger text-nowrap'>{$prevPlace}<i class='fas fa-long-arrow-alt-down'></i></span>";
+            return "<span class='text-danger text-nowrap'>$prevPlace<i class='fas fa-long-arrow-alt-down'></i></span>";
         }
         return '<span class="text-primary"><i class="fas fa-arrow-right"></i></span>';
     }
@@ -196,10 +170,12 @@ class PersonalRegularController extends Controller
     /**
      * @param array      $currentPosition
      * @param array|null $previousPosition
+     *
      * @return array
      * @throws Exception
      */
     private static function _getPosition(array $currentPosition, array $previousPosition = null)
+    : array
     {
         $previousPlaces = [];
         if (!is_null($previousPosition)) {

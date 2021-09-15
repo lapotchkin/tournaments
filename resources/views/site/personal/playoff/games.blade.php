@@ -69,17 +69,17 @@
                                     <div class="col-9 text-center">
                                         @if(!is_null($pair))
                                             @foreach($pair->games as $game)
-                                                <a href="{{ route('personal.tournament.playoff.game.edit', ['tournamentId' => $tournament->id, 'pairId' => $pair->id, 'gameId' => $game->id]) }}"
+                                                <a href="{{ route('personal.tournament.playoff.game.edit', ['personalTournament' => $tournament, 'personalTournamentPlayoff' => $pair, 'personalGamePlayoff' => $game]) }}"
                                                    class="btn btn-sm {{ $game->home_score > $game->away_score ? 'btn-danger' : 'btn-warning' }}">
                                                     {{ $game->home_score }}:{{ $game->away_score }}
                                                 </a>
                                             @endforeach
-                                            <a href="{{ route('personal.tournament.playoff.game.add', ['tournamentId' => $tournament->id, 'pairId' => $pair->id]) }}"
+                                            <a href="{{ route('personal.tournament.playoff.game.add', ['personalTournament' => $tournament, 'personalTournamentPlayoff' => $pair]) }}"
                                                class="btn btn-sm btn-success">
                                                 <i class="fas fa-plus"></i>
                                             </a>
                                         @else
-                                            <a href="{{ route('personal.tournament.playoff.games', ['tournamentId' => $tournament->id]) }}"
+                                            <a href="{{ route('personal.tournament.playoff.games', ['personalTournament' => $tournament]) }}"
                                                class="btn btn-sm btn-success addGame" style="display:none;">
                                                 <i class="fas fa-plus"></i>
                                             </a>
@@ -153,7 +153,7 @@
         $(document).ready(function () {
             TRNMNT_playoffModule.init(
                 {
-                    createPair: '{{ action('Ajax\PersonalController@createPair', ['tournamentId' => $tournament->id]) }}',
+                    createPair: '{{ action('Ajax\PersonalController@createPair', ['personalTournament' => $tournament]) }}',
                 },
                 'player'
             );

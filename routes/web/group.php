@@ -11,7 +11,7 @@
 Route::get('/group', 'Site\GroupController@index')
     ->name('group');
 //The form for creating a new tournament
-Route::get('/group/new', 'Site\GroupController@new')
+Route::get('/group/new', 'Site\GroupController@create')
     ->middleware('can:create,App\Models\GroupTournament')
     ->name('group.new');
 //The list of the tournament teams

@@ -108,14 +108,14 @@
                                     </td>
                                     <td class="text-right">
                                         <a class="btn btn-sm btn-primary"
-                                           href="{{ route('personal.tournament.regular.game', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}">
+                                           href="{{ route('personal.tournament.regular.game', ['personalTournament' => $tournament, 'personalGameRegular' => $game]) }}">
                                             <i class="fas fa-gamepad"></i> протокол
                                         </a>
                                     </td>
                                     @auth
                                         @if(Auth::user()->isAdmin())
                                             <td class="text-right">
-                                                <a href="{{ route('personal.tournament.regular.game.edit', ['tournamentId' => $tournament->id, 'gameId' => $game->id]) }}"
+                                                <a href="{{ route('personal.tournament.regular.game.edit', ['personalTournament' => $tournament, 'personalGameRegular' => $game]) }}"
                                                    class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
                                             </td>
                                         @endif

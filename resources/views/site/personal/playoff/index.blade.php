@@ -59,7 +59,7 @@
                                     <div class="col-12 text-center">
                                         @if(!is_null($pair))
                                             @foreach($pair->games as $game)
-                                                <a href="{{ route('personal.tournament.playoff.game', ['tournamentId' => $tournament->id, 'pairId' => $pair->id, 'gameId' => $game->id]) }}"
+                                                <a href="{{ route('personal.tournament.playoff.game', ['personalTournament' => $tournament, 'personalTournamentPlayoff' => $pair, 'personalGamePlayoff' => $game]) }}"
                                                    class="btn btn-sm {{ $game->home_score > $game->away_score ? 'btn-danger' : 'btn-warning' }}">
                                                     {{ $game->home_score }}:{{ $game->away_score }}
                                                 </a>

@@ -156,7 +156,7 @@ Breadcrumbs::for('personal.tournament', function ($trail, PersonalTournament $to
     $trail->parent('personal');
     $trail->push(
         '<span><i class="fab fa-' . $tournament->platform->icon . '"></i> ' . $tournament->title . '</span>',
-        route('personal.tournament', ['tournamentId' => $tournament->id])
+        route('personal.tournament', ['personalTournament' => $tournament])
     );
 });
 //Personal > Tournament > Map
@@ -164,7 +164,7 @@ Breadcrumbs::for('personal.tournament.map', function ($trail, PersonalTournament
     $trail->parent('personal.tournament', $tournament);
     $trail->push(
         'Карта игроков',
-        route('personal.tournament.map', ['tournamentId' => $tournament->id])
+        route('personal.tournament.map', ['personalTournament' => $tournament])
     );
 });
 //Personal > Tournament > Editor
@@ -172,7 +172,7 @@ Breadcrumbs::for('personal.tournament.edit', function ($trail, PersonalTournamen
     $trail->parent('personal.tournament', $tournament);
     $trail->push(
         'Редактировать турнир',
-        route('personal.tournament.edit', ['tournamentId' => $tournament->id])
+        route('personal.tournament.edit', ['personalTournament' => $tournament])
     );
 });
 //Personal > Tournament > Player
@@ -182,7 +182,7 @@ Breadcrumbs::for('personal.tournament.player', function ($trail, PersonalTournam
         $title,
         route(
             'personal.tournament.player',
-            ['tournamentId' => $tournamentPlayer->tournament->id, 'playerId' => $tournamentPlayer->player_id]
+            ['personalTournament' => $tournamentPlayer->tournament, 'player' => $tournamentPlayer->player]
         )
     );
 });
@@ -191,7 +191,7 @@ Breadcrumbs::for('personal.tournament.copypaste', function ($trail, PersonalTour
     $trail->parent('personal.tournament', $tournament);
     $trail->push(
         'Данные для ВК',
-        route('personal.tournament.copypaste', ['tournamentId' => $tournament->id])
+        route('personal.tournament.copypaste', ['personalTournament' => $tournament])
     );
 });
 //Personal > Tournament > Regular
@@ -199,7 +199,7 @@ Breadcrumbs::for('personal.tournament.regular', function ($trail, PersonalTourna
     $trail->parent('personal.tournament', $tournament);
     $trail->push(
         'Чемпионат',
-        route('personal.tournament.regular', ['tournamentId' => $tournament->id])
+        route('personal.tournament.regular', ['personalTournament' => $tournament])
     );
 });
 //Personal > Tournament > Regular > Games
@@ -207,7 +207,7 @@ Breadcrumbs::for('personal.tournament.regular.games', function ($trail, Personal
     $trail->parent('personal.tournament.regular', $tournament);
     $trail->push(
         'Расписание',
-        route('personal.tournament.regular.games', ['tournamentId' => $tournament->id])
+        route('personal.tournament.regular.games', ['personalTournament' => $tournament])
     );
 });
 //Personal > Tournament > Regular > Games > Game
@@ -217,7 +217,7 @@ Breadcrumbs::for('personal.tournament.regular.game', function ($trail, PersonalG
         'Тур ' . $game->round . ': ' . $game->homePlayer->tag . ' vs. ' . $game->awayPlayer->tag,
         route(
             'personal.tournament.regular.game',
-            ['tournamentId' => $game->tournament->id, 'gameId' => $game->id]
+            ['personalTournament' => $game->tournament, 'personalGameRegular' => $game]
         )
     );
 });
@@ -226,7 +226,7 @@ Breadcrumbs::for('personal.tournament.regular.schedule', function ($trail, Perso
     $trail->parent('personal.tournament.regular', $tournament);
     $trail->push(
         'Расписание ВК',
-        route('personal.tournament.regular.schedule', ['tournamentId' => $tournament->id])
+        route('personal.tournament.regular.schedule', ['personalTournament' => $tournament])
     );
 });
 //Personal > Tournament > Playoff
@@ -234,7 +234,7 @@ Breadcrumbs::for('personal.tournament.playoff', function ($trail, PersonalTourna
     $trail->parent('personal.tournament', $tournament);
     $trail->push(
         'Плей-офф',
-        route('personal.tournament.playoff', ['tournamentId' => $tournament->id])
+        route('personal.tournament.playoff', ['personalTournament' => $tournament])
     );
 });
 //Personal > Tournament > Playoff > Game
@@ -246,7 +246,7 @@ Breadcrumbs::for('personal.tournament.playoff.game', function ($trail, PersonalG
         $roundText . $pairText . ': ' . $game->homePlayer->tag . ' vs. ' . $game->awayPlayer->tag,
         route(
             'personal.tournament.playoff.game',
-            ['tournamentId' => $game->tournament->id, 'pairId' => $game->playoff_pair_id, 'gameId' => $game->id]
+            ['personalTournament' => $game->tournament, 'personalTournamentPlayoff' => $game->playoffPair, 'personalGamePlayoff' => $game]
         )
     );
 });
@@ -257,7 +257,7 @@ Breadcrumbs::for('personal.tournament.playoff.games', function ($trail, Personal
         'Расписание',
         route(
             'personal.tournament.playoff.games',
-            ['tournamentId' => $tournament->id]
+            ['personalTournament' => $tournament]
         )
     );
 });
@@ -270,7 +270,7 @@ Breadcrumbs::for('personal.tournament.playoff.game.add', function ($trail, Perso
         $roundText . $pairText,
         route(
             'personal.tournament.playoff.game.add',
-            ['tournamentId' => $pair->tournament->id, 'pairId' => $pair->id]
+            ['personalTournament' => $pair->tournament, 'personalTournamentPlayoff' => $pair]
         )
     );
 });

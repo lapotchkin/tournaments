@@ -54,8 +54,8 @@
                 </div>
                 <div class="form-group">
                     <label for="startedAt">Дата начала турнира</label>
-                    <input type="date" id="startedAt" class="form-control" name="startedAt" readonly
-                           value="{{ !is_null($tournament) ? $tournament->startedAt : '' }}">
+                    <input id="startedAt" class="form-control" name="startedAt" readonly
+                           value="{{ !is_null($tournament) ? date('Y-m-d', strtotime($tournament->startedAt)) : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
@@ -95,6 +95,12 @@
                             Да
                         </option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="playoff_limit">Количество участников плей-офф</label>
+                    <input type="text" id="playoff_limit" class="form-control" name="playoff_limit"
+                           value="{{ !is_null($tournament) ? $tournament->playoff_limit : '' }}">
+                    <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">

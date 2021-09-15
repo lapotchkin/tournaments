@@ -42,7 +42,7 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('personal.tournament', ['tournamentId' => $stats->id]) }}">{{ $stats->name }}</a>
+                        <a href="{{ route('personal.tournament', ['personalTournament' => $stats->id]) }}">{{ $stats->name }}</a>
                     </td>
                     <td class="text-right">{{ $stats->wins }}</td>
                     <td class="text-right">{{ $stats->lose }}</td>
