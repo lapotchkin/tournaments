@@ -2,8 +2,8 @@
     <td>
         @if($teamPlayer)
             @switch($teamPlayer->isCaptain)
-                @case(1)<span class="badge badge-success">C</span>@break
-                @case(2)<span class="badge badge-warning">A</span>@break
+                @case(1)<span class="badge bg-success">C</span>@break
+                @case(2)<span class="badge bg-warning">A</span>@break
             @endswitch
         @endif
     </td>
@@ -16,7 +16,7 @@
             <small>#{name}</small>
         @endif
     </td>
-    <td class="text-right">
+    <td class="text-end">
         @can('update', $team)
             <div class="btn-group mr-2 captain-toggle" role="group" aria-label="First group">
                 <button type="button" data-captain="1"

@@ -25,7 +25,7 @@
                         <div
                                 class="media-body pb-2 ml-2 mb-0 lh-125 {{ !$loop->last ? 'border-bottom border-gray' : '' }}">
                             @if(count($tournament->winners))
-                                <div class="float-right">
+                                <div class="float-end">
                                     @foreach($tournament->winners as $winner)
                                         <span class="fa-stack" style="vertical-align: top;">
                                             <i class="fas fa-circle fa-stack-2x"></i>
@@ -39,7 +39,7 @@
                             <a href="{{ route('personal.tournament', ['personalTournament' => $tournament]) }}">
                                 {{ $tournament->title }}
                             </a>
-                            <span class="badge badge-pill badge-secondary text-uppercase">
+                            <span class="badge rounded-pill bg-secondary text-uppercase">
                                 {{ $tournament->league_id }}
                             </span>
                             <br>

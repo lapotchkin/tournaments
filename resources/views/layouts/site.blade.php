@@ -99,7 +99,7 @@
 {{--    <div class="container">--}}
 {{--        <div class="row">--}}
 {{--            <div class="col-sm">&copy; Киберспортивная лига {{ date('Y') }}</div>--}}
-{{--            <div class="col-sm text-right">Работает на <a href="https://laravel.com">Laravel</a></div>--}}
+{{--            <div class="col-sm text-end">Работает на <a href="https://laravel.com">Laravel</a></div>--}}
 {{--        </div>--}}
 {{--    </div>--}}
 {{--</footer>--}}

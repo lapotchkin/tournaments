@@ -15,6 +15,7 @@ class GroupTournamentPosition
      * @return string|null
      */
     public static function readLastGameDate(int $tournamentId)
+    : ?string
     {
         $result = DB::table('groupGameRegular')
             ->select([
@@ -33,6 +34,7 @@ class GroupTournamentPosition
      * @return string|null
      */
     public static function readFirstGameDate(int $tournamentId)
+    : ?string
     {
         $result = DB::table('groupGameRegular')
             ->select([
@@ -50,14 +52,21 @@ class GroupTournamentPosition
     /**
      * @param int         $tournamentId
      * @param string|null $date
-     * @return mixed
+     *
+     * @return array
      */
     public static function readPosition(int $tournamentId, string $date = null)
+    : array
     {
-        $dateString = is_null($date) ? '' : "and playedAt <= '{$date}'";
-        $position = DB::select("
-            select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge badge-success\">', t.short_name, '</span>') as team,
+        $dateString = is_null($date) ? '' : "and playedAt <= '$date'";
+
+        return DB::select("
+            select
                 t.id as id,
+                t.name,
+                t.short_name,
+                0 isPlayer,
+                gTt.division as division,
                 (
                     if(w.wins > 0, w.wins, 0) +
                     if(wot.wins > 0, wot.wins, 0) +
@@ -73,109 +82,109 @@ class GroupTournamentPosition
                     if(lot.lose > 0, lot.lose, 0) +
                     if(lso.lose > 0, lso.lose, 0)
                 ) points,
-                if(w.wins > 0, w.wins, 0) wins,
+                if(w.wins > 0, w.wins, 0) as wins,
                 if(wot.wins > 0, wot.wins, 0) wins_ot,
                 if(wso.wins > 0, wso.wins, 0) wins_so,
                 if(lot.lose > 0, lot.lose, 0) lose_ot,
                 if(lso.lose > 0, lso.lose, 0) lose_so,
-                if(l.lose > 0, l.lose, 0) lose,
-                (ifnull(home_stats.goals_for, 0) + ifnull(away_stats.goals_for, 0)) goals,
-               (ifnull(home_stats.goals_against, 0) + ifnull(away_stats.goals_against, 0)) goals_against,
+                if(l.lose > 0, l.lose, 0) as lose,
+               (ifnull(home_stats.goals_for, 0) + ifnull(away_stats.goals_for, 0)) goals,
+               (ifnull(home_stats.goals_against, 0) + ifnull(away_stats.goals_against, 0)) as goals_against,
                (ifnull(home_stats.shot_for, 0) + ifnull(away_stats.shot_for, 0)) shots_for,
                (ifnull(home_stats.shot_against, 0) + ifnull(away_stats.shot_against, 0)) shots_against,
-               (ifnull(home_stats.penalty_for, 0) + ifnull(away_stats.penalty_for, 0)) penalty_for,
-               (ifnull(home_stats.penalty_for_success, 0) + ifnull(away_stats.penalty_for_success, 0)) penalty_for_success,
-               (ifnull(home_stats.penalty_against, 0) + ifnull(away_stats.penalty_against, 0)) penalty_against,
+               (ifnull(home_stats.penalty_for, 0) + ifnull(away_stats.penalty_for, 0)) as penalty_for,
+               (ifnull(home_stats.penalty_for_success, 0) + ifnull(away_stats.penalty_for_success, 0)) as penalty_for_success,
+               (ifnull(home_stats.penalty_against, 0) + ifnull(away_stats.penalty_against, 0)) as penalty_against,
                (ifnull(home_stats.penalty_against_success, 0) +
-                ifnull(away_stats.penalty_against_success, 0)) penalty_against_success,
+                ifnull(away_stats.penalty_against_success, 0)) as penalty_against_success,
                (ifnull(home_stats.faceoff_for, 0) + ifnull(away_stats.faceoff_for, 0)) /
                (ifnull(home_stats.faceoff_for, 0) + ifnull(away_stats.faceoff_for, 0) + ifnull(home_stats.faceoff_against, 0) +
                 ifnull(away_stats.faceoff_against, 0)) * 100 faceoff,
-               (ifnull(home_stats.hit_for, 0) + ifnull(away_stats.hit_for, 0)) hit_for,
-               (ifnull(home_stats.hit_against, 0) + ifnull(away_stats.hit_against, 0)) hit_against,
-               (ifnull(home_stats.shorthanded_goal, 0) + ifnull(away_stats.shorthanded_goal, 0)) shorthanded_goal,
-               (ifnull(home_stats.attack_time, 0) + ifnull(away_stats.attack_time, 0)) attack_time,
-               avg((ifnull(home_stats.pass_percent, 0) + ifnull(away_stats.pass_percent, 0)) / (if(home_stats.pass_percent is null, 0, 1) + if(away_stats.pass_percent is null, 0, 1))) pass_percent
+               (ifnull(home_stats.hit_for, 0) + ifnull(away_stats.hit_for, 0)) as hit_for,
+               (ifnull(home_stats.hit_against, 0) + ifnull(away_stats.hit_against, 0)) as hit_against,
+               (ifnull(home_stats.shorthanded_goal, 0) + ifnull(away_stats.shorthanded_goal, 0)) as shorthanded_goal,
+               (ifnull(home_stats.attack_time, 0) + ifnull(away_stats.attack_time, 0)) as attack_time,
+               avg((ifnull(home_stats.pass_percent, 0) + ifnull(away_stats.pass_percent, 0)) / (if(home_stats.pass_percent is null, 0, 1) + if(away_stats.pass_percent is null, 0, 1))) as pass_percent
             from team t
-            
+
                 left join (
                     select
                         count(1) wins,
                         if(home_score > away_score, home_team_id, away_team_id) winner_team_id
                     from groupGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 0)
                         and deletedAt is null
                     group by winner_team_id
                 ) w on t.id = w.winner_team_id
-            
+
                 left join (
                     select
                         count(1) wins,
                         if(home_score > away_score, home_team_id, away_team_id) winner_team_id
                     from groupGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 1 and isShootout = 0)
                         and deletedAt is null
                     group by winner_team_id
                 ) wot on t.id = wot.winner_team_id
-            
+
                 left join (
                     select
                         count(1) wins,
                         if(home_score > away_score, home_team_id, away_team_id) winner_team_id
                     from groupGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 1)
                         and deletedAt is null
                     group by winner_team_id
                 ) wso on t.id = wso.winner_team_id
-            
+
                 left join (
                     select
                         count(1) lose,
                         if(home_score < away_score, home_team_id, away_team_id) loser_team_id
                     from groupGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 1 and isShootout = 0)
                         and deletedAt is null
                     group by loser_team_id
                 ) lot on t.id = lot.loser_team_id
-            
+
                 left join (
                     select
                         count(1) lose,
                         if(home_score < away_score, home_team_id, away_team_id) loser_team_id
                     from groupGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 1)
                         and deletedAt is null
                     group by loser_team_id
                 ) lso on t.id = lso.loser_team_id
-            
+
                 left join (
                     select
                         count(1) lose,
                         if(home_score < away_score, home_team_id, away_team_id) loser_team_id
                     from groupGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 0)
                         and deletedAt is null
                     group by loser_team_id
                 ) l on t.id = l.loser_team_id
-            
+
                 left join (
                     select
                         home_team_id team_id,
@@ -196,12 +205,12 @@ class GroupTournamentPosition
                         avg(home_pass_percent) pass_percent
                     from groupGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and deletedAt is null
                     group by home_team_id
                 ) home_stats on home_stats.team_id = t.id
-            
+
                 left join (
                     select
                         away_team_id team_id,
@@ -222,7 +231,7 @@ class GroupTournamentPosition
                         avg(away_pass_percent) pass_percent
                     from groupGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and deletedAt is null
                     group by away_team_id
@@ -248,7 +257,5 @@ class GroupTournamentPosition
             $tournamentId,
             $tournamentId,
         ]);
-
-        return $position;
     }
 }

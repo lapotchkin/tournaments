@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Models\PersonalGameRegular;
 use App\Models\PersonalTournament;
 use App\Models\PersonalTournamentPosition;
+use App\Utils\TournamentResults;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class PersonalRegularController extends Controller
         if (!is_null($firstPlayedGameDate) && !is_null($dateToCompare) && $dateToCompare >= $firstPlayedGameDate) {
             $previousPosition = PersonalTournamentPosition::readPosition($personalTournament->id, $dateToCompare);
         }
-        $positions = self::_getPosition($currentPosition, $previousPosition);
+        $positions = TournamentResults::getPosition($currentPosition, $previousPosition);
 
         $divisions = [];
         foreach ($positions as $position) {
@@ -146,92 +147,5 @@ class PersonalRegularController extends Controller
             'tournament' => $personalTournament,
             'rounds'     => $rounds,
         ]);
-    }
-
-    /**
-     * @param $prevPlace
-     *
-     * @return string
-     */
-    private static function _getPrevPlace($prevPlace)
-    : string
-    {
-        if ($prevPlace !== '—' && $prevPlace > 0) {
-            return "<span class='text-success text-nowrap'>$prevPlace<i class='fas fa-long-arrow-alt-up'></i></span>";
-        } elseif ($prevPlace === 0) {
-            return '<i class="fas fa-arrows-alt-h"></i>';
-        } elseif ($prevPlace < 0) {
-            $prevPlace = str_replace('-', '', $prevPlace);
-            return "<span class='text-danger text-nowrap'>$prevPlace<i class='fas fa-long-arrow-alt-down'></i></span>";
-        }
-        return '<span class="text-primary"><i class="fas fa-arrow-right"></i></span>';
-    }
-
-    /**
-     * @param array      $currentPosition
-     * @param array|null $previousPosition
-     *
-     * @return array
-     * @throws Exception
-     */
-    private static function _getPosition(array $currentPosition, array $previousPosition = null)
-    : array
-    {
-        $previousPlaces = [];
-        if (!is_null($previousPosition)) {
-            $ppc = count($previousPosition);
-            for ($i = 0; $i < $ppc; $i += 1) {
-                if (!isset($previousPlaces[$previousPosition[$i]->id])) {
-                    $previousPlaces[$previousPosition[$i]->division][] = $previousPosition[$i]->id;
-                }
-            }
-        }
-
-        $currentPlaces = [];
-        $cpc = count($currentPosition);
-        for ($i = 0; $i < $cpc; $i += 1) {
-            if (!isset($currentPlaces[$currentPosition[$i]->id])) {
-                $currentPlaces[$currentPosition[$i]->division][] = $currentPosition[$i]->id;
-            }
-        }
-        $position = [];
-        for ($i = 0; $i < $cpc; $i += 1) {
-            $player = $currentPosition[$i];
-            $goalsDif = $player->goals - $player->goals_against;
-
-            $prevPlace = '—';
-            if (
-                isset($previousPlaces[$player->division])
-                && in_array($player->id, $previousPlaces[$player->division])
-            ) {
-                $prevPlace = (array_search($player->id, $previousPlaces[$player->division]) + 1)
-                    - (array_search($player->id, $currentPlaces[$player->division]) + 1);
-            }
-            $position[] = (object)[
-                'place'                  => array_search($player->id, $currentPlaces[$player->division]) + 1,
-                'prevPlace'              => self::_getPrevPlace($prevPlace),
-                'id'                     => $player->id,
-                'player'                 => $player->player,
-                'division'               => $player->division,
-                'games'                  => $player->games,
-                'points'                 => $player->points,
-                'wins'                   => $player->wins,
-                'wins_ot'                => $player->wins_ot,
-                'wins_so'                => $player->wins_so,
-                'lose_ot'                => $player->lose_ot,
-                'lose_so'                => $player->lose_so,
-                'lose'                   => $player->lose,
-                'goals_diff'             => $goalsDif > 0 ? '+' . $goalsDif : $goalsDif,
-                'goals'                  => $player->goals,
-                'goals_per_game'         => $player->games > 0
-                    ? round($player->goals / $player->games, 2)
-                    : 0.00,
-                'goals_against_per_game' => $player->games > 0
-                    ? round($player->goals_against / $player->games, 2)
-                    : 0.00,
-            ];
-        }
-
-        return $position;
     }
 }

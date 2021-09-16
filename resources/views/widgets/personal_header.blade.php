@@ -1,12 +1,13 @@
 <h2>
     <i class="fab fa-{{ $tournament->platform->icon }} @if($tournament->platform->icon === 'xbox') text-success @endif"></i>
     {{ $tournament->title }}
-    <span class="badge badge-pill badge-secondary text-uppercase">
+    <span class="badge rounded-pill bg-secondary text-uppercase">
         {{ $tournament->league_id }}
     </span>
     @auth
         @if(Auth::user()->isAdmin())
-            <a class="btn btn-primary" href="{{ route('personal.tournament.edit', ['personalTournament' => $tournament]) }}">
+            <a class="btn btn-primary"
+               href="{{ route('personal.tournament.edit', ['personalTournament' => $tournament]) }}">
                 <i class="fas fa-edit"></i>
             </a>
         @endif
@@ -26,11 +27,11 @@
         @foreach($tournament->winners as $winner)
             <div class="col-12 col-md-4">
                 <blockquote class="blockquote alert alert-{{ TextUtils::winnerClass($winner->place) }}">
-                    <footer class="blockquote-footer"><i class="fas fa-trophy"></i> {{ $winner->place }} место</footer>
-                    <p class="mb-0">
-                        <a href="{{ route('team', ['team' => $winner->player_id]) }}">{{ $winner->player->tag }}</a>
-                        <small>{{ $winner->player->name }}</small>
-                    </p>
+                    <div>
+                        <i class="fas fa-trophy"></i> {{ $winner->place }} место
+                    </div>
+                    <a href="{{ route('team', ['team' => $winner->player_id]) }}">{{ $winner->player->tag }}</a>
+                    <small>{{ $winner->player->name }}</small>
                 </blockquote>
             </div>
         @endforeach

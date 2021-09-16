@@ -9,7 +9,7 @@
     @widget('personalRegularMenu', ['tournament' => $tournament])
 
     <div class="mb-3 form-inline">
-        <select id="playersList" class="form-control mt-3 mr-2" name="players">
+        <select id="playersList" class="form-select mt-3 mr-2" name="players">
             <option value="0">Все игроки</option>
             @foreach($tournament->players as $player)
                 <option value="{{ $player->tag }}">
@@ -18,14 +18,14 @@
                 </option>
             @endforeach
         </select>
-        <select id="roundsList" class="form-control mt-3 mr-2" name="rounds">
+        <select id="roundsList" class="form-select mt-3 mr-2" name="rounds">
             <option value="0">Все туры</option>
             @foreach(array_keys($rounds) as $round)
                 <option value="round{{ $round }}">Тур {{ $round }}</option>
             @endforeach
         </select>
         @if(count($divisions) > 1)
-            <select id="divisionsList" class="form-control mt-3" name="divisions">
+            <select id="divisionsList" class="form-select mt-3" name="divisions">
                 <option value="0">Все группы</option>
                 @foreach($divisions as $division)
                     <option value="division{{ $division }}">Группа {{ TextUtils::divisionLetter($division) }}</option>
@@ -48,11 +48,11 @@
                             <tr>
                                 <th style="width: 2em;"></th>
                                 <th style="width: 6em;">Дата игры</th>
-                                <th class="text-right">Хозяева</th>
-                                <th class="text-right" style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
+                                <th class="text-end">Хозяева</th>
+                                <th class="text-end" style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
                                 <th style="width: 1em;">:</th>
                                 <th style="width: 3em;"><i class="fas fa-hockey-puck"></i></th>
-                                <th class="text-left">Гости</th>
+                                <th class="text-start">Гости</th>
                                 <th style="width: 8em;"></th>
                                 @auth
                                     @if(Auth::user()->isAdmin())
@@ -66,16 +66,16 @@
                                 <tr class="games {{ !is_null($game->home_score) ? 'table-success' : '' }}">
                                     <td>
                                     <span
-                                        class="badge badge-pill badge-warning">{{ $game->isOvertime ? 'О' : '' }}</span>
+                                        class="badge rounded-pill bg-warning">{{ $game->isOvertime ? 'О' : '' }}</span>
                                         <span
-                                            class="badge badge-pill badge-dark">{{ $game->isShootout ? 'Б' : '' }}</span>
+                                            class="badge rounded-pill bg-dark">{{ $game->isShootout ? 'Б' : '' }}</span>
                                         <span
-                                            class="badge badge-pill badge-danger">{{ $game->isTechnicalDefeat ? 'T' : '' }}</span>
+                                            class="badge rounded-pill bg-danger">{{ $game->isTechnicalDefeat ? 'T' : '' }}</span>
                                     </td>
                                     <td>
                                         {{ $game->playedAt ? (new \DateTime($game->playedAt))->format('d.m.Y') : '' }}
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-end">
                                         @if ($game->home_score > $game->away_score)
                                             <strong><a
                                                     href="{{ route('player', ['player' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a></strong>
@@ -83,19 +83,19 @@
                                             <a href="{{ route('player', ['player' => $game->home_player_id]) }}">{{ $game->homePlayer->tag }}</a>
                                         @endif
                                         <small>{{ $game->homePlayer->name }}</small>
-                                        <span class="badge badge-success text-uppercase">
+                                        <span class="badge bg-success text-uppercase">
                                         {{ $game->homePlayer->getClubId($game->tournament_id) }}
                                     </span>
                                     </td>
-                                    <td class="text-right">
-                                        {!! !is_null($game->home_score) ? '<span class="badge badge-dark badge-pill">' . $game->home_score . '</span>' : '—' !!}
+                                    <td class="text-end">
+                                        {!! !is_null($game->home_score) ? '<span class="badge bg-dark rounded-pill">' . $game->home_score . '</span>' : '—' !!}
                                     </td>
                                     <td class="text-center">:</td>
-                                    <td class="text-left">
-                                        {!! !is_null($game->away_score) ? '<span class="badge badge-dark badge-pill">' . $game->away_score . '</span>' : '—' !!}
+                                    <td class="text-start">
+                                        {!! !is_null($game->away_score) ? '<span class="badge bg-dark rounded-pill">' . $game->away_score . '</span>' : '—' !!}
                                     </td>
-                                    <td class="text-left">
-                                    <span class="badge badge-success text-uppercase">
+                                    <td class="text-start">
+                                    <span class="badge bg-success text-uppercase">
                                         {{ $game->awayPlayer->getClubId($game->tournament_id) }}
                                     </span>
                                         @if ($game->home_score < $game->away_score)
@@ -106,7 +106,7 @@
                                         @endif
                                         <small>{{ $game->awayPlayer->name }}</small>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-end">
                                         <a class="btn btn-sm btn-primary"
                                            href="{{ route('personal.tournament.regular.game', ['personalTournament' => $tournament, 'personalGameRegular' => $game]) }}">
                                             <i class="fas fa-gamepad"></i> протокол
@@ -114,7 +114,7 @@
                                     </td>
                                     @auth
                                         @if(Auth::user()->isAdmin())
-                                            <td class="text-right">
+                                            <td class="text-end">
                                                 <a href="{{ route('personal.tournament.regular.game.edit', ['personalTournament' => $tournament, 'personalGameRegular' => $game]) }}"
                                                    class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></a>
                                             </td>

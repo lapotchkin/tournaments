@@ -17,11 +17,11 @@ use Illuminate\Http\Response;
 
 class TeamController extends Controller
 {
-    protected const ADD_TO_TEAM = 1;
-    protected const DELETE_FROM_TEAM = 2;
-    protected const SET_AS_CAPTAIN = 3;
-    protected const SET_AS_ASSISTANT = 4;
-    protected const SET_AS_PLAYER = 5;
+    public const ADD_TO_TEAM = 1;
+    public const DELETE_FROM_TEAM = 2;
+    public const SET_AS_CAPTAIN = 3;
+    public const SET_AS_ASSISTANT = 4;
+    public const SET_AS_PLAYER = 5;
 
     protected const TEAM_RULES = [
         'name'        => 'required|string',

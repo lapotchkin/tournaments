@@ -23,7 +23,7 @@ class GroupTournamentPlayoffLeaders
         $leaders = DB::select("
             select leaders.*,
                (
-                   select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge badge-success\">',
+                   select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge bg-success\">',
                                  t.short_name, '</span>') name
                    from
                        groupGamePlayoff_player gGPp2

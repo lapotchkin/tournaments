@@ -18,12 +18,13 @@ class GroupTournamentLeaders
      * @return array
      */
     public static function readLeaders(int $tournamentId, string $date = null)
+    : array
     {
-        $dateString = is_null($date) ? '' : "and gGRp.createdAt <= '{$date}'";
+        $dateString = is_null($date) ? '' : "and gGRp.createdAt <= '$date'";
         $leaders = DB::select("
             select leaders.*,
                    (
-                       select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge badge-success\">', t.short_name, '</span>') name
+                       select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge bg-success\">', t.short_name, '</span>') name
                        from groupGameRegular_player gGRp
                             inner join groupGameRegular gGR on gGRp.game_id = gGR.id and gGR.tournament_id = ?
                             inner join team t on gGRp.team_id = t.id
@@ -93,7 +94,7 @@ class GroupTournamentLeaders
                                        and gGRp.isGoalie = 0
                             inner join player p on gGRp.player_id = p.id and p.deletedAt is null
                     where gT.id = ?
-                        {$dateString}
+                        $dateString
                         and gT.deletedAt is null
                     group by gGRp.player_id
                 ) leaders

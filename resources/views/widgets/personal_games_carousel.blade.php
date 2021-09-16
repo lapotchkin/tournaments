@@ -34,27 +34,27 @@
                 <div class="h5 mb-1 row">
                     <div class="col-9 pl-4">
                         <small>
-                            <span class="badge badge-light text-uppercase">
+                            <span class="badge bg-light text-uppercase">
                                 {{ $game->homePlayer->getClubId($game->tournament->id) }}
                             </span>
                             {{ $game->homePlayer->tag }}
                         </small>
                     </div>
-                    <div class="col-3 pr-4 text-right">
-                        <span class="badge badge-pill badge-dark">{{ $game->home_score }}</span>
+                    <div class="col-3 pr-4 text-end">
+                        <span class="badge rounded-pill bg-dark">{{ $game->home_score }}</span>
                     </div>
                 </div>
                 <div class="h5 mb-1 row">
                     <div class="col-9 pl-4">
                         <small>
-                            <span class="badge badge-light text-uppercase">
+                            <span class="badge bg-light text-uppercase">
                                 {{ $game->awayPlayer->getClubId($game->tournament->id) }}
                             </span>
                             {{ $game->awayPlayer->tag }}
                         </small>
                     </div>
-                    <div class="col-3 pr-4 text-right">
-                        <span class="badge badge-pill badge-dark">{{ $game->away_score }}</span>
+                    <div class="col-3 pr-4 text-end">
+                        <span class="badge rounded-pill bg-dark">{{ $game->away_score }}</span>
                     </div>
                 </div>
                 <div class="text-center text-white-50">

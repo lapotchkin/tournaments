@@ -23,7 +23,7 @@
                             <div class="tournament-bracket__match" tabindex="0">
                                 <div class="row">
                                     <div class="col-10">
-                                        <span class="badge badge-pill badge-danger">&nbsp;</span>
+                                        <span class="badge rounded-pill bg-danger">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->playerOne && $pair->playerOne->tag)
                                             <a href="{{ route('player', ['player' => $pair->player_one_id]) }}">
                                                 @if ($winner === $pair->player_one_id)
@@ -32,26 +32,26 @@
                                                     {{$pair->playerOne->tag }}
                                                 @endif
                                             </a>
-                                            <span class="badge badge-success text-uppercase">
+                                            <span class="badge bg-success text-uppercase">
                                                 {{ $pair->playerOne->getClubId($tournament->id) }}
                                             </span>
                                         @else
                                             ?
                                         @endif
                                     </div>
-                                    <div class="col-2 text-right">
+                                    <div class="col-2 text-end">
                                         @if (!is_null($pair) && $pair->playerOne && isset($seriesResult[$pair->playerOne->id]))
                                             @if ($winner === $pair->player_one_id)
-                                                <span class="badge badge-pill badge-dark">
+                                                <span class="badge rounded-pill bg-dark">
                                                     {{ $seriesResult[$pair->playerOne->id] }}
                                                 </span>
                                             @else
-                                                <span class="badge badge-pill badge-secondary">
+                                                <span class="badge rounded-pill bg-secondary">
                                                     {{ $seriesResult[$pair->playerOne->id] }}
                                                 </span>
                                             @endif
                                         @else
-                                            <span class="badge badge-pill badge-secondary">0</span>
+                                            <span class="badge rounded-pill bg-secondary">0</span>
                                         @endif
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-10">
-                                        <span class="badge badge-pill badge-warning">&nbsp;</span>
+                                        <span class="badge rounded-pill bg-warning">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->playerTwo && $pair->playerTwo->tag)
                                             <a href="{{ route('player', ['player' => $pair->player_two_id]) }}">
                                                 @if ($winner === $pair->player_two_id)
@@ -79,26 +79,26 @@
                                                     {{ $pair->playerTwo->tag }}
                                                 @endif
                                             </a>
-                                            <span class="badge badge-success text-uppercase">
+                                            <span class="badge bg-success text-uppercase">
                                                 {{ $pair->playerTwo->getClubId($tournament->id) }}
                                             </span>
                                         @else
                                             ?
                                         @endif
                                     </div>
-                                    <div class="col-2 text-right">
+                                    <div class="col-2 text-end">
                                         @if (!is_null($pair) && $pair->playerTwo && isset($seriesResult[$pair->playerTwo->id]))
                                             @if ($winner === $pair->player_two_id)
-                                                <span class="badge badge-pill badge-dark">
+                                                <span class="badge rounded-pill bg-dark">
                                                     {{ $seriesResult[$pair->playerTwo->id] }}
                                                 </span>
                                             @else
-                                                <span class="badge badge-pill badge-secondary">
+                                                <span class="badge rounded-pill bg-secondary">
                                                     {{ $seriesResult[$pair->playerTwo->id] }}
                                                 </span>
                                             @endif
                                         @else
-                                            <span class="badge badge-pill badge-secondary">0</span>
+                                            <span class="badge rounded-pill bg-secondary">0</span>
                                         @endif
                                     </div>
                                 </div>

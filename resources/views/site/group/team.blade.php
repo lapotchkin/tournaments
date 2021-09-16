@@ -12,9 +12,9 @@
     <div class="row">
         <div class="col-lg-5">
             <form id="team-edit">
-                <div class="form-group">
-                    <label for="division">Группа</label>
-                    <select id="division" class="form-control" name="division">
+                <div class="mb-3">
+                    <label for="division" class="form-label">Группа</label>
+                    <select id="division" class="form-select" name="division">
                         @foreach([1, 2, 3, 4] as $divisionId)
                             <option value="{{ $divisionId }}"
                                     {{ $tournamentTeam->division === $divisionId ? 'selected' : '' }}>
@@ -25,7 +25,7 @@
 
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     <button type="submit" class="btn btn-primary">Применить изменения</button>
                     <button type="button" class="btn btn-danger" id="team-delete-button">Удалить</button>
                 </div>

@@ -22,9 +22,9 @@
                                     <a href="{{ route('player', ['player' => $player->player_id]) }}">{{ $player->player->tag }}</a>
                                     <small>{{ $player->player->name }}</small>
                                     <span
-                                        class="badge badge-secondary badge-pill text-uppercase">{{ $player->club_id }}</span>
+                                        class="badge bg-secondary rounded-pill text-uppercase">{{ $player->club_id }}</span>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     @auth
                                         @if(Auth::user()->isAdmin())
                                             <a class="btn btn-primary btn-sm"
@@ -52,7 +52,7 @@
                 <div class="form-inline">
                     <div class="input-group">
                         <label for="player_id" class="mr-2">Игрок</label>
-                        <select id="player_id" class="form-control mr-3" name="player_id">
+                        <select id="player_id" class="form-select mr-3" name="player_id">
                             <option value="">--Не выбран--</option>
                             @foreach($nonTournamentPlayers as $player)
                                 <option
@@ -63,7 +63,7 @@
                     </div>
                     <div class="input-group">
                         <label for="division" class="mr-2">Группа</label>
-                        <select id="division" class="form-control mr-3" name="division">
+                        <select id="division" class="form-select mr-3" name="division">
                             <option value="">--Не выбрана--</option>
                             @foreach([1, 2, 3, 4] as $divisionId)
                                 <option value="{{ $divisionId }}">
@@ -110,7 +110,7 @@
                                 + (playerData[1] ? '<small>' + playerData[1].replace(')', '') + '</small>' : '')
                                 + '</td>'
                             );
-                            $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ route('personal.tournament', ['personalTournament' => $tournament]) }}/player/' + playerId + '"><i class="fas fa-edit"></i></a></td>');
+                            $row.append('<td class="text-end"><a class="btn btn-primary btn-sm" href="{{ route('personal.tournament', ['personalTournament' => $tournament]) }}/player/' + playerId + '"><i class="fas fa-edit"></i></a></td>');
                             $tbody.append($row);
                             $option.remove();
                             $player.val('');

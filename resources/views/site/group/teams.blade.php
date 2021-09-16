@@ -8,48 +8,47 @@
     @widget('groupMenu', ['tournament' => $tournament])
 
     <h3>Команды</h3>
-    <div class="card-deck">
+    <div class="row row-cols-1 @if(count($divisions) > 1) row-cols-md-2 @endif g-4" id="card-deck">
         @foreach($divisions as $number => $division)
-            <div class="card mb-3" id="division-{{ $number }}">
-                <h4 class="card-header bg-dark text-light">Группа {{ TextUtils::divisionLetter($number) }}</h4>
-                <div class="card-body">
-                    <table class="table table-striped table-sm mb-0" id="team-table">
-                        <tbody>
-                        @foreach($division as $team)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    <a href="{{ route('team', ['team' => $team->id]) }}">{{ $team->name }}</a>
-                                    <span class="badge badge-success">{{ $team->short_name }}</span>
-                                </td>
-                                <td class="text-right">
-                                    @auth
-                                        @if(Auth::user()->isAdmin())
-                                            <a class="btn btn-primary btn-sm"
-                                               href="{{ route('group.tournament.team', ['groupTournament' => $tournament->id, 'team' => $team->id]) }}">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        @endif
-                                    @endauth
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+            <div class="col">
+                <div class="card h-100 mb-3" id="division-{{ $number }}">
+                    <h4 class="card-header bg-dark text-light">Группа {{ TextUtils::divisionLetter($number) }}</h4>
+                    <div class="card-body">
+                        <table class="table table-striped table-sm mb-0" id="team-table">
+                            <tbody>
+                            @foreach($division as $team)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>
+                                        <a href="{{ route('team', ['team' => $team->id]) }}">{{ $team->name }}</a>
+                                        <span class="badge bg-success">{{ $team->short_name }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        @auth
+                                            @if(Auth::user()->isAdmin())
+                                                <a class="btn btn-primary btn-sm"
+                                                   href="{{ route('group.tournament.team', ['groupTournament' => $tournament->id, 'team' => $team->id]) }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            @endif
+                                        @endauth
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            @if($loop->iteration % 2 === 0)
-                <div class="w-100"></div>
-            @endif
         @endforeach
     </div>
 
     @can('create', 'App\Models\GroupTournament')
-        <form id="team-add">
-            <div class="form-inline">
-                <div class="input-group">
-                    <label for="team_id" class="mr-2">Команда</label>
-                    <select id="team_id" class="form-control mr-3" name="team_id">
+        <form id="team-add" class="row row-cols-lg-auto g-2 align-items-center mt-3">
+            <div class="col-12">
+                <div class="input-group has-validation">
+                    <label for="team_id" class="input-group-text">Команда</label>
+                    <select id="team_id" class="form-select" name="team_id">
                         <option value="">--Не выбрана--</option>
                         @foreach($nonTournamentTeams as $team)
                             <option value="{{ $team->id }}">{{ $team->name }}</option>
@@ -57,9 +56,11 @@
                     </select>
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="input-group">
-                    <label for="division" class="mr-2">Группа</label>
-                    <select id="division" class="form-control mr-3" name="division">
+            </div>
+            <div class="col-12">
+                <div class="input-group has-validation">
+                    <label for="division" class="input-group-text">Группа</label>
+                    <select id="division" class="form-select" name="division">
                         <option value="">--Не выбрана--</option>
                         @foreach([1, 2, 3, 4] as $divisionId)
                             <option value="{{ $divisionId }}">
@@ -69,6 +70,8 @@
                     </select>
                     <div class="invalid-feedback"></div>
                 </div>
+            </div>
+            <div class="col-12">
                 <button type="submit" class="btn btn-primary" name="team-add-button">Добавить</button>
             </div>
         </form>
@@ -85,18 +88,18 @@
                     selector: '#team-add',
                     method: 'put',
                     url: '{{ action('Ajax\GroupController@addTeam', ['groupTournament' => $tournament->id])}}',
-                    success: function (response) {
-                        var $division = $('#division');
-                        var division = $division.val();
+                    success: function () {
+                        const $division = $('#division');
+                        const division = $division.val();
                         createDivisionBlock(division);
-                        var $team = $('#team_id');
-                        var teamId = $team.val();
-                        var $option = $('#team_id option[value=' + teamId + ']');
-                        var $tbody = $('#division-' + division).find('tbody');
-                        var $row = $('<tr/>');
+                        const $team = $('#team_id');
+                        const teamId = $team.val();
+                        const $option = $('#team_id option[value=' + teamId + ']');
+                        const $tbody = $('#division-' + division).find('tbody');
+                        const $row = $('<tr/>');
                         $row.append('<td>' + ($tbody.find('tr').length + 1) + '</td>');
                         $row.append('<td><a href="{{ action('Site\TeamController@index') }}/' + teamId + '">' + $option.text() + '</a></td>');
-                        $row.append('<td class="text-right"><a class="btn btn-primary btn-sm" href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}/team/' + teamId + '"><i class="fas fa-edit"></i></a></td>');
+                        $row.append('<td class="text-end"><a class="btn btn-primary btn-sm" href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}/team/' + teamId + '"><i class="fas fa-edit"></i></a></td>');
                         $tbody.append($row);
                         $option.remove();
                         $team.val('');
@@ -105,11 +108,20 @@
                 });
 
                 function createDivisionBlock(division) {
-                    if ($('#division-' + division).length) return;
+                    if ($('#division-' + division).length) {
+                        return;
+                    }
 
-                    var letters = 'ABCD';
-                    $('.card-deck').append(
-                        '<div class="card mb-3" id="division-' + division + '"><h4 class="card-header bg-dark text-light">Группа ' + letters.charAt(division - 1) + '</h4><div class="card-body"><table class="table table-striped table-sm" id="team-table"><tbody></tbody></table></div></div>');
+                    const letters = 'ABCD';
+                    $('#card-deck').append(
+                        '<div class="card h-100 mb-3" id="division-' + division + '">' +
+                        '<h4 class="card-header bg-dark text-light">Группа ' + letters.charAt(division - 1) + '</h4>' +
+                        '<div class="card-body">' +
+                        '<table class="table table-striped table-sm" id="team-table">' +
+                        '<tbody></tbody>' +
+                        '</table>' +
+                        '</div>' +
+                        '</div>');
                 }
             });
         </script>

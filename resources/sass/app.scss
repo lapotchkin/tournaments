@@ -10,7 +10,7 @@ $line-height-base: 1.5;
 @import '~bootstrap/scss/bootstrap';
 @import '~bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css';
 //DataTables
-@import '~datatables.net-bs4/css/dataTables.bootstrap4.css';
+@import '~datatables.net-bs5/css/dataTables.bootstrap5.min.css';
 //Chosen
 @import '~chosen-js/chosen.css';
 //Fontawesome 5
@@ -25,6 +25,10 @@ $line-height-base: 1.5;
 
 .footer {
     //background-color: $gray-300;
+}
+
+.btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-dark {
+    color: $white !important;
 }
 
 .badge-left_wing {

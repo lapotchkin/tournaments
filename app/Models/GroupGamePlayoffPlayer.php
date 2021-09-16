@@ -223,6 +223,7 @@ class GroupGamePlayoffPlayer extends Model
         foreach ($this->fillable as $field) {
             $protocol->{$field} = $this->{$field};
         }
+        $protocol->name = $this->player->name;
         $protocol->player_tag = $this->player->tag;
         $protocol->position = $this->playerPosition ? (object)[
             'title'       => $this->playerPosition->title,

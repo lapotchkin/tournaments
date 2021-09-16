@@ -16,7 +16,7 @@
             <form id="tournament-form" method="post">
                 <div class="form-group">
                     <label for="platform_id">Игровая платформа</label>
-                    <select id="platform_id" class="form-control" name="platform_id">
+                    <select id="platform_id" class="form-select" name="platform_id">
                         <option value="">--Не выбрана--</option>
                         @foreach($platforms as $platform)
                             <option value="{{ $platform->id }}"
@@ -29,7 +29,7 @@
                 </div>
                 <div class="form-group">
                     <label for="app_id">Игра</label>
-                    <select id="app_id" class="form-control" name="app_id">
+                    <select id="app_id" class="form-select" name="app_id">
                         <option value="">--Не выбрана--</option>
                         @foreach($apps as $app)
                             <option value="{{ $app->id }}"
@@ -42,7 +42,7 @@
                 </div>
                 <div class="form-group">
                     <label for="app_id">Лига</label>
-                    <select id="app_id" class="form-control" name="league_id">
+                    <select id="app_id" class="form-select" name="league_id">
                         <option value="">--Не выбрана--</option>
                         @foreach($leagues as $league)
                             <option value="{{ $league->id }}"
@@ -73,7 +73,7 @@
                 </div>
                 <div class="form-group">
                     <label for="playoff_rounds">Количество раундов плейоф</label>
-                    <select id="playoff_rounds" class="form-control" name="playoff_rounds">
+                    <select id="playoff_rounds" class="form-select" name="playoff_rounds">
                         <option value="">--Не выбрано--</option>
                         @foreach([1, 2, 3, 4] as $rounds)
                             <option value="{{ $rounds }}"
@@ -85,7 +85,7 @@
                 </div>
                 <div class="form-group">
                     <label for="playoff_rounds">Матч плей-офф за третье место</label>
-                    <select id="playoff_rounds" class="form-control" name="thirdPlaceSeries">
+                    <select id="playoff_rounds" class="form-select" name="thirdPlaceSeries">
                         <option value="0"
                             {{ !is_null($tournament) && $tournament->thirdPlaceSeries !== 1 ? 'selected' : '' }}>
                             Нет
@@ -120,7 +120,7 @@
             <input type="hidden" name="place" value="1">
             <div class="form-group mb-2">
                 <label for="first_place">Первое место</label>
-                <select id="first_place" class="form-control ml-2 mr-2" name="player_id">
+                <select id="first_place" class="form-select ml-2 mr-2" name="player_id">
                     <option value="0">--Не выбран--</option>
                     @foreach($tournament->players as $player)
                         <option value="{{ $player->id }}"
@@ -142,7 +142,7 @@
             <input type="hidden" name="place" value="2">
             <div class="form-group mb-2">
                 <label for="second_place">Второе место</label>
-                <select id="second_place" class="form-control ml-2 mr-2" name="player_id">
+                <select id="second_place" class="form-select ml-2 mr-2" name="player_id">
                     <option value="0">--Не выбран--</option>
                     @foreach($tournament->players as $player)
                         <option value="{{ $player->id }}"
@@ -165,7 +165,7 @@
                 <input type="hidden" name="place" value="3">
                 <div class="form-group mb-2">
                     <label for="third_place">Третье место</label>
-                    <select id="third_place" class="form-control ml-2 mr-2" name="player_id">
+                    <select id="third_place" class="form-select ml-2 mr-2" name="player_id">
                         <option value="0">--Не выбран--</option>
                         @foreach($tournament->players as $player)
                             <option value="{{ $player->id }}"

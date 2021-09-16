@@ -1,7 +1,7 @@
 <h2>
     <i class="fab fa-{{ $tournament->platform->icon }} @if($tournament->platform->icon === 'xbox') text-success @endif"></i>
     {{ $tournament->title }}
-    <span class="badge badge-pill badge-secondary">
+    <span class="badge rounded-pill bg-secondary">
         {{ $tournament->min_players }} на {{ $tournament->min_players }}
     </span>
     @can('create', 'App\Models\GroupTournament')
@@ -24,9 +24,10 @@
         @foreach($tournament->winners as $winner)
             <div class="col-12 col-md-4">
                 <blockquote class="blockquote alert alert-{{ TextUtils::winnerClass($winner->place) }}">
-                    <footer class="blockquote-footer"><i class="fas fa-trophy"></i> {{ $winner->place }} место</footer>
-                    <p class="mb-0"><a
-                            href="{{ route('team', ['team' => $winner->team_id]) }}">{{ $winner->team->name }}</a></p>
+                    <div>
+                        <i class="fas fa-trophy"></i> {{ $winner->place }} место
+                    </div>
+                    <a href="{{ route('team', ['team' => $winner->team_id]) }}">{{ $winner->team->name }}</a>
                 </blockquote>
             </div>
         @endforeach

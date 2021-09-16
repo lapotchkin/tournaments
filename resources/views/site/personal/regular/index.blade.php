@@ -22,9 +22,11 @@
 
     <h3>Турнирная таблица</h3>
     @foreach($divisions as $division => $position)
-        <h4>Группа {{ TextUtils::divisionLetter($division) }}</h4>
+        @if(count($divisions) > 1)
+            <h4>Группа {{ TextUtils::divisionLetter($division) }}</h4>
+        @endif
         <table id="players{{ $division }}" class="players table table-striped table-sm">
-            <thead class="thead-dark"></thead>
+            <thead class="table-dark"></thead>
             <tbody></tbody>
         </table>
         <table class="table table-sm">
@@ -60,6 +62,9 @@
 
             @foreach($divisions as $division => $position)
             $('#players{{ $division }}').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
                 data: {!! json_encode($position) !!},
                 columns: [
                     {data: 'place', title: ''},

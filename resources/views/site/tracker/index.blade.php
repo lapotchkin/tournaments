@@ -11,7 +11,7 @@
         <div class="form-inline">
             <div class="input-group">
                 <label for="team" class="mr-2">Команда</label>
-                <select id="team" class="form-control mr-2" name="team">
+                <select id="team" class="form-select mr-2" name="team">
                     <option value="">--Не выбрана--</option>
                     @foreach($teams as $team)
                         <option value="{{ $team->id }}" {{ request()->get('team') == $team->id ? 'selected' : '' }}>
@@ -47,10 +47,10 @@
                         <i class="fas fa-user-minus fa-fw text-danger"></i>
                         @break
                         @case(\App\Http\Controllers\Ajax\TeamController::SET_AS_CAPTAIN)
-                        <span class="badge badge-success">C</span>
+                        <span class="badge bg-success">C</span>
                         @break
                         @case(\App\Http\Controllers\Ajax\TeamController::SET_AS_ASSISTANT)
-                        <span class="badge badge-warning">A</span>
+                        <span class="badge bg-warning">A</span>
                         @break
                         @case(\App\Http\Controllers\Ajax\TeamController::SET_AS_PLAYER)
                         <i class="fas fa-user fa-fw text-secondary"></i>

@@ -8,148 +8,169 @@
     @widget('groupMenu', ['tournament' => $tournament])
     @widget('groupRegularMenu', ['tournament' => $tournament])
 
-    <form method="get" class="form-inline mb-2">
-        <div class="form-group mr-2">
-            <label class="control-label mr-2" for="toDate">Сравнить с датой</label>
-            <input type="text" id="toDate" class="form-control" name="toDate"
-                   value="{{ $dateToCompare ? str_replace(' 00:00:00', '', $dateToCompare) : '' }}"
-                   readonly>
-        </div>
-        <button type="submit" class="btn btn-primary mr-2">Применить</button>
-        <a href="{{ route('group.tournament.regular', ['groupTournament' => $tournament->id]) }}"
-           class="btn btn-warning">Сбросить</a>
-    </form>
+    @if(count($tournament->teams) < 4)
+        <div class="alert alert-danger">Недостаточно команд в турнире. Должно быть хотя бы 4.</div>
+    @else
+        <form method="get" class="row row-cols-lg-auto g-2 align-items-center my-3">
+            <div class="col-12">
+                <div class="input-group">
+                    <label class="input-group-text" for="toDate">Сравнить с датой</label>
+                    <input type="text" id="toDate" class="form-control" name="toDate"
+                           value="{{ $dateToCompare ? str_replace(' 00:00:00', '', $dateToCompare) : '' }}"
+                           readonly>
+                </div>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Применить</button>
+            </div>
+            <div class="col-12">
+                <a href="{{ route('group.tournament.regular', ['groupTournament' => $tournament->id]) }}"
+                   class="btn btn-warning">Сбросить</a>
+            </div>
+        </form>
 
-    <h3>Турнирная таблица</h3>
-    <table id="teams" class="teams table table-striped table-sm">
-        <thead class="thead-dark"></thead>
-        <tbody></tbody>
-    </table>
-    <table class="table table-sm">
-        <tbody>
-        <tr>
-            <td>И — сыграно матчей</td>
-            <td>ВОТ — выигрыши в овертайме</td>
-            <td>ПБ — проигрыши по буллитам</td>
-            <td>ЗШ — заброшенные шайбы</td>
-        </tr>
-        <tr>
-            <td>О — очки</td>
-            <td>ВБ — выигрыши по буллитам</td>
-            <td>П — проигрыши в основное время</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>В — выигрыши в основное время</td>
-            <td>ПОТ — проигрыши в овертайме</td>
-            <td>РШ — разница шайб</td>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
+        <h3>Турнирная таблица</h3>
+        @foreach($divisions as $division => $position)
+            @if(count($divisions) > 1)
+                <h4>Группа {{ TextUtils::divisionLetter($division) }}</h4>
+            @endif
+            <table id="teams{{ $division }}" class="teams table table-striped table-sm">
+                <thead class="table-dark"></thead>
+                <tbody></tbody>
+            </table>
+        @endforeach
+        <table class="table table-sm">
+            <tbody>
+            <tr>
+                <td>И — сыграно матчей</td>
+                <td>ВОТ — выигрыши в овертайме</td>
+                <td>ПБ — проигрыши по буллитам</td>
+                <td>ЗШ — заброшенные шайбы</td>
+            </tr>
+            <tr>
+                <td>О — очки</td>
+                <td>ВБ — выигрыши по буллитам</td>
+                <td>П — проигрыши в основное время</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>В — выигрыши в основное время</td>
+                <td>ПОТ — проигрыши в овертайме</td>
+                <td>РШ — разница шайб</td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
 
-    <h3 class="mt-3">Статистика команд</h3>
-    <table id="teamsExtended" class="teams table table-striped table-sm">
-        <thead class="thead-dark"></thead>
-        <tbody></tbody>
-    </table>
-    <table class="table table-sm">
-        <tr>
-            <td>ЗШ/И — Заброшено щайб за игру</td>
-            <td>ПК — Нейтрализация меньшинства</td>
-            <td>Вб — Выигранные вбрасывания</td>
-            <td>ЗШМ — Заброшено шайб в меньшинстве</td>
-        </tr>
-        <tr>
-            <td>ПШ/И — пропущено шайб за игру</td>
-            <td>Бр/И — Броски по воротам соперника за игру</td>
-            <td>Сил/И — Силовых приёмов за игру</td>
-            <td>ВА/И — Время в атаке за игру</td>
-        </tr>
-        <tr>
-            <td>ПП — Реализация большинства</td>
-            <td>БрП/И — Броски по своим воротам за игру</td>
-            <td>СилП/И — Пропущено силовых приёмов за игру</td>
-            <td></td>
-        </tr>
-    </table>
+        <h3 class="mt-3">Статистика команд</h3>
+        @foreach($divisions as $division => $position)
+            @if(count($divisions) > 1)
+                <h4>Группа {{ TextUtils::divisionLetter($division) }}</h4>
+            @endif
+            <table id="teamsExtended{{ $division }}" class="teams table table-striped table-sm">
+                <thead class="table-dark"></thead>
+                <tbody></tbody>
+            </table>
+        @endforeach
+        <table class="table table-sm">
+            <tr>
+                <td>ЗШ/И — Заброшено щайб за игру</td>
+                <td>ПК — Нейтрализация меньшинства</td>
+                <td>Вб — Выигранные вбрасывания</td>
+                <td>ЗШМ — Заброшено шайб в меньшинстве</td>
+            </tr>
+            <tr>
+                <td>ПШ/И — пропущено шайб за игру</td>
+                <td>Бр/И — Броски по воротам соперника за игру</td>
+                <td>Сил/И — Силовых приёмов за игру</td>
+                <td>ВА/И — Время в атаке за игру</td>
+            </tr>
+            <tr>
+                <td>ПП — Реализация большинства</td>
+                <td>БрП/И — Броски по своим воротам за игру</td>
+                <td>СилП/И — Пропущено силовых приёмов за игру</td>
+                <td></td>
+            </tr>
+        </table>
 
-    <h3 class="mt-3">Лучшие по очкам</h3>
-    <table id="topPoints" class="leaders table table-striped table-sm">
-        <thead class="thead-dark"></thead>
-        <tbody></tbody>
-    </table>
+        <h3 class="mt-3">Лучшие по очкам</h3>
+        <table id="topPoints" class="leaders table table-striped table-sm">
+            <thead class="table-dark"></thead>
+            <tbody></tbody>
+        </table>
 
-    <h3 class="mt-3">Лучшие по голам</h3>
-    <table id="topGoals" class="leaders table table-striped table-sm">
-        <thead class="thead-dark"></thead>
-        <tbody></tbody>
-    </table>
+        <h3 class="mt-3">Лучшие по голам</h3>
+        <table id="topGoals" class="leaders table table-striped table-sm">
+            <thead class="table-dark"></thead>
+            <tbody></tbody>
+        </table>
 
-    <h3 class="mt-3">Лучшие по передачам</h3>
-    <table id="topAssists" class="leaders table table-striped table-sm">
-        <thead class="thead-dark"></thead>
-        <tbody></tbody>
-    </table>
+        <h3 class="mt-3">Лучшие по передачам</h3>
+        <table id="topAssists" class="leaders table table-striped table-sm">
+            <thead class="table-dark"></thead>
+            <tbody></tbody>
+        </table>
 
-    <h3 class="mt-3">Расширенные показатели по игрокам</h3>
-    <table id="players" class="table table-striped table-sm">
-        <thead class="thead-dark"></thead>
-        <tbody></tbody>
-    </table>
-    <table class="table table-sm">
-        <tbody>
-        <tr>
-            <td>И — сыграно матчей</td>
-            <td>ГвБ — Голы в большинстве</td>
-            <td>Бл — заблокировано бросков за игру</td>
-            <td>СП — силовые приёмы</td>
-        </tr>
-        <tr>
-            <td>О — очки</td>
-            <td>ГвМ — голы в меньшинстве</td>
-            <td>ОтбИ — отборов шайбы за игру</td>
-            <td>СПИ — силовых приёмов за игру</td>
-        </tr>
-        <tr>
-            <td>Г — голы</td>
-            <td>ПГ — победные голы</td>
-            <td>ПерИ — перехватов шайбы за игру</td>
-            <td>ШМ — Штрафные минуты</td>
-        </tr>
-        <tr>
-            <td>Б% — процент реализации бросков</td>
-            <td>+/- — плюс/минус</td>
-            <td>ПотИ — потерь шайбы за игру</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>П — голевые передачи</td>
-            <td>Вб% — процент выигранных вбрасываний</td>
-            <td>Пас% — процент успешных пасов</td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
+        <h3 class="mt-3">Расширенные показатели по игрокам</h3>
+        <table id="players" class="table table-striped table-sm">
+            <thead class="table-dark"></thead>
+            <tbody></tbody>
+        </table>
+        <table class="table table-sm">
+            <tbody>
+            <tr>
+                <td>И — сыграно матчей</td>
+                <td>ГвБ — Голы в большинстве</td>
+                <td>Бл — заблокировано бросков за игру</td>
+                <td>СП — силовые приёмы</td>
+            </tr>
+            <tr>
+                <td>О — очки</td>
+                <td>ГвМ — голы в меньшинстве</td>
+                <td>ОтбИ — отборов шайбы за игру</td>
+                <td>СПИ — силовых приёмов за игру</td>
+            </tr>
+            <tr>
+                <td>Г — голы</td>
+                <td>ПГ — победные голы</td>
+                <td>ПерИ — перехватов шайбы за игру</td>
+                <td>ШМ — Штрафные минуты</td>
+            </tr>
+            <tr>
+                <td>Б% — процент реализации бросков</td>
+                <td>+/- — плюс/минус</td>
+                <td>ПотИ — потерь шайбы за игру</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>П — голевые передачи</td>
+                <td>Вб% — процент выигранных вбрасываний</td>
+                <td>Пас% — процент успешных пасов</td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
 
-    <h3 class="mt-3">
-        Вратари<br>
-        <small class="text-muted">В таблице только вратари, сыгравшие не менее 25% от общего числа игр команды</small>
-    </h3>
-    <table id="goalies" class="leaders table table-striped table-sm">
-        <thead class="thead-dark"></thead>
-        <tbody></tbody>
-    </table>
+        <h3 class="mt-3">
+            Вратари<br>
+            <small class="text-muted">В таблице только вратари, сыгравшие не менее 25% от общего числа игр
+                команды</small>
+        </h3>
+        <table id="goalies" class="leaders table table-striped table-sm">
+            <thead class="table-dark"></thead>
+            <tbody></tbody>
+        </table>
 
-    <h3 class="mt-3">
-        Все вратари турнира
-    </h3>
-    <table id="goaliesAll" class="leaders table table-striped table-sm">
-        <thead class="thead-dark"></thead>
-        <tbody></tbody>
-    </table>
+        <h3 class="mt-3">
+            Все вратари турнира
+        </h3>
+        <table id="goaliesAll" class="leaders table table-striped table-sm">
+            <thead class="table-dark"></thead>
+            <tbody></tbody>
+        </table>
+    @endif
 @endsection
 
 @section('script')
@@ -158,7 +179,11 @@
         $(document).ready(function () {
             $('#toDate').datepicker(TRNMNT_helpers.getDatePickerSettings());
 
-            $('#teams').DataTable({
+            @foreach($divisions as $division => $position)
+            $('#teams{{ $division }}').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
                 data: {!! json_encode($position) !!},
                 columns: [
                     {data: 'place', title: ''},
@@ -182,7 +207,10 @@
                 'pageLength': -1
             });
 
-            $('#teamsExtended').DataTable({
+            $('#teamsExtended{{ $division }}').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
                 data: {!! json_encode($position) !!},
                 columns: [
                     {'data': 'place', 'title': ''},
@@ -210,8 +238,12 @@
                 'info': false,
                 'pageLength': -1
             });
+            @endforeach
 
             $('#topPoints').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
                 data: {!! json_encode($leaders->points) !!},
                 columns: [
                     {data: 'place', 'title': ''},
@@ -225,10 +257,13 @@
                     {data: 'points', title: 'Очки'}
                 ],
                 'ordering': false,
-                'pageLength': 20,
+                'pageLength': 25,
             });
 
             $('#topGoals').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
                 data: {!! json_encode($leaders->goals) !!},
                 columns: [
                     {data: 'place', 'title': ''},
@@ -242,10 +277,13 @@
                     {data: 'points', title: 'Очки'}
                 ],
                 'ordering': false,
-                'pageLength': 20,
+                'pageLength': 25,
             });
 
             $('#topAssists').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
                 data: {!! json_encode($leaders->assists) !!},
                 columns: [
                     {data: 'place', 'title': ''},
@@ -259,10 +297,13 @@
                     {data: 'points', title: 'Очки'}
                 ],
                 'ordering': false,
-                'pageLength': 20,
+                'pageLength': 25,
             });
 
             $('#players').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
                 data: {!! json_encode($leaders->assists) !!},
                 columns: [
                     {data: 'player', title: 'Игрок'},
@@ -293,10 +334,13 @@
                     // {data: 'rating_teamplay', title: 'КОМ'},
                 ],
                 'ordering': true,
-                'pageLength': 20,
+                'pageLength': 25,
             });
 
             $('#goalies').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
                 data: {!! json_encode($goalies) !!},
                 columns: [
                     {'data': 'place', 'title': ''},
@@ -321,6 +365,9 @@
             });
 
             $('#goaliesAll').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
                 data: {!! json_encode($goaliesAll) !!},
                 columns: [
                     {'data': 'place', 'title': ''},

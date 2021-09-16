@@ -14,9 +14,9 @@
     <div class="row">
         <div class="col-lg-5">
             <form id="tournament-form" method="post">
-                <div class="form-group">
-                    <label for="platform_id">Игровая платформа</label>
-                    <select id="platform_id" class="form-control" name="platform_id">
+                <div class="mb-3">
+                    <label for="platform_id" class="form-label">Игровая платформа</label>
+                    <select id="platform_id" class="form-select" name="platform_id">
                         <option value="">--Не выбрана--</option>
                         @foreach($platforms as $platform)
                             <option value="{{ $platform->id }}"
@@ -27,9 +27,9 @@
                     </select>
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="form-group">
-                    <label for="app_id">Игра</label>
-                    <select id="app_id" class="form-control" name="app_id">
+                <div class="mb-3">
+                    <label for="app_id" class="form-label">Игра</label>
+                    <select id="app_id" class="form-select" name="app_id">
                         <option value="">--Не выбрана--</option>
                         @foreach($apps as $app)
                             <option value="{{ $app->id }}"
@@ -40,27 +40,27 @@
                     </select>
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="form-group">
-                    <label for="title">Название</label>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Название</label>
                     <input type="text" id="title" class="form-control" name="title"
                            value="{{ !is_null($tournament) ? $tournament->title : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="form-group">
-                    <label for="vk_group_id">Группа Турнира в ВК</label>
+                <div class="mb-3">
+                    <label for="vk_group_id" class="form-label">Группа Турнира в ВК</label>
                     <input type="text" id="vk_group_id" class="form-control" name="vk_group_id"
                            value="{{ !is_null($tournament) ? $tournament->vk_group_id : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="form-group">
-                    <label for="startedAt">Дата начала турнира</label>
+                <div class="mb-3">
+                    <label for="startedAt" class="form-label">Дата начала турнира</label>
                     <input id="startedAt" class="form-control" name="startedAt" readonly
                            value="{{ !is_null($tournament) ? date('Y-m-d', strtotime($tournament->startedAt)) : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="form-group">
-                    <label for="min_players">Минимальное количество игроков в команде</label>
-                    <select id="min_players" class="form-control" name="min_players">
+                <div class="mb-3">
+                    <label for="min_players" class="form-label">Минимальное количество игроков в команде</label>
+                    <select id="min_players" class="form-select" name="min_players">
                         <option value="">--Не выбрано--</option>
                         @foreach([3, 6] as $count)
                             <option value="{{ $count }}"
@@ -71,9 +71,9 @@
                     </select>
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="form-group">
-                    <label for="playoff_rounds">Количество раундов плейоф</label>
-                    <select id="playoff_rounds" class="form-control" name="playoff_rounds">
+                <div class="mb-3">
+                    <label for="playoff_rounds" class="form-label">Количество раундов плейоф</label>
+                    <select id="playoff_rounds" class="form-select" name="playoff_rounds">
                         <option value="">--Не выбрано--</option>
                         @foreach([1, 2, 3, 4] as $rounds)
                             <option value="{{ $rounds }}"
@@ -83,9 +83,9 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="playoff_rounds">Матч плей-офф за третье место</label>
-                    <select id="playoff_rounds" class="form-control" name="thirdPlaceSeries">
+                <div class="mb-3">
+                    <label for="playoff_rounds" class="form-label">Матч плей-офф за третье место</label>
+                    <select id="playoff_rounds" class="form-select" name="thirdPlaceSeries">
                         <option value="0"
                             {{ !is_null($tournament) && $tournament->thirdPlaceSeries !== 1 ? 'selected' : '' }}>
                             Нет
@@ -96,13 +96,13 @@
                         </option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="playoff_limit">Количество участников плей-офф</label>
+                <div class="mb-3">
+                    <label for="playoff_limit" class="form-label">Количество участников плей-офф</label>
                     <input type="text" id="playoff_limit" class="form-control" name="playoff_limit"
                            value="{{ !is_null($tournament) ? $tournament->playoff_limit : '' }}">
                     <div class="invalid-feedback"></div>
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     <button type="submit" class="btn btn-primary">
                         {{ is_null($tournament) ? 'Добавить' : 'Принять изменения' }}
                     </button>
@@ -116,44 +116,50 @@
         </div>
     </div>
     @if (!is_null($tournament))
-        <form id="first_place-form" method="post" class="form-inline">
+        <form id="first_place-form" method="post" class="row row-cols-lg-auto g-2 align-items-center mt-2">
             <input type="hidden" name="place" value="1">
-            <div class="form-group mb-2">
-                <label for="first_place">Первое место</label>
-                <select id="first_place" class="form-control ml-2 mr-2" name="team_id">
-                    <option value="0">--Не выбрана--</option>
-                    @foreach($tournament->teams as $team)
-                        <option value="{{ $team->id }}"
-                                @foreach($tournament->winners as $winner)
-                                @if($winner->place === 1 && $winner->team_id === $team->id) selected @endif
-                            @endforeach
-                        >
-                            {{ $team->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <button type="submit" class="btn btn-primary">
-                    Сохранить
-                </button>
+            <div class="col-12">
+                <div class="input-group">
+                    <label for="first_place" class="input-group-text">Первое место</label>
+                    <select id="first_place" class="form-select" name="team_id">
+                        <option value="0">--Не выбрана--</option>
+                        @foreach($tournament->teams as $team)
+                            <option value="{{ $team->id }}"
+                                    @foreach($tournament->winners as $winner)
+                                    @if($winner->place === 1 && $winner->team_id === $team->id) selected @endif
+                                @endforeach
+                            >
+                                {{ $team->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
             </div>
         </form>
 
-        <form id="second_place-form" method="post" class="form-inline">
+        <form id="second_place-form" method="post" class="row row-cols-lg-auto g-2 align-items-center mt-1">
             <input type="hidden" name="place" value="2">
-            <div class="form-group mb-2">
-                <label for="second_place">Второе место</label>
-                <select id="second_place" class="form-control ml-2 mr-2" name="team_id">
-                    <option value="0">--Не выбрана--</option>
-                    @foreach($tournament->teams as $team)
-                        <option value="{{ $team->id }}"
-                                @foreach($tournament->winners as $winner)
-                                @if($winner->place === 2 && $winner->team_id === $team->id) selected @endif
-                            @endforeach
-                        >
-                            {{ $team->name }}
-                        </option>
-                    @endforeach
-                </select>
+            <div class="col-12">
+                <div class="input-group mr-3">
+                    <label for="second_place" class="input-group-text">Второе место</label>
+                    <select id="second_place" class="form-select" name="team_id">
+                        <option value="0">--Не выбрана--</option>
+                        @foreach($tournament->teams as $team)
+                            <option value="{{ $team->id }}"
+                                    @foreach($tournament->winners as $winner)
+                                    @if($winner->place === 2 && $winner->team_id === $team->id) selected @endif
+                                @endforeach
+                            >
+                                {{ $team->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-12">
                 <button type="submit" class="btn btn-primary">
                     Сохранить
                 </button>
@@ -161,22 +167,26 @@
         </form>
 
         @if($tournament->thirdPlaceSeries === 1)
-            <form id="third_place-form" method="post" class="form-inline">
+            <form id="third_place-form" method="post" class="row row-cols-lg-auto g-2 align-items-center mt-1">
                 <input type="hidden" name="place" value="3">
-                <div class="form-group mb-2">
-                    <label for="third_place">Третье место</label>
-                    <select id="third_place" class="form-control ml-2 mr-2" name="team_id">
-                        <option value="0">--Не выбрана--</option>
-                        @foreach($tournament->teams as $team)
-                            <option value="{{ $team->id }}"
-                                    @foreach($tournament->winners as $winner)
-                                    @if($winner->place === 3 && $winner->team_id === $team->id) selected @endif
-                                @endforeach
-                            >
-                                {{ $team->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="col-12">
+                    <div class="input-group">
+                        <label for="third_place" class="input-group-text">Третье место</label>
+                        <select id="third_place" class="form-select" name="team_id">
+                            <option value="0">--Не выбрана--</option>
+                            @foreach($tournament->teams as $team)
+                                <option value="{{ $team->id }}"
+                                        @foreach($tournament->winners as $winner)
+                                        @if($winner->place === 3 && $winner->team_id === $team->id) selected @endif
+                                    @endforeach
+                                >
+                                    {{ $team->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12">
                     <button type="submit" class="btn btn-primary">
                         Сохранить
                     </button>

@@ -16,6 +16,7 @@ class PersonalTournamentPosition
      * @return string|null
      */
     public static function readLastGameDate(int $tournamentId)
+    : ?string
     {
         $result = DB::table('personalGameRegular')
             ->select([
@@ -34,6 +35,7 @@ class PersonalTournamentPosition
      * @return string|null
      */
     public static function readFirstGameDate(int $tournamentId)
+    : ?string
     {
         $result = DB::table('personalGameRegular')
             ->select([
@@ -51,20 +53,22 @@ class PersonalTournamentPosition
     /**
      * @param int         $tournamentId
      * @param string|null $date
-     * @return mixed
+     *
+     * @return array
      */
     public static function readPosition(int $tournamentId, string $date = null)
+    : array
     {
-        $dateString = is_null($date) ? '' : "and playedAt <= '{$date}'";
-        $position = DB::select("
+        $dateString = is_null($date) ? '' : "and playedAt <= '$date'";
+
+        return DB::select("
             select
-                if (
-                    pTp.club_id is null,
-                    concat('<a href=\"/player/', p.id ,'\">', p.tag, '</a> <small>', p.name, '</small>'),
-                    concat('<a href=\"/player/', p.id ,'\">', p.tag, '</a> <small>', p.name, '</small> <span class=\"badge badge-pill badge-success text-uppercase\">', pTp.club_id, '</span>')
-                ) as player,
                 p.id as id,
+                p.name,
+                p.tag,
+                pTp.club_id,
                 pTp.division as division,
+                1 as isPlayer,
                 (
                     if(w.wins > 0, w.wins, 0) +
                     if(wot.wins > 0, wot.wins, 0) +
@@ -98,93 +102,93 @@ class PersonalTournamentPosition
                            if(home_score > away_score, home_player_id, away_player_id) winner_player_id
                     from personalGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null
                         and away_score is not null)
                         and (isOvertime = 0 and isShootout = 0)
                         and deletedAt is null
                     group by winner_player_id
                 ) w on p.id = w.winner_player_id
-            
+
                 left join (
                     select count(1) wins,
                            if(home_score > away_score, home_player_id, away_player_id) winner_player_id
                     from personalGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 1 and isShootout = 0)
                         and deletedAt is null
                     group by winner_player_id
                 ) wot on p.id = wot.winner_player_id
-            
+
                 left join (
                     select count(1) wins,
                            if(home_score > away_score, home_player_id, away_player_id) winner_player_id
                     from personalGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 1)
                         and deletedAt is null
                     group by winner_player_id
                 ) wso on p.id = wso.winner_player_id
-            
+
                 left join (
                     select count(1) lose,
                            if(home_score < away_score, home_player_id, away_player_id) loser_player_id
                     from personalGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 1 and isShootout = 0)
                         and deletedAt is null
                     group by loser_player_id
                 ) lot on p.id = lot.loser_player_id
-            
+
                 left join (
                     select count(1) lose,
                            if(home_score < away_score, home_player_id, away_player_id) loser_player_id
                     from personalGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 1)
                         and deletedAt is null
                     group by loser_player_id
                 ) lso on p.id = lso.loser_player_id
-            
+
                 left join (
                     select count(1) lose,
                            if(home_score < away_score, home_player_id, away_player_id) loser_player_id
                     from personalGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and (isOvertime = 0 and isShootout = 0)
                         and deletedAt is null
                     group by loser_player_id
                 ) l on p.id = l.loser_player_id
-            
+
                 left join (
                     select home_player_id player_id,
                            sum(home_score) goals_for,
                            sum(away_score) goals_against
                     from personalGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and deletedAt is null
                     group by home_player_id
                 ) home_stats on home_stats.player_id = p.id
-            
+
                 left join (
                     select away_player_id player_id,
                            sum(away_score) goals_for,
                            sum(home_score) goals_against
                     from personalGameRegular
                     where tournament_id = ?
-                        {$dateString}
+                        $dateString
                         and (home_score is not null and away_score is not null)
                         and deletedAt is null
                     group by away_player_id
@@ -209,7 +213,5 @@ class PersonalTournamentPosition
             $tournamentId,
             $tournamentId,
         ]);
-
-        return $position;
     }
 }

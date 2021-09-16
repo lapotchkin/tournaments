@@ -24,7 +24,7 @@
                     <i class="fab fa-{{ $game->tournament->platform->icon }}"></i>
                     <strong>{{ $game->tournament->title }}</strong>
                     <span
-                        class="badge badge-pill badge-light">{{ $game->tournament->min_players }} на {{ $game->tournament->min_players }}</span>
+                        class="badge rounded-pill bg-light">{{ $game->tournament->min_players }} на {{ $game->tournament->min_players }}</span>
                 </div>
                 <div class="text-center text-white-50">
                     @if($game->playoff_pair_id)
@@ -35,9 +35,9 @@
                 </div>
                 <div class="h4 text-center mb-1">
                     {{ $game->homeTeam->team->short_name }}
-                    <span class="badge badge-pill badge-dark">{{ $game->home_score }}</span>
+                    <span class="badge rounded-pill bg-dark">{{ $game->home_score }}</span>
                     :
-                    <span class="badge badge-pill badge-dark">{{ $game->away_score }}</span>
+                    <span class="badge rounded-pill bg-dark">{{ $game->away_score }}</span>
                     {{ $game->awayTeam->team->short_name }}
                 </div>
                 <div class="text-center text-white-50">

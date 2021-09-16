@@ -17,7 +17,7 @@
             <form id="player-edit">
                 <div class="form-group">
                     <label for="club_id">Клуб</label>
-                    <select id="club_id" class="form-control" name="club_id">
+                    <select id="club_id" class="form-select" name="club_id">
                         <option value="">-- Не выбран --</option>
                         @foreach($clubs as $club)
                             <option value="{{ $club->id }}"
@@ -31,7 +31,7 @@
                 </div>
                 <div class="form-group">
                     <label for="division">Группа</label>
-                    <select id="division" class="form-control" name="division">
+                    <select id="division" class="form-select" name="division">
                         @foreach([1, 2, 3, 4] as $divisionId)
                             <option value="{{ $divisionId }}"
                                 {{ $tournamentPlayer->division === $divisionId ? 'selected' : '' }}>

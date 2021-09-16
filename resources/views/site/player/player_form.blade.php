@@ -16,7 +16,7 @@
             <form id="player-form" method="post">
                 <div class="form-group">
                     <label for="platform_id">Игровая платформа</label>
-                    <select id="platform_id" class="form-control" name="platform_id">
+                    <select id="platform_id" class="form-select" name="platform_id">
                         <option value="">--Не выбрана--</option>
                         @foreach($platforms as $platform)
                             <option value="{{ $platform->id }}"

@@ -56,7 +56,7 @@ if (token) {
 // });
 
 require('datatables.net');
-require('datatables.net-bs4');
+require('datatables.net-bs5');
 require('chosen-js');
 require('bootstrap-datepicker');
 require('bootstrap-datepicker/js/locales/bootstrap-datepicker.ru');

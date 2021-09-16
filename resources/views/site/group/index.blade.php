@@ -17,13 +17,14 @@
             <div class="my-3 p-3 bg-white rounded border border-gray">
                 <h4 class="border-bottom border-gray pb-2 mb-0">{{ $app->title }}</h4>
                 @foreach($app->groupTournaments as $tournament)
-                    <div class="media pt-2">
-                        <i
-                            class="fab fa-2x fa-{{ $tournament->platform->icon }} {{ $tournament->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
+                    <div class="d-flex pt-2">
+                        <div class="flex-shrink-0">
+                            <i class="fab fa-2x fa-{{ $tournament->platform->icon }} {{ $tournament->platform->icon === 'xbox' ? 'text-success' : '' }}"></i>
+                        </div>
                         <div
-                            class="media-body pb-2 ml-2 mb-0 lh-125 {{ !$loop->last ? 'border-bottom border-gray' : '' }}">
+                            class="flex-grow-1 ms-2 pb-2 ml-2 mb-0 lh-125 {{ !$loop->last ? 'border-bottom border-gray' : '' }}">
                             @if(count($tournament->winners))
-                                <div class="float-right">
+                                <div class="float-end">
                                     @foreach($tournament->winners as $winner)
                                         <span class="fa-stack" style="vertical-align: top;">
                                           <i class="fas fa-circle fa-stack-2x"></i>
@@ -33,10 +34,8 @@
                                     @endforeach
                                 </div>
                             @endif
-                            <a href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}">
-                                {{ $tournament->title }}
-                            </a>
-                            <span class="badge badge-pill badge-secondary">
+                            <a href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}">{{ $tournament->title }}</a>
+                            <span class="badge rounded-pill bg-secondary">
                                 {{ $tournament->min_players }} на {{ $tournament->min_players }}
                             </span>
                             <br>

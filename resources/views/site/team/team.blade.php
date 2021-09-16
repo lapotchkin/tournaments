@@ -39,7 +39,7 @@
                     <div class="form-inline">
                         <div class="input-group">
                             <label for="player_id" class="mr-2">Игрок</label>
-                            <select id="player_id" class="form-control mr-3" name="player_id">
+                            <select id="player_id" class="form-select mr-3" name="player_id">
                                 <option value="">--Не выбран--</option>
                                 @foreach($nonTeamPlayers as $player)
                                     <option
@@ -62,7 +62,7 @@
                         <li>
                             <span class="fa-li"><i class="fas fa-hockey-puck"></i></span>
                             <a href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}">{{ $tournament->title }}</a>
-                            <span class="badge badge-secondary badge-pill">
+                            <span class="badge bg-secondary rounded-pill">
                         {{ $tournament->min_players }} на {{ $tournament->min_players }}
                     </span>
                             @foreach($tournament->winners as $winner)
@@ -87,22 +87,22 @@
             <tr>
                 <th></th>
                 <th>Игрок</th>
-                <th class="text-right">ИГР</th>
-                <th class="text-right">ОЧК</th>
-                <th class="text-right">ГОЛ</th>
-                <th class="text-right">ПЕР</th>
-                <th class="text-right">+/-</th>
-                <th class="text-right">БРОС/И</th>
-                <th class="text-right">ОТБ/И</th>
-                <th class="text-right">ПЕР/И</th>
-                <th class="text-right">ПОТ/И</th>
-                <th class="text-right">СИЛ/И</th>
-                <th class="text-right">ВБР</th>
-                <th class="text-right">ПАС</th>
-                <th class="text-right">ШМИН/И</th>
-                <th class="text-right">АТК</th>
-                <th class="text-right">КОМ</th>
-                <th class="text-right">ЗАЩ</th>
+                <th class="text-end">ИГР</th>
+                <th class="text-end">ОЧК</th>
+                <th class="text-end">ГОЛ</th>
+                <th class="text-end">ПЕР</th>
+                <th class="text-end">+/-</th>
+                <th class="text-end">БРОС/И</th>
+                <th class="text-end">ОТБ/И</th>
+                <th class="text-end">ПЕР/И</th>
+                <th class="text-end">ПОТ/И</th>
+                <th class="text-end">СИЛ/И</th>
+                <th class="text-end">ВБР</th>
+                <th class="text-end">ПАС</th>
+                <th class="text-end">ШМИН/И</th>
+                <th class="text-end">АТК</th>
+                <th class="text-end">КОМ</th>
+                <th class="text-end">ЗАЩ</th>
             </tr>
             </thead>
             <tbody>
@@ -113,48 +113,48 @@
                         <a href="{{ route('player', ['player' => $player->id]) }}">{{ $player->tag }}</a>
                         <small>{{ $player->name }}</small>
                     </td>
-                    <td class="text-right">{{ $player->games }}</td>
-                    <td class="text-right">{{ $player->points }}</td>
-                    <td class="text-right">{{ $player->goals }}</td>
-                    <td class="text-right">{{ $player->assists }}</td>
-                    <td class="text-right">
+                    <td class="text-end">{{ $player->games }}</td>
+                    <td class="text-end">{{ $player->points }}</td>
+                    <td class="text-end">{{ $player->goals }}</td>
+                    <td class="text-end">{{ $player->assists }}</td>
+                    <td class="text-end">
                         @if($player->rating_offense)
                             {{ $player->plus_minus > 0 ? '+' . $player->plus_minus : $player->plus_minus }}
                         @else
                             —
                         @endif
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->rating_offense ? $player->shots_per_game : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->rating_offense ? $player->takeaways_per_game : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->interceptions_per_game ? $player->interceptions_per_game : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->rating_offense ? $player->giveaways_per_game : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->rating_offense ? $player->hits_per_game : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->rating_offense ? $player->faceoff_win_percent . '%' : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->interceptions_per_game ? $player->pass_percent . '%' : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->rating_offense ? $player->penalty_minutes_per_game : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->rating_offense ? $player->rating_offense . '%' : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->rating_teamplay ? $player->rating_teamplay . '%' : '—' }}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         {{ $player->rating_defense ? $player->rating_defense . '%' : '—' }}
                     </td>
                 </tr>
@@ -170,15 +170,15 @@
             <tr>
                 <th></th>
                 <th>Игрок</th>
-                <th class="text-right">ИГР</th>
-                <th class="text-right">ПОБ</th>
-                <th class="text-right">ПОР</th>
-                <th class="text-right">БРОС</th>
-                <th class="text-right">ОТБ</th>
-                <th class="text-right">ГОЛ</th>
-                <th class="text-right">%ОТБ</th>
-                <th class="text-right">ГОЛ/И</th>
-                <th class="text-right">СУХ</th>
+                <th class="text-end">ИГР</th>
+                <th class="text-end">ПОБ</th>
+                <th class="text-end">ПОР</th>
+                <th class="text-end">БРОС</th>
+                <th class="text-end">ОТБ</th>
+                <th class="text-end">ГОЛ</th>
+                <th class="text-end">%ОТБ</th>
+                <th class="text-end">ГОЛ/И</th>
+                <th class="text-end">СУХ</th>
             </tr>
             </thead>
             <tbody>
@@ -189,15 +189,15 @@
                         <a href="{{ route('player', ['player' => $player->id]) }}">{{ $player->tag }}</a>
                         <small>{{ $player->name }}</small>
                     </td>
-                    <td class="text-right">{{ $player->games }}</td>
-                    <td class="text-right">{{ $player->wins }}</td>
-                    <td class="text-right">{{ $player->lose }}</td>
-                    <td class="text-right">{{ $player->shot_against }}</td>
-                    <td class="text-right">{{ $player->shot_against - $player->goals_against }}</td>
-                    <td class="text-right">{{ $player->goals_against }}</td>
-                    <td class="text-right">{{ round(1 - $player->goals_against / $player->shot_against, 3) }}</td>
-                    <td class="text-right">{{ round($player->goals_against / $player->games, 2) }}</td>
-                    <td class="text-right">{{ $player->shotouts }}</td>
+                    <td class="text-end">{{ $player->games }}</td>
+                    <td class="text-end">{{ $player->wins }}</td>
+                    <td class="text-end">{{ $player->lose }}</td>
+                    <td class="text-end">{{ $player->shot_against }}</td>
+                    <td class="text-end">{{ $player->shot_against - $player->goals_against }}</td>
+                    <td class="text-end">{{ $player->goals_against }}</td>
+                    <td class="text-end">{{ round(1 - $player->goals_against / $player->shot_against, 3) }}</td>
+                    <td class="text-end">{{ round($player->goals_against / $player->games, 2) }}</td>
+                    <td class="text-end">{{ $player->shotouts }}</td>
                 </tr>
             @endforeach
             </tbody>

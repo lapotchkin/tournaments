@@ -24,7 +24,7 @@
                             <div class="tournament-bracket__match" tabindex="0">
                                 <div class="row">
                                     <div class="col-10 form-inline">
-                                        <span class="badge badge-pill badge-danger mr-2">&nbsp;</span>
+                                        <span class="badge rounded-pill bg-danger mr-2">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->playerOne && count($pair->games))
                                             <a href="{{ route('player', ['player' => $pair->player_one_id]) }}">
                                                 @if ($winner === $pair->player_one_id)
@@ -33,11 +33,11 @@
                                                     {{$pair->playerOne->name }}
                                                 @endif
                                             </a>
-                                            <span class="badge badge-success text-uppercase ml-1">
+                                            <span class="badge bg-success text-uppercase ml-1">
                                                 {{ $pair->playerOne->getClubId($tournament->id) }}
                                             </span>
                                         @else
-                                            <select class="form-control form-control-sm" name="player_one_id">
+                                            <select class="form-select form-control-sm" name="player_one_id">
                                                 <option value="">--</option>
                                                 @foreach($tournament->tournamentPlayers as $tournamentPlayer)
                                                     <option value="{{ $tournamentPlayer->player_id }}"
@@ -49,19 +49,19 @@
                                             </select>
                                         @endif
                                     </div>
-                                    <div class="col-2 text-right">
+                                    <div class="col-2 text-end">
                                         @if (!is_null($pair) && $pair->playerOne && isset($seriesResult[$pair->playerOne->id]))
                                             @if ($winner === $pair->player_one_id)
-                                                <span class="badge badge-pill badge-dark">
+                                                <span class="badge rounded-pill bg-dark">
                                                     {{ $seriesResult[$pair->playerOne->id] }}
                                                 </span>
                                             @else
-                                                <span class="badge badge-pill badge-secondary">
+                                                <span class="badge rounded-pill bg-secondary">
                                                     {{ $seriesResult[$pair->playerOne->id] }}
                                                 </span>
                                             @endif
                                         @else
-                                            <span class="badge badge-pill badge-secondary">0</span>
+                                            <span class="badge rounded-pill bg-secondary">0</span>
                                         @endif
                                     </div>
                                 </div>
@@ -86,7 +86,7 @@
                                         @endif
                                     </div>
                                     @if (is_null($pair) || !count($pair->games))
-                                        <div class="col-3 text-right align-middle">
+                                        <div class="col-3 text-end align-middle">
                                             <button type="button" class="btn btn-sm btn-primary savePair">
                                                 <i class="fas fa-save"></i>
                                             </button>
@@ -95,7 +95,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-10 form-inline">
-                                        <span class="badge badge-pill badge-warning mr-2">&nbsp;</span>
+                                        <span class="badge rounded-pill bg-warning mr-2">&nbsp;</span>
                                         @if (!is_null($pair) && $pair->playerTwo && count($pair->games))
                                             <a href="{{ route('player', ['player' => $pair->player_two_id]) }}">
                                                 @if ($winner === $pair->player_two_id)
@@ -104,11 +104,11 @@
                                                     {{$pair->playerTwo->name }}
                                                 @endif
                                             </a>
-                                            <span class="badge badge-success text-uppercase ml-1">
+                                            <span class="badge bg-success text-uppercase ml-1">
                                                 {{ $pair->playerTwo->getClubId($tournament->id) }}
                                             </span>
                                         @else
-                                            <select class="form-control form-control-sm" name="player_two_id">
+                                            <select class="form-select form-control-sm" name="player_two_id">
                                                 <option value="">--</option>
                                                 @foreach($tournament->tournamentPlayers as $tournamentPlayer)
                                                     <option value="{{ $tournamentPlayer->player_id }}"
@@ -120,19 +120,19 @@
                                             </select>
                                         @endif
                                     </div>
-                                    <div class="col-2 text-right">
+                                    <div class="col-2 text-end">
                                         @if (!is_null($pair) && $pair->playerTwo && isset($seriesResult[$pair->playerTwo->id]))
                                             @if ($winner === $pair->player_two_id)
-                                                <span class="badge badge-pill badge-dark">
+                                                <span class="badge rounded-pill bg-dark">
                                                     {{ $seriesResult[$pair->playerTwo->id] }}
                                                 </span>
                                             @else
-                                                <span class="badge badge-pill badge-secondary">
+                                                <span class="badge rounded-pill bg-secondary">
                                                     {{ $seriesResult[$pair->playerTwo->id] }}
                                                 </span>
                                             @endif
                                         @else
-                                            <span class="badge badge-pill badge-secondary">0</span>
+                                            <span class="badge rounded-pill bg-secondary">0</span>
                                         @endif
                                     </div>
                                 </div>

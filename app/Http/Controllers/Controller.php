@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TeamPlayer;
 use App\Utils\GameScoreImage;
 use App\Utils\Vk;
-use Auth;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -31,7 +29,9 @@ use VK\Exceptions\VKClientException;
  */
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
 
     /**
      * Построить AJAX-ответ
@@ -41,7 +41,7 @@ class Controller extends BaseController
      *
      * @return ResponseFactory|Response
      */
-    protected function renderAjax(array $data = [], $message = '')
+    protected function renderAjax(array $data = [], string $message = '')
     {
         return response(
             json_encode([
@@ -61,6 +61,7 @@ class Controller extends BaseController
      * @return int
      */
     protected function sortWinners($a, $b)
+    : int
     {
         if ($a->cups[1] === $b->cups[1] && $a->cups[2] === $b->cups[2] && $a->cups[3] === $b->cups[3]) {
             return 0;

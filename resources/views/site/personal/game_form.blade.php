@@ -27,28 +27,28 @@
         <table class="mb-2 w-100">
             <tbody>
             <tr>
-                <td class="text-right pr-3" style="width:40%;">
+                <td class="text-end pr-3" style="width:40%;">
                     <h2>{{ $pair ? $pair->playerOne->tag : $game->homePlayer->tag }}</h2>
                     <h4>
                         {{ $pair ? $pair->playerOne->name : $game->homePlayer->name }}
-                        <span class="badge badge-success text-uppercase">
+                        <span class="badge bg-success text-uppercase">
                             {{ $pair ? $pair->playerOne->getClubId($pair->tournament_id) : $game->homePlayer->getClubId($game->tournament_id) }}
                         </span>
                     </h4>
                 </td>
-                <td class="text-right" style="width:4rem;">
+                <td class="text-end" style="width:4rem;">
                     <input type="text" id="home_score" class="form-control form-control-lg text-center"
                            name="home_score" value="{{ $game ? $game->home_score : '' }}">
                 </td>
                 <td class="text-center" style="width:1rem;"><h2>:</h2></td>
-                <td class="text-left" style="width:4rem;">
+                <td class="text-start" style="width:4rem;">
                     <input type="text" id="away_score" class="form-control form-control-lg text-center"
                            name="away_score" value="{{ $game ? $game->away_score : '' }}">
                 </td>
-                <td class="text-left pl-3" style="width:40%;">
+                <td class="text-start pl-3" style="width:40%;">
                     <h2>{{ $pair ? $pair->playerTwo->tag : $game->awayPlayer->tag }}</h2>
                     <h4>
-                        <span class="badge badge-success text-uppercase">
+                        <span class="badge bg-success text-uppercase">
                             {{ $pair ? $pair->playerTwo->getClubId($pair->tournament_id) : $game->awayPlayer->getClubId($game->tournament_id) }}
                         </span>
                         {{ $pair ? $pair->playerTwo->name : $game->awayPlayer->name }}

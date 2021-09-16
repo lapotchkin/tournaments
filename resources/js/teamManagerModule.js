@@ -134,10 +134,10 @@ window.TRNMNT_playoffModule = (function () {
         $badgeCell.empty();
         switch (isCaptain) {
             case 1:
-                $badgeCell.html('<span class="badge badge-success">C</span>')
+                $badgeCell.html('<span class="badge bg-success">C</span>')
                 break;
             case 2:
-                $badgeCell.html('<span class="badge badge-warning">A</span>')
+                $badgeCell.html('<span class="badge bg-warning">A</span>')
                 break;
         }
     }

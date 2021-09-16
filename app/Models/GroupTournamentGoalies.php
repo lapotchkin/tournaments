@@ -26,7 +26,7 @@ class GroupTournamentGoalies
                 lower(p.tag) as tag,
                 concat('<a href=\"/player/', p.id, '\">', p.tag, '</a> <small>', p.name, '</small>') goalie,
                 (
-                    select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge badge-success\">', t.short_name, '</span>') name
+                    select concat('<a href=\"/team/', t.id, '\">', t.name, '</a> <span class=\"badge bg-success\">', t.short_name, '</span>') name
                     from
                         groupGameRegular_player gGRp2
                             inner join groupGameRegular gGP2 on gGRp2.game_id = gGP2.id and gGP2.tournament_id = ?
@@ -58,9 +58,9 @@ class GroupTournamentGoalies
                     inner join player p on gGRp.player_id = p.id and p.deletedAt is null
             where gGRp.isGoalie = 1
                  {$dateString}
-            
+
             group by p.id, p.name, p.tag
-            
+
             order by team, goalie
         ", [$tournamentId, $tournamentId, $tournamentId]);
 

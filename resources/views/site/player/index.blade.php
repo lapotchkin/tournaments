@@ -17,7 +17,7 @@
 
     <h3>Зал славы</h3>
     @foreach($winners as $winner)
-        <div class="col-6 col-md-4 col-lg-3 col-xl-2 float-left my-3"
+        <div class="col-6 col-md-4 col-lg-3 col-xl-2 float-start my-3"
              role="alert">
             <div class="text-center bg-light rounded shadow-sm p-3">
                 <div class="fa-2x" style="margin-top: -2.3rem;">

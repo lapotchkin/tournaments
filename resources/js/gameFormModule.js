@@ -16,23 +16,23 @@ window.TRNMNT_gameFormModule = (function () {
         game: `
             <tr>
                 <td>#{date}</td>
-                <td class="text-right">#{home_team}</td>
-                <td class="text-right">
-                    <span class="badge badge-primary badge-pill">#{home_score}</span>
+                <td class="text-end">#{home_team}</td>
+                <td class="text-end">
+                    <span class="badge bg-primary rounded-pill">#{home_score}</span>
                 </td>
                 <td class="text-center">:</td>
                 <td>
-                    <span class="badge badge-primary badge-pill">#{away_score}</span>
+                    <span class="badge bg-primary rounded-pill">#{away_score}</span>
                 </td>
                 <td>#{away_team}</td>
-                <td class="text-right">
+                <td class="text-end">
                     <button type="button" class="result-fill btn btn-primary btn-sm">Заполнить</button>
                     <button type="button" class="result-concat btn btn-success btn-sm" disabled>Присоединить</button>
                 </td>
             </tr>`,
         player: `
             <tr data-id="#{id}">
-                <td>#{tag}</td>
+                <td>#{tag} <small class="text-muted">#{name}</small></td>
                 <td class="text-center">#{position}</td>
                 <td class="text-center">#{goals}</td>
                 <td class="text-center">#{assists}</td>
@@ -43,8 +43,8 @@ window.TRNMNT_gameFormModule = (function () {
             <tr data-id="#{id}" style="#{style}">
                 <td>#{player}</td>
                 <td class="text-center">#{position}</td>
-                <td><input type="text" class="text-right form-control" name="goals" value="#{goals}"></td>
-                <td><input type="text" class="text-right form-control" name="assists" value="#{assists}"></td>
+                <td><input type="text" class="text-end form-control" name="goals" value="#{goals}"></td>
+                <td><input type="text" class="text-end form-control" name="assists" value="#{assists}"></td>
                 <td>#{stars}</td>
                 <td class="text-nowrap">#{button}</td>
             </tr>
@@ -102,6 +102,7 @@ window.TRNMNT_gameFormModule = (function () {
                     // console.log(player);
                     $tbody.append(_templates.player.format({
                         tag: player.player_tag,
+                        name: player.name,
                         position: _getPlayerBadge(player.position_id, player.position),
                         goals: !player.isGoalie ? player.goals : '—',
                         assists: !player.isGoalie ? player.assists : '—',
@@ -130,11 +131,11 @@ window.TRNMNT_gameFormModule = (function () {
     function _createProtocolAddForm($form, players) {
         let playersSelect = '';
         players.forEach(function (player) {
-            playersSelect += `<option value="${player.id}">${player.tag}</option>`;
+            playersSelect += `<option value="${player.id}">${player.tag} (${player.name})</option>`;
         });
         const $row = $(_templates.playerForm.format({
             id: '',
-            player: `<select class="form-control" name="player_id">${playersSelect}</select>`,
+            player: `<select class="form-select" name="player_id">${playersSelect}</select>`,
             position: _getPositionSelect(),
             stars: _getStarsSelect(),
             goals: '',
@@ -160,7 +161,7 @@ window.TRNMNT_gameFormModule = (function () {
             const selected = playerPosition === position.id ? 'selected' : '';
             positionSelect += `<option value="${position.id}" ${selected}>${position.short_title}</option>`;
         });
-        return `<select class="form-control" name="position_id">${positionSelect}</select>`;
+        return `<select class="form-select" name="position_id">${positionSelect}</select>`;
     }
 
     /**
@@ -175,7 +176,7 @@ window.TRNMNT_gameFormModule = (function () {
             const selected = playerStar === i ? 'selected' : '';
             starsSelect += `<option value="${i}" ${selected}>${stars[i]}</option>`;
         }
-        return `<select class="form-control" name="star">${starsSelect}</select>`;
+        return `<select class="form-select" name="star">${starsSelect}</select>`;
     }
 
     /**
@@ -230,7 +231,7 @@ window.TRNMNT_gameFormModule = (function () {
         const $playerOption = $row.find('select[name=player_id] option[value=' + formData.player_id + ']');
         const $protocolRow = $(_templates.playerForm.format({
             id: protocolId,
-            player: $playerOption.text(),
+            player: $playerOption.text().replace('(', '<small class="text-muted">').replace(')', '</small>'),
             position: _getPositionSelect(formData.position_id),
             goals: formData.goals !== null ? formData.goals : '',
             assists: formData.assists !== null ? formData.assists : '',

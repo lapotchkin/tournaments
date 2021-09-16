@@ -7,16 +7,22 @@
     @widget('groupHeader', ['tournament' => $tournament])
     @widget('groupMenu', ['tournament' => $tournament])
 
-    <h3>Команды</h3>
-    @foreach($tournament->teams as $team)
-        <div>{{ $loop->iteration }}. {{ $team->name }}</div>
-    @endforeach
-
-    <h3 class="mt-3">Группы</h3>
-    @foreach($divisions as $number => $division)
-        <h4>Группа {{ TextUtils::divisionLetter($number) }}</h4>
-        @foreach($division as $team)
-            <div>{{ $team->name }}</div>
+    @if(count($tournament->teams) < 4)
+        <div class="alert alert-danger">Недостаточно команд в турнире. Должно быть хотя бы 4.</div>
+    @else
+        <h3>Команды</h3>
+        @foreach($tournament->teams as $team)
+            <div>{{ $loop->iteration }}. {{ $team->name }}</div>
         @endforeach
-    @endforeach
+
+        @if(!count($rounds))
+            <h3 class="mt-3">Группы</h3>
+            @foreach($divisions as $number => $division)
+                <h4>Группа {{ TextUtils::divisionLetter($number) }}</h4>
+                @foreach($division as $team)
+                    <div>{{ $team->name }}</div>
+                @endforeach
+            @endforeach
+        @endif
+    @endif
 @endsection
