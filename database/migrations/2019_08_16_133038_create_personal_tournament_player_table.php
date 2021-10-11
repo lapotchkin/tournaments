@@ -34,7 +34,7 @@ class CreatePersonalTournamentPlayerTable extends Migration
             $table->primary(['tournament_id', 'player_id']);
         });
 
-        Schema::table('club', function (Blueprint $table) {
+        Schema::table('personalTournament_player', function (Blueprint $table) {
             $table->foreign('tournament_id')->references('id')->on('personalTournament');
             $table->foreign('player_id')->references('id')->on('player');
             $table->foreign('club_id')->references('id')->on('club');
@@ -48,7 +48,7 @@ class CreatePersonalTournamentPlayerTable extends Migration
      */
     public function down()
     {
-        Schema::table('app_team', function (Blueprint $table) {
+        Schema::table('personalTournament_player', function (Blueprint $table) {
             $table->dropForeign(['tournament_id']);
             $table->dropForeign(['player_id']);
             $table->dropForeign(['club_id']);

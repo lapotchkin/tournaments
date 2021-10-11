@@ -31,7 +31,7 @@ class ModifyTeamTable201908161445 extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('team', function (Blueprint $table) {
             $table->dropColumn(['short_name']);
         });
     }

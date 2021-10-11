@@ -39,7 +39,7 @@ class CreatePlayerTable extends Migration
             $table->unique(['tag', 'platform_id']);
         });
 
-        Schema::table('club', function (Blueprint $table) {
+        Schema::table('player', function (Blueprint $table) {
             $table->foreign('platform_id')->references('id')->on('platform');
         });
     }
@@ -51,7 +51,7 @@ class CreatePlayerTable extends Migration
      */
     public function down()
     {
-        Schema::table('app_team', function (Blueprint $table) {
+        Schema::table('player', function (Blueprint $table) {
             $table->dropForeign(['platform_id']);
         });
         Schema::dropIfExists('player');

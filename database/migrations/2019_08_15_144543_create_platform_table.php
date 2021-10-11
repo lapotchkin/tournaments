@@ -36,13 +36,13 @@ class CreatePlatformTable extends Migration
         DB::table('platform')->insert([
             [
                 'id'        => 'playstation4',
-                'title'     => 'PlayStation 4',
+                'name'      => 'PlayStation 4',
                 'icon'      => 'playstation',
                 'createdAt' => date('Y-m-d H:i:s'),
             ],
             [
                 'id'        => 'xboxone',
-                'title'     => 'Xbox One',
+                'name'      => 'Xbox One',
                 'icon'      => 'xbox',
                 'createdAt' => date('Y-m-d H:i:s'),
             ],

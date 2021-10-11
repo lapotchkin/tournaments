@@ -61,7 +61,7 @@ class CreateGroupGameRegularTable extends Migration
 
         });
 
-        Schema::table('club', function (Blueprint $table) {
+        Schema::table('groupGameRegular', function (Blueprint $table) {
             $table->foreign('tournament_id')->references('id')->on('groupTournament');
             $table->foreign('home_team_id')->references('id')->on('team');
             $table->foreign('away_team_id')->references('id')->on('team');
@@ -75,7 +75,7 @@ class CreateGroupGameRegularTable extends Migration
      */
     public function down()
     {
-        Schema::table('app_team', function (Blueprint $table) {
+        Schema::table('groupGameRegular', function (Blueprint $table) {
             $table->dropForeign(['tournament_id']);
             $table->dropForeign(['home_team_id']);
             $table->dropForeign(['away_team_id']);

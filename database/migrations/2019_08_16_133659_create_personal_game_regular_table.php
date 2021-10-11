@@ -40,7 +40,7 @@ class CreatePersonalGameRegularTable extends Migration
             $table->softDeletes('deletedAt');
         });
 
-        Schema::table('club', function (Blueprint $table) {
+        Schema::table('personalGameRegular', function (Blueprint $table) {
             $table->foreign('tournament_id')->references('id')->on('personalTournament');
             $table->foreign('home_player_id')->references('id')->on('player');
             $table->foreign('away_player_id')->references('id')->on('player');
@@ -54,7 +54,7 @@ class CreatePersonalGameRegularTable extends Migration
      */
     public function down()
     {
-        Schema::table('app_team', function (Blueprint $table) {
+        Schema::table('personalGameRegular', function (Blueprint $table) {
             $table->dropForeign(['tournament_id']);
             $table->dropForeign(['home_player_id']);
             $table->dropForeign(['away_player_id']);

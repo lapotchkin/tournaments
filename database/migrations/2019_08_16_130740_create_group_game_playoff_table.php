@@ -57,7 +57,7 @@ class CreateGroupGamePlayoffTable extends Migration
             $table->softDeletes('deletedAt');
         });
 
-        Schema::table('club', function (Blueprint $table) {
+        Schema::table('groupGamePlayoff', function (Blueprint $table) {
             $table->foreign('playoff_pair_id')->references('id')->on('groupTournamentPlayoff');
             $table->foreign('home_team_id')->references('id')->on('team');
             $table->foreign('away_team_id')->references('id')->on('team');
@@ -71,7 +71,7 @@ class CreateGroupGamePlayoffTable extends Migration
      */
     public function down()
     {
-        Schema::table('app_team', function (Blueprint $table) {
+        Schema::table('groupGamePlayoff', function (Blueprint $table) {
             $table->dropForeign(['playoff_pair_id']);
             $table->dropForeign(['home_team_id']);
             $table->dropForeign(['away_team_id']);

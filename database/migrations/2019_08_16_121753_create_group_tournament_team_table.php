@@ -33,7 +33,7 @@ class CreateGroupTournamentTeamTable extends Migration
             $table->primary(['tournament_id', 'team_id']);
         });
 
-        Schema::table('club', function (Blueprint $table) {
+        Schema::table('groupTournament_team', function (Blueprint $table) {
             $table->foreign('tournament_id')->references('id')->on('groupTournament');
             $table->foreign('team_id')->references('id')->on('team');
         });
@@ -46,7 +46,7 @@ class CreateGroupTournamentTeamTable extends Migration
      */
     public function down()
     {
-        Schema::table('app_team', function (Blueprint $table) {
+        Schema::table('groupTournament_team', function (Blueprint $table) {
             $table->dropForeign(['tournament_id']);
             $table->dropForeign(['team_id']);
         });

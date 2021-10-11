@@ -52,7 +52,7 @@ class CreateTeamManagementTable extends Migration
             return;
         }
 
-        Schema::table('team_player', function (Blueprint $table) {
+        Schema::table('teamManagement', function (Blueprint $table) {
             $table->dropForeign(['team_id']);
             $table->dropForeign(['manager_id']);
             $table->dropForeign(['player_id']);

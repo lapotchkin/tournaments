@@ -32,7 +32,7 @@ class CreateLeagueTable extends Migration
             $table->primary('id');
         });
 
-        DB::table('app')->insert([
+        DB::table('league')->insert([
             ['id' => 'iihf', 'title' => 'IIHF', 'createdAt' => date('Y-m-d H:i:s')],
             ['id' => 'nhl', 'title' => 'NHL', 'createdAt' => date('Y-m-d H:i:s')],
         ]);

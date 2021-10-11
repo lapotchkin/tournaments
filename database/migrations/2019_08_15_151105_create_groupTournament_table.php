@@ -34,7 +34,7 @@ class CreateGroupTournamentTable extends Migration
             $table->softDeletes('deletedAt');
         });
 
-        Schema::table('club', function (Blueprint $table) {
+        Schema::table('groupTournament', function (Blueprint $table) {
             $table->foreign('platform_id')->references('id')->on('platform');
             $table->foreign('app_id')->references('id')->on('app');
         });
@@ -47,7 +47,7 @@ class CreateGroupTournamentTable extends Migration
      */
     public function down()
     {
-        Schema::table('app_team', function (Blueprint $table) {
+        Schema::table('groupTournament', function (Blueprint $table) {
             $table->dropForeign(['platform_id']);
             $table->dropForeign(['app_id']);
         });
