@@ -92,6 +92,7 @@ class GroupController extends Controller
 
         $nonTournamentTeams = Team::whereNotIn('id', $teamIds)
             ->where('platform_id', $groupTournament->platform_id)
+            ->orderBy('name')
             ->get();
 
         return view('site.group.teams', [

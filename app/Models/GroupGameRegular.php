@@ -188,9 +188,10 @@ class GroupGameRegular extends Model
     ];
 
     /**
-     * @return BelongsTo
+     * @return BelongsTo|GroupTournamentTeam
      */
     public function homeTeam()
+    : BelongsTo
     {
         return $this->belongsTo(
             'App\Models\GroupTournamentTeam',
@@ -200,9 +201,10 @@ class GroupGameRegular extends Model
     }
 
     /**
-     * @return BelongsTo
+     * @return BelongsTo|GroupTournamentTeam
      */
     public function awayTeam()
+    : BelongsTo
     {
         return $this->belongsTo(
             'App\Models\GroupTournamentTeam',
@@ -212,25 +214,28 @@ class GroupGameRegular extends Model
     }
 
     /**
-     * @return BelongsTo
+     * @return BelongsTo|GroupTournament
      */
     public function tournament()
+    : BelongsTo
     {
         return $this->belongsTo('App\Models\GroupTournament', 'tournament_id');
     }
 
     /**
-     * @return HasMany
+     * @return HasMany|GroupGameRegularPlayer[]
      */
     public function protocols()
+    : HasMany
     {
         return $this->hasMany('App\Models\GroupGameRegularPlayer', 'game_id');
     }
 
     /**
-     * @return array
+     * @return GroupGameRegularPlayer[][]
      */
     public function getSafeProtocols()
+    : array
     {
         $protocols = [
             'home' => [],
@@ -243,13 +248,17 @@ class GroupGameRegular extends Model
                 $protocols['away'][] = $protocol->getSafeProtocol();
             }
         }
+        usort($protocols['home'], "App\Utils\GroupGamesHelper::sortProtocols");
+        usort($protocols['away'], "App\Utils\GroupGamesHelper::sortProtocols");
+
         return $protocols;
     }
 
     /**
-     * @return array
+     * @return Player[][]
      */
     public function getSafePlayersData()
+    : array
     {
         $players = [
             'home' => [],
@@ -268,6 +277,7 @@ class GroupGameRegular extends Model
      * @return Collection
      */
     public function getStars()
+    : Collection
     {
         $stars = new Collection();
         foreach ($this->protocols as $protocol) {
@@ -275,11 +285,15 @@ class GroupGameRegular extends Model
                 $stars->push($protocol);
             }
         }
-        $stars = $stars->sortBy('star');
-        return $stars;
+
+        return $stars->sortBy('star');
     }
 
+    /**
+     * @return int|null
+     */
     public function getTeamId()
+    : ?int
     {
         if (!Auth::check()) {
             return null;

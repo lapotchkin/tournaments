@@ -5,21 +5,23 @@ namespace App\Models;
 use DateTime;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Database\Eloquent\Collection;
 
 class EaRest
 {
-    const BASE_URL = [
+    protected const BASE_URL = [
         'eanhl19' => 'https://www.easports.com',
         'eanhl20' => 'https://proclubs.ea.com',
     ];
-    const API_PATH = [
+    protected const API_PATH = [
         'eanhl19' => 'iframe/nhl14proclubs/api/platforms/{platformId}/clubs/{clubId}/',
         'eanhl20' => 'api/nhl/clubs/',
     ];
-    const MATCHES_PATH = 'matches';
-    const MATCHES_PER_REQUEST = 20;
-    const OVERTIME_RESULTS = [5, 6];
-    const MATCH_DEFAULTS = [
+    protected const MATCHES_PATH = 'matches';
+    protected const MATCHES_PER_REQUEST = 20;
+    protected const OVERTIME_RESULTS = [5, 6];
+    protected const MATCH_DEFAULTS = [
         'game'    => [
             'home_team'             => null,
             'away_team'             => null,
@@ -58,8 +60,8 @@ class EaRest
             'away' => [],
         ],
     ];
-    const PRIVATE_MATCH = 'club_private';
-    const REGULAR_MATCH = 'gameType5';
+    protected const  PRIVATE_MATCH = 'club_private';
+    protected const REGULAR_MATCH = 'gameType5';
 
     /**
      * @param string $platform
@@ -68,12 +70,13 @@ class EaRest
      * @param bool   $isPrivate
      *
      * @return string
+     * @throws GuzzleException
      */
     public static function readGames(string $platform, string $app, int $clubId, bool $isPrivate = true)
     : string
     {
-        $baseUrl = isset(self::BASE_URL[$app]) ? self::BASE_URL[$app] : self::BASE_URL['eanhl20'];
-        $apiPath = isset(self::API_PATH[$app]) ? self::API_PATH[$app] : self::API_PATH['eanhl20'];
+        $baseUrl = self::BASE_URL[$app] ?? self::BASE_URL['eanhl20'];
+        $apiPath = self::API_PATH[$app] ?? self::API_PATH['eanhl20'];
 
         $httpClient = new Client(['base_uri' => $baseUrl]);
         $response = $httpClient->request(
@@ -111,7 +114,7 @@ class EaRest
     }
 
     /**
-     * @param array           $response
+     * @param Collection      $response
      * @param GroupTournament $tournament
      * @param Team            $homeTeam
      * @param Team            $awayTeam
@@ -119,7 +122,7 @@ class EaRest
      * @return array
      * @throws Exception
      */
-    public static function parseMatches($response, GroupTournament $tournament, Team $homeTeam, Team $awayTeam)
+    public static function parseMatches(Collection $response, GroupTournament $tournament, Team $homeTeam, Team $awayTeam)
     : array
     {
         $matches = [];
@@ -154,8 +157,7 @@ class EaRest
                     $matches[$matchId]['game']['isOvertime']
                         = (int)in_array((int)$club['result'], self::OVERTIME_RESULTS);
 
-                    $matches[$matchId]['game']['home_team'] = (int)$clubId === $homeClubId
-                        ? $homeTeam->name : $awayTeam->name;
+                    $matches[$matchId]['game']['home_team'] = $homeTeam->name;
                     $matches[$matchId]['game']['home_club_id'] = (int)$clubId;
                     $matches[$matchId]['game']['home_score'] = (int)$match['aggregate'][$clubId]['skgoals'];
                     $matches[$matchId]['game']['home_penalty_total'] = (int)$club['ppo'];
@@ -171,8 +173,7 @@ class EaRest
                     $date->setTimestamp((int)$match['aggregate'][$clubId]['skpim'] * 60);
                     $matches[$matchId]['game']['home_penalty_time'] = $date->format('i:s');
                 } else {
-                    $matches[$matchId]['game']['away_team'] = (int)$clubId === $homeClubId
-                        ? $homeTeam->name : $awayTeam->name;
+                    $matches[$matchId]['game']['away_team'] = $awayTeam->name;
                     $matches[$matchId]['game']['away_club_id'] = (int)$clubId;
                     $matches[$matchId]['game']['away_score'] = (int)$match['aggregate'][$clubId]['skgoals'];
                     $matches[$matchId]['game']['away_penalty_total'] = (int)$club['ppo'];
@@ -195,6 +196,12 @@ class EaRest
             $homePasses = 0;
             $awayPasses = 0;
             foreach ($match['players'] as $clubId => $players) {
+                uasort($players, function ($a, $b) {
+                    if ($a['posSorted'] == $b['posSorted']) {
+                        return 0;
+                    }
+                    return ($a['posSorted'] > $b['posSorted']) ? -1 : 1;
+                });
                 foreach ($players as $player) {
                     if ((int)$clubId === $matches[$matchId]['game']['home_club_id']) {
                         $playerData = self::getPlayer(
@@ -245,6 +252,7 @@ class EaRest
     : array
     {
         //echo $playerData['playername'] . PHP_EOL;
+        /** @var Player $player */
         $player = Player::where('tag', '=', $playerData['playername'])
             ->where('platform_id', '=', $team->platform_id)
             ->first();
@@ -256,8 +264,10 @@ class EaRest
         $positionId = is_numeric($playerData['position'])
             ? (int)$playerData['position']
             : $positions['byEaId'][$playerData['position']]->id;
-        $protocol = [
-            'name'                => $player->tag,
+
+        return [
+            'tag'                 => $player->tag,
+            'name'                => $player->name,
             'team_id'             => $team->id,
             'player_id'           => $player->id,
             'class_id'            => (int)$playerData['class'],
@@ -285,9 +295,7 @@ class EaRest
             'pass_attempts'       => (int)$playerData['skpassattempts'],
             'passes'              => (int)$playerData['skpasses'],
             'saucer_passes'       => (int)$playerData['sksaucerpasses'],
-            'clear_zone'          => (int)$playerData['skpkclearzone']
-                ? (int)$playerData['skpkclearzone']
-                : (int)$playerData['glpkclearzone'],
+            'clear_zone'          => (int)$playerData['skpkclearzone'] ?: (int)$playerData['glpkclearzone'],
             'hits'                => (int)$playerData['skhits'],
             'possession'          => (int)$playerData['skpossession'],
             'penalty_minutes'     => (int)$playerData['skpim'],
@@ -306,8 +314,6 @@ class EaRest
             'isWin'               => (int)$isWin,
             'isGoalie'            => (int)($positionId === 0),
         ];
-
-        return $protocol;
     }
 
     /**

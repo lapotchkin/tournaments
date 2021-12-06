@@ -1,3 +1,9 @@
+@php
+    /** @var \App\Models\GroupTournament $tournament */
+    /** @var array $rounds */
+    /** @var \App\Models\GroupGameRegular[][] $divisions */
+@endphp
+
 @extends('layouts.site')
 
 @section('title', $tournament->title . ': Чемпионат (Расписание) — ')
@@ -11,7 +17,43 @@
     @if(count($tournament->teams) < 4)
         <div class="alert alert-danger">Недостаточно команд в турнире. Должно быть хотя бы 4.</div>
     @elseif(!count($rounds))
-        124
+        @can('create', 'App\Models\GroupTournament')
+            <form id="schedule-add" class="row row-cols-lg-auto g-2 align-items-center mt-3">
+                <div class="col-12">
+                    <div class="input-group has-validation">
+                        <label for="rounds" class="input-group-text">Количество кругов</label>
+                        <select id="rounds" class="form-select" name="rounds">
+                            <option value="">--Не выбрано--</option>
+                            @foreach([1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as $round)
+                                <option value="{{ $round }}" {{  $round === 1 ? "selected" : '' }}>
+                                    {{ $round }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="input-group has-validation">
+                        <label for="gamesCount" class="input-group-text">Количество игр</label>
+                        <select id="gamesCount" class="form-select" name="gamesCount">
+                            <option value="">--Не выбрано--</option>
+                            @foreach([1, 2] as $gamesCount)
+                                <option value="{{ $gamesCount }}" {{  $gamesCount === 2 ? "selected" : '' }}>
+                                    {{ $gamesCount }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" name="team-add-button">Создать расписание</button>
+                </div>
+            </form>
+        @else
+            <div class="alert alert-warning">Расписания ещё нет.</div>
+        @endcan
     @else
         <div class="row row-cols-lg-auto g-2 align-items-center my-3">
             <div class="col-12">
@@ -227,7 +269,19 @@
                         TRNMNT_helpers.enableButtons();
                     }
                 });
-            })
+            });
+
+            @can('create', 'App\Models\GroupTournament')
+            TRNMNT_sendData({
+                selector: '#schedule-add',
+                method: 'put',
+                url: '{{ action('Ajax\GroupController@addSchedule',['groupTournament' => $tournament]) }}',
+                success: function () {
+                    TRNMNT_helpers.enableButtons();
+                    location.reload();
+                }
+            });
+            @endcan
         });
     </script>
 @endsection

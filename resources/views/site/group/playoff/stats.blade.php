@@ -1,3 +1,9 @@
+@php
+    /** @var \App\Models\GroupTournament $tournament */
+    /** @var \App\Models\GroupTournamentPlayoff[][] $bracket */
+    /** @var object $leaders */
+@endphp
+
 @extends('layouts.site')
 
 @section('title', $tournament->title . ': Статистика Плей-офф — ')
@@ -11,16 +17,22 @@
     @if(count($tournament->teams) < 4)
         <div class="alert alert-danger">Недостаточно команд в турнире. Должно быть хотя бы 4.</div>
     @else
-        <form method="get" class="form-inline mb-2">
-            <div class="form-group mr-2">
-                <label class="control-label mr-2" for="toDate">Сравнить с датой</label>
-                <input type="text" id="toDate" class="form-control" name="toDate"
-                       value="{{ $dateToCompare ? str_replace(' 00:00:00', '', $dateToCompare) : '' }}"
-                       readonly>
+        <form method="get" class="row row-cols-lg-auto g-2 align-items-center my-3">
+            <div class="col-12">
+                <div class="input-group">
+                    <label class="input-group-text" for="toDate">Сравнить с датой</label>
+                    <input type="text" id="toDate" class="form-control" name="toDate"
+                           value="{{ $dateToCompare ? str_replace(' 00:00:00', '', $dateToCompare) : '' }}"
+                           readonly>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary mr-2">Применить</button>
-            <a href="{{ route('group.tournament.playoff', ['groupTournament' => $tournament->id]) }}"
-               class="btn btn-warning">Сбросить</a>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Применить</button>
+            </div>
+            <div class="col-12">
+                <a href="{{ route('group.tournament.playoff.stats', ['groupTournament' => $tournament->id]) }}"
+                   class="btn btn-warning">Сбросить</a>
+            </div>
         </form>
 
         <h3 class="mt-3">Лучшие по очкам</h3>
@@ -251,19 +263,18 @@
         .leaders.dataTable tbody td:nth-child(2),
         .leaders.dataTable tbody td:nth-child(3),
         .leaders.dataTable tbody td:nth-child(4),
-        .leaders.dataTable tbody td:nth-child(5) {
-            text-align: left !important;
-        }
-
-        .teams.dataTable tbody td:nth-child(3),
-        .leaders.dataTable tbody td:nth-child(3) {
-            font-weight: bold;
-        }
-
+        .leaders.dataTable tbody td:nth-child(5),
         #players.dataTable tbody td:nth-child(1),
         #players.dataTable tbody td:nth-child(2),
         #players.dataTable tbody td:nth-child(3) {
             text-align: left !important;
         }
+
+        .teams.dataTable tbody td:nth-child(3),
+        .leaders.dataTable tbody td:nth-child(3),
+        #players.dataTable tbody td:nth-child(1){
+            font-weight: bold;
+        }
+
     </style>
 @endsection

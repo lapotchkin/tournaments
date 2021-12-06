@@ -161,7 +161,7 @@ window.TRNMNT_gameFormModule = (function () {
             const selected = playerPosition === position.id ? 'selected' : '';
             positionSelect += `<option value="${position.id}" ${selected}>${position.short_title}</option>`;
         });
-        return `<select class="form-select" name="position_id">${positionSelect}</select>`;
+        return `<select class="form-select"  style="width:75px" name="position_id">${positionSelect}</select>`;
     }
 
     /**
@@ -176,7 +176,7 @@ window.TRNMNT_gameFormModule = (function () {
             const selected = playerStar === i ? 'selected' : '';
             starsSelect += `<option value="${i}" ${selected}>${stars[i]}</option>`;
         }
-        return `<select class="form-select" name="star">${starsSelect}</select>`;
+        return `<select class="form-select" style="width:60px" name="star">${starsSelect}</select>`;
     }
 
     /**
@@ -596,7 +596,8 @@ window.TRNMNT_gameFormModule = (function () {
             const $tbody = side === 'home' ? _$homePlayers : _$awayPlayers;
             for (let player of players[side]) {
                 $tbody.append(_templates.player.format({
-                    tag: player.name,
+                    tag: player.tag,
+                    name: player.name,
                     position: _getPlayerBadge(player.position_id, player.position),
                     goals: player.goals,
                     assists: player.assists,

@@ -9,6 +9,7 @@ use App\Models\GroupTournamentPlayoffGoalies;
 use App\Models\GroupTournamentPlayoffLeaders;
 use App\Models\GroupTournamentPlayoffPosition;
 use App\Models\PlayerPosition;
+use App\Utils\GroupGamesHelper;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -70,19 +71,7 @@ class GroupPlayoffController extends Controller
             abort(404);
         }
 
-        foreach ($groupGamePlayoff->protocols as $protocol) {
-            if ($protocol->team_id === $groupGamePlayoff->home_team_id) {
-                $groupGamePlayoff->homeProtocols[] = $protocol;
-                if ($protocol->isGoalie) {
-                    $groupGamePlayoff->homeGoalie = $protocol;
-                }
-            } else {
-                $groupGamePlayoff->awayProtocols[] = $protocol;
-                if ($protocol->isGoalie) {
-                    $groupGamePlayoff->awayGoalie = $protocol;
-                }
-            }
-        }
+        GroupGamesHelper::setProtocols($groupGamePlayoff);
 
         $roundText = TextUtils::playoffRound(
             $groupGamePlayoff->playoffPair->tournament,

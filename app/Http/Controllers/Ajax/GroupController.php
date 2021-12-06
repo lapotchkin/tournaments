@@ -212,7 +212,7 @@ class GroupController extends Controller
         foreach ($divisions as $division) {
             $divisionSchedule = TournamentScheduler::generate($division);
 
-            for ($repeat = 1; $repeat < $validatedData['rounds'] + 1; $repeat += 1) {
+            for ($repeat = 1; $repeat < (int)$validatedData['rounds'] + 1; $repeat += 1) {
                 foreach ($divisionSchedule as $round => $games) {
                     foreach ($games as $teams) {
                         $gameOne = new GroupGameRegular([
@@ -223,7 +223,7 @@ class GroupController extends Controller
                         ]);
                         $gameOne->save();
 
-                        if ($validatedData['gamesCount'] === 2) {
+                        if ((int)$validatedData['gamesCount'] === 2) {
                             $gameTwo = new GroupGameRegular([
                                 'tournament_id' => $groupTournament->id,
                                 'round'         => ($round + 1) * $repeat,
@@ -237,7 +237,8 @@ class GroupController extends Controller
             }
         }
 
-        return $this->renderAjax([], 'Расписание создано');
+//        return $this->renderAjax([], 'Расписание создано');
+        return $this->renderAjax($validatedData, 'Расписание создано');
     }
 
     /**

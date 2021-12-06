@@ -1,3 +1,9 @@
+@php
+    /** @var \App\Models\GroupTournament $tournament */
+    /** @var \App\Models\Team[] $division */
+    /** @var \App\Models\Team[] $nonTournamentTeams */
+@endphp
+
 @extends('layouts.site')
 
 @section('title', $tournament->title . ' — ')
@@ -98,8 +104,22 @@
                         const $tbody = $('#division-' + division).find('tbody');
                         const $row = $('<tr/>');
                         $row.append('<td>' + ($tbody.find('tr').length + 1) + '</td>');
-                        $row.append('<td><a href="{{ action('Site\TeamController@index') }}/' + teamId + '">' + $option.text() + '</a></td>');
-                        $row.append('<td class="text-end"><a class="btn btn-primary btn-sm" href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}/team/' + teamId + '"><i class="fas fa-edit"></i></a></td>');
+                        //@formatter:off
+                        $row.append(
+                            '<td>' +
+                                '<a href="{{ action('Site\TeamController@index') }}/' + teamId + '">' +
+                                    $option.text() +
+                                '</a>' +
+                            '</td>'
+                        );
+                        $row.append(
+                            '<td class="text-end">' +
+                                '<a class="btn btn-primary btn-sm" href="{{ route('group.tournament', ['groupTournament' => $tournament->id]) }}/team/' + teamId + '">' +
+                                    '<i class="fas fa-edit"></i>' +
+                                '</a>' +
+                            '</td>'
+                        );
+                        //@formatter:on
                         $tbody.append($row);
                         $option.remove();
                         $team.val('');
@@ -113,15 +133,22 @@
                     }
 
                     const letters = 'ABCD';
+                    //@formatter:off
                     $('#card-deck').append(
-                        '<div class="card h-100 mb-3" id="division-' + division + '">' +
-                        '<h4 class="card-header bg-dark text-light">Группа ' + letters.charAt(division - 1) + '</h4>' +
-                        '<div class="card-body">' +
-                        '<table class="table table-striped table-sm" id="team-table">' +
-                        '<tbody></tbody>' +
-                        '</table>' +
-                        '</div>' +
-                        '</div>');
+                        '<div class="col">' +
+                            '<div class="card h-100 mb-3" id="division-' + division + '">' +
+                                '<h4 class="card-header bg-dark text-light">' +
+                                    'Группа ' + letters.charAt(division - 1) +
+                                '</h4>' +
+                                '<div class="card-body">' +
+                                    '<table class="table table-striped table-sm" id="team-table">' +
+                                        '<tbody></tbody>' +
+                                    '</table>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>'
+                    );
+                    //@formatter:on
                 }
             });
         </script>

@@ -9,6 +9,7 @@ use App\Models\GroupTournamentGoalies;
 use App\Models\GroupTournamentLeaders;
 use App\Models\GroupTournamentPosition;
 use App\Models\PlayerPosition;
+use App\Utils\GroupGamesHelper;
 use App\Utils\TournamentResults;
 use DateTime;
 use Exception;
@@ -144,19 +145,7 @@ class GroupRegularController extends Controller
             abort(404);
         }
 
-        foreach ($groupGameRegular->protocols as $protocol) {
-            if ($protocol->team_id === $groupGameRegular->home_team_id) {
-                $groupGameRegular->homeProtocols[] = $protocol;
-                if ($protocol->isGoalie) {
-                    $groupGameRegular->homeGoalie = $protocol;
-                }
-            } else {
-                $groupGameRegular->awayProtocols[] = $protocol;
-                if ($protocol->isGoalie) {
-                    $groupGameRegular->awayGoalie = $protocol;
-                }
-            }
-        }
+        GroupGamesHelper::setProtocols($groupGameRegular);
 
         return view('site.group.game_protocol', [
             'title' => $groupGameRegular->homeTeam->team->name

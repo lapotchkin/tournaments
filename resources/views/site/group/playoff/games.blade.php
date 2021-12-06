@@ -1,3 +1,8 @@
+@php
+    /** @var \App\Models\GroupTournament $tournament */
+    /** @var \App\Models\GroupTournamentPlayoff[][] $bracket */
+@endphp
+
 @extends('layouts.site')
 
 @section('title', $tournament->title . ': Плей-офф — ')
@@ -26,8 +31,10 @@
                                 {!! !is_null($pair) ? 'data-id="' . $pair->id . '"' : '' !!}>
                                 <div class="tournament-bracket__match" tabindex="0">
                                     <div class="row">
-                                        <div class="col-10 form-inline">
+                                        <div class="col-auto">
                                             <span class="badge rounded-pill bg-danger mr-2">&nbsp;</span>
+                                        </div>
+                                        <div class="col">
                                             @if (!is_null($pair) && $pair->teamOne && count($pair->games))
                                                 <a href="{{ route('team', ['team' => $pair->team_one_id]) }}">
                                                     @if ($winner === $pair->team_one_id)
@@ -50,7 +57,7 @@
                                                 </select>
                                             @endif
                                         </div>
-                                        <div class="col-2 text-end">
+                                        <div class="col-auto">
                                             @if (!is_null($pair) && $pair->teamOne && isset($seriesResult[$pair->teamOne->id]))
                                                 @if ($winner === $pair->team_one_id)
                                                     <span class="badge rounded-pill bg-dark">
@@ -93,8 +100,10 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-10 form-inline">
+                                        <div class="col-auto">
                                             <span class="badge rounded-pill bg-warning mr-2">&nbsp;</span>
+                                        </div>
+                                        <div class="col">
                                             @if (!is_null($pair) && $pair->teamTwo && count($pair->games))
                                                 <a href="{{ route('team', ['team' => $pair->team_two_id]) }}">
                                                     @if ($winner === $pair->team_two_id)
@@ -117,7 +126,7 @@
                                                 </select>
                                             @endif
                                         </div>
-                                        <div class="col-2 text-end">
+                                        <div class="col-auto text-end">
                                             @if (!is_null($pair) && $pair->teamTwo && isset($seriesResult[$pair->teamTwo->id]))
                                                 @if ($winner === $pair->team_two_id)
                                                     <span class="badge rounded-pill bg-dark">

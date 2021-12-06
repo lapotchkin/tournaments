@@ -177,41 +177,46 @@ class GroupGamePlayoff extends Model
     ];
 
     /**
-     * @return BelongsTo
+     * @return BelongsTo|GroupTournamentPlayoff
      */
     public function playoffPair()
+    : BelongsTo
     {
         return $this->belongsTo('App\Models\GroupTournamentPlayoff', 'playoff_pair_id');
     }
 
     /**
-     * @return BelongsTo
+     * @return BelongsTo|GroupTournamentTeam
      */
     public function homeTeam()
+    : BelongsTo
     {
         return $this->belongsTo('App\Models\GroupTournamentTeam', 'home_team_id', 'team_id');
     }
 
     /**
-     * @return BelongsTo
+     * @return BelongsTo|GroupTournamentTeam
      */
     public function awayTeam()
+    : BelongsTo
     {
         return $this->belongsTo('App\Models\GroupTournamentTeam', 'away_team_id', 'team_id');
     }
 
     /**
-     * @return HasMany
+     * @return HasMany|GroupGamePlayoffPlayer[]
      */
     public function protocols()
+    : HasMany
     {
         return $this->hasMany('App\Models\GroupGamePlayoffPlayer', 'game_id');
     }
 
     /**
-     * @return HasOneThrough
+     * @return HasOneThrough|GroupTournament
      */
     public function tournament()
+    : HasOneThrough
     {
         return $this->hasOneThrough(
             'App\Models\GroupTournament',
@@ -224,9 +229,10 @@ class GroupGamePlayoff extends Model
     }
 
     /**
-     * @return array
+     * @return GroupGamePlayoffPlayer[][]
      */
     public function getSafeProtocols()
+    : array
     {
         $protocols = [
             'home' => [],
@@ -239,13 +245,17 @@ class GroupGamePlayoff extends Model
                 $protocols['away'][] = $protocol->getSafeProtocol();
             }
         }
+        usort($protocols['home'], "App\Utils\GroupGamesHelper::sortProtocols");
+        usort($protocols['away'], "App\Utils\GroupGamesHelper::sortProtocols");
+
         return $protocols;
     }
 
     /**
-     * @return array
+     * @return Player[][]
      */
     public function getSafePlayersData()
+    : array
     {
         $players = [
             'home' => [],
@@ -257,6 +267,7 @@ class GroupGamePlayoff extends Model
         foreach ($this->awayTeam->team->players as $player) {
             $players['away'][] = $player->getSafeData();
         }
+
         return $players;
     }
 
@@ -264,18 +275,23 @@ class GroupGamePlayoff extends Model
      * @return Collection
      */
     public function getStars()
+    : Collection
     {
-        $stars = new Collection;
+        $stars = new Collection();
         foreach ($this->protocols as $protocol) {
             if ($protocol->star > 0) {
                 $stars->push($protocol);
             }
         }
-        $stars = $stars->sortBy('star');
-        return $stars;
+
+        return $stars->sortBy('star');
     }
 
+    /**
+     * @return int|null
+     */
     public function getTeamId()
+    : ?int
     {
         if (!Auth::check()) {
             return null;

@@ -166,7 +166,7 @@
         <h3 class="mt-3">
             Все вратари турнира
         </h3>
-        <table id="goaliesAll" class="leaders table table-striped table-sm">
+        <table id="goaliesAll" class="table table-striped table-sm">
             <thead class="table-dark"></thead>
             <tbody></tbody>
         </table>
@@ -416,19 +416,20 @@
         .leaders.dataTable tbody td:nth-child(2),
         .leaders.dataTable tbody td:nth-child(3),
         .leaders.dataTable tbody td:nth-child(4),
-        .leaders.dataTable tbody td:nth-child(5) {
+        .leaders.dataTable tbody td:nth-child(5),
+        #players.dataTable tbody td:nth-child(1),
+        #players.dataTable tbody td:nth-child(2),
+        #players.dataTable tbody td:nth-child(3),
+        #goaliesAll.dataTable tbody td:nth-child(2),
+        #goaliesAll.dataTable tbody td:nth-child(3) {
             text-align: left !important;
         }
 
         .teams.dataTable tbody td:nth-child(3),
-        .leaders.dataTable tbody td:nth-child(3) {
-            font-weight: bold;
-        }
-
+        .leaders.dataTable tbody td:nth-child(3),
         #players.dataTable tbody td:nth-child(1),
-        #players.dataTable tbody td:nth-child(2),
-        #players.dataTable tbody td:nth-child(3) {
-            text-align: left !important;
+        #goaliesAll.dataTable tbody td:nth-child(2) {
+            font-weight: bold;
         }
     </style>
 @endsection

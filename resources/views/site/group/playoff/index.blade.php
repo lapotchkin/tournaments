@@ -1,3 +1,8 @@
+@php
+    /** @var \App\Models\GroupTournament $tournament */
+    /** @var \App\Models\GroupTournamentPlayoff[][] $bracket */
+@endphp
+
 @extends('layouts.site')
 
 @section('title', $tournament->title . ': Плей-офф — ')

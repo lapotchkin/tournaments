@@ -1,3 +1,8 @@
+@php
+    /** @var \App\Models\GroupTournament $tournament */
+    /** @var \App\Models\Team[] $division */
+@endphp
+
 @extends('layouts.site')
 
 @section('title', 'Данные для ВК: ' . $tournament->title . ' — ')
@@ -15,7 +20,7 @@
             <div>{{ $loop->iteration }}. {{ $team->name }}</div>
         @endforeach
 
-        @if(!count($rounds))
+        @if(!count($divisions))
             <h3 class="mt-3">Группы</h3>
             @foreach($divisions as $number => $division)
                 <h4>Группа {{ TextUtils::divisionLetter($number) }}</h4>

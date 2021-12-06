@@ -1,3 +1,8 @@
+@php
+/** @var \App\Models\GroupTournamentPlayoff $pair */
+/** @var \App\Models\GroupGameRegular $game */
+@endphp
+
 @extends('layouts.site')
 
 @section('title', $title . ' — ')
@@ -227,7 +232,7 @@
 
     <h3 class="mt-3">Статистика игроков</h3>
     <div class="row">
-        <div class="col">
+        <div class="col-xl-6 col-12">
             <table class="table table-sm table-striped" id="homePlayers"
                    data-id="{{ $pair ? $pair->team_one_id : $game->home_team_id }}">
                 <thead>
@@ -243,7 +248,7 @@
                 <tbody></tbody>
             </table>
         </div>
-        <div class="col">
+        <div class="col-xl-6 col-12">
             <table class="table table-sm table-striped" id="awayPlayers"
                    data-id="{{ $pair ? $pair->team_two_id : $game->away_team_id }}">
                 <thead>
